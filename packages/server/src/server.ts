@@ -3,17 +3,22 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { QueryPayLoad } from 'api';
 import uniqid from 'uniqid';
-import { config } from 'process';
+import config from 'config';
+import cors from 'cors';
 
-const httpServer = createServer();
-const io = new Server(httpServer, {
-    cors: {
-        origin: '',
-    }
-});
+console.log(config);
 
 const app = express();
 const port = 3001;
+
+const httpServer = app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`);
+});
+const io = new Server(httpServer, {
+    cors: config.get('cors.origin')
+});
+
+app.use(cors({ origin: config.get('cors.origin'), credentials: config.get('cors.credentials') }));
 
 app.get("/data", (req, res) => {
 
@@ -22,9 +27,7 @@ app.get("/data", (req, res) => {
     res.json({ foo: "barsdsdf" });
 });
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-});
+
 
 app.get('/makeRoomId', (req, res) => {
     res.send({ roomId: uniqid() + randomPin() });
