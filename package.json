@@ -1,0 +1,22 @@
+{
+    "name": "gamesonatable",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "private": true,
+    "workspaces": {
+        "packages": [
+            "packages/*"
+        ]
+    },
+    "scripts": {
+        "start": "lerna run --parallel start",
+        "kill-ports": "kill-port --port 3000,3001"
+    },
+    "dependencies": {
+        "typescript": "^4.5.5"
+    },
+    "devDependencies": {
+        "lerna": "^4.0.0"
+    }
+}
