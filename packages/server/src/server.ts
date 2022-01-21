@@ -7,7 +7,7 @@ app.get("/data", (req, res) => {
 
     const data: QueryPayLoad = { foo: "bar" };
 
-    res.json({ foo: "bar" });
+    res.json({ foo: "barsdsdf" });
 });
 
 app.listen(port, () => {
