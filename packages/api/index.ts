@@ -14,7 +14,3 @@ export interface RoomData {
     room: string;
     users: User[];
 }
-
-export interface UserLeft {
-    id: string;
-}

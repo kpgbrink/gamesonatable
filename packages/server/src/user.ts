@@ -22,10 +22,8 @@ export const upsertUser = ({ id, name, room, isHost }: User) => {
 
 export const removeUser = (id: string) => {
     const index = users.findIndex((user) => {
-        console.log(user.id, id);
         return user.id === id
     });
-    console.log(id, index);
 
     if (index !== -1) {
         return users.splice(index, 1)[0];

@@ -1,6 +1,6 @@
 import express from 'express';
 import { Server, Socket } from "socket.io";
-import { QueryPayLoad, RoomData, UserLeft } from 'api';
+import { QueryPayLoad, RoomData, User } from 'api';
 import uniqid from 'uniqid';
 import config from 'config';
 import cors from 'cors';
@@ -15,7 +15,8 @@ const httpServer = app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
 const io = new Server(httpServer, {
-    cors: config.get('cors.origin')
+    cors: config.get('cors.origin'),
+    pingInterval: 20000,
 });
 
 app.use(cors({ origin: config.get('cors.origin'), credentials: config.get('cors.credentials') }));
@@ -36,43 +37,33 @@ const randomPin = () => {
     return Math.floor(Math.random() * 900000) + 100000;
 };
 
-const socketLeaveAllRooms = (socket: Socket) => {
-    Object.keys(socket.rooms)
-        .filter(it => it !== socket.id)
-        .forEach(id => {
-            console.log("Leaving room: " + id);
-            socket.leave(id)
-        });
+const socketLeavePreviousRoom = (socket: Socket, user: User | undefined) => {
+    if (!user) return;
+    socket.leave(user.room);
 }
 
 io.on('connection', (socket) => {
     // The current room I am in
     socket.on('host room', (room: string) => {
-        socketLeaveAllRooms(socket);
+        socketLeavePreviousRoom(socket, getUser(socket.id));
         var user = upsertUser({ id: socket.id, name: '', room: room, isHost: true });
         socket.join(user.room);
-        console.log('created room', user.room);
-        console.log(getUsersInRoom(user.room));
     });
 
     socket.on('join room', (room: string) => {
-        console.log('hi');
         if (room === null) return;
-        socketLeaveAllRooms(socket);
+        socketLeavePreviousRoom(socket, getUser(socket.id));
         var user = upsertUser({ id: socket.id, name: '', room: room, isHost: false });
         socket.join(user.room);
-        console.log('joined room', room);
         const roomData: RoomData = {
             room: room,
             users: getUsersInRoom(room)
         };
         io.to(user.room).emit('room data', roomData);
-        console.log(roomData);
     });
 
     // Test chat
     socket.on('chat', (message: string) => {
-        // console.log(getUserCount());
         const user = getUser(socket.id);
         if (!user) { console.log('user not found'); return; }
         io.in(user.room).emit("chat", message);
@@ -80,18 +71,14 @@ io.on('connection', (socket) => {
 
     // On disconnect
     socket.on('disconnect', () => {
-        const userCount = getUserCount();
-        console.log('user disconnected', socket.id);
         const user = removeUser(socket.id);
-        console.log('delete user', user);
         if (user) {
-            const userLeft: UserLeft = {
-                id: user.id
+            const roomData: RoomData = {
+                room: user.room,
+                users: getUsersInRoom(user.room)
             };
-            io.to(user.room).emit('user left', userLeft);
+            io.to(user.room).emit('room data', roomData);
         }
-        console.log('old user count', userCount);
-        console.log('new user count', getUserCount());
     });
 
     socket.on('error', (err) => {

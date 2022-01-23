@@ -54,9 +54,11 @@ export default function HomePage() {
                 <div>
                   <QRCode value={joinURL} />
                   <div className="playerList">
-                    {userList.map((user, index) => {
-                      return <div key={index}>{user.id}</div>;
-                    })}
+                    {userList
+                      .filter((user) => !user.isHost)
+                      .map((user, index) => {
+                        return <div key={index}>{user.id}</div>;
+                      })}
                   </div>
                 </div>
               </div>
