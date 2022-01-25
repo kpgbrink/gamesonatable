@@ -1,7 +1,8 @@
 
-export interface QueryPayLoad {
-    foo: string;
-}
+
+export interface NewRoomId {
+    roomId: string;
+};
 
 export interface User {
     id: string;

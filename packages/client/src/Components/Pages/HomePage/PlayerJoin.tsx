@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import QRCode from "qrcode.react";
 import LinearProgress from "@mui/material/LinearProgress";
-import { User, RoomData } from "api";
+import { User, RoomData, NewRoomId } from "api";
 import socket from "../../../SocketConnection";
 import { AppContext } from "../../../AppContext";
 import List from "@mui/material/List";
@@ -21,7 +21,7 @@ export default function PlayerJoin() {
     if (roomCreated !== null) return;
     const fetchData = async () => {
       const response = await fetch("/getNewRoomId");
-      const data = await response.json();
+      const data: NewRoomId = await response.json();
       console.log("make room", data.roomId);
       socket.emit("host room", data.roomId, async () => {});
       setRoomCreated(data.roomId);

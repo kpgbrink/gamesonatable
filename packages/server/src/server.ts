@@ -1,6 +1,6 @@
 import express from 'express';
 import { Server, Socket } from "socket.io";
-import { QueryPayLoad, RoomData, User } from 'api';
+import { NewRoomId, RoomData, User } from 'api';
 import uniqid from 'uniqid';
 import config from 'config';
 import cors from 'cors';
@@ -21,15 +21,9 @@ const io = new Server(httpServer, {
 
 app.use(cors({ origin: config.get('cors.origin'), credentials: config.get('cors.credentials') }));
 
-app.get("/data", (req, res) => {
-
-    const data: QueryPayLoad = { foo: "bar" };
-
-    res.json({ foo: "barsdsdf" });
-});
-
 app.get('/getNewRoomId', (req, res) => {
-    res.send({ roomId: uniqid() + randomPin() });
+    const newRoomId: NewRoomId = { roomId: uniqid() };
+    res.send(newRoomId);
 });
 
 // Generate random 6 digit number

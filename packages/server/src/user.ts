@@ -17,7 +17,6 @@ export const upsertUser = ({ id, name, room, isHost }: User) => {
 
 }
 
-
 export const removeUser = (id: string) => {
     const index = users.findIndex((user) => {
         return user.id === id
