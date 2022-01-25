@@ -43,17 +43,23 @@ const socketLeavePreviousRoom = (socket: Socket, user: User | undefined) => {
 }
 
 io.on('connection', (socket) => {
+    let user: User = {
+        id: socket.id,
+        name: '',
+        room: '',
+        isHost: false
+    };
     // The current room I am in
     socket.on('host room', (room: string) => {
         socketLeavePreviousRoom(socket, getUser(socket.id));
-        var user = upsertUser({ id: socket.id, name: '', room: room, isHost: true });
+        user = upsertUser({ id: socket.id, name: '', room: room, isHost: true });
         socket.join(user.room);
     });
 
     socket.on('join room', (room: string) => {
         if (room === null) return;
         socketLeavePreviousRoom(socket, getUser(socket.id));
-        var user = upsertUser({ id: socket.id, name: '', room: room, isHost: false });
+        user = upsertUser({ id: socket.id, name: '', room: room, isHost: false });
         socket.join(user.room);
         const roomData: RoomData = {
             room: room,
@@ -64,20 +70,20 @@ io.on('connection', (socket) => {
 
     // Test chat
     socket.on('chat', (message: string) => {
-        const user = getUser(socket.id);
+        // const user = getUser(socket.id);
         if (!user) { console.log('user not found'); return; }
         io.in(user.room).emit("chat", message);
     });
 
     // On disconnect
     socket.on('disconnect', () => {
-        const user = removeUser(socket.id);
-        if (user) {
+        const removedUser = removeUser(socket.id);
+        if (removedUser) {
             const roomData: RoomData = {
-                room: user.room,
-                users: getUsersInRoom(user.room)
+                room: removedUser.room,
+                users: getUsersInRoom(removedUser.room)
             };
-            io.to(user.room).emit('room data', roomData);
+            io.to(removedUser.room).emit('room data', roomData);
         }
     });
 

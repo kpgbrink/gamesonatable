@@ -32,7 +32,6 @@ export default function TestChat() {
   useEffect(() => {
     setRoomJoined(roomId || "");
   }, [roomId, setRoomJoined]);
-  // data.update({ roomCreated: "hey", roomIn: roomId || "" });
 
   useEffect(() => {
     //The socket is a module that exports the actual socket.io socket
