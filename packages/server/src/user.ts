@@ -1,9 +1,24 @@
 import { User } from 'api';
+import { nameByRace, allRaces } from 'fantasy-name-generator';
 
 const users: User[] = [];
 
 export const upsertUser = ({ id, name, room, isHost }: User) => {
     name = name.trim().toLowerCase();
+    if (name === '') {
+        const allRacesList = [...allRaces.racesWithGender, ...allRaces.otherRaces];
+        const gender: "male" | "female" = (() => {
+            const randomNumber = Math.random();
+            if (randomNumber <= .5) {
+                return "male";
+            }
+            return "female";
+        })();
+        const newName = nameByRace(allRacesList[Math.floor(Math.random() * allRacesList.length)], { gender: gender, allowMultipleNames: false });
+        if (typeof newName === 'string') {
+            name = newName;
+        }
+    };
     room = room;
 
     const existingUser = users.find((user) => {
@@ -14,7 +29,6 @@ export const upsertUser = ({ id, name, room, isHost }: User) => {
     removeUser(user.id);
     users.push(user);
     return user;
-
 }
 
 export const removeUser = (id: string) => {

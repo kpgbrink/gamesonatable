@@ -56,7 +56,7 @@ export default function PlayerJoin() {
                     .map((user, index) => {
                       return (
                         <ListItem key={index}>
-                          <ListItemText>{user.id}</ListItemText>
+                          <ListItemText>{user.name}</ListItemText>
                         </ListItem>
                       );
                     })}

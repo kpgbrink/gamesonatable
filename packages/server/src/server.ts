@@ -4,7 +4,7 @@ import { NewRoomId, RoomData, User } from 'api';
 import uniqid from 'uniqid';
 import config from 'config';
 import cors from 'cors';
-import { upsertUser, removeUser, getUser, getUsersInRoom, getUserCount } from './user';
+import { upsertUser, removeUser, getUser, getUsersInRoom } from './user';
 
 console.log(config);
 
@@ -22,7 +22,7 @@ const io = new Server(httpServer, {
 app.use(cors({ origin: config.get('cors.origin'), credentials: config.get('cors.credentials') }));
 
 app.get('/getNewRoomId', (req, res) => {
-    const newRoomId: NewRoomId = { roomId: uniqid() };
+    const newRoomId: NewRoomId = { roomId: uniqid() + randomPin() };
     res.send(newRoomId);
 });
 
