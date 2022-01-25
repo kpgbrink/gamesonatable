@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import Phaser from "phaser";
-import PhaserWrapper from "./Games/PhaserWrapper";
-import OmahaScene from "./Games/PhaserGames/Omaha/OmahaScene";
 import { useParams } from "react-router-dom";
-import socket from "../../SocketConnection";
+import socket from "../../../SocketConnection";
+import PhaserWrapper from "./tools/PhaserWrapper";
+import PlayerStartingScene from "./PlayerScenes/PlayerStartingScene";
 
 export default function PlayerPage() {
   const { roomId } = useParams();
@@ -19,7 +19,7 @@ export default function PlayerPage() {
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [OmahaScene],
+        scene: [PlayerStartingScene],
         physics: {
           default: "arcade",
           arcade: {

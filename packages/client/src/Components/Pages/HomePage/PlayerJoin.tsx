@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import QRCode from "qrcode.react";
 import LinearProgress from "@mui/material/LinearProgress";
 import { User, RoomData, NewRoomId } from "api";
@@ -9,7 +9,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 
 export default function PlayerJoin() {
-  const { setRoomCreated, roomCreated } = React.useContext(AppContext);
+  const { setRoomCreated, roomCreated } = useContext(AppContext);
   const [userList, setUserList] = useState<User[]>([]);
 
   const updateRoomData = (roomData: RoomData) => {

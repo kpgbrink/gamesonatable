@@ -1,16 +1,19 @@
 import React from "react";
-import PhaserWrapper from "./PhaserWrapper";
 import Phaser from "phaser";
-import OmahaScene from "./PhaserGames/Omaha/OmahaScene";
+import PhaserWrapper from "./tools/PhaserWrapper";
+import { useParams } from "react-router-dom";
+import OmahaHostScene from "./HostScenes/OmahaHostScene";
 
-export default function Omaha() {
+export default function HostPage() {
+  const { roomId, game } = useParams();
+
   return (
     <PhaserWrapper
       config={{
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [OmahaScene],
+        scene: [OmahaHostScene],
         physics: {
           default: "arcade",
           arcade: {

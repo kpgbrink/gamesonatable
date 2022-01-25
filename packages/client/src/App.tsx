@@ -6,8 +6,8 @@ import AboutPage from "./Components/Pages/AboutPage";
 import Instructions from "./Components/Pages/Instructions";
 import TestChat from "./Components/Pages/TestChat";
 import { AppContextProvider } from "./AppContext";
-import PlayerPage from "./Components/Pages/PlayerPage";
-import HostPage from "./Components/Pages/HostPage";
+import PlayerPage from "./Components/Pages/PhaserPages/PlayerPage";
+import HostPage from "./Components/Pages/PhaserPages/HostPage";
 import socket from "./SocketConnection";
 
 export default function App() {

@@ -1,13 +1,13 @@
-import FpsText from "../objects/fpsText"
-import PhaserLogo from "../objects/phaserLogo"
 import Phaser from "phaser";
+import FpsText from "../tools/objects/fpsText";
+import PhaserLogo from "../tools/objects/phaserLogo";
 
 
-export default class MainScene extends Phaser.Scene {
+export default class PlayerStartingScene extends Phaser.Scene {
   fpsText: FpsText | undefined
 
   constructor() {
-    super({ key: 'MainScene' })
+    super({ key: 'PlayerStartingScene' })
   }
 
   create() {
