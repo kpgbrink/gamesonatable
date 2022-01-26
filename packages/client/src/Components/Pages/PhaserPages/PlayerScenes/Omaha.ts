@@ -4,11 +4,11 @@ import FpsText from "../tools/objects/fpsText";
 import PhaserLogo from "../tools/objects/phaserLogo";
 
 
-export default class PlayerStartingScene extends Phaser.Scene {
+export default class Omaha extends Phaser.Scene {
   fpsText: FpsText | undefined
 
   constructor() {
-    super({ key: 'PlayerStartingScene' })
+    super({ key: 'Omaha' })
   }
 
   create() {
@@ -17,13 +17,13 @@ export default class PlayerStartingScene extends Phaser.Scene {
       this.scene.start(game);
     });
 
-    new PhaserLogo(this, this.cameras.main.width / 2, 0)
+    new PhaserLogo(this, this.cameras.main.width / 4, 0)
     this.fpsText = new FpsText(this)
 
     // display the Phaser.VERSION
     this.add
       .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {
-        color: '#000000',
+        color: 'blue',
         fontSize: '24px'
       })
       .setOrigin(1, 0)
@@ -31,7 +31,6 @@ export default class PlayerStartingScene extends Phaser.Scene {
 
   updateFpsText() {
     if (!this.fpsText) return;
-    this.fpsText.update()
   }
 
   update() {

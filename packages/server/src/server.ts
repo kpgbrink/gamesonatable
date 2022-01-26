@@ -84,4 +84,8 @@ io.on('connection', (socket) => {
     socket.on('error', (err) => {
         console.log(err);
     });
+
+    socket.on('select game', (game: string) => {
+        io.in(user.room).emit("select game", game);
+    });
 });

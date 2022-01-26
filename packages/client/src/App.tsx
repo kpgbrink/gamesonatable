@@ -9,6 +9,7 @@ import { AppContextProvider } from "./AppContext";
 import PlayerPage from "./Components/Pages/PhaserPages/PlayerPage";
 import HostPage from "./Components/Pages/PhaserPages/HostPage";
 import socket from "./SocketConnection";
+import PhaserWrapper from "./Components/Pages/PhaserPages/tools/PhaserWrapper";
 
 export default function App() {
   window.onunload = (event) => {
