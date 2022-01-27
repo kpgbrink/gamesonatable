@@ -86,6 +86,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('select game', (game: string) => {
+        console.log('game selected', game);
         io.in(user.room).emit("select game", game);
     });
 });

@@ -1,7 +1,7 @@
 import Phaser from "phaser";
-import socket from "../../../../SocketConnection";
 import FpsText from "../tools/objects/fpsText";
 import PhaserLogo from "../tools/objects/phaserLogo";
+import { onChangeGames } from "../tools/OnChangeGames";
 
 
 export default class Texas extends Phaser.Scene {
@@ -12,10 +12,7 @@ export default class Texas extends Phaser.Scene {
     }
 
     create() {
-        socket.on("select game", (game) => {
-            console.log("game selected", game);
-            this.scene.start(game);
-        });
+        onChangeGames(this.scene);
 
         new PhaserLogo(this, this.cameras.main.width / 3, 0)
         this.fpsText = new FpsText(this)
@@ -37,9 +34,5 @@ export default class Texas extends Phaser.Scene {
 
     update() {
         this.updateFpsText();
-    }
-
-    unload() {
-        socket.off("select game");
     }
 }

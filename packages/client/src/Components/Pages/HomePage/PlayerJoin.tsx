@@ -7,8 +7,10 @@ import { AppContext } from "../../../AppContext";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import { useParams } from "react-router-dom";
 
 export default function PlayerJoin() {
+  const { fixedRoomId } = useParams();
   const { setRoomCreated, roomCreated } = useContext(AppContext);
   const [userList, setUserList] = useState<User[]>([]);
 
@@ -22,9 +24,10 @@ export default function PlayerJoin() {
     const fetchData = async () => {
       const response = await fetch("/getNewRoomId");
       const data: NewRoomId = await response.json();
-      console.log("make room", data.roomId);
-      socket.emit("host room", data.roomId, async () => {});
-      setRoomCreated(data.roomId);
+      const roomId = fixedRoomId || data.roomId;
+      console.log("make room", roomId);
+      socket.emit("host room", roomId, async () => {});
+      setRoomCreated(roomId);
     };
     fetchData().catch(console.error);
   }, [setRoomCreated, roomCreated]);
@@ -43,6 +46,7 @@ export default function PlayerJoin() {
   return (
     <div className="playerJoin">
       <div>
+        <div>Fixed room id {fixedRoomId}</div>
         {!roomCreated && <LinearProgress />}
         {roomCreated && (
           <div>
