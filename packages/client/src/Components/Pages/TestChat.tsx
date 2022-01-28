@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../Navbar";
-import socket from "../../SocketConnection";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../../AppContext";
+import socket from "../../SocketConnection";
 import Footer from "../Footer";
+import Navbar from "../Navbar";
 
 export default function TestChat() {
   const { roomJoined, setRoomJoined, roomCreated } =

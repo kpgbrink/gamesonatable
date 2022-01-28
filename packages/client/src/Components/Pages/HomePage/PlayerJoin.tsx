@@ -1,23 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import QRCode from "qrcode.react";
 import LinearProgress from "@mui/material/LinearProgress";
-import { User, RoomData, NewRoomId } from "api";
-import socket from "../../../SocketConnection";
-import { AppContext } from "../../../AppContext";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import { NewRoomId, RoomData } from "api";
+import QRCode from "qrcode.react";
+import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { AppContext } from "../../../AppContext";
+import socket from "../../../SocketConnection";
 
 export default function PlayerJoin() {
   const { fixedRoomId } = useParams();
   const { setRoomCreated, roomCreated, userList, setUserList } =
     useContext(AppContext);
-
-  const updateRoomData = (roomData: RoomData) => {
-    console.log("adding message");
-    setUserList(roomData.users);
-  };
 
   useEffect(() => {
     console.log(roomCreated, fixedRoomId);
@@ -36,12 +31,14 @@ export default function PlayerJoin() {
 
   useEffect(() => {
     //The socket is a module that exports the actual socket.io socket
-    socket.on("room data", updateRoomData);
+    socket.on("room data", (roomData: RoomData) => {
+      setUserList(roomData.users);
+    });
     return () => {
       // turning of socket listner on unmount
-      socket.off("room data", updateRoomData);
+      socket.off("room data");
     };
-  }, []);
+  }, [setUserList]);
 
   const joinURL = `${window.location.origin}/room/${roomCreated}`;
 

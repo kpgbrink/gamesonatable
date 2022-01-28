@@ -1,9 +1,9 @@
-import { useEffect } from "react";
 import Phaser from "phaser";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import socket from "../SocketConnection";
 import PlayerStartingScene from "./PlayerScenes/PlayerStartingScene";
 import PhaserWrapper from "./tools/PhaserWrapper";
-import socket from "../SocketConnection";
 
 export default function HostPage() {
   const { game } = useParams();

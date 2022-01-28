@@ -1,13 +1,13 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "./Components/Pages/HomePage";
+import { AppContextProvider } from "./AppContext";
 import AboutPage from "./Components/Pages/AboutPage";
+import HomePage from "./Components/Pages/HomePage";
 import Instructions from "./Components/Pages/Instructions";
 import TestChat from "./Components/Pages/TestChat";
-import { AppContextProvider } from "./AppContext";
-import socket from "./SocketConnection";
-import PlayerPage from "./PhaserPages/PlayerPage";
 import HostPage from "./PhaserPages/HostPage";
+import PlayerPage from "./PhaserPages/PlayerPage";
+import socket from "./SocketConnection";
 
 export default function App() {
   window.onunload = (event) => {
