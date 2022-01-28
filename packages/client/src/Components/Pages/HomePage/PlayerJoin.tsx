@@ -11,8 +11,8 @@ import { useParams } from "react-router-dom";
 
 export default function PlayerJoin() {
   const { fixedRoomId } = useParams();
-  const { setRoomCreated, roomCreated } = useContext(AppContext);
-  const [userList, setUserList] = useState<User[]>([]);
+  const { setRoomCreated, roomCreated, userList, setUserList } =
+    useContext(AppContext);
 
   const updateRoomData = (roomData: RoomData) => {
     console.log("adding message");
@@ -20,7 +20,9 @@ export default function PlayerJoin() {
   };
 
   useEffect(() => {
-    if (roomCreated !== null) return;
+    console.log(roomCreated, fixedRoomId);
+    if (roomCreated !== null && !fixedRoomId && fixedRoomId !== roomCreated)
+      return;
     const fetchData = async () => {
       const response = await fetch("/getNewRoomId");
       const data: NewRoomId = await response.json();
@@ -30,7 +32,7 @@ export default function PlayerJoin() {
       setRoomCreated(roomId);
     };
     fetchData().catch(console.error);
-  }, [setRoomCreated, roomCreated]);
+  }, [setRoomCreated, roomCreated, fixedRoomId]);
 
   useEffect(() => {
     //The socket is a module that exports the actual socket.io socket
@@ -46,7 +48,6 @@ export default function PlayerJoin() {
   return (
     <div className="playerJoin">
       <div>
-        <div>Fixed room id {fixedRoomId}</div>
         {!roomCreated && <LinearProgress />}
         {roomCreated && (
           <div>

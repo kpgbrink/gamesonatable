@@ -23,7 +23,7 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/testpage/:fixedRoomId" element={<HomePage />} />
+            <Route path="/fixedRoomId/:fixedRoomId" element={<HomePage />} />
             <Route path="/instructions" element={<Instructions />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/testchat" element={<TestChat />} />

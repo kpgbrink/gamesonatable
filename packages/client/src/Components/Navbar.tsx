@@ -1,6 +1,12 @@
-import React from "react";
+import { isDev } from "../tools/basicTools";
 import "./Navbar.css";
 import NavBarLink from "./Navbar/NavBarLink";
+
+// Gemerate random6 digit number
+const generateRandomRoomId = () => {
+  const randomNumber = Math.floor(Math.random() * 1000000);
+  return randomNumber.toString();
+};
 
 export default function Navbar() {
   return (
@@ -10,6 +16,13 @@ export default function Navbar() {
         <li>
           <NavBarLink to="/">Home</NavBarLink>
         </li>
+        {isDev() && (
+          <li>
+            <NavBarLink to={`/fixedRoomId/${generateRandomRoomId()}`}>
+              Fixed Room
+            </NavBarLink>
+          </li>
+        )}
         <li>
           <NavBarLink to="/instructions">Instructions</NavBarLink>
         </li>
