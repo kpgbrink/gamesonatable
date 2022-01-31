@@ -1,10 +1,10 @@
-import express from 'express';
-import { Server, Socket } from "socket.io";
 import { NewRoomId, RoomData, User } from 'api';
-import uniqid from 'uniqid';
 import config from 'config';
 import cors from 'cors';
-import { upsertUser, removeUser, getUser, getUsersInRoom } from './user';
+import express from 'express';
+import { Server, Socket } from "socket.io";
+import uniqid from 'uniqid';
+import { getUser, getUsersInRoom, removeUser, upsertUser } from './user';
 
 console.log(config);
 
@@ -88,5 +88,19 @@ io.on('connection', (socket) => {
     socket.on('select game', (game: string) => {
         console.log('game selected', game);
         io.in(user.room).emit("select game", game);
+    });
+
+    socket.on('set name', (name: string) => {
+        if (name == '') {
+            // Keep the weird fantasy name if the user didn't enter a name
+            name = user.name;
+        }
+        user = upsertUser({ id: socket.id, name: name, room: user.room, isHost: user.isHost });
+        const roomData: RoomData = {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        };
+        io.to(user.room).emit('room data', roomData);
+        io.to(user.id).emit('set name', name);
     });
 });

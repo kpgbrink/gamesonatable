@@ -18,6 +18,12 @@ export default function PlayerPage() {
   return (
     <PhaserWrapper
       config={{
+        loader: {
+          baseURL: "/",
+        },
+        dom: {
+          createContainer: true,
+        },
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
@@ -30,7 +36,7 @@ export default function PlayerPage() {
           },
         },
       }}
-      gameName="Omaha"
+      gameName="Client"
     />
   );
 }

@@ -1,10 +1,10 @@
 import { User } from 'api';
-import { nameByRace, allRaces } from 'fantasy-name-generator';
+import { allRaces, nameByRace } from 'fantasy-name-generator';
 
 const users: User[] = [];
 
 export const upsertUser = ({ id, name, room, isHost }: User) => {
-    name = name.trim().toLowerCase();
+    name = name.trim();
     if (name === '') {
         const allRacesList = [...allRaces.racesWithGender, ...allRaces.otherRaces];
         const gender: "male" | "female" = (() => {
