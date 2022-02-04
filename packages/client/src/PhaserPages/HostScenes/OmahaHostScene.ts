@@ -1,19 +1,11 @@
 import Phaser from "phaser";
-import FpsText from "../tools/objects/fpsText";
-import PhaserLogo from "../tools/objects/phaserLogo";
-
 
 export default class OmahaHostScene extends Phaser.Scene {
-    fpsText: FpsText | undefined
-
     constructor() {
         super({ key: 'OmahaHostScene' })
     }
 
     create() {
-        new PhaserLogo(this, this.cameras.main.width / 2, 0)
-        this.fpsText = new FpsText(this)
-
         // display the Phaser.VERSION
         this.add
             .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {
@@ -24,8 +16,6 @@ export default class OmahaHostScene extends Phaser.Scene {
     }
 
     updateFpsText() {
-        if (!this.fpsText) return;
-        this.fpsText.update()
     }
 
     update() {

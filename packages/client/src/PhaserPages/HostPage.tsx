@@ -2,7 +2,8 @@ import Phaser from "phaser";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import socket from "../SocketConnection";
-import PlayerStartingScene from "./PlayerScenes/PlayerStartingScene";
+import HostStartingScene from "./HostScenes/HostStartingScene";
+import OmahaHostScene from "./HostScenes/OmahaHostScene";
 import PhaserWrapper from "./tools/PhaserWrapper";
 
 export default function HostPage() {
@@ -25,7 +26,7 @@ export default function HostPage() {
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [PlayerStartingScene],
+        scene: [HostStartingScene, OmahaHostScene],
         physics: {
           default: "arcade",
           arcade: {

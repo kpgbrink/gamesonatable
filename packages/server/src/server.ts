@@ -41,19 +41,21 @@ io.on('connection', (socket) => {
         id: socket.id,
         name: '',
         room: '',
-        isHost: false
+        isHost: false,
+        userColor: null,
+        userAvatar: null
     };
     // The current room I am in
     socket.on('host room', (room: string) => {
         socketLeavePreviousRoom(socket, getUser(socket.id));
-        user = upsertUser({ id: socket.id, name: '', room: room, isHost: true });
+        user = upsertUser({ id: socket.id, name: '', room: room, isHost: true, userColor: null, userAvatar: null });
         socket.join(user.room);
     });
 
     socket.on('join room', (room: string) => {
         if (room === null) return;
         socketLeavePreviousRoom(socket, getUser(socket.id));
-        user = upsertUser({ id: socket.id, name: '', room: room, isHost: false });
+        user = upsertUser({ id: socket.id, name: '', room: room, isHost: false, userColor: null, userAvatar: null });
         socket.join(user.room);
         const roomData: RoomData = {
             room: room,
@@ -95,7 +97,8 @@ io.on('connection', (socket) => {
             // Keep the weird fantasy name if the user didn't enter a name
             name = user.name;
         }
-        user = upsertUser({ id: socket.id, name: name, room: user.room, isHost: user.isHost });
+        // user = upsertUser({ id: socket.id, name: name, room: user.room, isHost: user.isHost, userColor: user.userColor, userAvatar: user.userAvatar });
+        user = upsertUser({ ...user, name: name })
         const roomData: RoomData = {
             room: user.room,
             users: getUsersInRoom(user.room)

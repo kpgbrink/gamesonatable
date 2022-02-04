@@ -1,20 +1,31 @@
+import { UserAvatar } from "api";
 import Phaser from "phaser";
 import socket from "../../SocketConnection";
-import FpsText from "../tools/objects/fpsText";
+import { avatarImages } from "../tools/objects/avatarImages.generated";
+import { randomIndex } from "../tools/objects/tools";
+import { loadUserAvatarSprites } from "../tools/objects/userAvatarSprite";
 import { onChangeGames } from "../tools/OnChangeGames";
 
-
 export default class PlayerStartingScene extends Phaser.Scene {
-  fpsText: FpsText | undefined
-  nameInput: any;
-
   constructor() {
-    super({ key: 'PlayerStartingScene' })
+    super({ key: 'PlayerStartingScene' });
   }
 
   preload() {
-    this.load.html('nameform', 'assets/text/nameform.html');
     this.load.atlas('cards', 'assets/cards/cards.png', 'assets/cards/cards.json');
+    this.load.html('nameform', 'assets/text/nameform.html');
+    console.log(avatarImages.base);
+    const userAvatar: UserAvatar = {
+      base: randomIndex(avatarImages.base),
+      beard: randomIndex(avatarImages.beard),
+      body: randomIndex(avatarImages.body),
+      boots: randomIndex(avatarImages.boots),
+      hair: randomIndex(avatarImages.hair),
+      head: randomIndex(avatarImages.head),
+      legs: randomIndex(avatarImages.legs),
+    };
+    socket.emit('set avatar', userAvatar);
+    loadUserAvatarSprites(this, userAvatar);
   }
 
   create() {
@@ -28,10 +39,25 @@ export default class PlayerStartingScene extends Phaser.Scene {
     var y = 100;
 
     for (var i = 0; i < 64; i++) {
-      const image = this.add.image(x, y, 'cards', Phaser.Math.RND.pick(frames)).setInteractive({ draggable: true });
+      this.add.image(x, y, 'cards', Phaser.Math.RND.pick(frames)).setInteractive({ draggable: true });
       x += 4;
       y += 4;
     }
+
+    const playerBase = this.add.image(screenX / 2, screenY / 2, 'base');
+    const playerBeard = this.add.image(screenX / 2, screenY / 2, 'beard');
+    const playerBody = this.add.image(screenX / 2, screenY / 2, 'body');
+    const playerBoots = this.add.image(screenX / 2, screenY / 2, 'boots');
+    const playerHair = this.add.image(screenX / 2, screenY / 2, 'hair');
+    const playerHead = this.add.image(screenX / 2, screenY / 2, 'head');
+    const playerLegs = this.add.image(screenX / 2, screenY / 2, 'legs');
+    playerBase.scale = 10;
+    playerBeard.scale = 10;
+    playerBoots.scale = 10;
+    playerBody.scale = 10;
+    playerHair.scale = 10;
+    playerHead.scale = 10;
+    playerLegs.scale = 10;
 
     this.input.on('dragstart', (pointer: any, gameObject: any) => {
       this.children.bringToTop(gameObject);
