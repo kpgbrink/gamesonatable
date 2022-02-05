@@ -9,6 +9,8 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene, userAvatar: UserAvata
     scene.load.image('base', `assets/player/base/${avatarImages.base[userAvatar.base]}`);
     scene.load.image('beard', `assets/player/beard/${avatarImages.beard[userAvatar.beard]}`);
     scene.load.image('body', `assets/player/body/${avatarImages.body[userAvatar.body]}`);
+    scene.load.image('cloak', `assets/player/cloak/${avatarImages.cloak[userAvatar.cloak]}`);
+    scene.load.image('gloves', `assets/player/gloves/${avatarImages.gloves[userAvatar.gloves]}`);
     scene.load.image('boots', `assets/player/boots/${avatarImages.boots[userAvatar.boots]}`);
     scene.load.image('hair', `assets/player/hair/${avatarImages.hair[userAvatar.hair]}`);
     scene.load.image('head', `assets/player/head/${avatarImages.head[userAvatar.head]}`);

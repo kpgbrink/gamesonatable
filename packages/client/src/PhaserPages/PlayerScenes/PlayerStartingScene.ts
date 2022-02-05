@@ -1,4 +1,4 @@
-import { UserAvatar } from "api";
+import { RoomData, UserAvatar } from "api";
 import Phaser from "phaser";
 import socket from "../../SocketConnection";
 import { avatarImages } from "../tools/objects/avatarImages.generated";
@@ -20,6 +20,8 @@ export default class PlayerStartingScene extends Phaser.Scene {
       beard: randomIndex(avatarImages.beard),
       body: randomIndex(avatarImages.body),
       boots: randomIndex(avatarImages.boots),
+      cloak: randomIndex(avatarImages.cloak),
+      gloves: randomIndex(avatarImages.gloves),
       hair: randomIndex(avatarImages.hair),
       head: randomIndex(avatarImages.head),
       legs: randomIndex(avatarImages.legs),
@@ -44,13 +46,16 @@ export default class PlayerStartingScene extends Phaser.Scene {
       y += 4;
     }
 
+    const playerCloak = this.add.image(screenX / 2, screenY / 2, 'cloak');
     const playerBase = this.add.image(screenX / 2, screenY / 2, 'base');
-    const playerBeard = this.add.image(screenX / 2, screenY / 2, 'beard');
+    const playerLegs = this.add.image(screenX / 2, screenY / 2, 'legs');
     const playerBody = this.add.image(screenX / 2, screenY / 2, 'body');
+    const playerGloves = this.add.image(screenX / 2, screenY / 2, 'gloves');
+    const playerBeard = this.add.image(screenX / 2, screenY / 2, 'beard');
     const playerBoots = this.add.image(screenX / 2, screenY / 2, 'boots');
     const playerHair = this.add.image(screenX / 2, screenY / 2, 'hair');
     const playerHead = this.add.image(screenX / 2, screenY / 2, 'head');
-    const playerLegs = this.add.image(screenX / 2, screenY / 2, 'legs');
+
     playerBase.scale = 10;
     playerBeard.scale = 10;
     playerBoots.scale = 10;
@@ -58,6 +63,8 @@ export default class PlayerStartingScene extends Phaser.Scene {
     playerHair.scale = 10;
     playerHead.scale = 10;
     playerLegs.scale = 10;
+    playerCloak.scale = 10;
+    playerGloves.scale = 10;
 
     this.input.on('dragstart', (pointer: any, gameObject: any) => {
       this.children.bringToTop(gameObject);
@@ -79,8 +86,6 @@ export default class PlayerStartingScene extends Phaser.Scene {
         var inputText = this.getChildByName('nameField');
 
         //  Have they entered anything?
-        // if (inputText.value !== '') {
-        //  Turn off the click events
         this.removeListener('click');
 
         //  Hide the login element
@@ -89,17 +94,6 @@ export default class PlayerStartingScene extends Phaser.Scene {
         //  Populate the text with whatever they typed in
         text.setText('Welcome ' + inputText.value);
         socket.emit('set name', inputText.value);
-        // }
-        // else {
-        //   //  Flash the prompt
-        //   this.scene.tweens.add({
-        //     targets: text,
-        //     alpha: 0.2,
-        //     duration: 250,
-        //     ease: 'Power3',
-        //     yoyo: true
-        //   });
-        // }
       }
     });
 
@@ -107,6 +101,11 @@ export default class PlayerStartingScene extends Phaser.Scene {
       text.setText('Welcome ' + name);
     });
 
+    socket.emit('get room data');
+
+    socket.on('room data', (roomData: RoomData) => {
+      text.setText('Welcome ' + roomData.users.find(user => user?.id === socket.id)?.name);
+    });
   }
 
   update() {

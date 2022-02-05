@@ -1,6 +1,6 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
-import { persistentData } from "../PlayerScenes/tools/PersistantData";
+import { persistentData } from "./objects/PersistantData";
 
 export const onChangeGames = (scene: Phaser.Scenes.ScenePlugin) => {
     socket.off();

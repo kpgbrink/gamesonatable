@@ -7,6 +7,8 @@ export interface UserAvatar {
     base: number; // The base image
     beard: number; // The beard image
     body: number; // The body image
+    cloak: number; // The cloak image
+    gloves: number; // The gloves image
     boots: number; // The boots image
     hair: number; // The hair image
     head: number; // The head image
@@ -23,6 +25,7 @@ export interface User {
 }
 
 export interface RoomData {
+    userId: string;
     room: string;
     users: User[];
 }

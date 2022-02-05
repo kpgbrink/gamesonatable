@@ -35,6 +35,7 @@ export default function PlayerPage() {
             debug: false,
           },
         },
+        pixelArt: true,
       }}
       gameName="Client"
     />

@@ -34,6 +34,7 @@ export default function HostPage() {
             debug: false,
           },
         },
+        pixelArt: true,
       }}
       gameName="Host"
     />

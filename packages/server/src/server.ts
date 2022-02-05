@@ -1,4 +1,4 @@
-import { NewRoomId, RoomData, User } from 'api';
+import { NewRoomId, RoomData, User, UserAvatar } from 'api';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -45,6 +45,14 @@ io.on('connection', (socket) => {
         userColor: null,
         userAvatar: null
     };
+    const getRoomData = () => {
+        const roomData: RoomData = {
+            userId: user.id,
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        };
+        return roomData;
+    };
     // The current room I am in
     socket.on('host room', (room: string) => {
         socketLeavePreviousRoom(socket, getUser(socket.id));
@@ -57,11 +65,7 @@ io.on('connection', (socket) => {
         socketLeavePreviousRoom(socket, getUser(socket.id));
         user = upsertUser({ id: socket.id, name: '', room: room, isHost: false, userColor: null, userAvatar: null });
         socket.join(user.room);
-        const roomData: RoomData = {
-            room: room,
-            users: getUsersInRoom(room)
-        };
-        io.to(user.room).emit('room data', roomData);
+        io.to(user.room).emit('room data', getRoomData());
     });
 
     // Test chat
@@ -75,11 +79,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         const removedUser = removeUser(socket.id);
         if (removedUser) {
-            const roomData: RoomData = {
-                room: removedUser.room,
-                users: getUsersInRoom(removedUser.room)
-            };
-            io.to(removedUser.room).emit('room data', roomData);
+            io.to(removedUser.room).emit('room data', getRoomData());
         }
     });
 
@@ -97,13 +97,23 @@ io.on('connection', (socket) => {
             // Keep the weird fantasy name if the user didn't enter a name
             name = user.name;
         }
-        // user = upsertUser({ id: socket.id, name: name, room: user.room, isHost: user.isHost, userColor: user.userColor, userAvatar: user.userAvatar });
         user = upsertUser({ ...user, name: name })
         const roomData: RoomData = {
+            userId: user.id,
             room: user.room,
             users: getUsersInRoom(user.room)
         };
         io.to(user.room).emit('room data', roomData);
         io.to(user.id).emit('set name', name);
+    });
+
+    socket.on('set avatar', (avatar: UserAvatar) => {
+        user = upsertUser({ ...user, userAvatar: avatar })
+        io.to(user.room).emit('room data', getRoomData());
+        io.to(user.id).emit('set avatar', avatar);
+    });
+
+    socket.on('get room data', () => {
+        io.to(user.id).emit('room data', getRoomData());
     });
 });
