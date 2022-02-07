@@ -2,7 +2,7 @@ import { RoomData } from "api";
 import Phaser from "phaser";
 import socket from "../../SocketConnection";
 import { findMyUser } from "../tools/objects/tools";
-import { loadUserAvatarSprites } from "../tools/objects/UserAvatarSprite";
+import UserAvatarImage, { loadUserAvatarSprites } from "../tools/objects/UserAvatarSprite";
 import { onChangeGames } from "../tools/OnChangeGames";
 
 export default class PlayerStartingScene extends Phaser.Scene {
@@ -21,6 +21,11 @@ export default class PlayerStartingScene extends Phaser.Scene {
     loadUserAvatarSprites(this);
     const screenX = this.cameras.main.worldView.x + this.cameras.main.width;
     const screenY = this.cameras.main.worldView.y + this.cameras.main.height;
+
+    const screenMiddleX = screenX / 2;
+    const screenMiddleY = screenY / 2;
+
+    const userAvatarImage = new UserAvatarImage(this, screenMiddleX, screenMiddleY);
 
     var frames = this.textures.get('cards').getFrameNames();
 
