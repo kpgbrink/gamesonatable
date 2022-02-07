@@ -2,7 +2,7 @@ import { RoomData } from "api";
 import Phaser from "phaser";
 import socket from "../../SocketConnection";
 import { findMyUser } from "../tools/objects/tools";
-import UserAvatarImage, { loadUserAvatarSprites } from "../tools/objects/UserAvatarSprite";
+import UserAvatarImage, { loadUserAvatarSprites } from "../tools/objects/UserAvatarSprites";
 import { onChangeGames } from "../tools/OnChangeGames";
 
 export default class PlayerStartingScene extends Phaser.Scene {
