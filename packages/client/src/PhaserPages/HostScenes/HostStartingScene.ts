@@ -1,4 +1,6 @@
+import { RoomData } from "api";
 import Phaser from "phaser";
+import socket from "../../SocketConnection";
 
 export default class HostStartingScene extends Phaser.Scene {
     constructor() {
@@ -11,12 +13,17 @@ export default class HostStartingScene extends Phaser.Scene {
     }
 
     create() {
+        socket.on('room data', (roomData: RoomData) => {
+            console.log('this is the room data', roomData);
+        });
+        socket.emit('get room data');
+
         var frames = this.textures.get('cards').getFrameNames();
 
         var x = 100;
         var y = 100;
 
-        for (var i = 0; i < 64; i++) {
+        for (var i = 0; i < 10; i++) {
             var image = this.add.image(x, y, 'cards', Phaser.Math.RND.pick(frames)).setInteractive({ draggable: true });
 
             x += 4;

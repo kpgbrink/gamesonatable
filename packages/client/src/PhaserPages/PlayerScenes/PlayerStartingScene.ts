@@ -57,7 +57,6 @@ export default class PlayerStartingScene extends Phaser.Scene {
       if (generatedName === undefined) return;
       text.setText('Welcome ' + generatedName);
     });
-    // socket.emit('get room data');
   }
 
   update() {

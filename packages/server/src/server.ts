@@ -105,6 +105,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('get room data', () => {
+        console.log(user);
         io.to(user.id).emit('room data', getRoom(user.room));
     });
 });
