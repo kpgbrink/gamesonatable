@@ -33,3 +33,13 @@ code {
     padding: max(4vw, 4px);
     height: 100%;
 }
+
+.nameTextInput {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.nameTextInput>input {
+    max-width: 90%;
+}
