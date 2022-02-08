@@ -25,6 +25,7 @@ export interface User {
 }
 
 export interface RoomData {
+    currentGame: string | null;
     userId: string;
     room: string;
     users: User[];

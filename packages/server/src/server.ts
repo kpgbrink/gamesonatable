@@ -1,10 +1,10 @@
-import { NewRoomId, RoomData, User, UserAvatar } from 'api';
+import { NewRoomId, User, UserAvatar } from 'api';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
 import { Server, Socket } from "socket.io";
 import uniqid from 'uniqid';
-import { getUser, getUsersInRoom, removeUser, upsertUser } from './user';
+import { getRoom, getUser, removeUser, upsertUser } from './user';
 
 console.log(config);
 
@@ -45,20 +45,7 @@ io.on('connection', (socket) => {
         userColor: null,
         userAvatar: null
     };
-    let roomData: RoomData = {
-        userId: socket.id,
-        room: '',
-        users: [],
-    };
 
-    const getRoomData = () => {
-        const roomData: RoomData = {
-            userId: user.id,
-            room: user.room,
-            users: getUsersInRoom(user.room)
-        };
-        return roomData;
-    };
     // The current room I am in
     socket.on('host room', (room: string) => {
         socketLeavePreviousRoom(socket, getUser(socket.id));
@@ -71,12 +58,11 @@ io.on('connection', (socket) => {
         socketLeavePreviousRoom(socket, getUser(socket.id));
         user = upsertUser({ id: socket.id, name: '', room: room, isHost: false, userColor: null, userAvatar: null });
         socket.join(user.room);
-        io.to(user.room).emit('room data', getRoomData());
+        io.to(user.room).emit('room data', getRoom(user.room));
     });
 
     // Test chat
     socket.on('chat', (message: string) => {
-        // const user = getUser(socket.id);
         if (!user) { console.log('user not found'); return; }
         io.in(user.room).emit("chat", message);
     });
@@ -85,7 +71,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         const removedUser = removeUser(socket.id);
         if (removedUser) {
-            io.to(removedUser.room).emit('room data', getRoomData());
+            io.to(removedUser.room).emit('room data', getRoom(user.room));
         }
     });
 
@@ -94,8 +80,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('select game', (game: string) => {
-        console.log('game selected', game);
-        io.in(user.room).emit("select game", game);
+        // set room game
+        const room = getRoom(user.room);
+        if (!room) return;
+        room.currentGame = game;
+        io.to(user.room).emit('room data', room);
     });
 
     socket.on('set name', (name: string) => {
@@ -104,22 +93,18 @@ io.on('connection', (socket) => {
             name = user.name;
         }
         user = upsertUser({ ...user, name: name })
-        const roomData: RoomData = {
-            userId: user.id,
-            room: user.room,
-            users: getUsersInRoom(user.room)
-        };
-        io.to(user.room).emit('room data', roomData);
+        // TODO
+        io.to(user.room).emit('room data', getRoom(user.room));
         io.to(user.id).emit('set name', name);
     });
 
     socket.on('set avatar', (avatar: UserAvatar) => {
         user = upsertUser({ ...user, userAvatar: avatar })
-        io.to(user.room).emit('room data', getRoomData());
+        io.to(user.room).emit('room data', getRoom(user.room));
         io.to(user.id).emit('set avatar', avatar);
     });
 
     socket.on('get room data', () => {
-        io.to(user.id).emit('room data', getRoomData());
+        io.to(user.id).emit('room data', getRoom(user.room));
     });
 });
