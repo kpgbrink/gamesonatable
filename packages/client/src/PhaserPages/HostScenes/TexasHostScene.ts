@@ -5,6 +5,10 @@ export default class TexasHostScene extends Phaser.Scene {
         super({ key: 'TexasHostScene' })
     }
 
+    preload() {
+        this.load.atlas('cards', 'assets/atlas/cards.png', 'assets/atlas/cards.json');
+    }
+
     create() {
         // display the Phaser.VERSION
         this.add

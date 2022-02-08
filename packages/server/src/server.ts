@@ -45,6 +45,12 @@ io.on('connection', (socket) => {
         userColor: null,
         userAvatar: null
     };
+    let roomData: RoomData = {
+        userId: socket.id,
+        room: '',
+        users: [],
+    };
+
     const getRoomData = () => {
         const roomData: RoomData = {
             userId: user.id,

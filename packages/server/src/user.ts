@@ -25,7 +25,7 @@ export const upsertUser = ({ id, name, room, isHost }: User) => {
         user.room === room && user.name === name
     });
 
-    const user: User = { id, name, room, isHost };
+    const user: User = { id, name, room, isHost, userColor: null, userAvatar: null };
     removeUser(user.id);
     users.push(user);
     return user;
