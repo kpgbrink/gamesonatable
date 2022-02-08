@@ -2,7 +2,7 @@ import { RoomData, UserAvatar } from "api";
 import Phaser from "phaser";
 import socket from "../../../SocketConnection";
 import { avatarImages } from "./avatarImages.generated";
-import { randomIndex } from "./tools";
+import { randomIndex } from "./Tools";
 
 const playerFolder = 'assets/player/';
 
