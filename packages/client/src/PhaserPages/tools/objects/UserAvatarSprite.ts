@@ -73,7 +73,6 @@ export default class UserAvatarImage extends Phaser.GameObjects.Container {
     public loadUserAvatarImages() {
         // Hello
         console.log('loading images complete');
-
         const userId = socket.id;
         this.cloak = this.scene.add.image(this.x, this.y, `cloak${userId}`);
         this.cloak.setScale(10);

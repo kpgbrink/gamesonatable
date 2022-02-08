@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import socket from "../SocketConnection";
 import HostStartingScene from "./HostScenes/HostStartingScene";
 import OmahaHostScene from "./HostScenes/OmahaHostScene";
+import TexasHostScene from "./HostScenes/TexasHostScene";
 import PhaserWrapper from "./tools/PhaserWrapper";
 
 export default function HostPage() {
@@ -26,7 +27,7 @@ export default function HostPage() {
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [HostStartingScene, OmahaHostScene],
+        scene: [HostStartingScene, OmahaHostScene, TexasHostScene],
         physics: {
           default: "arcade",
           arcade: {

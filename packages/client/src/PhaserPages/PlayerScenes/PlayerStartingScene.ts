@@ -11,7 +11,6 @@ export default class PlayerStartingScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.atlas('cards', 'assets/cards/cards.png', 'assets/cards/cards.json');
     this.load.html('nameform', 'assets/text/nameform.html');
   }
 
@@ -26,26 +25,6 @@ export default class PlayerStartingScene extends Phaser.Scene {
     const screenMiddleY = screenY / 2;
 
     const userAvatarImage = new UserAvatarImage(this, screenMiddleX, screenMiddleY);
-
-    var frames = this.textures.get('cards').getFrameNames();
-
-    var x = 100;
-    var y = 100;
-
-    for (var i = 0; i < 64; i++) {
-      this.add.image(x, y, 'cards', Phaser.Math.RND.pick(frames)).setInteractive({ draggable: true });
-      x += 4;
-      y += 4;
-    }
-
-    this.input.on('dragstart', (pointer: any, gameObject: any) => {
-      this.children.bringToTop(gameObject);
-    }, this);
-
-    this.input.on('drag', (pointer: any, gameObject: any, dragX: any, dragY: any) => {
-      gameObject.x = dragX;
-      gameObject.y = dragY;
-    });
 
     var text = this.add.text(screenX / 2, 10, 'Please enter your name', { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 
