@@ -4,7 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import { Server, Socket } from "socket.io";
 import uniqid from 'uniqid';
-import { getRoom, getUser, removeUser, upsertUser } from './user';
+import { getRoom, removeUser, upsertUser } from './user';
 
 console.log(config);
 
@@ -32,6 +32,7 @@ const randomPin = () => {
 };
 
 const socketLeavePreviousRoom = (socket: Socket, user: User | undefined) => {
+    console.log('socketLeavePreviousRoom', user);
     if (!user) return;
     socket.leave(user.room);
 }
@@ -48,14 +49,14 @@ io.on('connection', (socket) => {
 
     // The current room I am in
     socket.on('host room', (room: string) => {
-        socketLeavePreviousRoom(socket, getUser(socket.id));
+        socketLeavePreviousRoom(socket, user);
         user = upsertUser({ id: socket.id, name: '', room: room, isHost: true, userColor: null, userAvatar: null });
         socket.join(user.room);
     });
 
     socket.on('join room', (room: string) => {
         if (room === null) return;
-        socketLeavePreviousRoom(socket, getUser(socket.id));
+        socketLeavePreviousRoom(socket, user);
         user = upsertUser({ id: socket.id, name: '', room: room, isHost: false, userColor: null, userAvatar: null });
         socket.join(user.room);
         io.to(user.room).emit('room data', getRoom(user.room));
@@ -69,10 +70,9 @@ io.on('connection', (socket) => {
 
     // On disconnect
     socket.on('disconnect', () => {
-        const removedUser = removeUser(socket.id);
-        if (removedUser) {
-            io.to(removedUser.room).emit('room data', getRoom(user.room));
-        }
+        console.log('disconnect', user);
+        removeUser(socket.id, user.room);
+        io.to(user.room).emit('room data', getRoom(user.room));
     });
 
     socket.on('error', (err) => {
@@ -88,10 +88,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('set name', (name: string) => {
-        if (name == '') {
-            // Keep the weird fantasy name if the user didn't enter a name
-            name = user.name;
-        }
+        // Keep name if ''
+        if (name === '') return;
+        console.log('change user', user);
         user = upsertUser({ ...user, name: name })
         // TODO
         io.to(user.room).emit('room data', getRoom(user.room));
@@ -105,7 +104,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('get room data', () => {
-        console.log(user);
+        // console.log(user);
         io.to(user.id).emit('room data', getRoom(user.room));
     });
 });
