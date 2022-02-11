@@ -40,6 +40,11 @@ export default function PlayerJoin() {
     };
   }, [setUserList]);
 
+  useEffect(() => {
+    console.log("set curren tplayer scene");
+    socket.emit("set player current scene", "PlayerStartingScene");
+  }, []);
+
   const joinURL = `${window.location.origin}/room/${roomCreated}`;
 
   return (

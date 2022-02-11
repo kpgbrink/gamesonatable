@@ -13,6 +13,7 @@ export default class HostStartingScene extends Phaser.Scene {
     }
 
     create() {
+        socket.emit('set player current scene', 'BeforeGameStart');
         socket.on('room data', (roomData: RoomData) => {
             console.log('this is the room data', roomData);
         });

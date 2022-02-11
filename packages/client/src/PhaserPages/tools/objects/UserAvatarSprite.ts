@@ -51,7 +51,7 @@ export default class UserAvatarImage extends Phaser.GameObjects.Container {
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y);
 
-        console.log('create user avatar image');
+        // console.log('create user avatar image');
         scene.load.on('filecomplete', (key: string, type: any, data: any) => {
 
         });

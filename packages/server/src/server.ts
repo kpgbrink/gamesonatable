@@ -67,7 +67,6 @@ io.on('connection', (socket) => {
 
     // On disconnect
     socket.on('disconnect', () => {
-        console.log('disconnect', user);
         removeUser(socket.id, user.room);
         io.to(user.room).emit('room data', getRoom(user.room));
     });
@@ -81,16 +80,15 @@ io.on('connection', (socket) => {
         const room = getRoom(user.room);
         if (!room) return;
         room.selectedGame = game;
-        console.log('selectedGame', room.selectedGame);
         io.to(user.room).emit('room data', room);
     });
 
-    socket.on('set current scene', (scene: string) => {
+    socket.on('set player current scene', (scene: string) => {
         // set room game
         const room = getRoom(user.room);
         if (!room) return;
-        room.currentScene = scene;
-        console.log('currentScene', room.currentScene);
+        room.currentPlayerScene = scene;
+        console.log('currentPlayerScene', room.currentPlayerScene);
         io.to(user.room).emit('room data', room);
     });
 

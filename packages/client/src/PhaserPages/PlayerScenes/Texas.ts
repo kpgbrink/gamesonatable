@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { onChangeGames } from "../tools/OnChangeGames";
+import { onChangeGames } from "./tools/OnChangeGames";
 
 
 export default class Texas extends Phaser.Scene {

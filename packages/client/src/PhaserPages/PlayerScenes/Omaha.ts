@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { onChangeGames } from "../tools/OnChangeGames";
+import { onChangeGames } from "./tools/OnChangeGames";
 
 
 export default class Omaha extends Phaser.Scene {
@@ -17,6 +17,19 @@ export default class Omaha extends Phaser.Scene {
         fontSize: '24px'
       })
       .setOrigin(1, 0)
+
+    var frames = this.textures.get('cards').getFrameNames();
+
+    var x = 100;
+    var y = 100;
+
+    for (var i = 0; i < 10; i++) {
+      var image = this.add.image(x, y, 'cards', Phaser.Math.RND.pick(frames)).setInteractive({ draggable: true });
+
+      x += 4;
+      y += 4;
+    }
+
 
     const screenX = this.cameras.main.worldView.x + this.cameras.main.width;
     const screenY = this.cameras.main.worldView.y + this.cameras.main.height;

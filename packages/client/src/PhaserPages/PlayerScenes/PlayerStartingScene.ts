@@ -3,7 +3,7 @@ import Phaser from "phaser";
 import socket from "../../SocketConnection";
 import { findMyUser } from "../tools/objects/Tools";
 import UserAvatarImage, { loadUserAvatarSprites } from "../tools/objects/UserAvatarSprite";
-import { onChangeGames } from "../tools/OnChangeGames";
+import { onChangeGames } from "./tools/OnChangeGames";
 
 export default class PlayerStartingScene extends Phaser.Scene {
   constructor() {
