@@ -25,7 +25,8 @@ export interface User {
 }
 
 export interface RoomData {
-    currentGame: string | null;
+    currentScene: string | null; // The current Phaser scene
+    selectedGame: string | null; // The current game we are trying to play
     userId: string;
     room: string;
     users: User[];

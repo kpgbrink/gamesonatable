@@ -6,8 +6,6 @@ import { Server, Socket } from "socket.io";
 import uniqid from 'uniqid';
 import { getRoom, removeUser, upsertUser } from './user';
 
-console.log(config);
-
 const app = express();
 const port = 3001;
 
@@ -32,7 +30,6 @@ const randomPin = () => {
 };
 
 const socketLeavePreviousRoom = (socket: Socket, user: User | undefined) => {
-    console.log('socketLeavePreviousRoom', user);
     if (!user) return;
     socket.leave(user.room);
 }
@@ -83,14 +80,23 @@ io.on('connection', (socket) => {
         // set room game
         const room = getRoom(user.room);
         if (!room) return;
-        room.currentGame = game;
+        room.selectedGame = game;
+        console.log('selectedGame', room.selectedGame);
+        io.to(user.room).emit('room data', room);
+    });
+
+    socket.on('set current scene', (scene: string) => {
+        // set room game
+        const room = getRoom(user.room);
+        if (!room) return;
+        room.currentScene = scene;
+        console.log('currentScene', room.currentScene);
         io.to(user.room).emit('room data', room);
     });
 
     socket.on('set name', (name: string) => {
         // Keep name if ''
         if (name === '') return;
-        console.log('change user', user);
         user = upsertUser({ ...user, name: name })
         // TODO
         io.to(user.room).emit('room data', getRoom(user.room));
@@ -104,7 +110,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('get room data', () => {
-        // console.log(user);
         io.to(user.id).emit('room data', getRoom(user.room));
     });
 });
