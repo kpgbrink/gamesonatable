@@ -92,19 +92,18 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('room data', room);
     });
 
-    socket.on('set name', (name: string) => {
+    socket.on('set player name', (name: string) => {
         // Keep name if ''
         if (name === '') return;
         user = upsertUser({ ...user, name: name })
         // TODO
         io.to(user.room).emit('room data', getRoom(user.room));
-        io.to(user.id).emit('set name', name);
+        io.to(user.id).emit('set player name', name);
     });
 
-    socket.on('set avatar', (avatar: UserAvatar) => {
+    socket.on('set player avatar', (avatar: UserAvatar) => {
         user = upsertUser({ ...user, userAvatar: avatar })
         io.to(user.room).emit('room data', getRoom(user.room));
-        io.to(user.id).emit('set avatar', avatar);
     });
 
     socket.on('get room data', () => {

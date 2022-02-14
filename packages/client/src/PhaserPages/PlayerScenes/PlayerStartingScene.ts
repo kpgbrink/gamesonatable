@@ -44,11 +44,11 @@ export default class PlayerStartingScene extends Phaser.Scene {
         if (inputText.value === '') return;
         //  Populate the text with whatever they typed in
         text.setText('Welcome ' + inputText.value);
-        socket.emit('set name', inputText.value);
+        socket.emit('set player name', inputText.value);
       }
     });
 
-    socket.on('set name', name => {
+    socket.on('set player name', name => {
       text.setText('Welcome ' + name);
     });
 

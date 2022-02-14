@@ -6,23 +6,27 @@ import { randomIndex } from "./Tools";
 
 const playerFolder = 'assets/player/';
 
+export const generateRandomUserAvatar = (): UserAvatar => {
+    const base = randomIndex(avatarImages.base);
+    const beard = randomIndex(avatarImages.beard);
+    const body = randomIndex(avatarImages.body);
+    const cloak = randomIndex(avatarImages.cloak);
+    const gloves = randomIndex(avatarImages.gloves);
+    const boots = randomIndex(avatarImages.boots);
+    const hair = randomIndex(avatarImages.hair);
+    const head = randomIndex(avatarImages.head);
+    const legs = randomIndex(avatarImages.legs);
+    return { base, beard, body, cloak, gloves, boots, hair, head, legs };
+}
+
 export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
-    const userAvatar: UserAvatar = {
-        base: randomIndex(avatarImages.base),
-        beard: randomIndex(avatarImages.beard),
-        body: randomIndex(avatarImages.body),
-        boots: randomIndex(avatarImages.boots),
-        cloak: randomIndex(avatarImages.cloak),
-        gloves: randomIndex(avatarImages.gloves),
-        hair: randomIndex(avatarImages.hair),
-        head: randomIndex(avatarImages.head),
-        legs: randomIndex(avatarImages.legs),
-    };
-    socket.emit('set avatar', userAvatar);
+    const userAvatar = generateRandomUserAvatar();
+    socket.emit('set player avatar', userAvatar);
     socket.on('room data', (roomData: RoomData) => {
         console.log('load the avatar data');
+        const user = roomData.users.find(u => u.id === socket.id);
+        console.log(user);
         const userId = socket.id;
-        // scene.load.image(`cloak${userId}`, `${playerFolder}cloak/${avatarImages.cloak[userAvatar.cloak]}`);
         scene.load.image(`base${userId}`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`);
         scene.load.image(`beard${userId}`, `${playerFolder}beard/${avatarImages.beard[userAvatar.beard]}`);
         scene.load.image(`body${userId}`, `${playerFolder}body/${avatarImages.body[userAvatar.body]}`);

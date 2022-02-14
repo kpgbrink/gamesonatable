@@ -12,7 +12,6 @@ export default function PlayerPage() {
   const { roomId } = useParams();
 
   useEffect(() => {
-    console.log("joining room", roomId);
     socket.emit("join room", roomId);
   }, [roomId]);
 
