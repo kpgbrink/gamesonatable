@@ -32,7 +32,7 @@ export default function HostPage() {
           default: "arcade",
           arcade: {
             gravity: { y: 300 },
-            debug: false,
+            debug: true,
           },
         },
         pixelArt: true,
