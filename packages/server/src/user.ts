@@ -3,7 +3,7 @@ import { allRaces, nameByRace } from 'fantasy-name-generator';
 
 const rooms: Map<string, RoomData> = new Map();
 
-export const upsertUser = ({ id, name, room, isHost }: User) => {
+export const upsertUser = ({ id, name, room, isHost, userAvatar }: User) => {
     name = name.trim();
     if (name === '') {
         name = (() => {
@@ -22,7 +22,7 @@ export const upsertUser = ({ id, name, room, isHost }: User) => {
     };
     room = room;
 
-    const user: User = { id, name, room, isHost, userColor: null, userAvatar: null };
+    const user: User = { id, name, room, isHost, userColor: null, userAvatar };
     // add room if it doesn't exist yet
     if (!rooms.has(user.room)) {
         rooms.set(user.room, { currentPlayerScene: 'PlayerStartingScene', selectedGame: null, room: user.room, users: [] });

@@ -102,7 +102,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('set player avatar', (avatar: UserAvatar) => {
-        user = upsertUser({ ...user, userAvatar: avatar })
+        user = upsertUser({ ...user, userAvatar: avatar });
         io.to(user.room).emit('room data', getRoom(user.room));
     });
 
