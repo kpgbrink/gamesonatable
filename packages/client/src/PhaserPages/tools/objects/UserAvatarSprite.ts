@@ -23,10 +23,16 @@ export const generateRandomUserAvatar = (): UserAvatar => {
 
 export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
     socket.on('room data', (roomData: RoomData) => {
+        // check if persistant data is equal to room data
+        // if (persistentData.roomData?.users === roomData.users) {
+        //     console.log('they the same');
+        //     return;
+        // }
         roomData.users.forEach(user => {
             const userId = user.id;
             const userAvatar = user.userAvatar;
             if (!userAvatar) return;
+            console.log(userAvatar);
             console.log('loading the user avatar');
             scene.load.image(`${userId}-base`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`);
             scene.load.image(`${userId}-beard`, `${playerFolder}beard/${avatarImages.beard[userAvatar.beard]}`);
@@ -42,7 +48,7 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
     });
 }
 
-export default class UserAvatarImage extends Phaser.GameObjects.Container {
+export default class UserAvatarImage extends Phaser.GameObjects.Sprite {
     private base: Phaser.GameObjects.Image | null;
     private beard: Phaser.GameObjects.Image | null;
     private bodyImage: Phaser.GameObjects.Image | null;
@@ -54,7 +60,7 @@ export default class UserAvatarImage extends Phaser.GameObjects.Container {
     private legs: Phaser.GameObjects.Image | null;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y);
+        super(scene, x, y, '', 0);
 
         // console.log('create user avatar image');
         scene.load.on('filecomplete', (key: string, type: any, data: any) => {
@@ -79,7 +85,7 @@ export default class UserAvatarImage extends Phaser.GameObjects.Container {
         const userId = socket.id;
         this.cloak = this.scene.add.image(this.x, this.y, `${userId}-cloak`);
         this.cloak.setScale(10);
-        this.base = this.scene.add.image(this.x, this.y, `${userId}-base`);
+        this.base = this.scene.add.image(0, 0, `${userId}-base`);
         this.base.setScale(10);
         this.beard = this.scene.add.image(this.x, this.y, `${userId}-beard`);
         this.beard.setScale(10);
