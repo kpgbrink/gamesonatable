@@ -48,7 +48,7 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
     });
 }
 
-export default class UserAvatarImage extends Phaser.GameObjects.Sprite {
+export default class UserAvatarImage extends Phaser.GameObjects.Container {
     private base: Phaser.GameObjects.Image | null;
     private beard: Phaser.GameObjects.Image | null;
     private bodyImage: Phaser.GameObjects.Image | null;
@@ -60,7 +60,7 @@ export default class UserAvatarImage extends Phaser.GameObjects.Sprite {
     private legs: Phaser.GameObjects.Image | null;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, '', 0);
+        super(scene, x, y);
 
         // console.log('create user avatar image');
         scene.load.on('filecomplete', (key: string, type: any, data: any) => {
@@ -83,23 +83,24 @@ export default class UserAvatarImage extends Phaser.GameObjects.Sprite {
     public loadUserAvatarImages() {
         // Hello
         const userId = socket.id;
-        this.cloak = this.scene.add.image(this.x, this.y, `${userId}-cloak`);
-        this.cloak.setScale(10);
+        this.cloak = this.scene.add.image(0, 0, `${userId}-cloak`);
+        this.add(this.cloak);
         this.base = this.scene.add.image(0, 0, `${userId}-base`);
-        this.base.setScale(10);
-        this.beard = this.scene.add.image(this.x, this.y, `${userId}-beard`);
-        this.beard.setScale(10);
-        this.bodyImage = this.scene.add.image(this.x, this.y, `${userId}-body`);
-        this.bodyImage.setScale(10);
-        this.gloves = this.scene.add.image(this.x, this.y, `${userId}-gloves`);
-        this.gloves.setScale(10);
-        this.boots = this.scene.add.image(this.x, this.y, `${userId}-boots`);
-        this.boots.setScale(10);
-        this.hair = this.scene.add.image(this.x, this.y, `${userId}-hair`);
-        this.hair.setScale(10);
-        this.head = this.scene.add.image(this.x, this.y, `${userId}-head`);
-        this.head.setScale(10);
-        this.legs = this.scene.add.image(this.x, this.y, `${userId}-legs`);
-        this.legs.setScale(10);
+        this.add(this.base);
+        this.beard = this.scene.add.image(0, 0, `${userId}-beard`);
+        this.add(this.beard);
+        this.bodyImage = this.scene.add.image(0, 0, `${userId}-body`);
+        this.add(this.bodyImage);
+        this.gloves = this.scene.add.image(0, 0, `${userId}-gloves`);
+        this.add(this.gloves);
+        this.boots = this.scene.add.image(0, 0, `${userId}-boots`);
+        this.add(this.boots);
+        this.hair = this.scene.add.image(0, 0, `${userId}-hair`);
+        this.add(this.hair);
+        this.head = this.scene.add.image(0, 0, `${userId}-head`);
+        this.add(this.head);
+        this.legs = this.scene.add.image(0, 0, `${userId}-legs`);
+        this.add(this.legs);
+        // this.legs.setScale(10);
     }
 }

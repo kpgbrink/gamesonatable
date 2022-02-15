@@ -27,6 +27,10 @@ export default class PlayerStartingScene extends Phaser.Scene {
 
     const userAvatarImage = new UserAvatarImage(this, screenMiddleX, screenMiddleY);
 
+    this.add.existing(userAvatarImage);
+
+    userAvatarImage.setScale(10);
+
     var text = this.add.text(screenX / 2, 10, 'Please enter your name', { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 
     var element = this.add.dom(screenX / 2, 150).createFromCache('nameform').setOrigin(0.5);
