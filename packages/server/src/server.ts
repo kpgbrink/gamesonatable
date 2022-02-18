@@ -88,7 +88,6 @@ io.on('connection', (socket) => {
         const room = getRoom(user.room);
         if (!room) return;
         room.currentPlayerScene = scene;
-        console.log('currentPlayerScene', room.currentPlayerScene);
         io.to(user.room).emit('room data', room);
     });
 

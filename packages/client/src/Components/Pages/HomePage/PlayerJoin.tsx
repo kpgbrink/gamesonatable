@@ -53,7 +53,9 @@ export default function PlayerJoin() {
         {!roomCreated && <LinearProgress />}
         {roomCreated && (
           <div>
-            {joinURL}
+            <a href={joinURL} target="_blank" rel="noreferrer">
+              {joinURL}
+            </a>
             <div>
               <QRCode value={joinURL} />
               <div className="playerList">
