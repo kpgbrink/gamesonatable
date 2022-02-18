@@ -24,6 +24,7 @@ export default class PlayerStartingScene extends Phaser.Scene {
 
     const screenMiddleX = screenX / 2;
     const screenMiddleY = screenY / 2;
+    console.log(this);
 
     const userAvatarImage = new UserAvatarImage(this, screenMiddleX, screenMiddleY);
 

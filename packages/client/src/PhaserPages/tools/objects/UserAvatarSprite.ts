@@ -32,8 +32,8 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
             const userId = user.id;
             const userAvatar = user.userAvatar;
             if (!userAvatar) return;
-            console.log(userAvatar);
-            console.log('loading the user avatar');
+            console.log(user);
+            console.log(roomData.users.length);
             scene.load.image(`${userId}-base`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`);
             scene.load.image(`${userId}-beard`, `${playerFolder}beard/${avatarImages.beard[userAvatar.beard]}`);
             scene.load.image(`${userId}-body`, `${playerFolder}body/${avatarImages.body[userAvatar.body]}`);
@@ -49,58 +49,36 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
 }
 
 export default class UserAvatarImage extends Phaser.GameObjects.Container {
-    private base: Phaser.GameObjects.Image | null;
-    private beard: Phaser.GameObjects.Image | null;
-    private bodyImage: Phaser.GameObjects.Image | null;
-    private boots: Phaser.GameObjects.Image | null;
-    private cloak: Phaser.GameObjects.Image | null;
-    private gloves: Phaser.GameObjects.Image | null;
-    private hair: Phaser.GameObjects.Image | null;
-    private head: Phaser.GameObjects.Image | null;
-    private legs: Phaser.GameObjects.Image | null;
-
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y);
-
+        console.log('the scene', this);
         // console.log('create user avatar image');
         scene.load.on('filecomplete', (key: string, type: any, data: any) => {
 
         });
-        this.base = null;
-        this.beard = null;
-        this.bodyImage = null;
-        this.boots = null;
-        this.cloak = null;
-        this.gloves = null;
-        this.hair = null;
-        this.head = null;
-        this.legs = null;
         scene.load.on('complete', () => {
             this.loadUserAvatarImages();
         });
     }
 
     public loadUserAvatarImages() {
+        if (!this.scene) return;
+        console.log('the scene in loadUserAvatarImage');
+        const addImage = (image: string) => {
+            const imageObject = this.scene.add.image(0, 0, image);
+            if (!imageObject) return;
+            this.add(imageObject);
+        }
         // Hello
         const userId = socket.id;
-        this.cloak = this.scene.add.image(0, 0, `${userId}-cloak`);
-        this.add(this.cloak);
-        this.base = this.scene.add.image(0, 0, `${userId}-base`);
-        this.add(this.base);
-        this.beard = this.scene.add.image(0, 0, `${userId}-beard`);
-        this.add(this.beard);
-        this.bodyImage = this.scene.add.image(0, 0, `${userId}-body`);
-        this.add(this.bodyImage);
-        this.gloves = this.scene.add.image(0, 0, `${userId}-gloves`);
-        this.add(this.gloves);
-        this.boots = this.scene.add.image(0, 0, `${userId}-boots`);
-        this.add(this.boots);
-        this.hair = this.scene.add.image(0, 0, `${userId}-hair`);
-        this.add(this.hair);
-        this.head = this.scene.add.image(0, 0, `${userId}-head`);
-        this.add(this.head);
-        this.legs = this.scene.add.image(0, 0, `${userId}-legs`);
-        this.add(this.legs);
-        // this.legs.setScale(10);
+        addImage(`${userId}-cloak`);
+        addImage(`${userId}-body`);
+        addImage(`${userId}-base`);
+        addImage(`${userId}-beard`);
+        addImage(`${userId}-gloves`);
+        addImage(`${userId}-boots`);
+        addImage(`${userId}-hair`);
+        addImage(`${userId}-head`);
+        addImage(`${userId}-legs`);
     }
 }
