@@ -14,7 +14,6 @@ export const onChangeGames = (scene: Phaser.Scenes.ScenePlugin) => {
             if (scene.key === roomData.currentPlayerScene) {
                 return;
             }
-            console.log('current player scene is different', roomData.currentPlayerScene, scene.key);
             scene.start(roomData.currentPlayerScene);
         })()
         persistentData.roomData = roomData;

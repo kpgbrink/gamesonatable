@@ -1,13 +1,25 @@
 import { RoomData } from "api";
 import Phaser from "phaser";
 import socket from "../../SocketConnection";
+import { persistentData } from "../tools/objects/PersistantData";
 import { findMyUser } from "../tools/objects/Tools";
 import UserAvatarImage, { generateRandomUserAvatar, loadUserAvatarSprites } from "../tools/objects/UserAvatarSprite";
 import { onChangeGames } from "./tools/OnChangeGames";
 
 export default class PlayerStartingScene extends Phaser.Scene {
+  userAvatarImage: UserAvatarImage | null;
+
   constructor() {
     super({ key: 'PlayerStartingScene' });
+    this.userAvatarImage = null;
+  }
+
+  loadMyUserAvatar(screenMiddleX: number, screenMiddleY: number) {
+    console.log(socket.id, this.userAvatarImage);
+    if (!socket.id || this.userAvatarImage) return;
+    this.userAvatarImage = new UserAvatarImage(this, screenMiddleX, screenMiddleY, socket.id);
+    this.add.existing(this.userAvatarImage);
+    this.userAvatarImage.setScale(10);
   }
 
   preload() {
@@ -26,11 +38,13 @@ export default class PlayerStartingScene extends Phaser.Scene {
     const screenMiddleY = screenY / 2;
     console.log(this);
 
-    const userAvatarImage = new UserAvatarImage(this, screenMiddleX, screenMiddleY);
-
-    this.add.existing(userAvatarImage);
-
-    userAvatarImage.setScale(10);
+    // Load my user avatar.
+    this.userAvatarImage = null;
+    this.loadMyUserAvatar(screenMiddleX, screenMiddleY);
+    socket.on('connect', () => {
+      console.log('connected');
+      this.loadMyUserAvatar(screenMiddleX, screenMiddleY);
+    });
 
     var text = this.add.text(screenX / 2, 10, 'Please enter your name', { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 
@@ -58,6 +72,13 @@ export default class PlayerStartingScene extends Phaser.Scene {
       text.setText('Welcome ' + name);
     });
 
+    (() => {
+      const roomData = persistentData.roomData;
+      if (!roomData) return;
+      const generatedName = findMyUser(roomData)?.name;
+      if (!generatedName) return;
+      text.setText('Welcome ' + generatedName);
+    })();
     socket.on('room data', (roomData: RoomData) => {
       const generatedName = findMyUser(roomData)?.name;
       if (generatedName === undefined) return;
@@ -67,5 +88,9 @@ export default class PlayerStartingScene extends Phaser.Scene {
 
   update() {
 
+  }
+
+  destroy() {
+    console.log("scene is destroyed");
   }
 }

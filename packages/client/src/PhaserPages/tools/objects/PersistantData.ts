@@ -2,7 +2,11 @@ import { RoomData } from "api";
 
 // create class that stores persistent data between scenes
 export class PersistantData {
-    public roomData: RoomData | undefined;
+    constructor() {
+        this.roomData = null;
+    }
+
+    public roomData: RoomData | null;
 }
 
 export const persistentData: PersistantData = new PersistantData();
