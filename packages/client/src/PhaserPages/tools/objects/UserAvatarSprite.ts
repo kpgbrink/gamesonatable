@@ -44,38 +44,73 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
 
 export default class UserAvatarImage extends Phaser.GameObjects.Container {
     userId: string;
-    constructor(scene: Phaser.Scene, x: number, y: number, userId: string) {
+    baseDepth: number;
+    cloakImage: Phaser.GameObjects.Image | null;
+    bodyImage: Phaser.GameObjects.Image | null;
+    baseImage: Phaser.GameObjects.Image | null;
+    beardImage: Phaser.GameObjects.Image | null;
+    glovesImage: Phaser.GameObjects.Image | null;
+    bootsImage: Phaser.GameObjects.Image | null;
+    hairImage: Phaser.GameObjects.Image | null;
+    headImage: Phaser.GameObjects.Image | null;
+    legsImage: Phaser.GameObjects.Image | null;
+
+    constructor(scene: Phaser.Scene, x: number, y: number, userId: string, baseDepth: number) {
         super(scene, x, y);
         this.userId = userId;
-        scene.load.on('filecomplete', (key: string, type: any, data: any) => {
-
-        });
-
+        this.baseDepth = baseDepth;
         this.loadUserAvatarImages();
         scene.load.on('complete', () => {
             this.loadUserAvatarImages();
         });
+        this.cloakImage = null;
+        this.bodyImage = null;
+        this.baseImage = null;
+        this.beardImage = null;
+        this.glovesImage = null;
+        this.bootsImage = null;
+        this.hairImage = null;
+        this.headImage = null;
+        this.legsImage = null;
     }
 
     public loadUserAvatarImages() {
         if (!this.scene) return;
-        const addImage = (image: string) => {
-            if (!this.scene.textures.exists(image)) return;
+        const addImage = (image: string, depth: number) => {
+            if (!this.scene.textures.exists(image)) return null;
             const imageObject = this.scene.add.image(0, 0, image);
-            if (!imageObject) return;
+            imageObject.setDepth(this.baseDepth + depth);
+            if (!imageObject) return null;
             this.add(imageObject);
+            return imageObject;
         }
         // Hello
         const userId = this.userId;
         if (!userId) return;
-        addImage(`${userId}-cloak`);
-        addImage(`${userId}-body`);
-        addImage(`${userId}-base`);
-        addImage(`${userId}-beard`);
-        addImage(`${userId}-gloves`);
-        addImage(`${userId}-boots`);
-        addImage(`${userId}-hair`);
-        addImage(`${userId}-head`);
-        addImage(`${userId}-legs`);
+        if (this.cloakImage) this.cloakImage.destroy();
+        this.cloakImage = addImage(`${userId}-cloak`, 0);
+        if (this.baseImage) this.baseImage.destroy();
+        this.baseImage = addImage(`${userId}-base`, 2);
+        if (this.bodyImage) this.bodyImage.destroy();
+        this.bodyImage = addImage(`${userId}-body`, 1);
+        if (this.beardImage) this.beardImage.destroy();
+        this.beardImage = addImage(`${userId}-beard`, 3);
+        if (this.glovesImage) this.glovesImage.destroy();
+        this.glovesImage = addImage(`${userId}-gloves`, 4);
+        if (this.bootsImage) this.bootsImage.destroy();
+        this.bootsImage = addImage(`${userId}-boots`, 5);
+        if (this.hairImage) this.hairImage.destroy();
+        this.hairImage = addImage(`${userId}-hair`, 6);
+        if (this.headImage) this.headImage.destroy();
+        this.headImage = addImage(`${userId}-head`, 7);
+        if (this.legsImage) this.legsImage.destroy();
+        this.legsImage = addImage(`${userId}-legs`, 8);
+        (() => {
+            [this.cloakImage, this.baseImage, this.bodyImage, this.beardImage, this.glovesImage, this.bootsImage, this.hairImage, this.headImage, this.legsImage].reverse().forEach(image => {
+                console.log(image);
+                if (!image) return;
+                this.sendToBack(image);
+            });
+        })();
     }
 }

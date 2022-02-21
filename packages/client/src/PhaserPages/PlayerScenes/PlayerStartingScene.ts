@@ -15,9 +15,8 @@ export default class PlayerStartingScene extends Phaser.Scene {
   }
 
   loadMyUserAvatar(screenMiddleX: number, screenMiddleY: number) {
-    console.log(socket.id, this.userAvatarImage);
     if (!socket.id || this.userAvatarImage) return;
-    this.userAvatarImage = new UserAvatarImage(this, screenMiddleX, screenMiddleY, socket.id);
+    this.userAvatarImage = new UserAvatarImage(this, screenMiddleX, screenMiddleY, socket.id, 0);
     this.add.existing(this.userAvatarImage);
     this.userAvatarImage.setScale(10);
   }
