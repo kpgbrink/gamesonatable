@@ -76,10 +76,9 @@ export default class UserAvatarImage extends Phaser.GameObjects.Container {
 
     public loadUserAvatarImages() {
         if (!this.scene) return;
-        const addImage = (image: string, depth: number) => {
+        const addImage = (image: string) => {
             if (!this.scene.textures.exists(image)) return null;
             const imageObject = this.scene.add.image(0, 0, image);
-            imageObject.setDepth(this.baseDepth + depth);
             if (!imageObject) return null;
             this.add(imageObject);
             return imageObject;
@@ -88,29 +87,27 @@ export default class UserAvatarImage extends Phaser.GameObjects.Container {
         const userId = this.userId;
         if (!userId) return;
         if (this.cloakImage) this.cloakImage.destroy();
-        this.cloakImage = addImage(`${userId}-cloak`, 0);
+        this.cloakImage = addImage(`${userId}-cloak`);
         if (this.baseImage) this.baseImage.destroy();
-        this.baseImage = addImage(`${userId}-base`, 2);
+        this.baseImage = addImage(`${userId}-base`);
         if (this.bodyImage) this.bodyImage.destroy();
-        this.bodyImage = addImage(`${userId}-body`, 1);
+        this.bodyImage = addImage(`${userId}-body`);
         if (this.beardImage) this.beardImage.destroy();
-        this.beardImage = addImage(`${userId}-beard`, 3);
+        this.beardImage = addImage(`${userId}-beard`);
         if (this.glovesImage) this.glovesImage.destroy();
-        this.glovesImage = addImage(`${userId}-gloves`, 4);
+        this.glovesImage = addImage(`${userId}-gloves`);
         if (this.bootsImage) this.bootsImage.destroy();
-        this.bootsImage = addImage(`${userId}-boots`, 5);
+        this.bootsImage = addImage(`${userId}-boots`);
         if (this.hairImage) this.hairImage.destroy();
-        this.hairImage = addImage(`${userId}-hair`, 6);
+        this.hairImage = addImage(`${userId}-hair`);
         if (this.headImage) this.headImage.destroy();
-        this.headImage = addImage(`${userId}-head`, 7);
+        this.headImage = addImage(`${userId}-head`);
         if (this.legsImage) this.legsImage.destroy();
-        this.legsImage = addImage(`${userId}-legs`, 8);
-        (() => {
-            [this.cloakImage, this.baseImage, this.bodyImage, this.beardImage, this.glovesImage, this.bootsImage, this.hairImage, this.headImage, this.legsImage].reverse().forEach(image => {
-                console.log(image);
-                if (!image) return;
-                this.sendToBack(image);
-            });
-        })();
+        this.legsImage = addImage(`${userId}-legs`);
+        [this.cloakImage, this.baseImage, this.bodyImage, this.beardImage, this.glovesImage, this.bootsImage, this.hairImage, this.headImage, this.legsImage].reverse().forEach(image => {
+            console.log(image);
+            if (!image) return;
+            this.sendToBack(image);
+        });
     }
 }
