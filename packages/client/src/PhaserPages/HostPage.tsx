@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import socket from "../SocketConnection";
-import HostStartingScene from "./HostScenes/HostStartingScene";
+import HostBeforeGameStart from "./HostScenes/HostBeforeGameStart";
 import OmahaHostScene from "./HostScenes/OmahaHostScene";
 import TexasHostScene from "./HostScenes/TexasHostScene";
 import PhaserWrapper from "./tools/PhaserWrapper";
@@ -27,7 +27,7 @@ export default function HostPage() {
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [HostStartingScene, OmahaHostScene, TexasHostScene],
+        scene: [HostBeforeGameStart, OmahaHostScene, TexasHostScene],
         physics: {
           default: "arcade",
           arcade: {

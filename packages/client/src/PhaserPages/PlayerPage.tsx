@@ -2,8 +2,8 @@ import Phaser from "phaser";
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import socket from "../SocketConnection";
-import BeforeGameStart from "./PlayerScenes/BeforeGameStart";
 import Omaha from "./PlayerScenes/Omaha";
+import PlayerBeforeGameStart from "./PlayerScenes/PlayerBeforeGameStart";
 import PlayerStartingScene from "./PlayerScenes/PlayerStartingScene";
 import Texas from "./PlayerScenes/Texas";
 import PhaserWrapper from "./tools/PhaserWrapper";
@@ -27,7 +27,7 @@ export default function PlayerPage() {
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [PlayerStartingScene, BeforeGameStart, Omaha, Texas],
+        scene: [PlayerStartingScene, PlayerBeforeGameStart, Omaha, Texas],
         physics: {
           default: "arcade",
           arcade: {

@@ -3,22 +3,15 @@ import Phaser from "phaser";
 import socket from "../../SocketConnection";
 import { persistentData } from "../tools/objects/PersistantData";
 import { findMyUser } from "../tools/objects/Tools";
-import UserAvatarImage, { generateRandomUserAvatar, loadUserAvatarSprites } from "../tools/objects/UserAvatarSprite";
+import UserAvatarContainer, { generateRandomUserAvatar, loadUserAvatarSprites, makeMyUserAvatar } from "../tools/objects/UserAvatarContainer";
 import { onChangeGames } from "./tools/OnChangeGames";
 
 export default class PlayerStartingScene extends Phaser.Scene {
-  userAvatarImage: UserAvatarImage | null;
+  userAvatarContainer: UserAvatarContainer | null;
 
   constructor() {
     super({ key: 'PlayerStartingScene' });
-    this.userAvatarImage = null;
-  }
-
-  loadMyUserAvatar(screenMiddleX: number, screenMiddleY: number) {
-    if (!socket.id || this.userAvatarImage) return;
-    this.userAvatarImage = new UserAvatarImage(this, screenMiddleX, screenMiddleY, socket.id, 0);
-    this.add.existing(this.userAvatarImage);
-    this.userAvatarImage.setScale(10);
+    this.userAvatarContainer = null;
   }
 
   preload() {
@@ -35,15 +28,16 @@ export default class PlayerStartingScene extends Phaser.Scene {
 
     const screenMiddleX = screenX / 2;
     const screenMiddleY = screenY / 2;
-    console.log(this);
 
     // Load my user avatar.
-    this.userAvatarImage = null;
-    this.loadMyUserAvatar(screenMiddleX, screenMiddleY);
-    socket.on('connect', () => {
-      console.log('connected');
-      this.loadMyUserAvatar(screenMiddleX, screenMiddleY);
-    });
+    (() => {
+      this.userAvatarContainer = null;
+      this.userAvatarContainer = makeMyUserAvatar(this, screenMiddleX, screenMiddleY, this.userAvatarContainer) || this.userAvatarContainer;
+      socket.on('connect', () => {
+        this.userAvatarContainer = makeMyUserAvatar(this, screenMiddleX, screenMiddleY, this.userAvatarContainer) || this.userAvatarContainer;
+        console.log(this.userAvatarContainer);
+      });
+    })()
 
     var text = this.add.text(screenX / 2, 10, 'Please enter your name', { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 

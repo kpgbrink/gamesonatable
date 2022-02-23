@@ -64,9 +64,16 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
     });
 }
 
-export default class UserAvatarImage extends Phaser.GameObjects.Container {
+export const makeMyUserAvatar = (scene: Phaser.Scene, x: number, y: number, userAvatarContainer: UserAvatarContainer | null) => {
+    if (!socket.id || userAvatarContainer) return;
+    userAvatarContainer = new UserAvatarContainer(scene, x, y, socket.id);
+    scene.add.existing(userAvatarContainer);
+    userAvatarContainer.setScale(10);
+    return userAvatarContainer;
+}
+
+export default class UserAvatarContainer extends Phaser.GameObjects.Container {
     userId: string;
-    baseDepth: number;
     cloakImage: Phaser.GameObjects.Image | null;
     bodyImage: Phaser.GameObjects.Image | null;
     baseImage: Phaser.GameObjects.Image | null;
@@ -77,10 +84,9 @@ export default class UserAvatarImage extends Phaser.GameObjects.Container {
     headImage: Phaser.GameObjects.Image | null;
     legsImage: Phaser.GameObjects.Image | null;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, userId: string, baseDepth: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number, userId: string) {
         super(scene, x, y);
         this.userId = userId;
-        this.baseDepth = baseDepth;
         this.loadUserAvatarImages();
         scene.load.on('complete', () => {
             this.loadUserAvatarImages();
