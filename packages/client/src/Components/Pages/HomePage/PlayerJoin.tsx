@@ -10,25 +10,33 @@ import { AppContext } from "../../../AppContext";
 import socket from "../../../SocketConnection";
 
 export default function PlayerJoin() {
-  const { fixedRoomId } = useParams();
+  const { roomId } = useParams();
   const { setRoomCreated, roomCreated, userList, setUserList } =
     useContext(AppContext);
 
+  // Get new room id
   useEffect(() => {
-    console.log(roomCreated, fixedRoomId);
-    if (roomCreated !== null && !fixedRoomId && fixedRoomId !== roomCreated)
-      return;
+    console.log(roomId);
+    if (roomId) return;
     const fetchData = async () => {
       const response = await fetch("/getNewRoomId");
       const data: NewRoomId = await response.json();
-      const roomId = fixedRoomId || data.roomId;
-      console.log("make room", roomId);
-      socket.emit("host room", roomId, async () => {});
-      setRoomCreated(roomId);
+      const roomId = data.roomId;
+      // Change the URL to the new room id
+      window.history.pushState("", "", `/room/${roomId}`);
     };
     fetchData().catch(console.error);
-  }, [setRoomCreated, roomCreated, fixedRoomId]);
+  }, [setRoomCreated, roomCreated, roomId]);
 
+  // Start hosting room
+  useEffect(() => {
+    if (!roomId) return;
+    console.log("make room", roomId);
+    socket.emit("host room", roomId);
+    setRoomCreated(roomId);
+  }, [setRoomCreated, roomCreated, roomId]);
+
+  // Get room data
   useEffect(() => {
     //The socket is a module that exports the actual socket.io socket
     socket.on("room data", (roomData: RoomData) => {
@@ -41,11 +49,11 @@ export default function PlayerJoin() {
   }, [setUserList]);
 
   useEffect(() => {
-    console.log("set curren tplayer scene");
+    console.log("set current player scene");
     socket.emit("set player current scene", "PlayerStartingScene");
   }, []);
 
-  const joinURL = `${window.location.origin}/room/${roomCreated}`;
+  const joinURL = `${window.location.origin}/player/${roomCreated}`;
 
   return (
     <div className="playerJoin">
