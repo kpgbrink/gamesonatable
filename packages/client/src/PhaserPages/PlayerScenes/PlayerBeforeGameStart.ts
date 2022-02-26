@@ -17,6 +17,7 @@ export default class PlayerBeforeGameStart extends Phaser.Scene {
     }
 
     create() {
+        socket.off();
         onChangeGames(this.scene);
         addUserNameText(this);
         loadUserAvatarSprites(this);

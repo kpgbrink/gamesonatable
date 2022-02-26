@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import socket from "../../SocketConnection";
 
 export default class OmahaHostScene extends Phaser.Scene {
     constructor() {
@@ -6,6 +7,7 @@ export default class OmahaHostScene extends Phaser.Scene {
     }
 
     create() {
+        socket.off();
         // display the Phaser.VERSION
         this.add
             .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {

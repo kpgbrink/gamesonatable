@@ -30,7 +30,7 @@ export const generateRandomUserAvatar = (): UserAvatar => {
 
 export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
     socket.on('room data', (roomData: RoomData) => {
-        roomData.users.forEach(user => {
+        roomData?.users.forEach(user => {
             const userId = user.id;
             const userAvatar = user.userAvatar;
             if (!userAvatar) return;

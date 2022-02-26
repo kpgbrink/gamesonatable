@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import socket from "../../SocketConnection";
 import { onChangeGames } from "./tools/OnChangeGames";
 
 
@@ -8,6 +9,7 @@ export default class Omaha extends Phaser.Scene {
   }
 
   create() {
+    socket.off();
     onChangeGames(this.scene);
 
     // display the Phaser.VERSION

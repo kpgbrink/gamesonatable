@@ -19,6 +19,7 @@ export default class PlayerStartingScene extends Phaser.Scene {
   }
 
   create() {
+    socket.off();
     // this always has to run first
     onChangeGames(this.scene);
     generateRandomUserAvatar();
