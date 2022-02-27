@@ -46,6 +46,11 @@ export default function PlayerJoin() {
       setUserList(roomData.users);
     });
     socket.emit("get room data", roomId);
+
+    // close socket on unmount
+    return () => {
+      socket.off();
+    };
   }, [setUserList, roomId]);
 
   useEffect(() => {
