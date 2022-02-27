@@ -34,6 +34,7 @@ const socketLeavePreviousRoom = (socket: Socket, user: User | undefined) => {
     socket.leave(user.room);
 }
 
+let count = 1;
 io.on('connection', (socket) => {
     let user: User = {
         id: socket.id,
@@ -101,11 +102,15 @@ io.on('connection', (socket) => {
     });
 
     socket.on('set player avatar', (avatar: UserAvatar) => {
+        // Don't set avatar if already set
+        if (user.userAvatar) return;
         user = upsertUser({ ...user, userAvatar: avatar });
         io.to(user.room).emit('room data', getRoom(user.room));
     });
 
     socket.on('get room data', () => {
+        console.log('get room data', count++);
+        console.log(getRoom(user.room), user.id);
         io.to(user.id).emit('room data', getRoom(user.room));
     });
 });

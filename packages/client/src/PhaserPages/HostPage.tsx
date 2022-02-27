@@ -13,7 +13,6 @@ export default function HostPage() {
   useEffect(() => {
     socket.emit("host room", roomId);
     socket.emit("select game", game);
-    console.log("host select game ", game);
   }, [game, roomId]);
 
   return (

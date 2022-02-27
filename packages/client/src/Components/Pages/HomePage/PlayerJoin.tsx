@@ -33,7 +33,6 @@ export default function PlayerJoin() {
   useEffect(() => {
     if (!roomId && !roomCreated) return;
     const hostRoomId = roomId || roomCreated;
-    console.log("host room", hostRoomId);
     socket.emit("host room", hostRoomId);
     setRoomCreated(hostRoomId);
   }, [setRoomCreated, roomCreated, roomId]);
@@ -46,16 +45,12 @@ export default function PlayerJoin() {
       if (!roomData?.users) return;
       setUserList(roomData.users);
     });
-    return () => {
-      // turning of socket listner on unmount
-      socket.off("room data");
-    };
-  }, [setUserList]);
+    socket.emit("get room data", roomId);
+  }, [setUserList, roomId]);
 
   useEffect(() => {
     console.log("set current player scene");
     socket.emit("set player current scene", "PlayerStartingScene");
-    socket.emit("get room data", roomId);
   }, [roomId]);
 
   const joinURL = `${window.location.origin}/player/${roomCreated}`;
