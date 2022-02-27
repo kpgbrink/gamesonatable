@@ -16,30 +16,33 @@ export default function PlayerJoin() {
 
   // Get new room id
   useEffect(() => {
-    console.log(roomId);
-    if (roomId) return;
+    if (roomId || roomCreated) return;
+    console.log("get new room id", roomId);
     const fetchData = async () => {
       const response = await fetch("/getNewRoomId");
       const data: NewRoomId = await response.json();
       const roomId = data.roomId;
       // Change the URL to the new room id
       window.history.pushState("", "", `/room/${roomId}`);
+      setRoomCreated(roomId);
     };
     fetchData().catch(console.error);
   }, [setRoomCreated, roomCreated, roomId]);
 
   // Start hosting room
   useEffect(() => {
-    if (!roomId) return;
-    console.log("make room", roomId);
-    socket.emit("host room", roomId);
-    setRoomCreated(roomId);
+    if (!roomId && !roomCreated) return;
+    const hostRoomId = roomId || roomCreated;
+    console.log("host room", hostRoomId);
+    socket.emit("host room", hostRoomId);
+    setRoomCreated(hostRoomId);
   }, [setRoomCreated, roomCreated, roomId]);
 
   // Get room data
   useEffect(() => {
     //The socket is a module that exports the actual socket.io socket
     socket.on("room data", (roomData: RoomData) => {
+      console.log("room data", roomData);
       setUserList(roomData.users);
     });
     return () => {
