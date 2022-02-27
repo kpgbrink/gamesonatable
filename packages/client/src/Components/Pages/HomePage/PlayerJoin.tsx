@@ -43,6 +43,7 @@ export default function PlayerJoin() {
     //The socket is a module that exports the actual socket.io socket
     socket.on("room data", (roomData: RoomData) => {
       console.log("room data", roomData);
+      if (!roomData?.users) return;
       setUserList(roomData.users);
     });
     return () => {
@@ -54,7 +55,8 @@ export default function PlayerJoin() {
   useEffect(() => {
     console.log("set current player scene");
     socket.emit("set player current scene", "PlayerStartingScene");
-  }, []);
+    socket.emit("get room data", roomId);
+  }, [roomId]);
 
   const joinURL = `${window.location.origin}/player/${roomCreated}`;
 
