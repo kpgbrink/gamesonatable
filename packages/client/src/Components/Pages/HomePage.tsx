@@ -1,6 +1,5 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AppContext } from "../../AppContext";
-import socket from "../../SocketConnection";
 import Footer from "../Footer";
 import Navbar from "../Navbar";
 import "./HomePage.css";
@@ -9,10 +8,6 @@ import PlayerJoin from "./HomePage/PlayerJoin";
 
 export default function HomePage() {
   const { roomCreated } = useContext(AppContext);
-
-  useEffect(() => {
-    socket.emit("select game", "PlayerStartingScene");
-  }, []);
 
   return (
     <div>

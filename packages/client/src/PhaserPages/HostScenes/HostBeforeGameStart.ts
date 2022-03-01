@@ -32,7 +32,6 @@ export default class HostBeforeGameStart extends Phaser.Scene {
     }
 
     create() {
-        socket.off();
         loadUserAvatarSprites(this);
         socket.emit('set player current scene', 'PlayerBeforeGameStart');
         console.log('my socket id', socket.id);

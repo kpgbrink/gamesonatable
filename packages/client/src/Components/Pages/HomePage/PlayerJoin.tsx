@@ -40,21 +40,25 @@ export default function PlayerJoin() {
   // Get room data
   useEffect(() => {
     //The socket is a module that exports the actual socket.io socket
-    socket.on("room data", (roomData: RoomData) => {
-      console.log("room data", roomData);
+    console.log("start getting room data");
+
+    const roomDataListener = (roomData: RoomData) => {
+      console.log("got room data", roomData);
       if (!roomData?.users) return;
       setUserList(roomData.users);
-    });
-    socket.emit("get room data", roomId);
+    };
+    socket.on("room data", roomDataListener);
+    // socket.emit("get room data", roomId);
+    console.log("my socket idk", socket.id);
 
     // close socket on unmount
     return () => {
-      socket.off();
+      console.log("stop listening to room data");
+      socket.off("room data", roomDataListener);
     };
   }, [setUserList, roomId]);
 
   useEffect(() => {
-    console.log("set current player scene");
     socket.emit("set player current scene", "PlayerStartingScene");
   }, [roomId]);
 
