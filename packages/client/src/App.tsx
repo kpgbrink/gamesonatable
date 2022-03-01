@@ -6,15 +6,14 @@ import HomePage from "./Components/Pages/HomePage";
 import Instructions from "./Components/Pages/Instructions";
 import HostPage from "./PhaserPages/HostPage";
 import PlayerPage from "./PhaserPages/PlayerPage";
-import socket from "./SocketConnection";
 
 export default function App() {
-  window.onunload = (event) => {
-    const e = event || window.event;
-    e.preventDefault();
-    socket.close();
-    return "";
-  };
+  // window.onunload = (event) => {
+  //   const e = event || window.event;
+  //   e.preventDefault();
+  //   socket.close();
+  //   return "";
+  // };
 
   return (
     <AppContextProvider>

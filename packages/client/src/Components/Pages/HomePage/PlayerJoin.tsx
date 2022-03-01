@@ -32,6 +32,7 @@ export default function PlayerJoin() {
   useEffect(() => {
     if (!roomId && !roomCreated) return;
     const hostRoomId = roomId || roomCreated;
+    console.log("start hosting the room");
     socket.emit("host room", hostRoomId);
     setRoomCreated(hostRoomId);
   }, [setRoomCreated, roomCreated, roomId, socket]);
@@ -58,6 +59,7 @@ export default function PlayerJoin() {
   }, [setUserList, roomId, socket]);
 
   useEffect(() => {
+    console.log("set player current scene");
     socket.emit("set player current scene", "PlayerStartingScene");
   }, [roomId, socket]);
 
