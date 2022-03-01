@@ -7,11 +7,10 @@ import QRCode from "qrcode.react";
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../../../AppContext";
-import socket from "../../../SocketConnection";
 
 export default function PlayerJoin() {
   const { roomId } = useParams();
-  const { setRoomCreated, roomCreated, userList, setUserList } =
+  const { setRoomCreated, roomCreated, userList, setUserList, socket } =
     useContext(AppContext);
 
   // Get new room id
@@ -35,7 +34,7 @@ export default function PlayerJoin() {
     const hostRoomId = roomId || roomCreated;
     socket.emit("host room", hostRoomId);
     setRoomCreated(hostRoomId);
-  }, [setRoomCreated, roomCreated, roomId]);
+  }, [setRoomCreated, roomCreated, roomId, socket]);
 
   // Get room data
   useEffect(() => {
@@ -56,11 +55,11 @@ export default function PlayerJoin() {
       console.log("stop listening to room data");
       socket.off("room data", roomDataListener);
     };
-  }, [setUserList, roomId]);
+  }, [setUserList, roomId, socket]);
 
   useEffect(() => {
     socket.emit("set player current scene", "PlayerStartingScene");
-  }, [roomId]);
+  }, [roomId, socket]);
 
   const joinURL = `${window.location.origin}/player/${roomCreated}`;
 

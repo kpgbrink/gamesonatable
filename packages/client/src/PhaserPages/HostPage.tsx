@@ -1,19 +1,20 @@
 import Phaser from "phaser";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import socket from "../SocketConnection";
+import { AppContext } from "../AppContext";
 import HostBeforeGameStart from "./HostScenes/HostBeforeGameStart";
 import OmahaHostScene from "./HostScenes/OmahaHostScene";
 import TexasHostScene from "./HostScenes/TexasHostScene";
 import PhaserWrapper from "./tools/PhaserWrapper";
 
 export default function HostPage() {
+  const { socket } = useContext(AppContext);
   const { roomId, game } = useParams();
 
   useEffect(() => {
     socket.emit("host room", roomId);
     socket.emit("select game", game);
-  }, [game, roomId]);
+  }, [game, roomId, socket]);
 
   return (
     <PhaserWrapper

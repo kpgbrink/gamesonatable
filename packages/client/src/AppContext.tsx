@@ -1,5 +1,7 @@
 import { User } from "api";
 import React from "react";
+import { Socket } from "socket.io-client";
+import socket from "./SocketConnection";
 
 interface AppContextInterface {
   roomJoined: string | null;
@@ -8,6 +10,7 @@ interface AppContextInterface {
   setRoomCreated: React.Dispatch<React.SetStateAction<string | null>>;
   userList: User[];
   setUserList: React.Dispatch<React.SetStateAction<User[]>>;
+  socket: Socket;
 }
 // type UpdateType = React.Dispatch<React.SetStateAction<typeof defaultValue>>;
 export const AppContext = React.createContext<AppContextInterface>({
@@ -17,6 +20,7 @@ export const AppContext = React.createContext<AppContextInterface>({
   setRoomCreated: () => {},
   userList: [],
   setUserList: () => {},
+  socket: socket,
 });
 
 // Provider in your app
@@ -34,6 +38,7 @@ export const AppContextProvider = (props: React.PropsWithChildren<{}>) => {
         setRoomCreated,
         userList,
         setUserList,
+        socket: socket,
       }}
       {...props}
     />
