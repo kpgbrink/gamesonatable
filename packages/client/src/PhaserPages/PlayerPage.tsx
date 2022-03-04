@@ -14,6 +14,9 @@ export default function PlayerPage() {
 
   useEffect(() => {
     socket.emit("join room", roomId);
+    return () => {
+      socket.off();
+    };
   }, [roomId, socket]);
 
   return (

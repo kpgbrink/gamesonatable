@@ -25,13 +25,14 @@ export const addUserNameText = (scene: Phaser.Scene) => {
     return scene.add.text(screenX / 2, 10, `${text}`, { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 }
 
-export const closeSocketOnShutdownOrDestroy = (phaserScene: Phaser.Scene) => {
-    phaserScene.events.on('shutdown', () => {
+export const socketOffOnSceneShutdown = (phaserScene: Phaser.Scene) => {
+    phaserScene.events.once('shutdown', () => {
         console.log('scene shutdown');
         socket.off();
     });
-    phaserScene.events.on('destroy', () => {
-        console.log('scene destroy');
-        socket.off();
-    });
+
+    // phaserScene.events.once('destroy', () => {
+    //     console.log('scene destroy');
+    //     socket.off();
+    // });
 };

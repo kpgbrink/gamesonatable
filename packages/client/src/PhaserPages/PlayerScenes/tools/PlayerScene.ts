@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { socketOffOnSceneShutdown } from "../../tools/objects/Tools";
 import { onPlayerChangeGames } from "./OnPlayerChangeGames";
 
 
@@ -9,6 +10,7 @@ export default class PlayerScene extends Phaser.Scene {
 
     create() {
         onPlayerChangeGames(this);
+        socketOffOnSceneShutdown(this);
     }
 
     updateFpsText() {

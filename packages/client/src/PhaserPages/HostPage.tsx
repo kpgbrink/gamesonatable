@@ -14,6 +14,9 @@ export default function HostPage() {
   useEffect(() => {
     socket.emit("host room", roomId);
     socket.emit("select game", game);
+    return () => {
+      socket.off();
+    };
   }, [game, roomId, socket]);
 
   return (
