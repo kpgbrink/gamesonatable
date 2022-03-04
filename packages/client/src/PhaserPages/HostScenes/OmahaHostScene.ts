@@ -1,13 +1,15 @@
 import Phaser from "phaser";
-import socket from "../../SocketConnection";
+import HostScene from "./tools/HostScene";
+import { onHostChangeGames } from "./tools/OnHostChangeGames";
 
-export default class OmahaHostScene extends Phaser.Scene {
+export default class OmahaHostScene extends HostScene {
     constructor() {
-        super({ key: 'OmahaHostScene' })
+        super({ key: 'OmahaHostScene' });
     }
 
     create() {
-        socket.off();
+        super.create();
+        onHostChangeGames(this);
         // display the Phaser.VERSION
         this.add
             .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {

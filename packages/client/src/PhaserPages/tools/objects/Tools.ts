@@ -24,3 +24,14 @@ export const addUserNameText = (scene: Phaser.Scene) => {
     const text = `${findMyUser(persistentData.roomData)?.name}`;
     return scene.add.text(screenX / 2, 10, `${text}`, { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 }
+
+export const closeSocketOnShutdownOrDestroy = (phaserScene: Phaser.Scene) => {
+    phaserScene.events.on('shutdown', () => {
+        console.log('scene shutdown');
+        socket.off();
+    });
+    phaserScene.events.on('destroy', () => {
+        console.log('scene destroy');
+        socket.off();
+    });
+};

@@ -2,7 +2,7 @@ import { RoomData } from "api";
 import socket from "../../../SocketConnection";
 import { persistentData } from "../../tools/objects/PersistantData";
 
-export const onChangeGames = (scene: Phaser.Scenes.ScenePlugin) => {
+export const onPlayerChangeGames = (phaserScene: Phaser.Scene) => {
     socket.on("room data", (roomData: RoomData) => {
         // console.log('set room persistent data');
         // start scene if scene is different
@@ -10,11 +10,13 @@ export const onChangeGames = (scene: Phaser.Scenes.ScenePlugin) => {
             if (!roomData.currentPlayerScene) {
                 return;
             }
-            if (scene.key === roomData.currentPlayerScene) {
+            if (phaserScene.scene.key === roomData.currentPlayerScene) {
                 return;
             }
-            scene.start(roomData.currentPlayerScene);
+            phaserScene.scene.start(roomData.currentPlayerScene);
         })()
         persistentData.roomData = roomData;
     });
 }
+
+

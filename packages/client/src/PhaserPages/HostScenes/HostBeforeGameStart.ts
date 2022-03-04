@@ -1,10 +1,11 @@
 import { RoomData } from "api";
-import Phaser from "phaser";
 import socket from "../../SocketConnection";
 import UserAvatarContainer, { loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
+import HostScene from "./tools/HostScene";
+import { onHostChangeGames } from "./tools/OnHostChangeGames";
 
 
-export default class HostBeforeGameStart extends Phaser.Scene {
+export default class HostBeforeGameStart extends HostScene {
     userAvatars: UserAvatarContainer[] = [];
 
     constructor() {
@@ -32,6 +33,8 @@ export default class HostBeforeGameStart extends Phaser.Scene {
     }
 
     create() {
+        super.create();
+        onHostChangeGames(this);
         loadUserAvatarSprites(this);
         socket.emit('set player current scene', 'PlayerBeforeGameStart');
         console.log('my socket id', socket.id);
@@ -46,4 +49,5 @@ export default class HostBeforeGameStart extends Phaser.Scene {
 
     update() {
     }
+
 }

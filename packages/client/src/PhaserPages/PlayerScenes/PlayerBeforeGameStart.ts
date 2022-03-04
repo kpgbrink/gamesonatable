@@ -1,10 +1,9 @@
-import Phaser from "phaser";
 import socket from "../../SocketConnection";
 import { addUserNameText } from "../tools/objects/Tools";
 import UserAvatarContainer, { loadUserAvatarSprites, makeMyUserAvatar } from "../tools/objects/UserAvatarContainer";
-import { onChangeGames } from "./tools/OnChangeGames";
+import PlayerScene from "./tools/PlayerScene";
 
-export default class PlayerBeforeGameStart extends Phaser.Scene {
+export default class PlayerBeforeGameStart extends PlayerScene {
     userAvatarContainer: UserAvatarContainer | null;
 
     constructor() {
@@ -17,8 +16,7 @@ export default class PlayerBeforeGameStart extends Phaser.Scene {
     }
 
     create() {
-        socket.off();
-        onChangeGames(this.scene);
+        super.create();
         addUserNameText(this);
         loadUserAvatarSprites(this);
         const screenX = this.cameras.main.worldView.x + this.cameras.main.width;

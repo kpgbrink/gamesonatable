@@ -1,12 +1,11 @@
 import { RoomData } from "api";
-import Phaser from "phaser";
 import socket from "../../SocketConnection";
 import { persistentData } from "../tools/objects/PersistantData";
 import { findMyUser } from "../tools/objects/Tools";
 import UserAvatarContainer, { generateRandomUserAvatar, loadUserAvatarSprites, makeMyUserAvatar } from "../tools/objects/UserAvatarContainer";
-import { onChangeGames } from "./tools/OnChangeGames";
+import PlayerScene from "./tools/PlayerScene";
 
-export default class PlayerStartingScene extends Phaser.Scene {
+export default class PlayerStartingScene extends PlayerScene {
   userAvatarContainer: UserAvatarContainer | null;
 
   constructor() {
@@ -19,9 +18,8 @@ export default class PlayerStartingScene extends Phaser.Scene {
   }
 
   create() {
-    socket.off();
+    super.create();
     // this always has to run first
-    onChangeGames(this.scene);
     generateRandomUserAvatar();
     loadUserAvatarSprites(this);
     const screenX = this.cameras.main.worldView.x + this.cameras.main.width;
@@ -86,5 +84,9 @@ export default class PlayerStartingScene extends Phaser.Scene {
 
   destroy() {
     console.log("scene is destroyed");
+  }
+
+  shutdown() {
+    console.log('SHCENEN ENFEJKL SFDJLKFDS JLKDSF JFD:SLK');
   }
 }

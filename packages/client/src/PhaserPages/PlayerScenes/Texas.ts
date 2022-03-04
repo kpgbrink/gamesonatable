@@ -1,17 +1,14 @@
 import Phaser from "phaser";
-import socket from "../../SocketConnection";
-import { onChangeGames } from "./tools/OnChangeGames";
+import PlayerScene from "./tools/PlayerScene";
 
 
-export default class Texas extends Phaser.Scene {
+export default class Texas extends PlayerScene {
     constructor() {
-        super({ key: 'Texas' })
+        super({ key: 'Texas' });
     }
 
     create() {
-        socket.off();
-        onChangeGames(this.scene);
-
+        super.create();
         // display the Phaser.VERSION
         this.add
             .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {

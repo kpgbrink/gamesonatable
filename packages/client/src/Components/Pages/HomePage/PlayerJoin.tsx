@@ -41,7 +41,6 @@ export default function PlayerJoin() {
   useEffect(() => {
     //The socket is a module that exports the actual socket.io socket
     console.log("start getting room data");
-
     const roomDataListener = (roomData: RoomData) => {
       console.log("got room data", roomData);
       if (!roomData?.users) return;
