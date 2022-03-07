@@ -1,4 +1,5 @@
 import socket from "../../SocketConnection";
+import { persistentData } from "../tools/objects/PersistantData";
 import { addUserNameText } from "../tools/objects/Tools";
 import UserAvatarContainer, { loadUserAvatarSprites, makeMyUserAvatar } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
@@ -24,10 +25,13 @@ export default class PlayerBeforeGameStart extends PlayerScene {
         const screenMiddleX = screenX / 2;
         const screenMiddleY = screenY / 2;
         // Make my user avatar
+        // Load my user avatar.
         (() => {
             this.userAvatarContainer = null;
             this.userAvatarContainer = makeMyUserAvatar(this, screenMiddleX, screenMiddleY, this.userAvatarContainer) || this.userAvatarContainer;
-            socket.on('connect', () => {
+            socket.on('room data', (roomData) => {
+                persistentData.roomData = roomData;
+                if (this.userAvatarContainer) return;
                 this.userAvatarContainer = makeMyUserAvatar(this, screenMiddleX, screenMiddleY, this.userAvatarContainer) || this.userAvatarContainer;
                 console.log(this.userAvatarContainer);
             });

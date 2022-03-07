@@ -32,7 +32,9 @@ export default class PlayerStartingScene extends PlayerScene {
     (() => {
       this.userAvatarContainer = null;
       this.userAvatarContainer = makeMyUserAvatar(this, screenMiddleX, screenMiddleY, this.userAvatarContainer) || this.userAvatarContainer;
-      socket.on('connect', () => {
+      socket.on('room data', (roomData) => {
+        persistentData.roomData = roomData;
+        if (this.userAvatarContainer) return;
         this.userAvatarContainer = makeMyUserAvatar(this, screenMiddleX, screenMiddleY, this.userAvatarContainer) || this.userAvatarContainer;
         console.log(this.userAvatarContainer);
       });

@@ -1,8 +1,9 @@
-import { RoomData, UserAvatar } from "api";
+import { RoomData, User, UserAvatar } from "api";
 import Phaser from "phaser";
 import socket from "../../../SocketConnection";
 import { avatarImages } from "./avatarImages.generated";
-import { loadIfNotLoaded, randomIndex } from "./Tools";
+import { persistentData } from "./PersistantData";
+import { loadIfNotLoaded, loadIfNotLoadedAndImageExists, randomIndex } from "./Tools";
 
 const playerFolder = 'assets/player/';
 
@@ -35,30 +36,14 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
             const userAvatar = user.userAvatar;
             if (!userAvatar) return;
             loadIfNotLoaded(scene, `${userId}-base`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`);
-            if (userAvatar.cloak !== -1) {
-                loadIfNotLoaded(scene, `${userId}-cloak`, `${playerFolder}cloak/${avatarImages.cloak[userAvatar.cloak]}`);
-            }
-            if (userAvatar.gloves !== -1) {
-                loadIfNotLoaded(scene, `${userId}-gloves`, `${playerFolder}gloves/${avatarImages.gloves[userAvatar.gloves]}`);
-            }
-            if (userAvatar.body !== -1) {
-                loadIfNotLoaded(scene, `${userId}-body`, `${playerFolder}body/${avatarImages.body[userAvatar.body]}`);
-            }
-            if (userAvatar.beard !== -1) {
-                loadIfNotLoaded(scene, `${userId}-beard`, `${playerFolder}beard/${avatarImages.beard[userAvatar.beard]}`);
-            }
-            if (userAvatar.boots !== -1) {
-                loadIfNotLoaded(scene, `${userId}-boots`, `${playerFolder}boots/${avatarImages.boots[userAvatar.boots]}`);
-            }
-            if (userAvatar.hair !== -1) {
-                loadIfNotLoaded(scene, `${userId}-hair`, `${playerFolder}hair/${avatarImages.hair[userAvatar.hair]}`);
-            }
-            if (userAvatar.head !== -1) {
-                loadIfNotLoaded(scene, `${userId}-head`, `${playerFolder}head/${avatarImages.head[userAvatar.head]}`);
-            }
-            if (userAvatar.legs !== -1) {
-                loadIfNotLoaded(scene, `${userId}-legs`, `${playerFolder}legs/${avatarImages.legs[userAvatar.legs]}`);
-            }
+            loadIfNotLoadedAndImageExists(scene, `${userId}-cloak`, `${playerFolder}cloak/${avatarImages.cloak[userAvatar.cloak]}`, userAvatar.cloak);
+            loadIfNotLoadedAndImageExists(scene, `${userId}-gloves`, `${playerFolder}gloves/${avatarImages.gloves[userAvatar.gloves]}`, userAvatar.gloves);
+            loadIfNotLoadedAndImageExists(scene, `${userId}-body`, `${playerFolder}body/${avatarImages.body[userAvatar.body]}`, userAvatar.body);
+            loadIfNotLoadedAndImageExists(scene, `${userId}-beard`, `${playerFolder}beard/${avatarImages.beard[userAvatar.beard]}`, userAvatar.beard);
+            loadIfNotLoadedAndImageExists(scene, `${userId}-boots`, `${playerFolder}boots/${avatarImages.boots[userAvatar.boots]}`, userAvatar.boots);
+            loadIfNotLoadedAndImageExists(scene, `${userId}-hair`, `${playerFolder}hair/${avatarImages.hair[userAvatar.hair]}`, userAvatar.hair);
+            loadIfNotLoadedAndImageExists(scene, `${userId}-head`, `${playerFolder}head/${avatarImages.head[userAvatar.head]}`, userAvatar.head);
+            loadIfNotLoadedAndImageExists(scene, `${userId}-legs`, `${playerFolder}legs/${avatarImages.legs[userAvatar.legs]}`, userAvatar.legs);
             scene.load.start();
         });
     });
@@ -66,14 +51,16 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
 
 export const makeMyUserAvatar = (scene: Phaser.Scene, x: number, y: number, userAvatarContainer: UserAvatarContainer | null) => {
     if (!socket.id || userAvatarContainer) return;
-    userAvatarContainer = new UserAvatarContainer(scene, x, y, socket.id);
+    const user = persistentData.roomData?.users.find(user => user.id === socket.id);
+    if (!user) return;
+    userAvatarContainer = new UserAvatarContainer(scene, x, y, user);
     scene.add.existing(userAvatarContainer);
     userAvatarContainer.setScale(10);
     return userAvatarContainer;
 }
 
 export default class UserAvatarContainer extends Phaser.GameObjects.Container {
-    userId: string;
+    user: User;
     cloakImage: Phaser.GameObjects.Image | null;
     bodyImage: Phaser.GameObjects.Image | null;
     baseImage: Phaser.GameObjects.Image | null;
@@ -83,10 +70,11 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
     hairImage: Phaser.GameObjects.Image | null;
     headImage: Phaser.GameObjects.Image | null;
     legsImage: Phaser.GameObjects.Image | null;
+    userNameText: Phaser.GameObjects.Text | null;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, userId: string) {
+    constructor(scene: Phaser.Scene, x: number, y: number, user: User) {
         super(scene, x, y);
-        this.userId = userId;
+        this.user = user;
         this.loadUserAvatarImages();
         scene.load.on('complete', () => {
             this.loadUserAvatarImages();
@@ -100,6 +88,13 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
         this.hairImage = null;
         this.headImage = null;
         this.legsImage = null;
+        this.userNameText = null;
+        if (user.name) {
+            this.userNameText = scene.add.text(0, 0, user.name, { fontSize: '9px' });
+            this.userNameText.setOrigin(0.5, 2.4);
+            this.userNameText.setStroke('#000', .1);
+            this.add(this.userNameText);
+        }
     }
 
     public loadUserAvatarImages() {
@@ -112,7 +107,7 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
             return imageObject;
         }
         // Hello
-        const userId = this.userId;
+        const userId = this.user.id;
         if (!userId) return;
         if (this.cloakImage) this.cloakImage.destroy();
         this.cloakImage = addImage(`${userId}-cloak`);

@@ -19,9 +19,9 @@ export default class HostBeforeGameStart extends HostScene {
         // Create a user avatar for each user
         roomData?.users.forEach((user) => {
             if (!user.userAvatar) return;
-            if (this.userAvatars.find((userAvatar) => userAvatar.userId === user.id)) return;
+            if (this.userAvatars.find((userAvatar) => userAvatar.user.id === user.id)) return;
             console.log('adding user avatar', user.userAvatar);
-            const userAvatarContainer = new UserAvatarContainer(this, 150, 150, user.id);
+            const userAvatarContainer = new UserAvatarContainer(this, 150, 150, user);
             this.add.existing(userAvatarContainer);
             this.userAvatars.push(userAvatarContainer);
 

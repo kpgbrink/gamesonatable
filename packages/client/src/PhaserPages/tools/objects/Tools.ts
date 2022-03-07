@@ -12,6 +12,11 @@ export const findMyUser = (roomData: RoomData | undefined) => {
     return roomData.users.find(user => user?.id === socket.id);
 }
 
+export const loadIfNotLoadedAndImageExists = (scene: Phaser.Scene, name: string, url: string, arrayIndex: number) => {
+    if (arrayIndex === -1) return;
+    loadIfNotLoaded(scene, name, url);
+}
+
 export const loadIfNotLoaded = (scene: Phaser.Scene, name: string, url: string) => {
     if (!scene.textures.exists(name)) {
         scene.load.image(name, url);
