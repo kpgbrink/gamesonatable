@@ -21,14 +21,9 @@ export default class HostBeforeGameStart extends HostScene {
             if (!user.userAvatar) return;
             if (this.userAvatars.find((userAvatar) => userAvatar.user.id === user.id)) return;
             console.log('adding user avatar', user.userAvatar);
-            const userAvatarContainer = new UserAvatarContainer(this, 150, 150, user);
+            const userAvatarContainer = new UserAvatarContainer(this, 250, 250, user);
             this.add.existing(userAvatarContainer);
             this.userAvatars.push(userAvatarContainer);
-
-            userAvatarContainer.setSize(500, 500);
-            userAvatarContainer.setScale(5);
-            userAvatarContainer.setInteractive();
-            this.input.setDraggable(userAvatarContainer);
         });
     }
 

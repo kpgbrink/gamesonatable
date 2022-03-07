@@ -55,7 +55,7 @@ export const makeMyUserAvatar = (scene: Phaser.Scene, x: number, y: number, user
     if (!user) return;
     userAvatarContainer = new UserAvatarContainer(scene, x, y, user);
     scene.add.existing(userAvatarContainer);
-    userAvatarContainer.setScale(10);
+    // userAvatarContainer.setScale(10);
     return userAvatarContainer;
 }
 
@@ -90,9 +90,9 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
         this.legsImage = null;
         this.userNameText = null;
         if (user.name) {
-            this.userNameText = scene.add.text(0, 0, user.name, { fontSize: '9px' });
-            this.userNameText.setOrigin(0.5, 2.4);
-            this.userNameText.setStroke('#000', .1);
+            this.userNameText = scene.add.text(0, 0, user.name, { fontSize: '20px' });
+            this.userNameText.setOrigin(0.5, 9);
+            this.userNameText.setStroke('#000', 1);
             this.add(this.userNameText);
         }
     }
@@ -102,6 +102,7 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
         const addImage = (image: string) => {
             if (!this.scene.textures.exists(image)) return null;
             const imageObject = this.scene.add.image(0, 0, image);
+            imageObject.setScale(10);
             if (!imageObject) return null;
             this.add(imageObject);
             return imageObject;
