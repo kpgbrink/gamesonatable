@@ -5,7 +5,7 @@ const rooms: Map<string, RoomData> = new Map();
 
 export const upsertUser = ({ id, name, room, isHost, userAvatar }: User) => {
     name = name.trim();
-    if (name === '') {
+    if (name === '' && !isHost) {
         name = (() => {
             const allRacesList = [...allRaces.racesWithGender, ...allRaces.otherRaces];
             const gender: "male" | "female" = (() => {

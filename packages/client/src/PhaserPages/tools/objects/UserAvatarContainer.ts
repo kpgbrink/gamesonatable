@@ -95,6 +95,7 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
             this.userNameText.setStroke('#000', 1);
             this.add(this.userNameText);
         }
+        this.setSize(0, 0);
     }
 
     public loadUserAvatarImages() {
@@ -132,5 +133,6 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
             if (!image) return;
             this.sendToBack(image);
         });
+        this.setSize(this.baseImage?.width || 0, this.baseImage?.height || 0);
     }
 }

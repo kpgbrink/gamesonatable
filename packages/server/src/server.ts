@@ -60,12 +60,6 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('room data', getRoom(user.room));
     });
 
-    // Test chat
-    socket.on('chat', (message: string) => {
-        if (!user) { console.log('user not found'); return; }
-        io.in(user.room).emit("chat", message);
-    });
-
     // On disconnect
     socket.on('disconnect', () => {
         removeUser(socket.id, user.room);
@@ -109,8 +103,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('get room data', () => {
-        console.log('get room data', count++);
-        console.log(getRoom(user.room), user.id);
         io.to(user.id).emit('room data', getRoom(user.room));
     });
 });
