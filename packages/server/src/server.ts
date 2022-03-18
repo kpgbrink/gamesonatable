@@ -34,7 +34,6 @@ const socketLeavePreviousRoom = (socket: Socket, user: User | undefined) => {
     socket.leave(user.room);
 }
 
-let count = 1;
 io.on('connection', (socket) => {
     let user: User = {
         id: socket.id,
@@ -53,6 +52,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('join room', (room: string) => {
+        console.log('joining room');
         if (room === null) return;
         socketLeavePreviousRoom(socket, user);
         user = upsertUser({ id: socket.id, name: '', room: room, isHost: false, userColor: null, userAvatar: null });

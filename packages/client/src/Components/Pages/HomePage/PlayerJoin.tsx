@@ -47,9 +47,6 @@ export default function PlayerJoin() {
       setUserList(roomData.users);
     };
     socket.on("room data", roomDataListener);
-    // socket.emit("get room data", roomId);
-    console.log("my socket idk", socket.id);
-
     // close socket on unmount
     return () => {
       console.log("stop listening to room data");

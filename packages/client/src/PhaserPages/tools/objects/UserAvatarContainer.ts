@@ -71,8 +71,10 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
     headImage: Phaser.GameObjects.Image | null;
     legsImage: Phaser.GameObjects.Image | null;
     userNameText: Phaser.GameObjects.Text | null;
+    onSizeChange: ((userAvatarContainer: UserAvatarContainer) => void) | undefined;
+    imageMultiplier: number = 10;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, user: User) {
+    constructor(scene: Phaser.Scene, x: number, y: number, user: User, onSizeChange?: (userAvatarContainer: UserAvatarContainer) => void) {
         super(scene, x, y);
         this.user = user;
         this.loadUserAvatarImages();
@@ -89,6 +91,10 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
         this.headImage = null;
         this.legsImage = null;
         this.userNameText = null;
+        this.onSizeChange = onSizeChange;
+        if (onSizeChange) {
+            this.onSizeChange = onSizeChange;
+        }
         if (user.name) {
             this.userNameText = scene.add.text(0, 0, user.name, { fontSize: '20px' });
             this.userNameText.setOrigin(0.5, 9);
@@ -103,7 +109,7 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
         const addImage = (image: string) => {
             if (!this.scene.textures.exists(image)) return null;
             const imageObject = this.scene.add.image(0, 0, image);
-            imageObject.setScale(10);
+            imageObject.setScale(this.imageMultiplier);
             if (!imageObject) return null;
             this.add(imageObject);
             return imageObject;
@@ -133,6 +139,18 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
             if (!image) return;
             this.sendToBack(image);
         });
-        this.setSize(this.baseImage?.width || 0, this.baseImage?.height || 0);
+        console.log('updated the size');
+        const width = (() => {
+            if (!this.baseImage) return 0;
+            return this.baseImage.width * this.imageMultiplier / 2.4;
+        })();
+        const height = (() => {
+            if (!this.baseImage) return 0;
+            return this.baseImage.height * this.imageMultiplier;
+        })();
+        this.setSize(width, height);
+        if (this.onSizeChange) {
+            this.onSizeChange(this);
+        }
     }
 }
