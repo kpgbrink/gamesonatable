@@ -21,30 +21,31 @@ export default function PhaserWrapper({ config }: PhaserWrapperProps) {
     const game = new Phaser.Game({
       ...config,
       parent: domId,
-      callbacks: {
-        postBoot: () => {
-          window.game = game;
-          window.sizeChanged();
-        },
-      },
+      // callbacks: {
+      //   postBoot: () => {
+      //     window.game = game;
+      //     window.sizeChanged();
+      //   },
+      // },
     });
     return () => {
       game.destroy(true);
     };
   }, [config, domId]);
 
-  return <div id={domId}></div>;
+  return <div id={domId} style={{ maxHeight: 100 }}></div>;
 }
 
-window.sizeChanged = () => {
-  if (window.game.isBooted) {
-    setTimeout(() => {
-      window.game.scale.resize(window.innerWidth, window.innerHeight);
-      window.game.canvas.setAttribute(
-        "style",
-        `display: width: ${window.innerWidth}px; height: ${window.innerHeight}px;`
-      );
-    }, 100);
-  }
-};
-window.onresize = () => window.sizeChanged();
+// window.sizeChanged = () => {
+//   if (window.game.isBooted) {
+//     setTimeout(() => {
+//       window.game.scale.resize(window.innerWidth, window.innerHeight);
+//       window.game.canvas.setAttribute(
+//         "style",
+//         `display: width: ${window.innerWidth}px; height: ${window.innerHeight}px;`
+//       );
+//     }, 100);
+//   }
+// };
+
+// window.onresize = () => window.sizeChanged();

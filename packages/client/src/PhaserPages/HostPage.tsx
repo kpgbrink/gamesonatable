@@ -29,8 +29,6 @@ export default function HostPage() {
           createContainer: true,
         },
         type: Phaser.AUTO,
-        width: window.innerWidth,
-        height: window.innerHeight,
         scene: [HostBeforeGameStart, OmahaHostScene, TexasHostScene],
         physics: {
           default: "arcade",
@@ -40,6 +38,12 @@ export default function HostPage() {
           },
         },
         pixelArt: true,
+        scale: {
+          mode: Phaser.Scale.FIT,
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+          width: 1920,
+          height: 1080,
+        },
       }}
       gameName="Host"
     />
