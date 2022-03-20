@@ -1,7 +1,7 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
 import { persistentData } from "../tools/objects/PersistantData";
-import { findMyUser } from "../tools/objects/Tools";
+import { findMyUser, getScreenCenter, getScreenDimensions } from "../tools/objects/Tools";
 import UserAvatarContainer, { generateRandomUserAvatar, loadUserAvatarSprites, makeMyUserAvatar } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
 
@@ -22,27 +22,23 @@ export default class PlayerStartingScene extends PlayerScene {
     // this always has to run first
     generateRandomUserAvatar();
     loadUserAvatarSprites(this);
-    const screenX = this.cameras.main.worldView.x + this.cameras.main.width;
-    const screenY = this.cameras.main.worldView.y + this.cameras.main.height;
+    var screenCenter = getScreenCenter(this);
+    var screenDimensions = getScreenDimensions(this);
 
-    const screenMiddleX = screenX / 2;
-    const screenMiddleY = screenY / 2;
 
-    // Load my user avatar.
     (() => {
       this.userAvatarContainer = null;
-      this.userAvatarContainer = makeMyUserAvatar(this, screenMiddleX, screenMiddleY, this.userAvatarContainer) || this.userAvatarContainer;
+      this.userAvatarContainer = makeMyUserAvatar(this, screenCenter.x, screenCenter.y, this.userAvatarContainer) || this.userAvatarContainer;
       socket.on('room data', (roomData) => {
         persistentData.roomData = roomData;
         if (this.userAvatarContainer) return;
-        this.userAvatarContainer = makeMyUserAvatar(this, screenMiddleX, screenMiddleY, this.userAvatarContainer) || this.userAvatarContainer;
-        console.log(this.userAvatarContainer);
+        this.userAvatarContainer = makeMyUserAvatar(this, screenCenter.x, screenCenter.y, this.userAvatarContainer) || this.userAvatarContainer;
       });
     })()
 
-    var text = this.add.text(screenX / 2, 10, 'Please enter your name', { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
+    var text = this.add.text(screenDimensions.width / 2, 10, 'Please enter your name', { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 
-    var element = this.add.dom(screenX / 2, 150).createFromCache('nameform').setOrigin(0.5);
+    var element = this.add.dom(screenDimensions.width / 2, 150).createFromCache('nameform').setOrigin(0.5);
 
     element.addListener('click');
 

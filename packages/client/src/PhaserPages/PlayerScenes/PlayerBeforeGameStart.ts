@@ -1,6 +1,6 @@
 import socket from "../../SocketConnection";
 import { persistentData } from "../tools/objects/PersistantData";
-import { addUserNameText } from "../tools/objects/Tools";
+import { addUserNameText, getScreenCenter } from "../tools/objects/Tools";
 import UserAvatarContainer, { loadUserAvatarSprites, makeMyUserAvatar } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
 
@@ -20,20 +20,15 @@ export default class PlayerBeforeGameStart extends PlayerScene {
         super.create();
         addUserNameText(this);
         loadUserAvatarSprites(this);
-        const screenX = this.cameras.main.worldView.x + this.cameras.main.width;
-        const screenY = this.cameras.main.worldView.y + this.cameras.main.height;
-        const screenMiddleX = screenX / 2;
-        const screenMiddleY = screenY / 2;
-        // Make my user avatar
-        // Load my user avatar.
+        var screenCenter = getScreenCenter(this);
+
         (() => {
             this.userAvatarContainer = null;
-            this.userAvatarContainer = makeMyUserAvatar(this, screenMiddleX, screenMiddleY, this.userAvatarContainer) || this.userAvatarContainer;
+            this.userAvatarContainer = makeMyUserAvatar(this, screenCenter.x, screenCenter.y, this.userAvatarContainer) || this.userAvatarContainer;
             socket.on('room data', (roomData) => {
                 persistentData.roomData = roomData;
                 if (this.userAvatarContainer) return;
-                this.userAvatarContainer = makeMyUserAvatar(this, screenMiddleX, screenMiddleY, this.userAvatarContainer) || this.userAvatarContainer;
-                console.log(this.userAvatarContainer);
+                this.userAvatarContainer = makeMyUserAvatar(this, screenCenter.x, screenCenter.y, this.userAvatarContainer) || this.userAvatarContainer;
             });
         })()
     }
@@ -42,3 +37,5 @@ export default class PlayerBeforeGameStart extends PlayerScene {
 
     }
 }
+
+

@@ -24,10 +24,10 @@ export const loadIfNotLoaded = (scene: Phaser.Scene, name: string, url: string) 
 }
 
 export const addUserNameText = (scene: Phaser.Scene) => {
-    const screenX = scene.cameras.main.worldView.x + scene.cameras.main.width;
+    const screenCenter = getScreenCenter(scene);
     if (!persistentData.roomData) return;
     const text = `${findMyUser(persistentData.roomData)?.name}`;
-    return scene.add.text(screenX / 2, 10, `${text}`, { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
+    return scene.add.text(screenCenter.x / 2, 15, `${text}`, { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 }
 
 export const socketOffOnSceneShutdown = (phaserScene: Phaser.Scene) => {
@@ -37,7 +37,7 @@ export const socketOffOnSceneShutdown = (phaserScene: Phaser.Scene) => {
     });
 };
 
-export const getWidthAndHeight = (scene: Phaser.Scene) => {
+export const getScreenDimensions = (scene: Phaser.Scene) => {
     return {
         width: scene.cameras.main.width,
         height: scene.cameras.main.height
@@ -46,7 +46,7 @@ export const getWidthAndHeight = (scene: Phaser.Scene) => {
 
 export const getScreenCenter = (scene: Phaser.Scene) => {
     return {
-        x: scene.cameras.main.width / 2,
-        y: scene.cameras.main.height / 2
+        x: scene.cameras.main.worldView.x + scene.cameras.main.width / 2,
+        y: scene.cameras.main.worldView.x + scene.cameras.main.height / 2
     }
 }
