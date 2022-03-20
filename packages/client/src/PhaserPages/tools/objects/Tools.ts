@@ -1,6 +1,7 @@
 import { RoomData } from "api";
 import socket from "../../../SocketConnection";
 import { persistentData } from "./PersistantData";
+import UserAvatarContainer, { makeMyUserAvatar } from "./UserAvatarContainer";
 
 // Random index from array
 export const randomIndex = (array: any[]) => {
@@ -49,4 +50,21 @@ export const getScreenCenter = (scene: Phaser.Scene) => {
         x: scene.cameras.main.worldView.x + scene.cameras.main.width / 2,
         y: scene.cameras.main.worldView.x + scene.cameras.main.height / 2
     }
+}
+
+
+export const makeMyUserAvatarInCenterOfPlayerScreen = (playerScene: Phaser.Scene, userAvatarContainer: UserAvatarContainer | null) => {
+    var screenCenter = getScreenCenter(playerScene);
+    userAvatarContainer = null;
+    userAvatarContainer = makeMyUserAvatar(playerScene, screenCenter.x, screenCenter.y, userAvatarContainer) || userAvatarContainer;
+    socket.on('room data', (roomData) => {
+        persistentData.roomData = roomData;
+        if (userAvatarContainer) return;
+        userAvatarContainer = makeMyUserAvatar(playerScene, screenCenter.x, screenCenter.y, userAvatarContainer) || userAvatarContainer;
+    });
+}
+
+export const GetAngle = (vector: Phaser.Math.Vector2): number => {
+    const angle = Math.atan2(vector.y, vector.x);
+    return angle;
 }

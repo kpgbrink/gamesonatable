@@ -92,13 +92,10 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
         this.legsImage = null;
         this.userNameText = null;
         this.onSizeChange = onSizeChange;
-        if (onSizeChange) {
-            this.onSizeChange = onSizeChange;
-        }
         if (user.name) {
             this.userNameText = scene.add.text(0, 0, user.name, { fontSize: '50px' });
             this.userNameText.setOrigin(0.5, 4.5);
-            this.userNameText.setStroke('#000', 1);
+            this.userNameText.setStroke('#000', 4);
             this.add(this.userNameText);
         }
         this.setSize(0, 0);

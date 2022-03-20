@@ -41,13 +41,14 @@ io.on('connection', (socket) => {
         room: '',
         isHost: false,
         userColor: null,
-        userAvatar: null
+        userAvatar: null,
+        rotation: null,
     };
 
     // The current room I am in
     socket.on('host room', (room: string) => {
         socketLeavePreviousRoom(socket, user);
-        user = upsertUser({ id: socket.id, name: '', room: room, isHost: true, userColor: null, userAvatar: null });
+        user = upsertUser({ id: socket.id, name: '', room: room, isHost: true, userColor: null, userAvatar: null, rotation: null });
         socket.join(user.room);
     });
 
@@ -55,7 +56,7 @@ io.on('connection', (socket) => {
         console.log('joining room');
         if (room === null) return;
         socketLeavePreviousRoom(socket, user);
-        user = upsertUser({ id: socket.id, name: '', room: room, isHost: false, userColor: null, userAvatar: null });
+        user = upsertUser({ id: socket.id, name: '', room: room, isHost: false, userColor: null, userAvatar: null, rotation: null });
         socket.join(user.room);
         io.to(user.room).emit('room data', getRoom(user.room));
     });

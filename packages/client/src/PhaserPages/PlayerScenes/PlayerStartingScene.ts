@@ -1,8 +1,8 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
 import { persistentData } from "../tools/objects/PersistantData";
-import { findMyUser, getScreenCenter, getScreenDimensions } from "../tools/objects/Tools";
-import UserAvatarContainer, { generateRandomUserAvatar, loadUserAvatarSprites, makeMyUserAvatar } from "../tools/objects/UserAvatarContainer";
+import { findMyUser, getScreenDimensions, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
+import UserAvatarContainer, { generateRandomUserAvatar, loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
 
 export default class PlayerStartingScene extends PlayerScene {
@@ -22,18 +22,8 @@ export default class PlayerStartingScene extends PlayerScene {
     // this always has to run first
     generateRandomUserAvatar();
     loadUserAvatarSprites(this);
-    var screenCenter = getScreenCenter(this);
     var screenDimensions = getScreenDimensions(this);
-
-    (() => {
-      this.userAvatarContainer = null;
-      this.userAvatarContainer = makeMyUserAvatar(this, screenCenter.x, screenCenter.y, this.userAvatarContainer) || this.userAvatarContainer;
-      socket.on('room data', (roomData) => {
-        persistentData.roomData = roomData;
-        if (this.userAvatarContainer) return;
-        this.userAvatarContainer = makeMyUserAvatar(this, screenCenter.x, screenCenter.y, this.userAvatarContainer) || this.userAvatarContainer;
-      });
-    })()
+    makeMyUserAvatarInCenterOfPlayerScreen(this, this.userAvatarContainer);
 
     var text = this.add.text(screenDimensions.width / 2, 10, 'Please enter your name', { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 

@@ -22,7 +22,7 @@ export interface User {
     isHost: boolean;
     userColor: string | null;
     userAvatar: UserAvatar | null;
-    rotation: number;
+    rotation: number | null;
 }
 
 export interface RoomData {
