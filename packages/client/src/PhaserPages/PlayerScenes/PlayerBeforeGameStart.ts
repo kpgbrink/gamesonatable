@@ -1,4 +1,4 @@
-import { addFullScreenButton, addUserNameText, loadIfNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
+import { addFullScreenButton, addUserNameText, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
 import UserAvatarContainer, { loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
 
@@ -11,8 +11,8 @@ export default class PlayerBeforeGameStart extends PlayerScene {
     }
 
     preload() {
-        loadIfNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png');
-        loadIfNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png');
+        loadIfSpriteSheetNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png', { frameWidth: 64, frameHeight: 64 });
+        loadIfSpriteSheetNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
     }
 
     create() {

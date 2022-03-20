@@ -13,15 +13,19 @@ export const findMyUser = (roomData: RoomData | undefined) => {
     return roomData.users.find(user => user?.id === socket.id);
 }
 
-export const loadIfNotLoadedAndImageExists = (scene: Phaser.Scene, name: string, url: string, arrayIndex: number) => {
+export const loadIfImageNotLoadedAndUserAvatarHasIt = (scene: Phaser.Scene, name: string, url: string, arrayIndex: number) => {
     if (arrayIndex === -1) return;
-    loadIfNotLoaded(scene, name, url);
+    loadIfImageNotLoaded(scene, name, url);
 }
 
-export const loadIfNotLoaded = (scene: Phaser.Scene, name: string, url: string) => {
+export const loadIfImageNotLoaded = (scene: Phaser.Scene, name: string, url: string) => {
     if (!scene.textures.exists(name)) {
         scene.load.image(name, url);
     }
+}
+
+export const loadIfSpriteSheetNotLoaded = (scene: Phaser.Scene, name: string, url: string, frameConfig?: Phaser.Types.Loader.FileTypes.ImageFrameConfig) => {
+    scene.load.spritesheet(name, url, frameConfig);
 }
 
 export const addUserNameText = (scene: Phaser.Scene) => {
@@ -80,14 +84,19 @@ export const addFullScreenButton = (scene: Phaser.Scene) => {
     const screenDimensions = getScreenDimensions(scene);
     var button = scene.add.image(screenDimensions.width - 16, 16, 'fullscreen-white', 0).setOrigin(1, 0).setInteractive();
 
+    // on full screen exit show button again
+    scene.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => {
+        console.log('full screen is happening');
+        button.setVisible(false);
+    });
+
+    scene.scale.on(Phaser.Scale.Events.LEAVE_FULLSCREEN, () => {
+        console.log('full screen is ending');
+        button.setVisible(true);
+    });
+
     button.on('pointerup', function () {
-        if (scene.scale.isFullscreen) {
-            button.setFrame(0);
-            scene.scale.stopFullscreen();
-        }
-        else {
-            button.setFrame(1);
-            scene.scale.startFullscreen();
-        }
+        console.log('pressed full screen');
+        scene.scale.startFullscreen();
     }, this);
 }

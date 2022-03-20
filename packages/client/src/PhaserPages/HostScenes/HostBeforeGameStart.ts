@@ -1,7 +1,7 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
 import { persistentData } from "../tools/objects/PersistantData";
-import { addFullScreenButton, DegreesToRadians, getScreenCenter, loadIfNotLoaded } from "../tools/objects/Tools";
+import { addFullScreenButton, DegreesToRadians, getScreenCenter, loadIfSpriteSheetNotLoaded } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
@@ -15,8 +15,8 @@ export default class HostBeforeGameStart extends HostScene {
     }
 
     preload() {
-        loadIfNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png');
-        loadIfNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png');
+        loadIfSpriteSheetNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png', { frameWidth: 64, frameHeight: 64 });
+        loadIfSpriteSheetNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
     }
 
     addUsers(roomData: RoomData) {
