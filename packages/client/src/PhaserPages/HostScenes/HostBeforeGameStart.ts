@@ -30,9 +30,7 @@ export default class HostBeforeGameStart extends HostScene {
             // TODO put then in the correct rotation if rotation is set
             const userAvatarContainer = new UserAvatarContainer(this, screenCenter.x + Math.random() - .5, screenCenter.y + Math.random() - .5, user, onSizeChange);
             // if the rotation is already set then set the location to the correct rotation
-            console.log('userrotation', user.rotation);
             if (user.rotation) {
-                console.log('user rotation is set');
                 userAvatarContainer.rotation = user.rotation;
                 userAvatarContainer.x = screenCenter.x + (850 * Math.cos(user.rotation + DegreesToRadians(90)));
                 userAvatarContainer.y = screenCenter.y + (850 * Math.sin(user.rotation + DegreesToRadians(90)));

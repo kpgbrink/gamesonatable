@@ -104,13 +104,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('set player rotation', (userId: string, rotation: number) => {
-        console.log('rotation', rotation);
         // find user with userId
         const editingUser = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!editingUser) return;
         editingUser.rotation = rotation;
         upsertUser(editingUser);
-        console.log(editingUser);
     });
 
     socket.on('get room data', () => {
