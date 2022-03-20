@@ -27,7 +27,7 @@ export const addUserNameText = (scene: Phaser.Scene) => {
     const screenCenter = getScreenCenter(scene);
     if (!persistentData.roomData) return;
     const text = `${findMyUser(persistentData.roomData)?.name}`;
-    return scene.add.text(screenCenter.x / 2, 15, `${text}`, { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
+    return scene.add.text(screenCenter.x, 16, `${text}`, { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 }
 
 export const socketOffOnSceneShutdown = (phaserScene: Phaser.Scene) => {
