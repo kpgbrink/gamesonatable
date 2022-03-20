@@ -84,19 +84,19 @@ export const addFullScreenButton = (scene: Phaser.Scene) => {
     const screenDimensions = getScreenDimensions(scene);
     var button = scene.add.image(screenDimensions.width - 16, 16, 'fullscreen-white', 0).setOrigin(1, 0).setInteractive();
 
+    if (scene.scale.isFullscreen) {
+        button.setVisible(false);
+    }
     // on full screen exit show button again
     scene.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => {
-        console.log('full screen is happening');
         button.setVisible(false);
     });
 
     scene.scale.on(Phaser.Scale.Events.LEAVE_FULLSCREEN, () => {
-        console.log('full screen is ending');
         button.setVisible(true);
     });
 
     button.on('pointerup', function () {
-        console.log('pressed full screen');
         scene.scale.startFullscreen();
     }, this);
 }
