@@ -1,6 +1,6 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
-import { getScreenCenter } from "../tools/objects/Tools";
+import { DegreesToRadians, getScreenCenter } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
@@ -28,6 +28,7 @@ export default class HostBeforeGameStart extends HostScene {
                 this.input.setDraggable(userAvatarContainer);
             };
             const screenCenter = getScreenCenter(this);
+            // TODO put then in the correct rotation if rotation is set
             const userAvatarContainer = new UserAvatarContainer(this, screenCenter.x + Math.random() - .5, screenCenter.y + Math.random() - .5, user, onSizeChange);
             this.add.existing(userAvatarContainer);
             this.userAvatars.push(userAvatarContainer);
@@ -58,7 +59,6 @@ export default class HostBeforeGameStart extends HostScene {
         socket.emit('get room data');
         const screenCenter = getScreenCenter(this);
         this.add.circle(screenCenter.x, screenCenter.y, 850, 0xffffff);
-
     }
 
     updateFpsText() {
@@ -85,6 +85,11 @@ export default class HostBeforeGameStart extends HostScene {
             // move user avatar to new position
             userAvatar.x = newX;
             userAvatar.y = newY;
+            // rotate user avatar to face the center
+            userAvatar.rotation = angleFromCenterToUserAvatar - DegreesToRadians(90);
+            // update the avatar rotations to server if changed
+            // but don't make the update send things out to everyone else because it doesn't really matter to the others atm.
+
         });
     }
 

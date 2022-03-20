@@ -68,3 +68,12 @@ export const GetAngle = (vector: Phaser.Math.Vector2): number => {
     const angle = Math.atan2(vector.y, vector.x);
     return angle;
 }
+
+export const DegreesToRadians = (degrees: number): number => {
+    return degrees * (Math.PI / 180);
+}
+
+export const RadiansToDegrees = (radians: number): number => {
+    return radians * (180 / Math.PI);
+}
+
