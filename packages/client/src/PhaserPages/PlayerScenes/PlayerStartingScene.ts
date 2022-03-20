@@ -25,7 +25,6 @@ export default class PlayerStartingScene extends PlayerScene {
     var screenCenter = getScreenCenter(this);
     var screenDimensions = getScreenDimensions(this);
 
-
     (() => {
       this.userAvatarContainer = null;
       this.userAvatarContainer = makeMyUserAvatar(this, screenCenter.x, screenCenter.y, this.userAvatarContainer) || this.userAvatarContainer;

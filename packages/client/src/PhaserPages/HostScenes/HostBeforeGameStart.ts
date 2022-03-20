@@ -1,5 +1,6 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
+import { getScreenCenter } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
@@ -55,8 +56,9 @@ export default class HostBeforeGameStart extends HostScene {
             gameObject.y = dragY;
         });
         socket.emit('get room data');
+        const screenCenter = getScreenCenter(this);
 
-        this.add.circle(100, 100, 50, 0xffffff);
+        this.add.circle(screenCenter.x, screenCenter.y, 850, 0xffffff);
     }
 
     updateFpsText() {

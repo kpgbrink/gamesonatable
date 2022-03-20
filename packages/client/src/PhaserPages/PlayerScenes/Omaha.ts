@@ -24,7 +24,6 @@ export default class Omaha extends PlayerScene {
 
     for (var i = 0; i < 10; i++) {
       var image = this.add.image(x, y, 'cards', Phaser.Math.RND.pick(frames)).setInteractive({ draggable: true });
-
       x += 4;
       y += 4;
     }
