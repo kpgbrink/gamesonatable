@@ -1,7 +1,7 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
 import { persistentData } from "../tools/objects/PersistantData";
-import { DegreesToRadians, getScreenCenter } from "../tools/objects/Tools";
+import { addFullScreenButton, DegreesToRadians, getScreenCenter, loadIfNotLoaded } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
@@ -15,6 +15,8 @@ export default class HostBeforeGameStart extends HostScene {
     }
 
     preload() {
+        loadIfNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png');
+        loadIfNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png');
     }
 
     addUsers(roomData: RoomData) {
@@ -49,6 +51,13 @@ export default class HostBeforeGameStart extends HostScene {
                 userAvatarContainer?.legsImage?.clearTint();
             });
         });
+        // Remove any user avatars that are no longer in the room
+        this.userAvatars.forEach((userAvatar) => {
+            if (roomData?.users.find((user) => user.id === userAvatar.user.id)) return;
+            userAvatar.destroy();
+            this.userAvatars.splice(this.userAvatars.indexOf(userAvatar), 1);
+        });
+        addFullScreenButton(this);
     }
 
     create() {
@@ -64,6 +73,18 @@ export default class HostBeforeGameStart extends HostScene {
         socket.emit('get room data');
         const screenCenter = getScreenCenter(this);
         this.add.circle(screenCenter.x, screenCenter.y, 850, 0xffffff);
+        // Add button start game
+        const startGameButton = this.add.text(screenCenter.x - 150, screenCenter.y, 'Start Game', {
+            fontFamily: 'Arial',
+            fontSize: '50px',
+            color: '#000',
+            align: 'center',
+        });
+        startGameButton.setInteractive();
+        startGameButton.on('pointerdown', () => {
+            console.log('start game');
+            socket.emit('start game');
+        });
     }
 
     updateFpsText() {

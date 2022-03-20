@@ -1,7 +1,7 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
 import { persistentData } from "../tools/objects/PersistantData";
-import { findMyUser, getScreenDimensions, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
+import { addFullScreenButton, findMyUser, getScreenDimensions, loadIfNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
 import UserAvatarContainer, { generateRandomUserAvatar, loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
 
@@ -15,6 +15,8 @@ export default class PlayerStartingScene extends PlayerScene {
 
   preload() {
     this.load.html('nameform', 'assets/text/nameform.html');
+    loadIfNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png');
+    loadIfNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png');
   }
 
   create() {
@@ -63,6 +65,7 @@ export default class PlayerStartingScene extends PlayerScene {
       if (generatedName === undefined) return;
       text.setText('Welcome ' + generatedName);
     });
+    addFullScreenButton(this);
   }
 
   update() {

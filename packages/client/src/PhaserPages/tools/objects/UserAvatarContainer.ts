@@ -3,7 +3,7 @@ import Phaser from "phaser";
 import socket from "../../../SocketConnection";
 import { avatarImages } from "./avatarImages.generated";
 import { persistentData } from "./PersistantData";
-import { loadIfNotLoaded, loadIfNotLoadedAndImageExists, randomIndex } from "./Tools";
+import { loadIfNotLoaded, loadIfNotLoadedAndImageExists as loadIfNotLoadedAndUserAvatarHasIt, randomIndex } from "./Tools";
 
 const playerFolder = 'assets/player/';
 
@@ -36,14 +36,14 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
             const userAvatar = user.userAvatar;
             if (!userAvatar) return;
             loadIfNotLoaded(scene, `${userId}-base`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`);
-            loadIfNotLoadedAndImageExists(scene, `${userId}-cloak`, `${playerFolder}cloak/${avatarImages.cloak[userAvatar.cloak]}`, userAvatar.cloak);
-            loadIfNotLoadedAndImageExists(scene, `${userId}-gloves`, `${playerFolder}gloves/${avatarImages.gloves[userAvatar.gloves]}`, userAvatar.gloves);
-            loadIfNotLoadedAndImageExists(scene, `${userId}-body`, `${playerFolder}body/${avatarImages.body[userAvatar.body]}`, userAvatar.body);
-            loadIfNotLoadedAndImageExists(scene, `${userId}-beard`, `${playerFolder}beard/${avatarImages.beard[userAvatar.beard]}`, userAvatar.beard);
-            loadIfNotLoadedAndImageExists(scene, `${userId}-boots`, `${playerFolder}boots/${avatarImages.boots[userAvatar.boots]}`, userAvatar.boots);
-            loadIfNotLoadedAndImageExists(scene, `${userId}-hair`, `${playerFolder}hair/${avatarImages.hair[userAvatar.hair]}`, userAvatar.hair);
-            loadIfNotLoadedAndImageExists(scene, `${userId}-head`, `${playerFolder}head/${avatarImages.head[userAvatar.head]}`, userAvatar.head);
-            loadIfNotLoadedAndImageExists(scene, `${userId}-legs`, `${playerFolder}legs/${avatarImages.legs[userAvatar.legs]}`, userAvatar.legs);
+            loadIfNotLoadedAndUserAvatarHasIt(scene, `${userId}-cloak`, `${playerFolder}cloak/${avatarImages.cloak[userAvatar.cloak]}`, userAvatar.cloak);
+            loadIfNotLoadedAndUserAvatarHasIt(scene, `${userId}-gloves`, `${playerFolder}gloves/${avatarImages.gloves[userAvatar.gloves]}`, userAvatar.gloves);
+            loadIfNotLoadedAndUserAvatarHasIt(scene, `${userId}-body`, `${playerFolder}body/${avatarImages.body[userAvatar.body]}`, userAvatar.body);
+            loadIfNotLoadedAndUserAvatarHasIt(scene, `${userId}-beard`, `${playerFolder}beard/${avatarImages.beard[userAvatar.beard]}`, userAvatar.beard);
+            loadIfNotLoadedAndUserAvatarHasIt(scene, `${userId}-boots`, `${playerFolder}boots/${avatarImages.boots[userAvatar.boots]}`, userAvatar.boots);
+            loadIfNotLoadedAndUserAvatarHasIt(scene, `${userId}-hair`, `${playerFolder}hair/${avatarImages.hair[userAvatar.hair]}`, userAvatar.hair);
+            loadIfNotLoadedAndUserAvatarHasIt(scene, `${userId}-head`, `${playerFolder}head/${avatarImages.head[userAvatar.head]}`, userAvatar.head);
+            loadIfNotLoadedAndUserAvatarHasIt(scene, `${userId}-legs`, `${playerFolder}legs/${avatarImages.legs[userAvatar.legs]}`, userAvatar.legs);
             scene.load.start();
         });
     });

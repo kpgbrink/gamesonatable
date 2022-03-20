@@ -52,7 +52,6 @@ export const getScreenCenter = (scene: Phaser.Scene) => {
     }
 }
 
-
 export const makeMyUserAvatarInCenterOfPlayerScreen = (playerScene: Phaser.Scene, userAvatarContainer: UserAvatarContainer | null) => {
     var screenCenter = getScreenCenter(playerScene);
     userAvatarContainer = null;
@@ -77,3 +76,18 @@ export const RadiansToDegrees = (radians: number): number => {
     return radians * (180 / Math.PI);
 }
 
+export const addFullScreenButton = (scene: Phaser.Scene) => {
+    const screenDimensions = getScreenDimensions(scene);
+    var button = scene.add.image(screenDimensions.width - 16, 16, 'fullscreen-white', 0).setOrigin(1, 0).setInteractive();
+
+    button.on('pointerup', function () {
+        if (scene.scale.isFullscreen) {
+            button.setFrame(0);
+            scene.scale.stopFullscreen();
+        }
+        else {
+            button.setFrame(1);
+            scene.scale.startFullscreen();
+        }
+    }, this);
+}
