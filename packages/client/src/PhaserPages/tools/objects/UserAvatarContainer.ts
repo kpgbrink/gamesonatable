@@ -136,7 +136,6 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
             if (!image) return;
             this.sendToBack(image);
         });
-        console.log('updated the size');
         const width = (() => {
             if (!this.baseImage) return 0;
             return this.baseImage.width * this.imageMultiplier / 2.4;
