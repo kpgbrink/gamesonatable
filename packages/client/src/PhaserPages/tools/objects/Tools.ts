@@ -35,9 +35,18 @@ export const socketOffOnSceneShutdown = (phaserScene: Phaser.Scene) => {
         console.log('scene shutdown');
         socket.off();
     });
-
-    // phaserScene.events.once('destroy', () => {
-    //     console.log('scene destroy');
-    //     socket.off();
-    // });
 };
+
+export const getWidthAndHeight = (scene: Phaser.Scene) => {
+    return {
+        width: scene.cameras.main.width,
+        height: scene.cameras.main.height
+    }
+}
+
+export const getScreenCenter = (scene: Phaser.Scene) => {
+    return {
+        x: scene.cameras.main.width / 2,
+        y: scene.cameras.main.height / 2
+    }
+}

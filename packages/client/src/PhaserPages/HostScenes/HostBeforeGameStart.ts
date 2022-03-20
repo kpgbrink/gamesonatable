@@ -55,6 +55,8 @@ export default class HostBeforeGameStart extends HostScene {
             gameObject.y = dragY;
         });
         socket.emit('get room data');
+
+        this.add.circle(100, 100, 50, 0xffffff);
     }
 
     updateFpsText() {

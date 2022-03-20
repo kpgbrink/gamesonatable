@@ -43,3 +43,7 @@ code {
 .nameTextInput>input {
     max-width: 90%;
 }
+
+#game {
+    background-color: #010101;
+}
