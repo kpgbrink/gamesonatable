@@ -97,12 +97,7 @@ export default class HostBeforeGameStart extends HostScene {
             // calculate distance from center
             const distanceFromCenter = Math.sqrt(Math.pow(userAvatar.x - screenCenter.x, 2) + Math.pow(userAvatar.y - screenCenter.y, 2));
             // increase distance from center to make it to the outside of circle
-            const distanceFromCenterToOutside = (() => {
-                // if distance from center is higher than 850 then return 850
-                if (distanceFromCenter > 850) return 850;
-                // if distance from center is lower than 0 then return 0
-                return distanceFromCenter + .5;
-            })();
+            const distanceFromCenterToOutside = Math.min(distanceFromCenter + 8, 850);
             // calculate angle from center to user avatar
             const angleFromCenterToUserAvatar = Math.atan2(userAvatar.y - screenCenter.y, userAvatar.x - screenCenter.x);
             // calculate new x and y position
