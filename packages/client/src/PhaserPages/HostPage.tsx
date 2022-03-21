@@ -43,6 +43,7 @@ export default function HostPage() {
           autoCenter: Phaser.Scale.CENTER_BOTH,
           width: 1920 * 2,
           height: 1080 * 2,
+          fullscreenTarget: "game",
         },
       }}
       gameName="Host"

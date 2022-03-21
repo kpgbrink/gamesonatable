@@ -34,16 +34,6 @@ code {
     height: 100%;
 }
 
-.nameTextInput {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.nameTextInput>input {
-    max-width: 90%;
-}
-
 #game {
     background-color: #010101;
 }
