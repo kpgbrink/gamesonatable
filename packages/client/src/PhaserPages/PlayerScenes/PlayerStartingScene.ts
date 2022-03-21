@@ -7,10 +7,12 @@ import PlayerScene from "./tools/PlayerScene";
 
 export default class PlayerStartingScene extends PlayerScene {
   userAvatarContainer: UserAvatarContainer | null;
+  returnKey: Phaser.Input.Keyboard.Key | null;
 
   constructor() {
     super({ key: 'PlayerStartingScene' });
     this.userAvatarContainer = null;
+    this.returnKey = null;
   }
 
   preload() {
@@ -31,23 +33,28 @@ export default class PlayerStartingScene extends PlayerScene {
 
     var element = this.add.dom(screenDimensions.width / 2, 150).createFromCache('nameform').setOrigin(0.5);
 
+
+    const nameSend = () => {
+      var inputText = element.getChildByName('nameField') as HTMLInputElement;
+      if (inputText.value === '') return;
+      //  Have they entered anything?
+      element.removeListener('click');
+      //  Hide the login element
+      element.setVisible(false);
+      //  Populate the text with whatever they typed in
+      text.setText('Welcome ' + inputText.value);
+      socket.emit('set player name', inputText.value);
+    };
     element.addListener('click');
-
     element.on('click', function (this: any, event: any) {
-      if (event.target.name === 'playButton') {
-        var inputText = this.getChildByName('nameField');
-
-        //  Have they entered anything?
-        this.removeListener('click');
-
-        //  Hide the login element
-        this.setVisible(false);
-        if (inputText.value === '') return;
-        //  Populate the text with whatever they typed in
-        text.setText('Welcome ' + inputText.value);
-        socket.emit('set player name', inputText.value);
-      }
+      if (event.target.name !== 'playButton') return;
+      nameSend();
     });
+    this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+    this.returnKey.on('down', function (this: any) {
+      nameSend();
+    });
+
 
     socket.on('set player name', name => {
       text.setText('Welcome ' + name);
