@@ -32,7 +32,6 @@ export default function PlayerJoin() {
   useEffect(() => {
     if (!roomId && !roomCreated) return;
     const hostRoomId = roomId || roomCreated;
-    console.log("start hosting the room");
     socket.emit("host room", hostRoomId);
     setRoomCreated(hostRoomId);
   }, [setRoomCreated, roomCreated, roomId, socket]);
@@ -41,7 +40,6 @@ export default function PlayerJoin() {
   useEffect(() => {
     //The socket is a module that exports the actual socket.io socket
     const roomDataListener = (roomData: RoomData) => {
-      console.log("got room data", roomData);
       if (!roomData?.users) return;
       setUserList(roomData.users);
     };
