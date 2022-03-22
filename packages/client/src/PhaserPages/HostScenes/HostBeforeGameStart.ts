@@ -1,5 +1,6 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
+import MenuButton from "../tools/objects/MenuButton";
 import { persistentData } from "../tools/objects/PersistantData";
 import { addFullScreenButton, DegreesToRadians, getScreenCenter, loadIfSpriteSheetNotLoaded } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
@@ -9,7 +10,7 @@ import HostScene from "./tools/HostScene";
 export default class HostBeforeGameStart extends HostScene {
     userAvatars: UserAvatarContainer[] = [];
     instructionText: Phaser.GameObjects.Text | null;
-    startGameButton: Phaser.GameObjects.Text | null;
+    startGameButton: MenuButton | null;
 
 
     constructor() {
@@ -29,7 +30,7 @@ export default class HostBeforeGameStart extends HostScene {
             if (!user.userAvatar) return;
             if (this.userAvatars.find((userAvatar) => userAvatar.user.id === user.id)) return;
             const onSizeChange = (userAvatarContainer: UserAvatarContainer) => {
-                userAvatarContainer.setInteractive();
+                userAvatarContainer.setInteractive({ useHandCursor: true });
                 this.input.setDraggable(userAvatarContainer);
             };
             const screenCenter = getScreenCenter(this);
@@ -67,15 +68,22 @@ export default class HostBeforeGameStart extends HostScene {
     create() {
         super.create();
         socket.emit('set player current scene', 'PlayerBeforeGameStart');
+        this.setStartGameButton();
+
         socket.on('room data', (roomData: RoomData) => {
             this.addUsers(roomData);
             // Have big instruction text until someone moves a player.
             // The instruction text will appear if at least one player does not have a set rotation yet.
             // The instruction text will disappear if at least one player has dragged a person.
+            // Add button start game
             (() => {
                 // Check if all of the rotations are already set. And if they are do not show the instruction text.
                 const allRotationsSet = this.userAvatars.every((userAvatar) => userAvatar.user.rotation);
                 if (allRotationsSet) return;
+                console.log(this.startGameButton);
+                console.log('destroy the start game button');
+                this.startGameButton?.destroy();
+                this.startGameButton = null;
                 this.instructionText = this.add.text(screenCenter.x - 400, screenCenter.y - 100, 'Drag your avatar to your starting position!', {
                     fontFamily: 'Arial',
                     fontSize: '80px',
@@ -85,36 +93,31 @@ export default class HostBeforeGameStart extends HostScene {
                     strokeThickness: 5,
                     wordWrap: { width: 1000, useAdvancedWrap: true }
                 });
-            })()
+            })();
         });
         this.input.on('drag', (pointer: any, gameObject: any, dragX: number, dragY: number) => {
             gameObject.x = dragX;
             gameObject.y = dragY;
             this.instructionText?.destroy();
+            this.setStartGameButton();
         });
         socket.emit('get room data');
         const screenCenter = getScreenCenter(this);
         this.add.circle(screenCenter.x, screenCenter.y, 850, 0xffffff);
 
-
-
-
-        // Add button start game
-        // this.startGameButton = this.add.text(screenCenter.x - 600, screenCenter.y, 'Start Game', {
-        //     fontFamily: 'Arial',
-        //     fontSize: '50px',
-        //     color: '#00ff44',
-        //     align: 'center',
-        // });
-
-        // this.startGameButton.setInteractive();
-        // this.startGameButton.on('pointerdown', () => {
-        //     console.log('start game');
-        //     socket.emit('start game');
-        // });
     }
 
-    updateFpsText() {
+    setStartGameButton() {
+        if (this.startGameButton) return;
+        const onStartGameButtonPressed = () => {
+            console.log('start game');
+            socket.emit('start game');
+            // go to the game scene.
+        };
+        this.startGameButton = new MenuButton(this.cameras.main.centerX, this.cameras.main.centerY, this, onStartGameButtonPressed);
+        this.startGameButton.setText('Start game');
+        console.log('make the start game', this.startGameButton);
+        this.add.existing(this.startGameButton);
     }
 
     update() {
