@@ -69,7 +69,6 @@ export default class PlayerStartingScene extends PlayerScene {
     const generatedName = myUser.name;
     if (!generatedName) return;
     text.setText('Welcome ' + generatedName);
-    console.log('my user avatar container', this.userAvatarContainer);
     if (!this.userAvatarContainer) return;
     this.userAvatarContainer.setUserName(generatedName);
   }
