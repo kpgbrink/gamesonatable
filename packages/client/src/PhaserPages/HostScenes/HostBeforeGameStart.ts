@@ -80,8 +80,6 @@ export default class HostBeforeGameStart extends HostScene {
                 // Check if all of the rotations are already set. And if they are do not show the instruction text.
                 const allRotationsSet = this.userAvatars.every((userAvatar) => userAvatar.user.rotation);
                 if (allRotationsSet) return;
-                console.log(this.startGameButton);
-                console.log('destroy the start game button');
                 this.startGameButton?.destroy();
                 this.startGameButton = null;
                 this.instructionText = this.add.text(screenCenter.x - 400, screenCenter.y - 100, 'Drag your avatar to your starting position!', {
@@ -110,13 +108,11 @@ export default class HostBeforeGameStart extends HostScene {
     setStartGameButton() {
         if (this.startGameButton) return;
         const onStartGameButtonPressed = () => {
-            console.log('start game');
             socket.emit('start game');
             // go to the game scene.
         };
         this.startGameButton = new MenuButton(this.cameras.main.centerX, this.cameras.main.centerY, this, onStartGameButtonPressed);
         this.startGameButton.setText('Start game');
-        console.log('make the start game', this.startGameButton);
         this.add.existing(this.startGameButton);
     }
 
