@@ -33,7 +33,6 @@ export default class PlayerStartingScene extends PlayerScene {
 
     var element = this.add.dom(screenDimensions.width / 2, 150).createFromCache('nameform').setOrigin(0.5);
 
-
     const nameSend = () => {
       var inputText = element.getChildByName('nameField') as HTMLInputElement;
       if (inputText.value === '') return;
