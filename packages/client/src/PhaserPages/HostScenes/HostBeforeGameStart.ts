@@ -8,10 +8,14 @@ import HostScene from "./tools/HostScene";
 
 export default class HostBeforeGameStart extends HostScene {
     userAvatars: UserAvatarContainer[] = [];
+    instructionText: Phaser.GameObjects.Text | null;
+    startGameButton: Phaser.GameObjects.Text | null;
 
 
     constructor() {
         super({ key: 'HostBeforeGameStart' });
+        this.instructionText = null;
+        this.startGameButton = null;
     }
 
     preload() {
@@ -65,26 +69,49 @@ export default class HostBeforeGameStart extends HostScene {
         socket.emit('set player current scene', 'PlayerBeforeGameStart');
         socket.on('room data', (roomData: RoomData) => {
             this.addUsers(roomData);
+            // Have big instruction text until someone moves a player.
+            // The instruction text will appear if at least one player does not have a set rotation yet.
+            // The instruction text will disappear if at least one player has dragged a person.
+            (() => {
+                // Check if all of the rotations are already set. And if they are do not show the instruction text.
+                const allRotationsSet = this.userAvatars.every((userAvatar) => userAvatar.user.rotation);
+                if (allRotationsSet) return;
+                this.instructionText = this.add.text(screenCenter.x - 400, screenCenter.y - 100, 'Drag your avatar to your starting position!', {
+                    fontFamily: 'Arial',
+                    fontSize: '80px',
+                    color: '#000',
+                    align: 'center',
+                    stroke: '#014714',
+                    strokeThickness: 5,
+                    wordWrap: { width: 1000, useAdvancedWrap: true }
+                });
+            })()
         });
-        this.input.on('drag', function (pointer: any, gameObject: any, dragX: number, dragY: number) {
+        this.input.on('drag', (pointer: any, gameObject: any, dragX: number, dragY: number) => {
             gameObject.x = dragX;
             gameObject.y = dragY;
+            this.instructionText?.destroy();
         });
         socket.emit('get room data');
         const screenCenter = getScreenCenter(this);
         this.add.circle(screenCenter.x, screenCenter.y, 850, 0xffffff);
+
+
+
+
         // Add button start game
-        const startGameButton = this.add.text(screenCenter.x - 150, screenCenter.y, 'Start Game', {
-            fontFamily: 'Arial',
-            fontSize: '50px',
-            color: '#000',
-            align: 'center',
-        });
-        startGameButton.setInteractive();
-        startGameButton.on('pointerdown', () => {
-            console.log('start game');
-            socket.emit('start game');
-        });
+        // this.startGameButton = this.add.text(screenCenter.x - 600, screenCenter.y, 'Start Game', {
+        //     fontFamily: 'Arial',
+        //     fontSize: '50px',
+        //     color: '#00ff44',
+        //     align: 'center',
+        // });
+
+        // this.startGameButton.setInteractive();
+        // this.startGameButton.on('pointerdown', () => {
+        //     console.log('start game');
+        //     socket.emit('start game');
+        // });
     }
 
     updateFpsText() {

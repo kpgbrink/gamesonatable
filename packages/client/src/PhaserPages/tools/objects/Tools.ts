@@ -1,7 +1,8 @@
 import { RoomData } from "api";
 import socket from "../../../SocketConnection";
+import PlayerScene from "../../PlayerScenes/tools/PlayerScene";
 import { persistentData } from "./PersistantData";
-import UserAvatarContainer, { makeMyUserAvatar } from "./UserAvatarContainer";
+import { makeMyUserAvatar } from "./UserAvatarContainer";
 
 // Random index from array
 export const randomIndex = (array: any[]) => {
@@ -56,14 +57,14 @@ export const getScreenCenter = (scene: Phaser.Scene) => {
     }
 }
 
-export const makeMyUserAvatarInCenterOfPlayerScreen = (playerScene: Phaser.Scene, userAvatarContainer: UserAvatarContainer | null) => {
+export const makeMyUserAvatarInCenterOfPlayerScreen = (playerScene: PlayerScene) => {
     var screenCenter = getScreenCenter(playerScene);
-    userAvatarContainer = null;
-    userAvatarContainer = makeMyUserAvatar(playerScene, screenCenter.x, screenCenter.y, userAvatarContainer) || userAvatarContainer;
+    playerScene.userAvatarContainer = null;
+    playerScene.userAvatarContainer = makeMyUserAvatar(playerScene, screenCenter.x, screenCenter.y, playerScene.userAvatarContainer) || playerScene.userAvatarContainer;
     socket.on('room data', (roomData) => {
         persistentData.roomData = roomData;
-        if (userAvatarContainer) return;
-        userAvatarContainer = makeMyUserAvatar(playerScene, screenCenter.x, screenCenter.y, userAvatarContainer) || userAvatarContainer;
+        if (playerScene.userAvatarContainer) return;
+        playerScene.userAvatarContainer = makeMyUserAvatar(playerScene, screenCenter.x, screenCenter.y, playerScene.userAvatarContainer) || playerScene.userAvatarContainer;
     });
 }
 

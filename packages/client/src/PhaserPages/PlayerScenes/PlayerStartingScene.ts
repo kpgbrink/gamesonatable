@@ -2,11 +2,10 @@ import { RoomData } from "api";
 import socket from "../../SocketConnection";
 import { persistentData } from "../tools/objects/PersistantData";
 import { addFullScreenButton, findMyUser, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
-import UserAvatarContainer, { generateRandomUserAvatar, loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
+import { generateRandomUserAvatar, loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
 
 export default class PlayerStartingScene extends PlayerScene {
-  userAvatarContainer: UserAvatarContainer | null;
   returnKey: Phaser.Input.Keyboard.Key | null;
 
   constructor() {
@@ -27,7 +26,7 @@ export default class PlayerStartingScene extends PlayerScene {
     generateRandomUserAvatar();
     loadUserAvatarSprites(this);
     var screenDimensions = getScreenDimensions(this);
-    makeMyUserAvatarInCenterOfPlayerScreen(this, this.userAvatarContainer);
+    makeMyUserAvatarInCenterOfPlayerScreen(this);
 
     var text = this.add.text(screenDimensions.width / 2, 10, 'Please enter your name', { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
 
@@ -53,26 +52,26 @@ export default class PlayerStartingScene extends PlayerScene {
     this.returnKey.on('down', function (this: any) {
       nameSend();
     });
-
-
-    socket.on('set player name', name => {
-      text.setText('Welcome ' + name);
-    });
-
-    // Fix this duplicate logic
     (() => {
       const roomData = persistentData.roomData;
-      if (!roomData) return;
-      const generatedName = findMyUser(roomData)?.name;
-      if (!generatedName) return;
-      text.setText('Welcome ' + generatedName);
+      this.setUserNames(roomData, text);
     })();
     socket.on('room data', (roomData: RoomData) => {
-      const generatedName = findMyUser(roomData)?.name;
-      if (generatedName === undefined) return;
-      text.setText('Welcome ' + generatedName);
+      this.setUserNames(roomData, text);
     });
     addFullScreenButton(this);
+  }
+
+  setUserNames(roomData: RoomData | null, text: Phaser.GameObjects.Text) {
+    if (!roomData) return;
+    const myUser = findMyUser(roomData);
+    if (!myUser) return;
+    const generatedName = myUser.name;
+    if (!generatedName) return;
+    text.setText('Welcome ' + generatedName);
+    console.log('my user avatar container', this.userAvatarContainer);
+    if (!this.userAvatarContainer) return;
+    this.userAvatarContainer.setUserName(generatedName);
   }
 
   update() {

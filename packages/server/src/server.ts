@@ -92,7 +92,6 @@ io.on('connection', (socket) => {
         user = upsertUser({ ...user, name: name })
         // TODO
         io.to(user.room).emit('room data', getRoom(user.room));
-        io.to(user.id).emit('set player name', name);
     });
 
     socket.on('set player avatar', (avatar: UserAvatar) => {

@@ -1,13 +1,11 @@
 import { addFullScreenButton, addUserNameText, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
-import UserAvatarContainer, { loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
+import { loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
 
 export default class PlayerBeforeGameStart extends PlayerScene {
-    userAvatarContainer: UserAvatarContainer | null;
 
     constructor() {
         super({ key: 'PlayerBeforeGameStart' });
-        this.userAvatarContainer = null;
     }
 
     preload() {
@@ -19,7 +17,7 @@ export default class PlayerBeforeGameStart extends PlayerScene {
         super.create();
         addUserNameText(this);
         loadUserAvatarSprites(this);
-        makeMyUserAvatarInCenterOfPlayerScreen(this, this.userAvatarContainer);
+        makeMyUserAvatarInCenterOfPlayerScreen(this);
         addFullScreenButton(this);
     }
 
