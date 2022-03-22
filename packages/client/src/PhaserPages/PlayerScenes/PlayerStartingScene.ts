@@ -59,6 +59,7 @@ export default class PlayerStartingScene extends PlayerScene {
       text.setText('Welcome ' + name);
     });
 
+    // Fix this duplicate logic
     (() => {
       const roomData = persistentData.roomData;
       if (!roomData) return;
@@ -76,13 +77,5 @@ export default class PlayerStartingScene extends PlayerScene {
 
   update() {
 
-  }
-
-  destroy() {
-    console.log("scene is destroyed");
-  }
-
-  shutdown() {
-    console.log('SHCENEN ENFEJKL SFDJLKFDS JLKDSF JFD:SLK');
   }
 }
