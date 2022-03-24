@@ -69,8 +69,8 @@ export default class HostBeforeGameStart extends HostScene {
         super.create();
         socket.emit('set player current scene', 'PlayerBeforeGameStart');
         (() => {
-            const screenCenter = getScreenCenter(this);
             // Create both the instruction text and the start game button
+            const screenCenter = getScreenCenter(this);
             this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 100, 'Drag your avatar to your starting position!', {
                 fontFamily: 'Arial',
                 fontSize: '80px',
@@ -87,6 +87,8 @@ export default class HostBeforeGameStart extends HostScene {
             this.startGameButton = new MenuButton(screenCenter.x, screenCenter.y, this, onStartGameButtonPressed);
             this.startGameButton.setText('Start game');
             this.add.existing(this.startGameButton);
+            this.instructionText.setVisible(false);
+            this.startGameButton.setVisible(false);
         })();
         this.onRoomDataUpdateInstructionsOrStartGameButton(persistentData.roomData);
         socket.on('room data', (roomData: RoomData) => {
@@ -107,15 +109,14 @@ export default class HostBeforeGameStart extends HostScene {
         if (!roomData) return;
         // Check if all of the rotations are already set. And if they are do not show the instruction text.
         const allRotationsSet = this.userAvatars.every((userAvatar) => userAvatar.user.rotation);
-        console.log('all rotations set', allRotationsSet);
-        (() => {
-            if (allRotationsSet) return;
+        if (allRotationsSet) {
+            // Do not show the start game button if previously was not showing it.
+            if (!this.instructionText?.visible) {
+                this.setStartGameButton();
+            }
+        } else {
             this.setInstructionText();
-        })();
-        (() => {
-            if (!allRotationsSet) return;
-            this.setStartGameButton();
-        })();
+        }
     }
 
     setInstructionText() {
