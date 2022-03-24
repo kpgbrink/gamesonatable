@@ -28,6 +28,7 @@ export default class HostBeforeGameStart extends HostScene {
         // Create a user avatar for each user
         roomData?.users.forEach((user) => {
             if (!user.userAvatar) return;
+            if (user.isHost) return;
             if (this.userAvatars.find((userAvatar) => userAvatar.user.id === user.id)) return;
             const onSizeChange = (userAvatarContainer: UserAvatarContainer) => {
                 userAvatarContainer.setInteractive({ useHandCursor: true });
@@ -99,6 +100,10 @@ export default class HostBeforeGameStart extends HostScene {
             const userAvatarContainer = this.userAvatars.find((userAvatar) => userAvatar.user.id === userId);
             if (!userAvatarContainer) return;
             userAvatarContainer.add(this.add.sprite(0, 0, 'checkmark'));
+            // If all users are ready then start the game
+            if (Object.keys(this.userBeforeGameStartDictionary).length === this.userAvatars.length) {
+                this.startGame();
+            }
         });
     }
 
