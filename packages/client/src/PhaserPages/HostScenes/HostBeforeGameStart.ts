@@ -75,6 +75,7 @@ export default class HostBeforeGameStart extends HostScene {
         socket.on('room data', (roomData: RoomData) => {
             this.addUsers(roomData);
             this.onRoomDataUpdateInstructionsOrStartGameButton(roomData);
+            this.startGameIfAllUsersReady();
         });
         this.input.on('drag', (pointer: any, gameObject: any, dragX: number, dragY: number) => {
             gameObject.x = dragX;
@@ -103,20 +104,29 @@ export default class HostBeforeGameStart extends HostScene {
             const checkmark = this.add.image(0, 0, 'checkmark');
             checkmark.setScale(.2);
             userAvatarContainer.add(checkmark);
-            // Remove users from dictionary if they don't exist in the room
-            Object.keys(this.userBeforeGameStartDictionary).forEach((userId) => {
-                if (!this.userAvatars.find((userAvatar) => userAvatar.user.id === userId)) {
-                    delete this.userBeforeGameStartDictionary[userId];
-                }
-            });
-            // If all users are ready then start the game
-            console.log(Object.keys(this.userBeforeGameStartDictionary).length, this.userAvatars.length);
-            const allNonHostUsers = this.userAvatars.filter((userAvatar) => !userAvatar.user.isHost);
-            if (Object.keys(this.userBeforeGameStartDictionary).length === allNonHostUsers.length) {
-                this.startGame();
+            this.startGameIfAllUsersReady();
+        });
+    }
+
+    startGameIfAllUsersReady() {
+        this.removeUsersWhoDoNotExist();
+        // If all users are ready then start the game
+        console.log(Object.keys(this.userBeforeGameStartDictionary).length, this.userAvatars.length);
+        const allNonHostUsers = this.userAvatars.filter((userAvatar) => !userAvatar.user.isHost);
+        if (Object.keys(this.userBeforeGameStartDictionary).length === allNonHostUsers.length) {
+            this.startGame();
+        }
+    }
+
+    removeUsersWhoDoNotExist() {
+        // Remove users from dictionary if they don't exist in the room
+        Object.keys(this.userBeforeGameStartDictionary).forEach((userId) => {
+            if (!this.userAvatars.find((userAvatar) => userAvatar.user.id === userId)) {
+                delete this.userBeforeGameStartDictionary[userId];
             }
         });
     }
+
 
     setUpStartGameButtonAndInstructionText() {
         // Create both the instruction text and the start game button
