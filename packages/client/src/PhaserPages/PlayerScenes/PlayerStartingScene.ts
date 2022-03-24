@@ -64,8 +64,6 @@ export default class PlayerStartingScene extends PlayerScene {
     });
     addFullScreenButton(this);
 
-
-
     this.rotateDeviceText = this.add.text(screenDimensions.width / 2, screenDimensions.height - 200, 'Please rotate your device',
       { color: 'white', fontSize: '80px' }).setOrigin(0.5);
     this.showSuggestionToRotateDevice();

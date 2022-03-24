@@ -68,7 +68,26 @@ export default class HostBeforeGameStart extends HostScene {
     create() {
         super.create();
         socket.emit('set player current scene', 'PlayerBeforeGameStart');
-        console.log('new nesssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss');
+        (() => {
+            const screenCenter = getScreenCenter(this);
+            // Create both the instruction text and the start game button
+            this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 100, 'Drag your avatar to your starting position!', {
+                fontFamily: 'Arial',
+                fontSize: '80px',
+                color: '#000',
+                align: 'center',
+                stroke: '#014714',
+                strokeThickness: 5,
+                wordWrap: { width: 1000, useAdvancedWrap: true },
+            }).setOrigin(0.5).setDepth(1);
+            const onStartGameButtonPressed = () => {
+                socket.emit('start game');
+                // go to the game scene.
+            };
+            this.startGameButton = new MenuButton(screenCenter.x, screenCenter.y, this, onStartGameButtonPressed);
+            this.startGameButton.setText('Start game');
+            this.add.existing(this.startGameButton);
+        })();
         this.onRoomDataUpdateInstructionsOrStartGameButton(persistentData.roomData);
         socket.on('room data', (roomData: RoomData) => {
             this.addUsers(roomData);
@@ -77,7 +96,6 @@ export default class HostBeforeGameStart extends HostScene {
         this.input.on('drag', (pointer: any, gameObject: any, dragX: number, dragY: number) => {
             gameObject.x = dragX;
             gameObject.y = dragY;
-            this.instructionText?.destroy();
             this.setStartGameButton();
         });
         socket.emit('get room data');
@@ -87,56 +105,27 @@ export default class HostBeforeGameStart extends HostScene {
 
     onRoomDataUpdateInstructionsOrStartGameButton(roomData: RoomData | null) {
         if (!roomData) return;
-        // Have big instruction text until someone moves a player.
-        // The instruction text will appear if at least one player does not have a set rotation yet.
-        // The instruction text will disappear if at least one player has dragged a person.
+        // Check if all of the rotations are already set. And if they are do not show the instruction text.
+        const allRotationsSet = this.userAvatars.every((userAvatar) => userAvatar.user.rotation);
+        console.log('all rotations set', allRotationsSet);
         (() => {
-            // Check if all of the rotations are already set. And if they are do not show the instruction text.
-            const allRotationsSet = this.userAvatars.every((userAvatar) => userAvatar.user.rotation);
-            console.log('all rotations set', allRotationsSet);
-            (() => {
-                if (allRotationsSet) return;
-                // this.startGameButton?.destroy();
-                this.setInstructionText();
-            })();
-            (() => {
-                if (!allRotationsSet || this.instructionText !== null) return;
-                console.log('huh');
-                this.setStartGameButton();
-            })();
+            if (allRotationsSet) return;
+            this.setInstructionText();
+        })();
+        (() => {
+            if (!allRotationsSet) return;
+            this.setStartGameButton();
         })();
     }
 
     setInstructionText() {
-        console.log('create instruction text');
-        // remove start game button
-        this.startGameButton?.destroy();
-        this.startGameButton = null;
-        const screenCenter = getScreenCenter(this);
-        this.instructionText = this.add.text(screenCenter.x - 400, screenCenter.y - 100, 'Drag your avatar to your starting position!', {
-            fontFamily: 'Arial',
-            fontSize: '80px',
-            color: '#000',
-            align: 'center',
-            stroke: '#014714',
-            strokeThickness: 5,
-            wordWrap: { width: 1000, useAdvancedWrap: true }
-        });
+        this.startGameButton?.setVisible(false);
+        this.instructionText?.setVisible(true);
     }
 
     setStartGameButton() {
-        console.log('create start game button');
-        // Destroy the instruction text
-        if (this.startGameButton) return;
-        this.instructionText?.destroy();
-        this.instructionText = null;
-        const onStartGameButtonPressed = () => {
-            socket.emit('start game');
-            // go to the game scene.
-        };
-        this.startGameButton = new MenuButton(this.cameras.main.centerX, this.cameras.main.centerY, this, onStartGameButtonPressed);
-        this.startGameButton.setText('Start game');
-        this.add.existing(this.startGameButton);
+        this.startGameButton?.setVisible(true);
+        this.instructionText?.setVisible(false);
     }
 
     update() {
