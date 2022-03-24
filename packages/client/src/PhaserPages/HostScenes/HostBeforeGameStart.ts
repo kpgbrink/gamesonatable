@@ -155,7 +155,9 @@ export default class HostBeforeGameStart extends HostScene {
     onRoomDataUpdateInstructionsOrStartGameButton(roomData: RoomData | null) {
         if (!roomData) return;
         // Check if all of the rotations are already set. And if they are do not show the instruction text.
-        const allRotationsSet = this.userAvatars.every((userAvatar) => userAvatar.user.rotation);
+        // const allRotationsSet = this.userAvatars.every((userAvatar) => userAvatar.user.rotation);
+        const allRotationsSet = roomData.users.filter(user => !user.isHost).every((user) => user.rotation);
+        console.log('allRotationsSet', roomData.users);
         if (allRotationsSet) {
             // Do not show the start game button if previously was not showing it.
             if (!this.instructionText?.visible) {
