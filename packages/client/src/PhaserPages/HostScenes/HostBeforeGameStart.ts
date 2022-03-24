@@ -2,7 +2,7 @@ import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../tools/objects/MenuButton";
 import { persistentData } from "../tools/objects/PersistantData";
-import { addFullScreenButton, DegreesToRadians, getScreenCenter, loadIfSpriteSheetNotLoaded } from "../tools/objects/Tools";
+import { addFullScreenButton, DegreesToRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
@@ -22,6 +22,7 @@ export default class HostBeforeGameStart extends HostScene {
     preload() {
         loadIfSpriteSheetNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png', { frameWidth: 64, frameHeight: 64 });
         loadIfSpriteSheetNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
+        loadIfImageNotLoaded(this, 'checkmark', 'assets/ui/checkmark.png');
     }
 
     addUsers(roomData: RoomData) {
@@ -99,9 +100,19 @@ export default class HostBeforeGameStart extends HostScene {
             // Add a checkmark to the user avatar container
             const userAvatarContainer = this.userAvatars.find((userAvatar) => userAvatar.user.id === userId);
             if (!userAvatarContainer) return;
-            userAvatarContainer.add(this.add.sprite(0, 0, 'checkmark'));
+            const checkmark = this.add.image(0, 0, 'checkmark');
+            checkmark.setScale(.2);
+            userAvatarContainer.add(checkmark);
+            // Remove users from dictionary if they don't exist in the room
+            Object.keys(this.userBeforeGameStartDictionary).forEach((userId) => {
+                if (!this.userAvatars.find((userAvatar) => userAvatar.user.id === userId)) {
+                    delete this.userBeforeGameStartDictionary[userId];
+                }
+            });
             // If all users are ready then start the game
-            if (Object.keys(this.userBeforeGameStartDictionary).length === this.userAvatars.length) {
+            console.log(Object.keys(this.userBeforeGameStartDictionary).length, this.userAvatars.length);
+            const allNonHostUsers = this.userAvatars.filter((userAvatar) => !userAvatar.user.isHost);
+            if (Object.keys(this.userBeforeGameStartDictionary).length === allNonHostUsers.length) {
                 this.startGame();
             }
         });

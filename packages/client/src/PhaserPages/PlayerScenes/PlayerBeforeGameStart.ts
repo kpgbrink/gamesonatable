@@ -28,6 +28,17 @@ export default class PlayerBeforeGameStart extends PlayerScene {
         addFullScreenButton(this);
         this.addReadyButton();
         this.checkIfIAmReady();
+        this.addInstructions();
+    }
+
+    addInstructions() {
+        var screenDimensions = getScreenDimensions(this);
+        this.add.text(0, screenDimensions.height / 3, 'Drag your player to yourself!',
+            {
+                color: 'green',
+                fontSize: '50px',
+                wordWrap: { width: 800, useAdvancedWrap: true }
+            });
     }
 
     checkIfIAmReady() {
