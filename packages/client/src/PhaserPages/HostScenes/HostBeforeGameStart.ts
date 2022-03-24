@@ -68,28 +68,7 @@ export default class HostBeforeGameStart extends HostScene {
     create() {
         super.create();
         socket.emit('set player current scene', 'PlayerBeforeGameStart');
-        (() => {
-            // Create both the instruction text and the start game button
-            const screenCenter = getScreenCenter(this);
-            this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 100, 'Drag your avatar to your starting position!', {
-                fontFamily: 'Arial',
-                fontSize: '80px',
-                color: '#000',
-                align: 'center',
-                stroke: '#014714',
-                strokeThickness: 5,
-                wordWrap: { width: 1000, useAdvancedWrap: true },
-            }).setOrigin(0.5).setDepth(1);
-            const onStartGameButtonPressed = () => {
-                socket.emit('start game');
-                // go to the game scene.
-            };
-            this.startGameButton = new MenuButton(screenCenter.x, screenCenter.y, this, onStartGameButtonPressed);
-            this.startGameButton.setText('Start game');
-            this.add.existing(this.startGameButton);
-            this.instructionText.setVisible(false);
-            this.startGameButton.setVisible(false);
-        })();
+        this.setUpStartGameButtonAndInstructionText();
         this.onRoomDataUpdateInstructionsOrStartGameButton(persistentData.roomData);
         socket.on('room data', (roomData: RoomData) => {
             this.addUsers(roomData);
@@ -103,6 +82,29 @@ export default class HostBeforeGameStart extends HostScene {
         socket.emit('get room data');
         const screenCenter = getScreenCenter(this);
         this.add.circle(screenCenter.x, screenCenter.y, 850, 0xffffff);
+    }
+
+    setUpStartGameButtonAndInstructionText() {
+        // Create both the instruction text and the start game button
+        const screenCenter = getScreenCenter(this);
+        this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 100, 'Drag your avatar to your starting position!', {
+            fontFamily: 'Arial',
+            fontSize: '80px',
+            color: '#000',
+            align: 'center',
+            stroke: '#014714',
+            strokeThickness: 5,
+            wordWrap: { width: 1000, useAdvancedWrap: true },
+        }).setOrigin(0.5).setDepth(1);
+        const onStartGameButtonPressed = () => {
+            socket.emit('start game');
+            // go to the game scene.
+        };
+        this.startGameButton = new MenuButton(screenCenter.x, screenCenter.y, this, onStartGameButtonPressed);
+        this.startGameButton.setText('Start game');
+        this.add.existing(this.startGameButton);
+        this.instructionText.setVisible(false);
+        this.startGameButton.setVisible(false);
     }
 
     onRoomDataUpdateInstructionsOrStartGameButton(roomData: RoomData | null) {

@@ -8,6 +8,7 @@ import PlayerScene from "./tools/PlayerScene";
 export default class PlayerStartingScene extends PlayerScene {
   returnKey: Phaser.Input.Keyboard.Key | null;
   rotateDeviceText: Phaser.GameObjects.Text | null;
+  enterFullScreen: Phaser.GameObjects.Text | null;
 
 
   constructor() {
@@ -15,6 +16,7 @@ export default class PlayerStartingScene extends PlayerScene {
     this.userAvatarContainer = null;
     this.returnKey = null;
     this.rotateDeviceText = null;
+    this.enterFullScreen = null;
   }
 
   preload() {
@@ -28,13 +30,17 @@ export default class PlayerStartingScene extends PlayerScene {
     // this always has to run first
     generateRandomUserAvatar();
     loadUserAvatarSprites(this);
-    var screenDimensions = getScreenDimensions(this);
     makeMyUserAvatarInCenterOfPlayerScreen(this);
+    this.setUpNameDisplayAndInput();
+    addFullScreenButton(this);
+    this.setUpRotateDeviceText();
+    this.setUpFullScreenDeviceText();
+  }
 
+  setUpNameDisplayAndInput() {
+    var screenDimensions = getScreenDimensions(this);
     var text = this.add.text(screenDimensions.width / 2, 10, 'Please enter your name', { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
-
     var element = this.add.dom(screenDimensions.width / 2, 150).createFromCache('nameform').setOrigin(0.5);
-
     const nameSend = () => {
       var inputText = element.getChildByName('nameField') as HTMLInputElement;
       if (inputText.value === '') return;
@@ -62,12 +68,36 @@ export default class PlayerStartingScene extends PlayerScene {
     socket.on('room data', (roomData: RoomData) => {
       this.setUserNames(roomData, text);
     });
-    addFullScreenButton(this);
+  }
 
+  toggleFullScreenVisible() {
+    if (!this.enterFullScreen) return;
+    if (this.rotateDeviceText?.visible || this.scale.isFullscreen) {
+      this.enterFullScreen.visible = false;
+    } else {
+      this.enterFullScreen.visible = true;
+    }
+  }
+
+  setUpFullScreenDeviceText() {
+    var screenDimensions = getScreenDimensions(this);
+    this.enterFullScreen = this.add.text(screenDimensions.width / 2, screenDimensions.height - 200, 'Press icon on top right to enter full screen',
+      { color: 'white', fontSize: '50px' }).setOrigin(0.5);
+    this.enterFullScreen.setVisible(false);
+    this.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => {
+      this.toggleFullScreenVisible();
+    });
+
+    this.scale.on(Phaser.Scale.Events.LEAVE_FULLSCREEN, () => {
+      this.toggleFullScreenVisible();
+    });
+  }
+
+  setUpRotateDeviceText() {
+    var screenDimensions = getScreenDimensions(this);
     this.rotateDeviceText = this.add.text(screenDimensions.width / 2, screenDimensions.height - 200, 'Please rotate your device',
       { color: 'white', fontSize: '80px' }).setOrigin(0.5);
     this.showSuggestionToRotateDevice();
-
     const onWindowChange = () => {
       this.showSuggestionToRotateDevice();
     };
@@ -83,8 +113,10 @@ export default class PlayerStartingScene extends PlayerScene {
     if (!this) return;
     if (newHeight > newWidth) {
       this.rotateDeviceText?.setVisible(true);
+      this.toggleFullScreenVisible();
     } else {
       this.rotateDeviceText?.setVisible(false);
+      this.toggleFullScreenVisible();
     }
   }
 
