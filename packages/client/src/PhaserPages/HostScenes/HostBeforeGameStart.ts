@@ -127,7 +127,6 @@ export default class HostBeforeGameStart extends HostScene {
         });
     }
 
-
     setUpStartGameButtonAndInstructionText() {
         // Create both the instruction text and the start game button
         const screenCenter = getScreenCenter(this);
