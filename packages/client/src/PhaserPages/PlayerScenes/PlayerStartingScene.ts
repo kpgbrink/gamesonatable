@@ -7,11 +7,14 @@ import PlayerScene from "./tools/PlayerScene";
 
 export default class PlayerStartingScene extends PlayerScene {
   returnKey: Phaser.Input.Keyboard.Key | null;
+  rotateDeviceText: Phaser.GameObjects.Text | null;
+
 
   constructor() {
     super({ key: 'PlayerStartingScene' });
     this.userAvatarContainer = null;
     this.returnKey = null;
+    this.rotateDeviceText = null;
   }
 
   preload() {
@@ -60,6 +63,31 @@ export default class PlayerStartingScene extends PlayerScene {
       this.setUserNames(roomData, text);
     });
     addFullScreenButton(this);
+
+
+
+    this.rotateDeviceText = this.add.text(screenDimensions.width / 2, screenDimensions.height - 200, 'Please rotate your device',
+      { color: 'white', fontSize: '80px' }).setOrigin(0.5);
+    this.showSuggestionToRotateDevice();
+
+    const onWindowChange = () => {
+      this.showSuggestionToRotateDevice();
+    };
+    window.addEventListener('resize', onWindowChange);
+    this.events.on('shutdown', () => {
+      window.removeEventListener('resize', onWindowChange);
+    });
+  }
+
+  showSuggestionToRotateDevice() {
+    var newWidth = window.innerWidth;
+    var newHeight = window.innerHeight;
+    if (!this) return;
+    if (newHeight > newWidth) {
+      this.rotateDeviceText?.setVisible(true);
+    } else {
+      this.rotateDeviceText?.setVisible(false);
+    }
   }
 
   setUserNames(roomData: RoomData | null, text: Phaser.GameObjects.Text) {
@@ -72,6 +100,8 @@ export default class PlayerStartingScene extends PlayerScene {
     if (!this.userAvatarContainer) return;
     this.userAvatarContainer.setUserName(generatedName);
   }
+
+
 
   update() {
 

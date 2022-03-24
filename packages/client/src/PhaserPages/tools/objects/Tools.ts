@@ -45,8 +45,8 @@ export const socketOffOnSceneShutdown = (phaserScene: Phaser.Scene) => {
 
 export const getScreenDimensions = (scene: Phaser.Scene) => {
     return {
-        width: scene.cameras.main.width,
-        height: scene.cameras.main.height
+        width: scene.cameras.main?.width || 0,
+        height: scene.cameras.main?.height || 0
     }
 }
 
