@@ -84,6 +84,7 @@ export default class PlayerStartingScene extends PlayerScene {
     this.enterFullScreen = this.add.text(screenDimensions.width / 2, screenDimensions.height - 200, 'Press icon on top right to enter full screen',
       { color: 'white', fontSize: '50px' }).setOrigin(0.5);
     this.enterFullScreen.setVisible(false);
+    this.toggleFullScreenVisible();
     this.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => {
       this.toggleFullScreenVisible();
     });
