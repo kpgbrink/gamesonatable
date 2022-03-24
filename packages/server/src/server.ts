@@ -1,4 +1,4 @@
-import { NewRoomId, User, UserAvatar } from 'api';
+import { NewRoomId, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -111,5 +111,15 @@ io.on('connection', (socket) => {
 
     socket.on('get room data', () => {
         io.to(user.id).emit('room data', getRoom(user.room));
+    });
+
+    socket.on('ready', () => {
+        io.to(user.room).emit('ready', user.id);
+    });
+
+    socket.on('userBeforeGameStart data', (userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary) => {
+        const room = getRoom(user.room);
+        if (!room) return;
+        io.to(user.room).emit('userBeforeGameStart data', userBeforeGameStartDictionary);
     });
 });

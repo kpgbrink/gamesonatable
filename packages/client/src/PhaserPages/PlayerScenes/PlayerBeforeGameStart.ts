@@ -1,11 +1,18 @@
-import { addFullScreenButton, addUserNameText, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
+import { UserBeforeGameStartDataDictionary } from "api";
+import socket from "../../SocketConnection";
+import MenuButton from "../tools/objects/MenuButton";
+import { addFullScreenButton, addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
 import { loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
 
 export default class PlayerBeforeGameStart extends PlayerScene {
+    readyButton: MenuButton | null;
+    waitingForPlayersText: Phaser.GameObjects.Text | null;
 
     constructor() {
         super({ key: 'PlayerBeforeGameStart' });
+        this.readyButton = null;
+        this.waitingForPlayersText = null;
     }
 
     preload() {
@@ -19,6 +26,42 @@ export default class PlayerBeforeGameStart extends PlayerScene {
         loadUserAvatarSprites(this);
         makeMyUserAvatarInCenterOfPlayerScreen(this);
         addFullScreenButton(this);
+        this.addReadyButton();
+        this.checkIfIAmReady();
+    }
+
+    checkIfIAmReady() {
+        socket.on('userBeforeGameStart data', (userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary) => {
+            // if my user is ready
+            if (userBeforeGameStartDictionary[socket.id]?.ready) {
+                this.showWaitingForPlayersText();
+            } else {
+                this.showReadyButton();
+            }
+        });
+    }
+
+    showReadyButton() {
+        this.readyButton?.setVisible(true);
+        this.waitingForPlayersText?.setVisible(false);
+    }
+
+    showWaitingForPlayersText() {
+        this.readyButton?.setVisible(false);
+        this.waitingForPlayersText?.setVisible(true);
+    }
+
+    addReadyButton() {
+        const screenDimensions = getScreenDimensions(this);
+        this.readyButton = new MenuButton(screenDimensions.width / 2, screenDimensions.height - 200, this);
+        this.waitingForPlayersText = this.add.text(screenDimensions.width / 2, screenDimensions.height - 200, 'Waiting for other players to be ready', { color: 'orange', fontSize: '50px ' }).setOrigin(0.5);
+        this.waitingForPlayersText.setVisible(false);
+        this.readyButton.setText('Ready?');
+        this.readyButton.on('pointerdown', () => {
+            this.showWaitingForPlayersText();
+            socket.emit('ready');
+        });
+        this.add.existing(this.readyButton);
     }
 
     update() {

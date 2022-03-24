@@ -1,4 +1,4 @@
-import { RoomData } from "api";
+import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../tools/objects/MenuButton";
 import { persistentData } from "../tools/objects/PersistantData";
@@ -6,17 +6,17 @@ import { addFullScreenButton, DegreesToRadians, getScreenCenter, loadIfSpriteShe
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
-
 export default class HostBeforeGameStart extends HostScene {
     userAvatars: UserAvatarContainer[] = [];
     instructionText: Phaser.GameObjects.Text | null;
     startGameButton: MenuButton | null;
-
+    userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary;
 
     constructor() {
         super({ key: 'HostBeforeGameStart' });
         this.instructionText = null;
         this.startGameButton = null;
+        this.userBeforeGameStartDictionary = {};
     }
 
     preload() {
@@ -82,6 +82,24 @@ export default class HostBeforeGameStart extends HostScene {
         socket.emit('get room data');
         const screenCenter = getScreenCenter(this);
         this.add.circle(screenCenter.x, screenCenter.y, 850, 0xffffff);
+        this.setUpUserReady();
+    }
+
+    setUpUserReady() {
+        socket.emit('userBeforeGameStart data', this.userBeforeGameStartDictionary);
+        socket.on('ready', (userId: string) => {
+            // add user to dictionary
+            if (!this.userBeforeGameStartDictionary[userId]) {
+                this.userBeforeGameStartDictionary[userId] = { ready: true };
+            } else {
+                this.userBeforeGameStartDictionary[userId].ready = true;
+            }
+            socket.emit('userBeforeGameStart data', this.userBeforeGameStartDictionary);
+            // Add a checkmark to the user avatar container
+            const userAvatarContainer = this.userAvatars.find((userAvatar) => userAvatar.user.id === userId);
+            if (!userAvatarContainer) return;
+            userAvatarContainer.add(this.add.sprite(0, 0, 'checkmark'));
+        });
     }
 
     setUpStartGameButtonAndInstructionText() {
@@ -96,15 +114,17 @@ export default class HostBeforeGameStart extends HostScene {
             strokeThickness: 5,
             wordWrap: { width: 1000, useAdvancedWrap: true },
         }).setOrigin(0.5).setDepth(1);
-        const onStartGameButtonPressed = () => {
-            socket.emit('start game');
-            // go to the game scene.
-        };
-        this.startGameButton = new MenuButton(screenCenter.x, screenCenter.y, this, onStartGameButtonPressed);
+        this.startGameButton = new MenuButton(screenCenter.x, screenCenter.y, this);
+        this.startGameButton.on('pointerdown', this.startGame);
         this.startGameButton.setText('Start game');
         this.add.existing(this.startGameButton);
         this.instructionText.setVisible(false);
         this.startGameButton.setVisible(false);
+    }
+
+    startGame() {
+        console.log('start game');
+        socket.emit('start game');
     }
 
     onRoomDataUpdateInstructionsOrStartGameButton(roomData: RoomData | null) {
@@ -158,6 +178,10 @@ export default class HostBeforeGameStart extends HostScene {
                 socket.emit('set player rotation', userAvatar.user.id, userAvatar.rotation);
                 user.rotation = userAvatar.rotation;
             })();
+            // If user is ready then rotate the user
+            if (this.userBeforeGameStartDictionary[userAvatar.user.id]?.ready) {
+                userAvatar.rotation += DegreesToRadians(180);
+            }
         });
     }
 

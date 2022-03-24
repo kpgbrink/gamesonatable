@@ -31,3 +31,11 @@ export interface RoomData {
     room: string;
     users: User[];
 }
+
+export interface UserBeforeGameStartData {
+    ready: boolean;
+}
+
+export interface UserBeforeGameStartDataDictionary {
+    [userId: string]: UserBeforeGameStartData;
+}
