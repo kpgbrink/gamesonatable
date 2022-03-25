@@ -43,19 +43,22 @@ io.on('connection', (socket) => {
         userColor: null,
         userAvatar: null,
         rotation: null,
+        isInGame: false,
     };
 
     // The current room I am in
     socket.on('host room', (room: string) => {
         socketLeavePreviousRoom(socket, user);
-        user = upsertUser({ id: socket.id, name: '', room: room, isHost: true, userColor: null, userAvatar: null, rotation: null });
+        user.isHost = true;
+        user = upsertUser(user);
         socket.join(user.room);
     });
 
     socket.on('join room', (room: string) => {
         if (room === null) return;
         socketLeavePreviousRoom(socket, user);
-        user = upsertUser({ id: socket.id, name: '', room: room, isHost: false, userColor: null, userAvatar: null, rotation: null });
+        user.isHost = false;
+        user = upsertUser(user);
         socket.join(user.room);
         io.to(user.room).emit('room data', getRoom(user.room));
     });
@@ -106,20 +109,33 @@ io.on('connection', (socket) => {
         const editingUser = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!editingUser) return;
         editingUser.rotation = rotation;
-        upsertUser(editingUser);
+        // upsertUser(editingUser);
     });
 
     socket.on('get room data', () => {
         io.to(user.id).emit('room data', getRoom(user.room));
     });
 
+    // Tell Host user is ready to start the game
     socket.on('ready', () => {
         io.to(user.room).emit('ready', user.id);
     });
 
+    // Host tells user it is ready to start the game
     socket.on('userBeforeGameStart data', (userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary) => {
         const room = getRoom(user.room);
         if (!room) return;
         io.to(user.room).emit('userBeforeGameStart data', userBeforeGameStartDictionary);
+    });
+
+    socket.on('start game', (readyUserIds: string[]) => {
+        const room = getRoom(user.room);
+        // Set ready users to isInGame
+        room?.users.forEach(u => {
+            if (readyUserIds.includes(u.id)) {
+                u.isInGame = true;
+            }
+        });
+        io.to(user.room).emit('room data', room);
     });
 });

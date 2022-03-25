@@ -101,3 +101,9 @@ export const addFullScreenButton = (scene: Phaser.Scene) => {
         scene.scale.startFullscreen();
     }, this);
 }
+
+// Get all users that are not host
+export const playersInRoomm = (roomData: RoomData | null) => {
+    if (!roomData) return [];
+    return roomData.users.filter(user => user.isHost === false);
+}

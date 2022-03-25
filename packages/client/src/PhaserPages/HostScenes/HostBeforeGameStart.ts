@@ -2,7 +2,7 @@ import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../tools/objects/MenuButton";
 import { persistentData } from "../tools/objects/PersistantData";
-import { addFullScreenButton, DegreesToRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded } from "../tools/objects/Tools";
+import { addFullScreenButton, DegreesToRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
@@ -30,6 +30,7 @@ export default class HostBeforeGameStart extends HostScene {
         roomData?.users.forEach((user) => {
             if (!user.userAvatar) return;
             if (user.isHost) return;
+            // Don't recreate a user avatar if it already exists
             if (this.userAvatars.find((userAvatar) => userAvatar.user.id === user.id)) return;
             const onSizeChange = (userAvatarContainer: UserAvatarContainer) => {
                 userAvatarContainer.setInteractive({ useHandCursor: true });
@@ -111,8 +112,8 @@ export default class HostBeforeGameStart extends HostScene {
     startGameIfAllUsersReady() {
         this.removeUsersWhoDoNotExist();
         // If all users are ready then start the game
-        console.log(Object.keys(this.userBeforeGameStartDictionary).length, this.userAvatars.length);
-        const allNonHostUsers = this.userAvatars.filter((userAvatar) => !userAvatar.user.isHost);
+        const allNonHostUsers = playersInRoomm(persistentData.roomData);
+        console.log(Object.keys(this.userBeforeGameStartDictionary).length, allNonHostUsers.length);
         if (Object.keys(this.userBeforeGameStartDictionary).length === allNonHostUsers.length) {
             this.startGame();
         }
@@ -130,7 +131,7 @@ export default class HostBeforeGameStart extends HostScene {
     setUpStartGameButtonAndInstructionText() {
         // Create both the instruction text and the start game button
         const screenCenter = getScreenCenter(this);
-        this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 100, 'Drag your avatar to your starting position!', {
+        this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 50, 'Drag your avatar to your starting position!', {
             fontFamily: 'Arial',
             fontSize: '80px',
             color: '#000',
@@ -149,14 +150,15 @@ export default class HostBeforeGameStart extends HostScene {
 
     startGame() {
         console.log('start game');
-        socket.emit('start game');
+        // All users in game
+        const playersInGame = playersInRoomm(persistentData.roomData);
+        socket.emit('start game', playersInGame);
     }
 
     onRoomDataUpdateInstructionsOrStartGameButton(roomData: RoomData | null) {
         if (!roomData) return;
         // Check if all of the rotations are already set. And if they are do not show the instruction text.
-        // const allRotationsSet = this.userAvatars.every((userAvatar) => userAvatar.user.rotation);
-        const allRotationsSet = roomData.users.filter(user => !user.isHost).every((user) => user.rotation);
+        const allRotationsSet = playersInRoomm(roomData).every((user) => user.rotation);
         console.log('allRotationsSet', roomData.users);
         if (allRotationsSet) {
             // Do not show the start game button if previously was not showing it.
