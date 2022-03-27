@@ -2,7 +2,7 @@ import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../tools/objects/MenuButton";
 import { persistentData } from "../tools/objects/PersistantData";
-import { addFullScreenButton, DegreesToRadians, distanceBetweenTwoPoints, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm, pow2, quadraticFormula } from "../tools/objects/Tools";
+import { addFullScreenButton, DegreesToRadians, distanceBetweenTwoPoints, getAverageRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm, pow2, quadraticFormula } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
@@ -207,17 +207,18 @@ export default class HostBeforeGameStart extends HostScene {
                     // Check if the user avatar is in the top or bottom half of the table
                     if (userAvatar.y > screenCenter.y) {
                         // User avatar is in the top half of the table
+                        const facingStraightDownDirection = Math.PI / 2
                         return {
                             maxDistance: distanceTopWall,
-                            // userAvatarAngle: angleBetweenTwoAngles(angleFromCenterToUserAvatar, Math.PI / 2),
-                            userAvatarAngle: Math.PI / 2,
+                            userAvatarAngle: getAverageRadians([angleFromCenterToUserAvatar, facingStraightDownDirection, facingStraightDownDirection])
                         };
                     } else {
                         // User avatar is in the bottom half of the table
+                        const facingStraightUpDirection = -Math.PI / 2
                         return {
                             maxDistance: distanceTopWall,
-                            // userAvatarAngle: angleBetweenTwoAngles(angleFromCenterToUserAvatar, -Math.PI / 2),
-                            userAvatarAngle: -Math.PI / 2,
+                            userAvatarAngle: getAverageRadians([angleFromCenterToUserAvatar, facingStraightUpDirection, facingStraightUpDirection])
+                            // userAvatarAngle: -Math.PI / 2,
                         };
                     }
                 }
@@ -250,15 +251,13 @@ export default class HostBeforeGameStart extends HostScene {
             userAvatar.y = newY;
             userAvatar.tableRotation = angleFromCenterToUserAvatar;
             // rotate user avatar to face the center
-            userAvatar.rotation = userAvatarAngle - DegreesToRadians(90);
+            userAvatar.rotation = userAvatarAngle + Math.PI / 2;
             // update the avatar rotations to server if changed
             // but don't make the update send things out to everyone else because it doesn't really matter to the others atm.
             (() => {
                 const user = persistentData.roomData?.users.find((user) => user.id === userAvatar.user.id);
                 if (!user) return;
                 if (user.rotation === userAvatar.tableRotation) return;
-                console.log(user.rotation, userAvatar.tableRotation);
-                console.log('set rotation', userAvatar.tableRotation);
                 socket.emit('set player rotation', userAvatar.user.id, userAvatar.tableRotation);
                 user.rotation = userAvatar.tableRotation;
             })();

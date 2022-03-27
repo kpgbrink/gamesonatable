@@ -131,7 +131,25 @@ export const pow2 = (x: number) => {
     return x * x;
 }
 
-// calculate angle between 2 angles
-export const angleBetweenTwoAngles = (angle1: number, angle2: number) => {
-    return Math.atan2(Math.sin(angle2 - angle1), Math.cos(angle2 - angle1));
+// https://stackoverflow.com/questions/491738/how-do-you-calculate-the-average-of-a-set-of-circular-data
+export const getAverageRadians = (array: number[]) => {
+    let arrayLength = array.length;
+
+    let sinTotal = 0;
+    let cosTotal = 0;
+
+    for (let i = 0; i < arrayLength; i++) {
+        sinTotal += Math.sin(array[i]);
+        cosTotal += Math.cos(array[i]);
+    }
+
+    let averageDirection = Math.atan(sinTotal / cosTotal);
+
+    if (cosTotal < 0) {
+        averageDirection += DegreesToRadians(180);
+    } else if (sinTotal < 0) {
+        averageDirection += DegreesToRadians(360);
+    }
+
+    return averageDirection;
 }
