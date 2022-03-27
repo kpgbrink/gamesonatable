@@ -50,6 +50,7 @@ io.on('connection', (socket) => {
     socket.on('host room', (room: string) => {
         socketLeavePreviousRoom(socket, user);
         user.isHost = true;
+        user.room = room;
         user = upsertUser(user);
         socket.join(user.room);
     });
@@ -58,6 +59,7 @@ io.on('connection', (socket) => {
         if (room === null) return;
         socketLeavePreviousRoom(socket, user);
         user.isHost = false;
+        user.room = room;
         user = upsertUser(user);
         socket.join(user.room);
         io.to(user.room).emit('room data', getRoom(user.room));
@@ -109,7 +111,6 @@ io.on('connection', (socket) => {
         const editingUser = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!editingUser) return;
         editingUser.rotation = rotation;
-        // upsertUser(editingUser);
     });
 
     socket.on('get room data', () => {

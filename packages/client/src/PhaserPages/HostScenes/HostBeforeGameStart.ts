@@ -2,7 +2,7 @@ import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../tools/objects/MenuButton";
 import { persistentData } from "../tools/objects/PersistantData";
-import { addFullScreenButton, DegreesToRadians, distanceBetweenTwoPoints, getAverageRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm, pow2, quadraticFormula, RadiansToDegrees } from "../tools/objects/Tools";
+import { addFullScreenButton, DegreesToRadians, distanceBetweenTwoPoints, getAverageRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm, pow2, quadraticFormula } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
@@ -11,9 +11,6 @@ export default class HostBeforeGameStart extends HostScene {
     instructionText: Phaser.GameObjects.Text | null;
     startGameButton: MenuButton | null;
     userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary;
-    tableHeight = 1700;
-    tableWidth = 1776;
-    tableOvalWidth = 1632 - 310;
 
     constructor() {
         super({ key: 'HostBeforeGameStart' });
@@ -159,6 +156,9 @@ export default class HostBeforeGameStart extends HostScene {
         const playersInGame = playersInRoomm(persistentData.roomData);
         if (playersInGame.length === 0) return;
         socket.emit('start game', playersInGame);
+        console.log(persistentData.roomData?.selectedGame);
+        if (!persistentData.roomData?.selectedGame) return;
+        this.scene.start(persistentData.roomData?.selectedGame);
     }
 
     onRoomDataUpdateInstructionsOrStartGameButton(roomData: RoomData | null) {
@@ -251,7 +251,7 @@ export default class HostBeforeGameStart extends HostScene {
                 // angle to lowest point
                 const angleToLowestPoint = (() => {
                     const angle = Math.atan2(lowestY, lowestX);
-                    if (RadiansToDegrees(angleFromCenterToUserAvatar) < 0) {
+                    if (angleFromCenterToUserAvatar < 0) {
                         return angle + Math.PI;
                     }
                     return angle;
