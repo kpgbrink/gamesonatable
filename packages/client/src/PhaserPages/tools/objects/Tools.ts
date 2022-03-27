@@ -107,3 +107,26 @@ export const playersInRoomm = (roomData: RoomData | null) => {
     if (!roomData) return [];
     return roomData.users.filter(user => user.isHost === false);
 }
+
+// Get all users that are in the game
+export const playersInGame = (roomData: RoomData | null) => {
+    if (!roomData) return [];
+    return roomData.users.filter(user => user.isInGame === true);
+}
+
+// Quadratic formula
+export const quadraticFormula = (a: number, b: number, c: number) => {
+    const d = Math.sqrt(b * b - 4 * a * c);
+    const x1 = (-b + d) / (2 * a);
+    const x2 = (-b - d) / (2 * a);
+    return [x1, x2];
+}
+
+// distance between 2 points
+export const distanceBetweenTwoPoints = (x1: number, y1: number, x2: number, y2: number) => {
+    return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+}
+
+export const pow2 = (x: number) => {
+    return x * x;
+}

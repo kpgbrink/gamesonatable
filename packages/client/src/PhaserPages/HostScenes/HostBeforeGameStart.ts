@@ -2,7 +2,7 @@ import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../tools/objects/MenuButton";
 import { persistentData } from "../tools/objects/PersistantData";
-import { addFullScreenButton, DegreesToRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm } from "../tools/objects/Tools";
+import { addFullScreenButton, DegreesToRadians, distanceBetweenTwoPoints, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm, pow2, quadraticFormula } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
@@ -11,6 +11,9 @@ export default class HostBeforeGameStart extends HostScene {
     instructionText: Phaser.GameObjects.Text | null;
     startGameButton: MenuButton | null;
     userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary;
+    tableHeight = 1800;
+    tableWidth = 1776;
+    tableOvalWidth = 1632 - 310;
 
     constructor() {
         super({ key: 'HostBeforeGameStart' });
@@ -23,6 +26,7 @@ export default class HostBeforeGameStart extends HostScene {
         loadIfSpriteSheetNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png', { frameWidth: 64, frameHeight: 64 });
         loadIfSpriteSheetNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
         loadIfImageNotLoaded(this, 'checkmark', 'assets/ui/checkmark.png');
+        loadIfImageNotLoaded(this, 'table', 'assets/TableScaled.png');
     }
 
     addUsers(roomData: RoomData) {
@@ -84,8 +88,9 @@ export default class HostBeforeGameStart extends HostScene {
             this.setStartGameButton();
         });
         socket.emit('get room data');
+        // Make the table
         const screenCenter = getScreenCenter(this);
-        this.add.circle(screenCenter.x, screenCenter.y, 850, 0xffffff);
+        this.add.image(screenCenter.x, screenCenter.y, 'table');
         this.setUpUserReady();
     }
 
@@ -152,6 +157,7 @@ export default class HostBeforeGameStart extends HostScene {
         console.log('start game');
         // All users in game
         const playersInGame = playersInRoomm(persistentData.roomData);
+        if (playersInGame.length === 0) return;
         socket.emit('start game', playersInGame);
     }
 
@@ -186,10 +192,55 @@ export default class HostBeforeGameStart extends HostScene {
         this.userAvatars.forEach((userAvatar) => {
             // calculate distance from center
             const distanceFromCenter = Math.sqrt(Math.pow(userAvatar.x - screenCenter.x, 2) + Math.pow(userAvatar.y - screenCenter.y, 2));
-            // increase distance from center to make it to the outside of circle
-            const distanceFromCenterToOutside = Math.min(distanceFromCenter + 8, 850);
+
             // calculate angle from center to user avatar
             const angleFromCenterToUserAvatar = Math.atan2(userAvatar.y - screenCenter.y, userAvatar.x - screenCenter.x);
+
+            const tableHalfHeight = this.tableHeight / 2;
+            const tableHalfWidth = this.tableWidth / 2;
+            const tableHalfOvalWidth = this.tableOvalWidth / 2;
+            // Calculate max distance
+            const maxDistance = (() => {
+                const distanceSideWall = Math.abs(tableHalfWidth / Math.cos(angleFromCenterToUserAvatar));
+                const distanceTopWall = Math.abs(tableHalfHeight / Math.sin(angleFromCenterToUserAvatar));
+                if (distanceTopWall < distanceSideWall) {
+                    return distanceTopWall;
+                }
+                // calculate height from hypotenuse and adjacent
+                const heightOpposite = Math.sqrt(Math.abs(Math.pow(distanceSideWall, 2) - Math.pow(tableHalfWidth, 2)));
+
+                // add distance of the circle at the height
+                // TODO replace that with tan ^ 2 and 2 n tan()
+                // const a = Math.pow(4 * heightOpposite, 2) / this.tableWidth * this.tableWidth +
+                //     1 / 4 * this.tableHeight * this.tableHeight / this.tableOvalWidth * this.tableOvalWidth;
+                // const b = Math.pow(4 * heightOpposite, 2) / this.tableWidth;
+                const a = pow2(Math.tan(angleFromCenterToUserAvatar)) + ((1 / 4) * pow2(this.tableHeight)) / pow2(tableHalfOvalWidth);
+                const b = 2 * heightOpposite * Math.tan(angleFromCenterToUserAvatar);
+                const c = pow2(heightOpposite) - 1 / 4 * pow2(this.tableHeight);
+                const xLocations = quadraticFormula(a, b, c);
+                console.log('xLocations', xLocations);
+                const equation = (x: number) => {
+                    return Math.tan(angleFromCenterToUserAvatar) * x + heightOpposite;
+                }
+                const getDistance = (x: number) => {
+                    const y = equation(x);
+                    const distance = distanceBetweenTwoPoints(x, y, 0, heightOpposite);
+                    return distance;
+                };
+                // const y = equation(x);
+                // console.log('x', x, 'y', y);
+                // // Calculate distance from 2 points
+                // const distance = distanceBetweenTwoPoints(x, y, 0, heightOpposite);
+                const distance = Math.min(getDistance(xLocations[0]), getDistance(xLocations[1]));
+
+                // console.log('distance', distance);
+                return distanceSideWall + distance;
+            })();
+            // console.log(maxDistance);
+
+            // increase distance from center to make it to the outside of circle
+            const distanceFromCenterToOutside = Math.min(distanceFromCenter + 8, maxDistance);
+
             // calculate new x and y position
             const newX = screenCenter.x + distanceFromCenterToOutside * Math.cos(angleFromCenterToUserAvatar);
             const newY = screenCenter.y + distanceFromCenterToOutside * Math.sin(angleFromCenterToUserAvatar);
@@ -213,5 +264,4 @@ export default class HostBeforeGameStart extends HostScene {
             }
         });
     }
-
 }
