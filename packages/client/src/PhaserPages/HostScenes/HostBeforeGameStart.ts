@@ -143,7 +143,7 @@ export default class HostBeforeGameStart extends HostScene {
             wordWrap: { width: 1000, useAdvancedWrap: true },
         }).setOrigin(0.5).setDepth(1);
         this.startGameButton = new MenuButton(screenCenter.x, screenCenter.y, this);
-        this.startGameButton.on('pointerdown', this.startGame);
+        this.startGameButton.on('pointerdown', () => this.startGame());
         this.startGameButton.setText('Start game');
         this.add.existing(this.startGameButton);
         this.instructionText.setVisible(false);
