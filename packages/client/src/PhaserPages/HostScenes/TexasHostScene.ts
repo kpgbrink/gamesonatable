@@ -1,10 +1,9 @@
 import Phaser from "phaser";
 import HostScene from "./tools/HostScene";
-import { onHostChangeGames } from "./tools/OnHostChangeGames";
 
 export default class TexasHostScene extends HostScene {
     constructor() {
-        super({ key: 'TexasHostScene' });
+        super({ key: 'Texas' });
     }
 
     preload() {
@@ -13,7 +12,6 @@ export default class TexasHostScene extends HostScene {
 
     create() {
         super.create();
-        onHostChangeGames(this);
         // display the Phaser.VERSION
         this.add
             .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {

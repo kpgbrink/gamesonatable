@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { socketOffOnSceneShutdown } from "../../tools/objects/Tools";
+import { addFullScreenButton, socketOffOnSceneShutdown } from "../../tools/objects/Tools";
 import UserAvatarContainer from "../../tools/objects/UserAvatarContainer";
 import { onPlayerChangeGames } from "./OnPlayerChangeGames";
 
@@ -15,6 +15,7 @@ export default class PlayerScene extends Phaser.Scene {
     create() {
         onPlayerChangeGames(this);
         socketOffOnSceneShutdown(this);
+        addFullScreenButton(this);
     }
 
     updateFpsText() {

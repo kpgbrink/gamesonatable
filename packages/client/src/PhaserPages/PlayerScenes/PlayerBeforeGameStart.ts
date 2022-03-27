@@ -1,7 +1,7 @@
 import { UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../tools/objects/MenuButton";
-import { addFullScreenButton, addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
+import { addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
 import { loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
 
@@ -25,7 +25,6 @@ export default class PlayerBeforeGameStart extends PlayerScene {
         addUserNameText(this);
         loadUserAvatarSprites(this);
         makeMyUserAvatarInCenterOfPlayerScreen(this);
-        addFullScreenButton(this);
         this.addReadyButton();
         this.checkIfIAmReady();
         this.addInstructions();

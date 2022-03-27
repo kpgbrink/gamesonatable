@@ -1,7 +1,7 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
 import { persistentData } from "../tools/objects/PersistantData";
-import { addFullScreenButton, findMyUser, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
+import { findMyUser, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
 import { generateRandomUserAvatar, loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
 import PlayerScene from "./tools/PlayerScene";
 
@@ -32,7 +32,6 @@ export default class PlayerStartingScene extends PlayerScene {
     loadUserAvatarSprites(this);
     makeMyUserAvatarInCenterOfPlayerScreen(this);
     this.setUpNameDisplayAndInput();
-    addFullScreenButton(this);
     this.setUpRotateDeviceText();
     this.setUpFullScreenDeviceText();
   }

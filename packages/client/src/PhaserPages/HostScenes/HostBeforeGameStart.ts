@@ -2,11 +2,12 @@ import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../tools/objects/MenuButton";
 import { persistentData } from "../tools/objects/PersistantData";
-import { addFullScreenButton, DegreesToRadians, distanceBetweenTwoPoints, getAverageRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm, pow2, quadraticFormula } from "../tools/objects/Tools";
+import { DegreesToRadians, distanceBetweenTwoPoints, getAverageRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm, pow2, quadraticFormula } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
+import { addUserAvatars, createTable, UserAvatarScene } from "./tools/HostTools";
 
-export default class HostBeforeGameStart extends HostScene {
+export default class HostBeforeGameStart extends HostScene implements UserAvatarScene {
     userAvatars: UserAvatarContainer[] = [];
     instructionText: Phaser.GameObjects.Text | null;
     startGameButton: MenuButton | null;
@@ -66,7 +67,6 @@ export default class HostBeforeGameStart extends HostScene {
             userAvatar.destroy();
             this.userAvatars.splice(this.userAvatars.indexOf(userAvatar), 1);
         });
-        addFullScreenButton(this);
     }
 
     create() {
@@ -75,7 +75,11 @@ export default class HostBeforeGameStart extends HostScene {
         this.setUpStartGameButtonAndInstructionText();
         this.onRoomDataUpdateInstructionsOrStartGameButton(persistentData.roomData);
         socket.on('room data', (roomData: RoomData) => {
-            this.addUsers(roomData);
+            const onSizeChange = (userAvatarContainer: UserAvatarContainer) => {
+                userAvatarContainer.setInteractive({ useHandCursor: true });
+                this.input.setDraggable(userAvatarContainer);
+            };
+            addUserAvatars(this, roomData, onSizeChange);
             this.onRoomDataUpdateInstructionsOrStartGameButton(roomData);
             this.startGameIfAllUsersReady();
         });
@@ -86,8 +90,7 @@ export default class HostBeforeGameStart extends HostScene {
         });
         socket.emit('get room data');
         // Make the table
-        const screenCenter = getScreenCenter(this);
-        this.add.image(screenCenter.x, screenCenter.y, 'table');
+        createTable(this);
         this.setUpUserReady();
     }
 

@@ -5,6 +5,7 @@ import { AppContext } from "../AppContext";
 import HostBeforeGameStart from "./HostScenes/HostBeforeGameStart";
 import OmahaHostScene from "./HostScenes/OmahaHostScene";
 import TexasHostScene from "./HostScenes/TexasHostScene";
+import ThirtyOneHostScene from "./HostScenes/ThirtyOneHostScene";
 import PhaserWrapper from "./tools/PhaserWrapper";
 
 export default function HostPage() {
@@ -29,7 +30,12 @@ export default function HostPage() {
           createContainer: true,
         },
         type: Phaser.AUTO,
-        scene: [HostBeforeGameStart, OmahaHostScene, TexasHostScene],
+        scene: [
+          HostBeforeGameStart,
+          OmahaHostScene,
+          TexasHostScene,
+          ThirtyOneHostScene,
+        ],
         physics: {
           default: "arcade",
           arcade: {
