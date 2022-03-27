@@ -2,7 +2,7 @@ import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../tools/objects/MenuButton";
 import { persistentData } from "../tools/objects/PersistantData";
-import { addFullScreenButton, DegreesToRadians, distanceBetweenTwoPoints, getAverageRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm, pow2, quadraticFormula } from "../tools/objects/Tools";
+import { addFullScreenButton, DegreesToRadians, distanceBetweenTwoPoints, getAverageRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm, pow2, quadraticFormula, RadiansToDegrees } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 
@@ -238,8 +238,26 @@ export default class HostBeforeGameStart extends HostScene {
                     const distance = distanceBetweenTwoPoints(x, y, 0, heightOpposite);
                     return distance;
                 };
-                const distance = Math.min(getDistance(xLocations[0]), getDistance(xLocations[1]));
-                return { maxDistance: distanceSideWall + distance, userAvatarAngle: angleFromCenterToUserAvatar };
+                let lowestDistance = Infinity;
+                let lowestX = 0;
+                xLocations.forEach((x) => {
+                    const distance = getDistance(x);
+                    if (distance < lowestDistance) {
+                        lowestDistance = distance;
+                        lowestX = x;
+                    }
+                });
+                const lowestY = equation(lowestX);
+                // angle to lowest point
+                const angleToLowestPoint = (() => {
+                    const angle = Math.atan2(lowestY, lowestX);
+                    if (RadiansToDegrees(angleFromCenterToUserAvatar) < 0) {
+                        return angle + Math.PI;
+                    }
+                    return angle;
+                })();
+                // Fix angle being backwards
+                return { maxDistance: distanceSideWall + lowestDistance, userAvatarAngle: getAverageRadians([angleToLowestPoint, angleToLowestPoint, angleFromCenterToUserAvatar]) };
             })();
             // increase distance from center to make it to the outside of circle
             const distanceFromCenterToOutside = Math.min(distanceFromCenter + 8, maxDistance);
