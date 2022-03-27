@@ -269,7 +269,7 @@ export default class HostBeforeGameStart extends HostScene {
             userAvatar.y = newY;
             userAvatar.tableRotation = angleFromCenterToUserAvatar;
             // rotate user avatar to face the center
-            userAvatar.rotation = userAvatarAngle + Math.PI / 2;
+            userAvatar.rotation = userAvatarAngle - Math.PI / 2;
             // update the avatar rotations to server if changed
             // but don't make the update send things out to everyone else because it doesn't really matter to the others atm.
             (() => {
