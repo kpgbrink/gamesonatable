@@ -7,6 +7,7 @@ import QRCode from "qrcode.react";
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../../../AppContext";
+import { persistentData } from "../../../PhaserPages/tools/objects/PersistantData";
 
 export default function PlayerJoin() {
   const { roomId } = useParams();
@@ -41,6 +42,7 @@ export default function PlayerJoin() {
     //The socket is a module that exports the actual socket.io socket
     const roomDataListener = (roomData: RoomData) => {
       if (!roomData?.users) return;
+      persistentData.roomData = roomData;
       setUserList(roomData.users);
     };
     socket.on("room data", roomDataListener);

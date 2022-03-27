@@ -73,6 +73,7 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
     userNameText: Phaser.GameObjects.Text | null;
     onSizeChange: ((userAvatarContainer: UserAvatarContainer) => void) | undefined;
     imageMultiplier: number = 10;
+    tableRotation: number = 0;
 
     constructor(scene: Phaser.Scene, x: number, y: number, user: User, onSizeChange?: (userAvatarContainer: UserAvatarContainer) => void) {
         super(scene, x, y);

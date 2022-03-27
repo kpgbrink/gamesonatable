@@ -130,3 +130,8 @@ export const distanceBetweenTwoPoints = (x1: number, y1: number, x2: number, y2:
 export const pow2 = (x: number) => {
     return x * x;
 }
+
+// calculate angle between 2 angles
+export const angleBetweenTwoAngles = (angle1: number, angle2: number) => {
+    return Math.atan2(Math.sin(angle2 - angle1), Math.cos(angle2 - angle1));
+}

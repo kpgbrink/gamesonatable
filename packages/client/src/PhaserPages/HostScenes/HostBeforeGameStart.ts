@@ -11,7 +11,7 @@ export default class HostBeforeGameStart extends HostScene {
     instructionText: Phaser.GameObjects.Text | null;
     startGameButton: MenuButton | null;
     userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary;
-    tableHeight = 1800;
+    tableHeight = 1700;
     tableWidth = 1776;
     tableOvalWidth = 1632 - 310;
 
@@ -41,13 +41,13 @@ export default class HostBeforeGameStart extends HostScene {
                 this.input.setDraggable(userAvatarContainer);
             };
             const screenCenter = getScreenCenter(this);
-            // TODO put then in the correct rotation if rotation is set
             const userAvatarContainer = new UserAvatarContainer(this, screenCenter.x + Math.random() - .5, screenCenter.y + Math.random() - .5, user, onSizeChange);
             // if the rotation is already set then set the location to the correct rotation
             if (user.rotation) {
-                userAvatarContainer.rotation = user.rotation;
-                userAvatarContainer.x = screenCenter.x + (850 * Math.cos(user.rotation + DegreesToRadians(90)));
-                userAvatarContainer.y = screenCenter.y + (850 * Math.sin(user.rotation + DegreesToRadians(90)));
+                // userAvatarContainer.tableRotation = user.rotation;
+                console.log('set rotation!!!!', user.rotation);
+                userAvatarContainer.x = screenCenter.x + (2000 * Math.cos(user.rotation));
+                userAvatarContainer.y = screenCenter.y + (2000 * Math.sin(user.rotation));
             }
 
             this.add.existing(userAvatarContainer);
@@ -200,25 +200,35 @@ export default class HostBeforeGameStart extends HostScene {
             const tableHalfWidth = this.tableWidth / 2;
             const tableHalfOvalWidth = this.tableOvalWidth / 2;
             // Calculate max distance
-            const maxDistance = (() => {
+            const { maxDistance, userAvatarAngle } = (() => {
                 const distanceSideWall = Math.abs(tableHalfWidth / Math.cos(angleFromCenterToUserAvatar));
                 const distanceTopWall = Math.abs(tableHalfHeight / Math.sin(angleFromCenterToUserAvatar));
                 if (distanceTopWall < distanceSideWall) {
-                    return distanceTopWall;
+                    // Check if the user avatar is in the top or bottom half of the table
+                    if (userAvatar.y > screenCenter.y) {
+                        // User avatar is in the top half of the table
+                        return {
+                            maxDistance: distanceTopWall,
+                            // userAvatarAngle: angleBetweenTwoAngles(angleFromCenterToUserAvatar, Math.PI / 2),
+                            userAvatarAngle: Math.PI / 2,
+                        };
+                    } else {
+                        // User avatar is in the bottom half of the table
+                        return {
+                            maxDistance: distanceTopWall,
+                            // userAvatarAngle: angleBetweenTwoAngles(angleFromCenterToUserAvatar, -Math.PI / 2),
+                            userAvatarAngle: -Math.PI / 2,
+                        };
+                    }
                 }
                 // calculate height from hypotenuse and adjacent
                 const heightOpposite = Math.sqrt(Math.abs(Math.pow(distanceSideWall, 2) - Math.pow(tableHalfWidth, 2)));
 
                 // add distance of the circle at the height
-                // TODO replace that with tan ^ 2 and 2 n tan()
-                // const a = Math.pow(4 * heightOpposite, 2) / this.tableWidth * this.tableWidth +
-                //     1 / 4 * this.tableHeight * this.tableHeight / this.tableOvalWidth * this.tableOvalWidth;
-                // const b = Math.pow(4 * heightOpposite, 2) / this.tableWidth;
                 const a = pow2(Math.tan(angleFromCenterToUserAvatar)) + ((1 / 4) * pow2(this.tableHeight)) / pow2(tableHalfOvalWidth);
                 const b = 2 * heightOpposite * Math.tan(angleFromCenterToUserAvatar);
                 const c = pow2(heightOpposite) - 1 / 4 * pow2(this.tableHeight);
                 const xLocations = quadraticFormula(a, b, c);
-                console.log('xLocations', xLocations);
                 const equation = (x: number) => {
                     return Math.tan(angleFromCenterToUserAvatar) * x + heightOpposite;
                 }
@@ -227,36 +237,30 @@ export default class HostBeforeGameStart extends HostScene {
                     const distance = distanceBetweenTwoPoints(x, y, 0, heightOpposite);
                     return distance;
                 };
-                // const y = equation(x);
-                // console.log('x', x, 'y', y);
-                // // Calculate distance from 2 points
-                // const distance = distanceBetweenTwoPoints(x, y, 0, heightOpposite);
                 const distance = Math.min(getDistance(xLocations[0]), getDistance(xLocations[1]));
-
-                // console.log('distance', distance);
-                return distanceSideWall + distance;
+                return { maxDistance: distanceSideWall + distance, userAvatarAngle: angleFromCenterToUserAvatar };
             })();
-            // console.log(maxDistance);
-
             // increase distance from center to make it to the outside of circle
             const distanceFromCenterToOutside = Math.min(distanceFromCenter + 8, maxDistance);
-
             // calculate new x and y position
             const newX = screenCenter.x + distanceFromCenterToOutside * Math.cos(angleFromCenterToUserAvatar);
             const newY = screenCenter.y + distanceFromCenterToOutside * Math.sin(angleFromCenterToUserAvatar);
             // move user avatar to new position
             userAvatar.x = newX;
             userAvatar.y = newY;
+            userAvatar.tableRotation = angleFromCenterToUserAvatar;
             // rotate user avatar to face the center
-            userAvatar.rotation = angleFromCenterToUserAvatar - DegreesToRadians(90);
+            userAvatar.rotation = userAvatarAngle - DegreesToRadians(90);
             // update the avatar rotations to server if changed
             // but don't make the update send things out to everyone else because it doesn't really matter to the others atm.
             (() => {
                 const user = persistentData.roomData?.users.find((user) => user.id === userAvatar.user.id);
                 if (!user) return;
-                if (user.rotation === userAvatar.rotation) return;
-                socket.emit('set player rotation', userAvatar.user.id, userAvatar.rotation);
-                user.rotation = userAvatar.rotation;
+                if (user.rotation === userAvatar.tableRotation) return;
+                console.log(user.rotation, userAvatar.tableRotation);
+                console.log('set rotation', userAvatar.tableRotation);
+                socket.emit('set player rotation', userAvatar.user.id, userAvatar.tableRotation);
+                user.rotation = userAvatar.tableRotation;
             })();
             // If user is ready then rotate the user
             if (this.userBeforeGameStartDictionary[userAvatar.user.id]?.ready) {
