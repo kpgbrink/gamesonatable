@@ -153,3 +153,7 @@ export const getAverageRadians = (array: number[]) => {
     return averageDirection;
 }
 
+export interface Position {
+    x: number;
+    y: number;
+}
