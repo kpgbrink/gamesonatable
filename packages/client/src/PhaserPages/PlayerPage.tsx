@@ -6,6 +6,7 @@ import Omaha from "./PlayerScenes/Omaha";
 import PlayerBeforeGameStart from "./PlayerScenes/PlayerBeforeGameStart";
 import PlayerStartingScene from "./PlayerScenes/PlayerStartingScene";
 import Texas from "./PlayerScenes/Texas";
+import ThirtyOne from "./PlayerScenes/ThirtyOne";
 import PhaserWrapper from "./tools/PhaserWrapper";
 
 export default function PlayerPage() {
@@ -29,7 +30,13 @@ export default function PlayerPage() {
           createContainer: true,
         },
         type: Phaser.AUTO,
-        scene: [PlayerStartingScene, PlayerBeforeGameStart, Omaha, Texas],
+        scene: [
+          PlayerStartingScene,
+          PlayerBeforeGameStart,
+          Omaha,
+          Texas,
+          ThirtyOne,
+        ],
         physics: {
           default: "arcade",
           arcade: {

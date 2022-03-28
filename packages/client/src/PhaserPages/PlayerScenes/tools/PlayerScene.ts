@@ -17,11 +17,4 @@ export default class PlayerScene extends Phaser.Scene {
         socketOffOnSceneShutdown(this);
         addFullScreenButton(this);
     }
-
-    updateFpsText() {
-    }
-
-    update() {
-        this.updateFpsText();
-    }
 }

@@ -16,13 +16,8 @@ export default class Texas extends PlayerScene {
                 fontSize: '24px'
             })
             .setOrigin(1, 0);
-
-    }
-
-    updateFpsText() {
     }
 
     update() {
-        this.updateFpsText();
     }
 }

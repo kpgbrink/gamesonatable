@@ -154,12 +154,11 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
     }
 
     startGame() {
-        console.log('start game');
         // All users in game
         const playersInGame = playersInRoomm(persistentData.roomData);
         if (playersInGame.length === 0) return;
         socket.emit('start game', playersInGame);
-        console.log(persistentData.roomData?.selectedGame);
+        socket.emit('set player current scene', persistentData.roomData?.selectedGame);
         if (!persistentData.roomData?.selectedGame) return;
         this.scene.start(persistentData.roomData?.selectedGame);
     }
