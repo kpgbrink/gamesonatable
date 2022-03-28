@@ -3,7 +3,7 @@ import socket from "../../SocketConnection";
 import { loadIfImageNotLoaded } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
-import { addUserAvatars, createTable, UserAvatarScene } from "./tools/HostTools";
+import { addUserAvatars, createTable, moveUserAvatarToProperTableLocation, UserAvatarScene } from "./tools/HostTools";
 
 export default class ThirtyOneHostScene extends HostScene implements UserAvatarScene {
     userAvatars: UserAvatarContainer[] = [];
@@ -24,6 +24,8 @@ export default class ThirtyOneHostScene extends HostScene implements UserAvatarS
         createTable(this);
         socket.on('room data', (roomData: RoomData) => {
             addUserAvatars(this, roomData);
+            // moveUserAvatars to proper locations
+            moveUserAvatarToProperTableLocation(this);
         });
     }
 }

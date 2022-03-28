@@ -10,7 +10,7 @@ export const createTable = (scene: Phaser.Scene) => {
     scene.add.image(screenCenter.x, screenCenter.y, 'table');
 }
 
-export interface UserAvatarScene extends Phaser.Scene {
+export interface UserAvatarScene extends HostScene {
     userAvatars: UserAvatarContainer[];
 }
 
@@ -70,7 +70,7 @@ export const calculateDistanceAndRotationFromTable = (scene: HostScene, position
             if (position.y > screenCenter.y) {
                 return Math.PI / 2;
             }
-            return Math.PI / 2;
+            return -Math.PI / 2;
         })();
 
         return {
@@ -114,6 +114,32 @@ export const calculateDistanceAndRotationFromTable = (scene: HostScene, position
     })();
     // Fix angle being backwards
     return { maxDistance: distanceSideWall + lowestDistance, positionAngle: getAverageRadians([angleToLowestPoint, angleToLowestPoint, angleFromCenterToposition]) - Math.PI / 2 };
+}
+
+export const moveUserAvatarToProperTableLocation = (scene: UserAvatarScene) => {
+    const screenCenter = getScreenCenter(scene);
+    // Move all users to their correct position
+    scene.userAvatars.forEach((userAvatar) => {
+        // calculate distance from center
+        const distanceFromCenter = Math.sqrt(Math.pow(userAvatar.x - screenCenter.x, 2) + Math.pow(userAvatar.y - screenCenter.y, 2));
+
+        // calculate angle from center to user avatar
+        const angleFromCenterToUserAvatar = Math.atan2(userAvatar.y - screenCenter.y, userAvatar.x - screenCenter.x);
+
+        // Calculate max distance
+        const { maxDistance, positionAngle } = calculateDistanceAndRotationFromTable(scene, { x: userAvatar.x, y: userAvatar.y });
+        // increase distance from center to make it to the outside of circle
+        const distanceFromCenterToOutside = Math.min(distanceFromCenter + 8, maxDistance);
+        // calculate new x and y position
+        const newX = screenCenter.x + distanceFromCenterToOutside * Math.cos(angleFromCenterToUserAvatar);
+        const newY = screenCenter.y + distanceFromCenterToOutside * Math.sin(angleFromCenterToUserAvatar);
+        // move user avatar to new position
+        userAvatar.x = newX;
+        userAvatar.y = newY;
+        userAvatar.tableRotation = angleFromCenterToUserAvatar;
+        // rotate user avatar to face the center
+        userAvatar.rotation = positionAngle;
+    });
 }
 
 

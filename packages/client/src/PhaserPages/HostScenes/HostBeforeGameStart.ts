@@ -5,7 +5,7 @@ import { persistentData } from "../tools/objects/PersistantData";
 import { DegreesToRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
-import { addUserAvatars, calculateDistanceAndRotationFromTable, createTable, UserAvatarScene } from "./tools/HostTools";
+import { addUserAvatars, createTable, moveUserAvatarToProperTableLocation, UserAvatarScene } from "./tools/HostTools";
 
 export default class HostBeforeGameStart extends HostScene implements UserAvatarScene {
     userAvatars: UserAvatarContainer[] = [];
@@ -189,28 +189,9 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
     }
 
     update() {
-        const screenCenter = getScreenCenter(this);
         // slowly move user avatars to edge of table
+        moveUserAvatarToProperTableLocation(this);
         this.userAvatars.forEach((userAvatar) => {
-            // calculate distance from center
-            const distanceFromCenter = Math.sqrt(Math.pow(userAvatar.x - screenCenter.x, 2) + Math.pow(userAvatar.y - screenCenter.y, 2));
-
-            // calculate angle from center to user avatar
-            const angleFromCenterToUserAvatar = Math.atan2(userAvatar.y - screenCenter.y, userAvatar.x - screenCenter.x);
-
-            // Calculate max distance
-            const { maxDistance, positionAngle } = calculateDistanceAndRotationFromTable(this, { x: userAvatar.x, y: userAvatar.y });
-            // increase distance from center to make it to the outside of circle
-            const distanceFromCenterToOutside = Math.min(distanceFromCenter + 8, maxDistance);
-            // calculate new x and y position
-            const newX = screenCenter.x + distanceFromCenterToOutside * Math.cos(angleFromCenterToUserAvatar);
-            const newY = screenCenter.y + distanceFromCenterToOutside * Math.sin(angleFromCenterToUserAvatar);
-            // move user avatar to new position
-            userAvatar.x = newX;
-            userAvatar.y = newY;
-            userAvatar.tableRotation = angleFromCenterToUserAvatar;
-            // rotate user avatar to face the center
-            userAvatar.rotation = positionAngle;
             // update the avatar rotations to server if changed
             // but don't make the update send things out to everyone else because it doesn't really matter to the others atm.
             (() => {
