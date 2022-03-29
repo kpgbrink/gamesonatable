@@ -26,7 +26,6 @@ export const addUserAvatars = (scene: UserAvatarScene, roomData: RoomData, onSiz
         // if the rotation is already set then set the location to the correct rotation
         if (user.rotation) {
             // userAvatarContainer.tableRotation = user.rotation;
-            console.log('set rotation!!!!', user.rotation);
             userAvatarContainer.x = screenCenter.x + (2000 * Math.cos(user.rotation));
             userAvatarContainer.y = screenCenter.y + (2000 * Math.sin(user.rotation));
         }
