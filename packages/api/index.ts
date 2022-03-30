@@ -23,7 +23,7 @@ export interface User {
     userColor: string | null;
     userAvatar: UserAvatar | null;
     rotation: number | null;
-    isInGame: boolean;
+    inGame: boolean;
 }
 
 export interface RoomData {

@@ -22,7 +22,7 @@ export const upsertUser = ({ id, name, room, isHost, userAvatar, rotation }: Use
     };
     room = room;
 
-    const user: User = { id, name, room, isHost, userColor: null, userAvatar, rotation, isInGame: false };
+    const user: User = { id, name, room, isHost, userColor: null, userAvatar, rotation, inGame: false };
     // add room if it doesn't exist yet
     if (!rooms.has(user.room)) {
         rooms.set(user.room, { currentPlayerScene: 'PlayerStartingScene', selectedGame: null, room: user.room, users: [] });

@@ -102,7 +102,7 @@ export const addFullScreenButton = (scene: Phaser.Scene) => {
 }
 
 // Get all users that are not host
-export const playersInRoomm = (roomData: RoomData | null) => {
+export const playersInRoom = (roomData: RoomData | null) => {
     if (!roomData) return [];
     return roomData.users.filter(user => user.isHost === false);
 }
@@ -110,7 +110,7 @@ export const playersInRoomm = (roomData: RoomData | null) => {
 // Get all users that are in the game
 export const playersInGame = (roomData: RoomData | null) => {
     if (!roomData) return [];
-    return roomData.users.filter(user => user.isInGame === true);
+    return roomData.users.filter(user => user.inGame === true);
 }
 
 // Quadratic formula
@@ -156,4 +156,18 @@ export const getAverageRadians = (array: number[]) => {
 export interface Position {
     x: number;
     y: number;
+}
+
+export const shuffle = <T>(array: T[]): T[] => {
+    let currentIndex = array.length, randomIndex;
+    // While there remain elements to shuffle...
+    while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+    return array;
 }

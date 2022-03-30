@@ -14,11 +14,27 @@ export interface UserAvatarScene extends HostScene {
     userAvatars: UserAvatarContainer[];
 }
 
-export const addUserAvatars = (scene: UserAvatarScene, roomData: RoomData, onSizeChange?: (userAvatarContainer: UserAvatarContainer) => void) => {
+interface AddUserAvatarOptionalParameters {
+    onSizeChange?: (userAvatarContainer: UserAvatarContainer) => void;
+    onlyThoseInGame?: boolean;
+};
+
+export const addUserAvatars = (
+    scene: UserAvatarScene,
+    roomData: RoomData,
+    {
+        onSizeChange,
+        onlyThoseInGame
+    }: AddUserAvatarOptionalParameters = {
+            onSizeChange: () => { },
+            onlyThoseInGame: false
+        }
+) => {
     // Create a user avatar for each user
     roomData?.users.forEach((user) => {
         if (!user.userAvatar) return;
         if (user.isHost) return;
+        if (onlyThoseInGame && !user.inGame) return;
         // Don't recreate a user avatar if it already exists
         if (scene.userAvatars.find((userAvatar) => userAvatar.user.id === user.id)) return;
         const screenCenter = getScreenCenter(scene);

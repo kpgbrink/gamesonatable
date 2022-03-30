@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
         userColor: null,
         userAvatar: null,
         rotation: null,
-        isInGame: false,
+        inGame: false,
     };
 
     // The current room I am in
@@ -129,12 +129,13 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('userBeforeGameStart data', userBeforeGameStartDictionary);
     });
 
-    socket.on('start game', (readyUserIds: string[]) => {
+    socket.on('start game', (usersInGame: User[]) => {
         const room = getRoom(user.room);
-        // Set ready users to isInGame
+        // Set ready users to inGame
         room?.users.forEach(u => {
-            if (readyUserIds.includes(u.id)) {
-                u.isInGame = true;
+            if (usersInGame.find(uig => u.id === uig.id)) {
+                console.log(`${u.name} is ready`);
+                u.inGame = true;
             }
         });
         io.to(user.room).emit('room data', room);

@@ -2,7 +2,7 @@ import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../tools/objects/MenuButton";
 import { persistentData } from "../tools/objects/PersistantData";
-import { DegreesToRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoomm } from "../tools/objects/Tools";
+import { DegreesToRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoom } from "../tools/objects/Tools";
 import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
 import HostScene from "./tools/HostScene";
 import { addUserAvatars, createTable, moveUserAvatarToProperTableLocation, UserAvatarScene } from "./tools/HostTools";
@@ -37,7 +37,7 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
                 userAvatarContainer.setInteractive({ useHandCursor: true });
                 this.input.setDraggable(userAvatarContainer);
             };
-            addUserAvatars(this, roomData, onSizeChange);
+            addUserAvatars(this, roomData, { onSizeChange: onSizeChange });
             this.onRoomDataUpdateInstructionsOrStartGameButton(roomData);
             this.startGameIfAllUsersReady();
         });
@@ -75,8 +75,7 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
     startGameIfAllUsersReady() {
         this.removeUsersWhoDoNotExist();
         // If all users are ready then start the game
-        const allNonHostUsers = playersInRoomm(persistentData.roomData);
-        console.log(Object.keys(this.userBeforeGameStartDictionary).length, allNonHostUsers.length);
+        const allNonHostUsers = playersInRoom(persistentData.roomData);
         if (Object.keys(this.userBeforeGameStartDictionary).length === allNonHostUsers.length) {
             this.startGame();
         }
@@ -94,15 +93,17 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
     setUpStartGameButtonAndInstructionText() {
         // Create both the instruction text and the start game button
         const screenCenter = getScreenCenter(this);
-        this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 50, 'Drag your avatar to your starting position!', {
-            fontFamily: 'Arial',
-            fontSize: '80px',
-            color: '#000',
-            align: 'center',
-            stroke: '#014714',
-            strokeThickness: 5,
-            wordWrap: { width: 1000, useAdvancedWrap: true },
-        }).setOrigin(0.5).setDepth(1);
+        this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 50,
+            'Drag your avatar to your starting position!',
+            {
+                fontFamily: 'Arial',
+                fontSize: '80px',
+                color: '#000',
+                align: 'center',
+                stroke: '#014714',
+                strokeThickness: 5,
+                wordWrap: { width: 1000, useAdvancedWrap: true },
+            }).setOrigin(0.5).setDepth(1);
         this.startGameButton = new MenuButton(screenCenter.x, screenCenter.y, this);
         this.startGameButton.on('pointerdown', () => this.startGame());
         this.startGameButton.setText('Start game');
@@ -113,7 +114,7 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
 
     startGame() {
         // All users in game
-        const playersInGame = playersInRoomm(persistentData.roomData);
+        const playersInGame = playersInRoom(persistentData.roomData);
         if (playersInGame.length === 0) return;
         socket.emit('start game', playersInGame);
         socket.emit('set player current scene', persistentData.roomData?.selectedGame);
@@ -124,8 +125,7 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
     onRoomDataUpdateInstructionsOrStartGameButton(roomData: RoomData | null) {
         if (!roomData) return;
         // Check if all of the rotations are already set. And if they are do not show the instruction text.
-        const allRotationsSet = playersInRoomm(roomData).every((user) => user.rotation);
-        console.log('allRotationsSet', roomData.users);
+        const allRotationsSet = playersInRoom(roomData).every((user) => user.rotation);
         if (allRotationsSet) {
             // Do not show the start game button if previously was not showing it.
             if (!this.instructionText?.visible) {
