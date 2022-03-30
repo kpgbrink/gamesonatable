@@ -24,9 +24,10 @@ export default class ThirtyOneHostScene extends HostScene implements UserAvatarS
         // create the cards
         for (let suite of suites) {
             for (let card of cards) {
-                const cardContainer = new CardContainer(this, screenCenter.x, screenCenter.y, suite, card, false);
+                const cardContainer = new CardContainer(this, screenCenter.x, screenCenter.y, suite, card);
                 this.cardContainers.push(cardContainer);
                 this.add.existing(cardContainer);
+                cardContainer.setCardVelocity(Math.random() * 2, Math.random() * 2);
             }
         }
     }
@@ -42,5 +43,10 @@ export default class ThirtyOneHostScene extends HostScene implements UserAvatarS
             moveUserAvatarToProperTableLocation(this);
         });
         this.addCardImages();
+    }
+
+    update() {
+        super.update();
+        this.cardContainers.forEach(cardContainer => cardContainer.update());
     }
 }

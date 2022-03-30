@@ -6,17 +6,17 @@ export default class CardContainer extends Phaser.GameObjects.Container {
     suit: string | null;
     card: string | null;
     jack: boolean | null;
-    backImage: Phaser.GameObjects.Image | null;
-    frontImage: Phaser.GameObjects.Image | null;
+    backImage: Phaser.GameObjects.Image | null = null;
+    frontImage: Phaser.GameObjects.Image | null = null;
+    velocity: { x: number, y: number } = { x: 0, y: 0 };
 
-    constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, jack: boolean) {
+    constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, jack: boolean = false) {
         super(scene, x, y);
 
         // take the 
         this.suit = suit;
         this.card = card;
         this.jack = jack;
-        this.backImage = null;
         this.frontImage = null;
         this.loadCardImages();
     }
@@ -50,4 +50,24 @@ export default class CardContainer extends Phaser.GameObjects.Container {
         this.frontImage.visible = faceUp;
         this.backImage.visible = !faceUp;
     }
+
+    public setCardPosition(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public setCardVelocity(x: number, y: number) {
+        this.velocity = { x, y };
+    }
+
+    public moveCardFromVelocity() {
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+    }
+
+    public update() {
+        this.moveCardFromVelocity();
+        this.setCardFaceUp(true);
+    }
+
 }
