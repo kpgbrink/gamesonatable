@@ -134,7 +134,6 @@ io.on('connection', (socket) => {
         // Set ready users to inGame
         room?.users.forEach(u => {
             if (usersInGame.find(uig => u.id === uig.id)) {
-                console.log(`${u.name} is ready`);
                 u.inGame = true;
             }
         });

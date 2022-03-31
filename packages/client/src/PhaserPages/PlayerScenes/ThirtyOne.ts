@@ -1,4 +1,4 @@
-import PlayerScene from "./tools/PlayerScene";
+import PlayerScene from "./tools/playerObjects/PlayerScene";
 
 
 export default class ThirtyOne extends PlayerScene {

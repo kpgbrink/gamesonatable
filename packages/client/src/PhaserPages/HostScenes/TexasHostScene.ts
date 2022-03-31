@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import HostScene from "./tools/HostScene";
+import HostScene from "./hostObjects/HostScene";
 
 export default class TexasHostScene extends HostScene {
     constructor() {

@@ -1,9 +1,9 @@
 import { UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
-import MenuButton from "../tools/objects/MenuButton";
-import { addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../tools/objects/Tools";
-import { loadUserAvatarSprites } from "../tools/objects/UserAvatarContainer";
-import PlayerScene from "./tools/PlayerScene";
+import MenuButton from "../objects/MenuButton";
+import { addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../objects/Tools";
+import { loadUserAvatarSprites } from "../objects/UserAvatarContainer";
+import PlayerScene from "./tools/playerObjects/PlayerScene";
 
 export default class PlayerBeforeGameStart extends PlayerScene {
     readyButton: MenuButton | null;

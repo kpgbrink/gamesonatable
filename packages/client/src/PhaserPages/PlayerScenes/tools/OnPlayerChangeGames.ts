@@ -1,6 +1,6 @@
 import { RoomData } from "api";
 import socket from "../../../SocketConnection";
-import { persistentData } from "../../tools/objects/PersistantData";
+import { persistentData } from "../../objects/PersistantData";
 
 export const onPlayerChangeGames = (phaserScene: Phaser.Scene) => {
     socket.on("room data", (roomData: RoomData) => {

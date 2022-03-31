@@ -1,6 +1,6 @@
 import { RoomData, User, UserAvatar } from "api";
 import Phaser from "phaser";
-import socket from "../../../SocketConnection";
+import socket from "../../SocketConnection";
 import { avatarImages } from "./avatarImages.generated";
 import { persistentData } from "./PersistantData";
 import { loadIfImageNotLoaded, loadIfImageNotLoadedAndUserAvatarHasIt, randomIndex } from "./Tools";
@@ -71,11 +71,11 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
     headImage: Phaser.GameObjects.Image | null;
     legsImage: Phaser.GameObjects.Image | null;
     userNameText: Phaser.GameObjects.Text | null;
-    onSizeChange: ((userAvatarContainer: UserAvatarContainer) => void) | undefined;
+    onSizeChange: (userAvatarContainer: UserAvatarContainer) => void = () => { };
     imageMultiplier: number = 10;
     tableRotation: number = 0;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, user: User, onSizeChange?: (userAvatarContainer: UserAvatarContainer) => void) {
+    constructor(scene: Phaser.Scene, x: number, y: number, user: User) {
         super(scene, x, y);
         this.user = user;
         this.loadUserAvatarImages();
@@ -92,7 +92,6 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
         this.headImage = null;
         this.legsImage = null;
         this.userNameText = null;
-        this.onSizeChange = onSizeChange;
         if (user.name) {
             this.userNameText = scene.add.text(0, 0, user.name, { fontSize: '50px' });
             this.userNameText.setOrigin(0.5, 4.5);

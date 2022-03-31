@@ -1,23 +1,25 @@
 import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
-import MenuButton from "../tools/objects/MenuButton";
-import { persistentData } from "../tools/objects/PersistantData";
-import { DegreesToRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoom } from "../tools/objects/Tools";
-import UserAvatarContainer from "../tools/objects/UserAvatarContainer";
-import HostScene from "./tools/HostScene";
-import { addUserAvatars, createTable, moveUserAvatarToProperTableLocation, UserAvatarScene } from "./tools/HostTools";
+import GameTable from "../objects/GameTable";
+import MenuButton from "../objects/MenuButton";
+import { persistentData } from "../objects/PersistantData";
+import { DegreesToRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, playersInRoom } from "../objects/Tools";
+import HostScene from "./hostObjects/HostScene";
+import { HostUserAvatarsAroundTableSelectPosition } from "./hostObjects/HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableSelectPosition";
 
-export default class HostBeforeGameStart extends HostScene implements UserAvatarScene {
-    userAvatars: UserAvatarContainer[] = [];
+export default class HostBeforeGameStart extends HostScene {
     instructionText: Phaser.GameObjects.Text | null;
     startGameButton: MenuButton | null;
     userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary;
+    gameTable: GameTable | null = null;
+    hostUserAvatars: HostUserAvatarsAroundTableSelectPosition;
 
     constructor() {
         super({ key: 'HostBeforeGameStart' });
         this.instructionText = null;
         this.startGameButton = null;
         this.userBeforeGameStartDictionary = {};
+        this.hostUserAvatars = new HostUserAvatarsAroundTableSelectPosition(this);
     }
 
     preload() {
@@ -31,13 +33,10 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
         super.create();
         socket.emit('set player current scene', 'PlayerBeforeGameStart');
         this.setUpStartGameButtonAndInstructionText();
+        this.hostUserAvatars.createUsers(persistentData.roomData);
         this.onRoomDataUpdateInstructionsOrStartGameButton(persistentData.roomData);
         socket.on('room data', (roomData: RoomData) => {
-            const onSizeChange = (userAvatarContainer: UserAvatarContainer) => {
-                userAvatarContainer.setInteractive({ useHandCursor: true });
-                this.input.setDraggable(userAvatarContainer);
-            };
-            addUserAvatars(this, roomData, { onSizeChange: onSizeChange });
+            this.hostUserAvatars.createUsers(roomData);
             this.onRoomDataUpdateInstructionsOrStartGameButton(roomData);
             this.startGameIfAllUsersReady();
         });
@@ -47,9 +46,10 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
             this.setStartGameButton();
         });
         socket.emit('get room data');
-        // Make the table
-        createTable(this);
         this.setUpUserReady();
+        const screenCenter = getScreenCenter(this);
+        this.gameTable = new GameTable(this, screenCenter.x, screenCenter.y);
+        this.gameTable.setDepth(-1);
     }
 
     setUpUserReady() {
@@ -63,7 +63,7 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
             }
             socket.emit('userBeforeGameStart data', this.userBeforeGameStartDictionary);
             // Add a checkmark to the user avatar container
-            const userAvatarContainer = this.userAvatars.find((userAvatar) => userAvatar.user.id === userId);
+            const userAvatarContainer = this.hostUserAvatars.userAvatarContainers.find((userAvatarContainer) => userAvatarContainer.user.id === userId);
             if (!userAvatarContainer) return;
             const checkmark = this.add.image(0, 0, 'checkmark');
             checkmark.setScale(.2);
@@ -84,7 +84,7 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
     removeUsersWhoDoNotExist() {
         // Remove users from dictionary if they don't exist in the room
         Object.keys(this.userBeforeGameStartDictionary).forEach((userId) => {
-            if (!this.userAvatars.find((userAvatar) => userAvatar.user.id === userId)) {
+            if (!this.hostUserAvatars.userAvatarContainers.find((userAvatarContainer) => userAvatarContainer.user.id === userId)) {
                 delete this.userBeforeGameStartDictionary[userId];
             }
         });
@@ -148,8 +148,8 @@ export default class HostBeforeGameStart extends HostScene implements UserAvatar
 
     update() {
         // slowly move user avatars to edge of table
-        moveUserAvatarToProperTableLocation(this);
-        this.userAvatars.forEach((userAvatar) => {
+        this.hostUserAvatars.moveToEdgeOfTable();
+        this.hostUserAvatars.userAvatarContainers.forEach((userAvatar) => {
             // update the avatar rotations to server if changed
             // but don't make the update send things out to everyone else because it doesn't really matter to the others atm.
             (() => {

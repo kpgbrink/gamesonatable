@@ -18,10 +18,10 @@ export default class CardContainer extends Phaser.GameObjects.Container {
         this.card = card;
         this.jack = jack;
         this.frontImage = null;
-        this.loadCardImages();
+        this.addCardImages();
     }
 
-    public loadCardImages() {
+    public addCardImages() {
         // add the back of the card
         this.backImage = this.scene.add.image(0, 0, 'cards', 'back');
         this.add(this.backImage);
@@ -67,7 +67,6 @@ export default class CardContainer extends Phaser.GameObjects.Container {
 
     public update() {
         this.moveCardFromVelocity();
-        this.setCardFaceUp(true);
     }
 
 }

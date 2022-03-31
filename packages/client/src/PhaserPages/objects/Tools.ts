@@ -1,6 +1,6 @@
 import { RoomData } from "api";
-import socket from "../../../SocketConnection";
-import PlayerScene from "../../PlayerScenes/tools/PlayerScene";
+import socket from "../../SocketConnection";
+import PlayerScene from "../PlayerScenes/tools/playerObjects/PlayerScene";
 import { persistentData } from "./PersistantData";
 import { makeMyUserAvatar } from "./UserAvatarContainer";
 
@@ -170,4 +170,9 @@ export const shuffle = <T>(array: T[]): T[] => {
             array[randomIndex], array[currentIndex]];
     }
     return array;
+}
+
+// Random number between 2 numbers
+export const randomNumberBetween = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }

@@ -7,7 +7,7 @@ import QRCode from "qrcode.react";
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../../../AppContext";
-import { persistentData } from "../../../PhaserPages/tools/objects/PersistantData";
+import { persistentData } from "../../../PhaserPages/objects/PersistantData";
 
 export default function PlayerJoin() {
   const { roomId } = useParams();
