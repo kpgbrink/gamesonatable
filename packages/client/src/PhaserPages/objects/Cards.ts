@@ -1,5 +1,7 @@
-import CardContainer, { cards, suites } from "./CardContainer";
+import CardContainer from "./CardContainer";
 
+export const suites = ['hearts', 'diamonds', 'spades', 'clubs'];
+export const cards = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
 
 export class Cards {
     cardContainers: CardContainer[] = [];
@@ -14,6 +16,7 @@ export class Cards {
         scene.load.atlas('cards', 'assets/cards/cards.png', 'assets/cards/cards.json');
     }
 
+    // default cards to create. the whole deck excluding jokers
     create(x: number, y: number) {
         // create the cards
         for (let suite of suites) {

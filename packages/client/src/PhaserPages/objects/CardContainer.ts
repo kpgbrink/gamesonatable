@@ -1,22 +1,19 @@
 
-export const suites = ['hearts', 'diamonds', 'spades', 'clubs'];
-export const cards = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
-
 export default class CardContainer extends Phaser.GameObjects.Container {
     suit: string | null;
     card: string | null;
-    jack: boolean | null;
+    joker: boolean | null;
     backImage: Phaser.GameObjects.Image | null = null;
     frontImage: Phaser.GameObjects.Image | null = null;
     velocity: { x: number, y: number } = { x: 0, y: 0 };
 
-    constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, jack: boolean = false) {
+    constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, joker: boolean = false) {
         super(scene, x, y);
 
         // take the 
         this.suit = suit;
         this.card = card;
-        this.jack = jack;
+        this.joker = joker;
         this.frontImage = null;
         this.addCardImages();
     }
@@ -33,8 +30,8 @@ export default class CardContainer extends Phaser.GameObjects.Container {
     }
 
     public getCardImageName() {
-        if (this.jack) {
-            return 'jack';
+        if (this.joker) {
+            return 'joker';
         }
         return `${this.suit}${this.card}`;
     }

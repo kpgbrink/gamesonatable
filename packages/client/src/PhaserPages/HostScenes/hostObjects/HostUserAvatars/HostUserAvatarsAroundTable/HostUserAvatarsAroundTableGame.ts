@@ -14,6 +14,5 @@ export class HostUserAvatarsAroundTableGame extends HostUserAvatarsAroundTable {
 
     override afterUserAvatarCreated(userAvatarContainer: UserAvatarContainer): void {
         super.afterUserAvatarCreated(userAvatarContainer);
-        console.log('userAvatarContaienr', userAvatarContainer);
     }
 }
