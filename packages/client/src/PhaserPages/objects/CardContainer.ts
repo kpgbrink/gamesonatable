@@ -6,6 +6,7 @@ export default class CardContainer extends Phaser.GameObjects.Container {
     backImage: Phaser.GameObjects.Image | null = null;
     frontImage: Phaser.GameObjects.Image | null = null;
     velocity: { x: number, y: number } = { x: 0, y: 0 };
+    rotationalVelocity: number = 0;
 
     constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, joker: boolean = false) {
         super(scene, x, y);
@@ -57,13 +58,22 @@ export default class CardContainer extends Phaser.GameObjects.Container {
         this.velocity = { x, y };
     }
 
+    public setCardRotationalVelocity(rotationalVelocity: number) {
+        this.rotationalVelocity = rotationalVelocity;
+    }
+
     public moveCardFromVelocity() {
         this.x += this.velocity.x;
         this.y += this.velocity.y;
     }
 
+    public moveCardFromRotationalVelocity() {
+        this.rotation += this.rotationalVelocity;
+    }
+
     public update() {
         this.moveCardFromVelocity();
+        this.moveCardFromRotationalVelocity();
     }
 
 }

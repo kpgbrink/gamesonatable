@@ -176,3 +176,8 @@ export const shuffle = <T>(array: T[]): T[] => {
 export const randomNumberBetween = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+// Random float between 2 numbers
+export const randomFloatBetween = (min: number, max: number) => {
+    return Math.random() * (max - min) + min;
+}

@@ -9,6 +9,7 @@ export class HostCardGame extends HostGame {
     cards: Cards
     scene: Phaser.Scene
     hostUserAvatars: HostUserAvatarsAroundTableGame;
+    dealAmount: number = 10;
 
     constructor(scene: Phaser.Scene) {
         super(scene);

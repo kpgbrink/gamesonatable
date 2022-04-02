@@ -1,4 +1,4 @@
-import { randomNumberBetween } from "../../../../../objects/Tools";
+import { DegreesToRadians, getScreenCenter, randomFloatBetween } from "../../../../../objects/Tools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 import { Dealing } from "./Dealing";
@@ -6,7 +6,9 @@ import { Dealing } from "./Dealing";
 
 export class Shuffling extends HostGameState {
     hostGame: HostCardGame;
-    randomStartingMovementSpeed: number = 10;
+    randomStartingOffset: number = 300;
+    randomStartingMovementSpeed: number = 3;
+    randomStartingRotationalVelocity: number = DegreesToRadians(2);
     shufflingTime: number = 60 * 4;
 
     constructor(hostGame: HostCardGame) {
@@ -16,10 +18,21 @@ export class Shuffling extends HostGameState {
 
     enter() {
         // set the card movement to randomness
+        const screenCenter = getScreenCenter(this.hostGame.scene);
+
+        // set random card movement
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
-            const x = randomNumberBetween(-this.randomStartingMovementSpeed, this.randomStartingMovementSpeed);
-            const y = randomNumberBetween(-this.randomStartingMovementSpeed, this.randomStartingMovementSpeed);
+            // set random card offset
+            cardContainer.x = screenCenter.x + randomFloatBetween(-this.randomStartingOffset, this.randomStartingOffset);
+            cardContainer.y = screenCenter.y + randomFloatBetween(-this.randomStartingOffset, this.randomStartingOffset);
+
+            // set random velocity
+            const x = randomFloatBetween(-this.randomStartingMovementSpeed, this.randomStartingMovementSpeed);
+            const y = randomFloatBetween(-this.randomStartingMovementSpeed, this.randomStartingMovementSpeed);
             cardContainer.velocity = { x, y };
+
+            // set random rotational velocity
+            cardContainer.rotationalVelocity = randomFloatBetween(-this.randomStartingRotationalVelocity, this.randomStartingRotationalVelocity);
         });
     }
 
@@ -37,6 +50,7 @@ export class Shuffling extends HostGameState {
         // on exit
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
             cardContainer.velocity = { x: 0, y: 0 };
+            cardContainer.rotationalVelocity = 0;
         });
     }
 }

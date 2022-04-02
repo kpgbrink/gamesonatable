@@ -32,7 +32,7 @@ export default class PlayerBeforeGameStart extends PlayerScene {
 
     addInstructions() {
         var screenDimensions = getScreenDimensions(this);
-        this.add.text(100, screenDimensions.height / 3, 'Drag your player to yourself!',
+        this.add.text(100, screenDimensions.height / 3, 'Drag your player on the other screen to yourself!',
             {
                 color: 'green',
                 fontSize: '50px',
