@@ -27,8 +27,8 @@ export default class ThirtyOneHostScene extends HostScene {
         this.thirtyOneGame.create();
     }
 
-    update() {
-        super.update();
-        this.thirtyOneGame.update();
+    update(time: number, delta: number) {
+        super.update(time, delta);
+        this.thirtyOneGame.update(time, delta);
     }
 }

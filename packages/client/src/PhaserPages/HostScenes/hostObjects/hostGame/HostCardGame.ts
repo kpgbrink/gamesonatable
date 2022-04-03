@@ -28,8 +28,8 @@ export class HostCardGame extends HostGame {
         this.changeState(new Shuffling(this));
     }
 
-    update() {
-        super.update();
+    update(time: number, delta: number) {
+        super.update(time, delta);
     }
 
 }

@@ -202,3 +202,6 @@ export const vectorFromAngleAndLength = (angle: number, length: number) => {
     }
 }
 
+export const millisecondToSecond = (milliseconds: number) => {
+    return milliseconds / 1000;
+}

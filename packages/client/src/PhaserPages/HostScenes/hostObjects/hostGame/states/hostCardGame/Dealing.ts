@@ -20,7 +20,7 @@ export class Dealing extends HostGameState {
         });
     }
 
-    update(): HostGameState | null {
+    update(time: number, delta: number): HostGameState | null {
         // deal the cards then switch to player turn state
 
         return null;

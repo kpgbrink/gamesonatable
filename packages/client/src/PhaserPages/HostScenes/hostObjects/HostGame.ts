@@ -11,8 +11,8 @@ export class HostGame {
     create() {
     }
 
-    update() {
-        var newState = this.currentState?.update() || null;
+    update(time: number, delta: number) {
+        var newState = this.currentState?.update(time, delta) || null;
         this.changeState(newState);
     }
 

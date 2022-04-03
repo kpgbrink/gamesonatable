@@ -11,7 +11,7 @@ export class HostGameState {
         throw new Error("Method not implemented.");
     }
 
-    update(): HostGameState | null {
+    update(time: number, delta: number): HostGameState | null {
         throw new Error("Method not implemented.");
     }
 

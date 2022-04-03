@@ -1,3 +1,4 @@
+import { millisecondToSecond } from "./Tools";
 
 export default class CardContainer extends Phaser.GameObjects.Container {
     suit: string | null;
@@ -63,18 +64,18 @@ export default class CardContainer extends Phaser.GameObjects.Container {
         this.rotationalVelocity = rotationalVelocity;
     }
 
-    public moveCardFromVelocity() {
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
+    public moveCardFromVelocity(delta: number) {
+        this.x += this.velocity.x * millisecondToSecond(delta);
+        this.y += this.velocity.y * millisecondToSecond(delta);
     }
 
-    public moveCardFromRotationalVelocity() {
-        this.rotation += this.rotationalVelocity;
+    public moveCardFromRotationalVelocity(delta: number) {
+        this.rotation += this.rotationalVelocity * millisecondToSecond(delta);
     }
 
-    public update() {
-        this.moveCardFromVelocity();
-        this.moveCardFromRotationalVelocity();
+    public update(time: number, delta: number) {
+        this.moveCardFromVelocity(delta);
+        this.moveCardFromRotationalVelocity(delta);
     }
 
 }

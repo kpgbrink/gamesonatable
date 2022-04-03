@@ -16,6 +16,6 @@ export default class HostScene extends Phaser.Scene {
         addFullScreenButton(this);
     }
 
-    update() {
+    update(time: number, delta: number) {
     }
 }

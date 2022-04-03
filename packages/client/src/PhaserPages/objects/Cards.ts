@@ -32,7 +32,7 @@ export class Cards {
         this.cardContainers.forEach(cardContainer => cardContainer.setDepth(depth));
     }
 
-    update() {
-        this.cardContainers.forEach(cardContainer => cardContainer.update());
+    update(time: number, delta: number) {
+        this.cardContainers.forEach(cardContainer => cardContainer.update(time, delta));
     }
 }

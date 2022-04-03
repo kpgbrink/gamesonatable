@@ -1,4 +1,4 @@
-import { angleFromPositionToPosition, DegreesToRadians, distanceBetweenTwoPoints, getNormalVector, getScreenCenter, randomFloatBetween, vectorFromAngleAndLength } from "../../../../../objects/Tools";
+import { angleFromPositionToPosition, DegreesToRadians, distanceBetweenTwoPoints, getNormalVector, getScreenCenter, millisecondToSecond, randomFloatBetween, vectorFromAngleAndLength } from "../../../../../objects/Tools";
 import { calculateDistanceAndRotationFromTable } from "../../../../tools/HostTools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
@@ -8,10 +8,10 @@ import { Dealing } from "./Dealing";
 export class Shuffling extends HostGameState {
     hostGame: HostCardGame;
     randomStartingOffset: number = 500;
-    randomStartingMovementSpeed: number = 10;
-    randomStartingRotationalVelocity: number = DegreesToRadians(2);
-    shufflingTime: number = 60 * 20;
-    massCenter = 50;
+    randomStartingMovementSpeed: number = 15 * 60;
+    randomStartingRotationalVelocity: number = DegreesToRadians(360);
+    shufflingTime: number = 20;
+    massCenter = 50 * 60 * 60 * 4;
 
     constructor(hostGame: HostCardGame) {
         super(hostGame);
@@ -38,7 +38,7 @@ export class Shuffling extends HostGameState {
         });
     }
 
-    addGravityToCardMovement() {
+    addGravityToCardMovement(deltaTime: number) {
         // add gravity to card movement
         const screenCenter = getScreenCenter(this.hostGame.scene);
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
@@ -51,13 +51,12 @@ export class Shuffling extends HostGameState {
             const distance = Math.sqrt(distanceToScreenCenter.x ** 2 + distanceToScreenCenter.y ** 2);
             // calculate gravity force
             const gravityForce = this.massCenter * cardContainer.mass / distance * 2;
-            console.log('gravity force', gravityForce);
             // add gravity force to velocity towards screen center
             // get normal vector to screen center from card location
             const normalVecotr = getNormalVector(-distanceToScreenCenter.x, -distanceToScreenCenter.y);
             // add normal vector to velocity
-            cardContainer.velocity.x += normalVecotr.x * gravityForce;
-            cardContainer.velocity.y += normalVecotr.y * gravityForce;
+            cardContainer.velocity.x += normalVecotr.x * gravityForce * millisecondToSecond(deltaTime);
+            cardContainer.velocity.y += normalVecotr.y * gravityForce * millisecondToSecond(deltaTime);
 
         });
     }
@@ -67,7 +66,7 @@ export class Shuffling extends HostGameState {
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
             const distanceFromCenter = distanceBetweenTwoPoints(screenCenter, cardContainer);
             const { maxDistance } = calculateDistanceAndRotationFromTable(this.hostGame.scene, cardContainer);
-            const distanceFromCenterToOutside = Math.min(distanceFromCenter, maxDistance);
+            const distanceFromCenterToOutside = Math.min(distanceFromCenter, maxDistance - 150);
             const angleFromCenterToPosition = angleFromPositionToPosition(screenCenter, cardContainer);
             const vectorFromCenter = vectorFromAngleAndLength(angleFromCenterToPosition, distanceFromCenterToOutside);
             cardContainer.x = screenCenter.x + vectorFromCenter.x;
@@ -75,11 +74,12 @@ export class Shuffling extends HostGameState {
         });
     }
 
-    update(): HostGameState | null {
+    update(time: number, delta: number): HostGameState | null {
+        // console.log('delta time', delta);
         // shuffle then switch to deal state
-        this.shufflingTime--;
-        this.hostGame.cards.update();
-        this.addGravityToCardMovement();
+        this.shufflingTime -= millisecondToSecond(delta);
+        this.hostGame.cards.update(time, delta);
+        this.addGravityToCardMovement(delta);
         this.keepCardsOnTable();
 
         if (this.shufflingTime <= 0) {
