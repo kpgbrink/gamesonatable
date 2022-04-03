@@ -7,6 +7,7 @@ export default class CardContainer extends Phaser.GameObjects.Container {
     frontImage: Phaser.GameObjects.Image | null = null;
     velocity: { x: number, y: number } = { x: 0, y: 0 };
     rotationalVelocity: number = 0;
+    mass: number = 1;
 
     constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, joker: boolean = false) {
         super(scene, x, y);

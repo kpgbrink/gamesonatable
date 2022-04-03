@@ -1,4 +1,5 @@
-import { DegreesToRadians, getScreenCenter, randomFloatBetween } from "../../../../../objects/Tools";
+import { angleFromPositionToPosition, DegreesToRadians, distanceBetweenTwoPoints, getNormalVector, getScreenCenter, randomFloatBetween, vectorFromAngleAndLength } from "../../../../../objects/Tools";
+import { calculateDistanceAndRotationFromTable } from "../../../../tools/HostTools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 import { Dealing } from "./Dealing";
@@ -6,10 +7,11 @@ import { Dealing } from "./Dealing";
 
 export class Shuffling extends HostGameState {
     hostGame: HostCardGame;
-    randomStartingOffset: number = 300;
-    randomStartingMovementSpeed: number = 3;
+    randomStartingOffset: number = 500;
+    randomStartingMovementSpeed: number = 10;
     randomStartingRotationalVelocity: number = DegreesToRadians(2);
-    shufflingTime: number = 60 * 4;
+    shufflingTime: number = 60 * 20;
+    massCenter = 50;
 
     constructor(hostGame: HostCardGame) {
         super(hostGame);
@@ -36,10 +38,50 @@ export class Shuffling extends HostGameState {
         });
     }
 
+    addGravityToCardMovement() {
+        // add gravity to card movement
+        const screenCenter = getScreenCenter(this.hostGame.scene);
+        this.hostGame.cards.cardContainers.forEach(cardContainer => {
+            // add gravity to screen center
+            const distanceToScreenCenter = (() => {
+                const x = cardContainer.x - screenCenter.x;
+                const y = cardContainer.y - screenCenter.y;
+                return { x, y };
+            })();
+            const distance = Math.sqrt(distanceToScreenCenter.x ** 2 + distanceToScreenCenter.y ** 2);
+            // calculate gravity force
+            const gravityForce = this.massCenter * cardContainer.mass / distance * 2;
+            console.log('gravity force', gravityForce);
+            // add gravity force to velocity towards screen center
+            // get normal vector to screen center from card location
+            const normalVecotr = getNormalVector(-distanceToScreenCenter.x, -distanceToScreenCenter.y);
+            // add normal vector to velocity
+            cardContainer.velocity.x += normalVecotr.x * gravityForce;
+            cardContainer.velocity.y += normalVecotr.y * gravityForce;
+
+        });
+    }
+
+    keepCardsOnTable() {
+        const screenCenter = getScreenCenter(this.hostGame.scene);
+        this.hostGame.cards.cardContainers.forEach(cardContainer => {
+            const distanceFromCenter = distanceBetweenTwoPoints(screenCenter, cardContainer);
+            const { maxDistance } = calculateDistanceAndRotationFromTable(this.hostGame.scene, cardContainer);
+            const distanceFromCenterToOutside = Math.min(distanceFromCenter, maxDistance);
+            const angleFromCenterToPosition = angleFromPositionToPosition(screenCenter, cardContainer);
+            const vectorFromCenter = vectorFromAngleAndLength(angleFromCenterToPosition, distanceFromCenterToOutside);
+            cardContainer.x = screenCenter.x + vectorFromCenter.x;
+            cardContainer.y = screenCenter.y + vectorFromCenter.y;
+        });
+    }
+
     update(): HostGameState | null {
         // shuffle then switch to deal state
         this.shufflingTime--;
         this.hostGame.cards.update();
+        this.addGravityToCardMovement();
+        this.keepCardsOnTable();
+
         if (this.shufflingTime <= 0) {
             return new Dealing(this.hostGame);
         }

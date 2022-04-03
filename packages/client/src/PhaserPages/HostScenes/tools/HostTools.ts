@@ -40,7 +40,7 @@ export const calculateDistanceAndRotationFromTable = (scene: Phaser.Scene, posit
     }
     const getDistance = (x: number) => {
         const y = equation(x);
-        const distance = distanceBetweenTwoPoints(x, y, 0, heightOpposite);
+        const distance = distanceBetweenTwoPoints({ x, y }, { x: 0, y: heightOpposite });
         return distance;
     };
     let lowestDistance = Infinity;

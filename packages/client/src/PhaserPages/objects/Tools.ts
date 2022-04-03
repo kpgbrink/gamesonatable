@@ -122,8 +122,8 @@ export const quadraticFormula = (a: number, b: number, c: number) => {
 }
 
 // distance between 2 points
-export const distanceBetweenTwoPoints = (x1: number, y1: number, x2: number, y2: number) => {
-    return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+export const distanceBetweenTwoPoints = (position1: Position, position2: Position) => {
+    return Math.sqrt((position1.x - position2.x) ** 2 + (position1.y - position2.y) ** 2);
 }
 
 export const pow2 = (x: number) => {
@@ -181,3 +181,24 @@ export const randomNumberBetween = (min: number, max: number) => {
 export const randomFloatBetween = (min: number, max: number) => {
     return Math.random() * (max - min) + min;
 }
+
+
+export const getNormalVector = (x: number, y: number) => {
+    const length = Math.sqrt(x * x + y * y);
+    return {
+        x: x / length,
+        y: y / length
+    }
+}
+
+export const angleFromPositionToPosition = (position1: Position, position2: Position) => {
+    return Math.atan2(position2.y - position1.y, position2.x - position1.x);
+}
+
+export const vectorFromAngleAndLength = (angle: number, length: number) => {
+    return {
+        x: Math.cos(angle) * length,
+        y: Math.sin(angle) * length
+    }
+}
+
