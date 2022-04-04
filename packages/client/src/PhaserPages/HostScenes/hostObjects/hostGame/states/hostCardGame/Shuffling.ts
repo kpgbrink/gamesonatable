@@ -2,7 +2,7 @@ import { angleFromPositionToPosition, DegreesToRadians, distanceBetweenTwoPoints
 import { calculateDistanceAndRotationFromTable } from "../../../../tools/HostTools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
-import { Dealing } from "./Dealing";
+import { GetReadyToDeal } from "./GetReadyToDeal";
 
 
 export class Shuffling extends HostGameState {
@@ -10,8 +10,8 @@ export class Shuffling extends HostGameState {
     randomStartingOffset: number = 500;
     randomStartingMovementSpeed: number = 15 * 60;
     randomStartingRotationalVelocity: number = DegreesToRadians(360);
-    shufflingTime: number = 20;
     massCenter = 50 * 60 * 60 * 4;
+    shufflingTime: number = 1;
 
     constructor(hostGame: HostCardGame) {
         super(hostGame);
@@ -21,6 +21,9 @@ export class Shuffling extends HostGameState {
     enter() {
         // set the card movement to randomness
         const screenCenter = getScreenCenter(this.hostGame.scene);
+
+        // shuffle the cards
+        this.hostGame.cards.shuffle();
 
         // set random card movement
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
@@ -66,7 +69,7 @@ export class Shuffling extends HostGameState {
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
             const distanceFromCenter = distanceBetweenTwoPoints(screenCenter, cardContainer);
             const { maxDistance } = calculateDistanceAndRotationFromTable(this.hostGame.scene, cardContainer);
-            const distanceFromCenterToOutside = Math.min(distanceFromCenter, maxDistance - 150);
+            const distanceFromCenterToOutside = Math.min(distanceFromCenter, maxDistance - 800);
             const angleFromCenterToPosition = angleFromPositionToPosition(screenCenter, cardContainer);
             const vectorFromCenter = vectorFromAngleAndLength(angleFromCenterToPosition, distanceFromCenterToOutside);
             cardContainer.x = screenCenter.x + vectorFromCenter.x;
@@ -77,22 +80,18 @@ export class Shuffling extends HostGameState {
     update(time: number, delta: number): HostGameState | null {
         // console.log('delta time', delta);
         // shuffle then switch to deal state
-        this.shufflingTime -= millisecondToSecond(delta);
         this.hostGame.cards.update(time, delta);
         this.addGravityToCardMovement(delta);
         this.keepCardsOnTable();
 
+        this.shufflingTime -= millisecondToSecond(delta);
         if (this.shufflingTime <= 0) {
-            return new Dealing(this.hostGame);
+            return new GetReadyToDeal(this.hostGame);
         }
         return null;
     }
 
     exit() {
         // on exit
-        this.hostGame.cards.cardContainers.forEach(cardContainer => {
-            cardContainer.velocity = { x: 0, y: 0 };
-            cardContainer.rotationalVelocity = 0;
-        });
     }
 }

@@ -158,6 +158,12 @@ export interface Position {
     y: number;
 }
 
+export interface PositionAndRotation {
+    x: number;
+    y: number;
+    rotation: number;
+}
+
 export const shuffle = <T>(array: T[]): T[] => {
     let currentIndex = array.length, randomIndex;
     // While there remain elements to shuffle...
@@ -204,4 +210,24 @@ export const vectorFromAngleAndLength = (angle: number, length: number) => {
 
 export const millisecondToSecond = (milliseconds: number) => {
     return milliseconds / 1000;
+}
+
+export const keepAnglePositive = (angle: number) => {
+    if (angle < 0) {
+        return angle + DegreesToRadians(360);
+    }
+    return angle;
+}
+
+export const positionAndRotationRelativeToObject = (positionRelative: PositionAndRotation, position2: PositionAndRotation) => {
+    // position2 changes based on rotation
+    const x2 = Math.cos(positionRelative.rotation) * position2.x - Math.sin(positionRelative.rotation) * position2.y;
+    const y2 = Math.sin(positionRelative.rotation) * position2.x + Math.cos(positionRelative.rotation) * position2.y;
+
+    // return new position and rotation
+    return {
+        x: positionRelative.x + x2,
+        y: positionRelative.y + y2,
+        rotation: positionRelative.rotation + position2.rotation
+    };
 }

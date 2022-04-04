@@ -1,4 +1,5 @@
 import CardContainer from "./CardContainer";
+import { shuffle } from "./Tools";
 
 export const suites = ['hearts', 'diamonds', 'spades', 'clubs'];
 export const cards = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
@@ -26,6 +27,13 @@ export class Cards {
                 this.scene.add.existing(cardContainer);
             }
         }
+    }
+
+    shuffle() {
+        shuffle(this.cardContainers);
+        this.cardContainers.forEach((cardContainer, i) => {
+            cardContainer.setDepth(i);
+        });
     }
 
     setDepth(depth: number) {

@@ -54,4 +54,22 @@ export class HostUserAvatars {
             userAvatar.setDepth(depth);
         });
     }
+
+    getUserById(userId: string) {
+        return this.userAvatarContainers.find((userAvatar) => userAvatar.user.id === userId);
+    }
+
+    getRandomUserId() {
+        return this.userAvatarContainers[Math.floor(Math.random() * this.userAvatarContainers.length)].user.id;
+    }
+
+    getNextUserIdFromRotation(userId: string) {
+        const currentDealerUserId = this.userAvatarContainers.find(u => u.user.id === userId)?.user.id;
+        // order users by rotation
+        const users = this.userAvatarContainers.sort((a, b) => a.rotation - b.rotation);
+        // fint the next user from the current dealer
+        const currentDealerIndex = users.findIndex(u => u.user.id === currentDealerUserId) || -1;
+        const nextDealerIndex = (currentDealerIndex + 1) % users.length;
+        return users[nextDealerIndex].user.id;
+    }
 }

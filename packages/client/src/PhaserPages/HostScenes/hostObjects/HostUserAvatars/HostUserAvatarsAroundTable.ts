@@ -1,4 +1,4 @@
-import { angleFromPositionToPosition, distanceBetweenTwoPoints, getScreenCenter, vectorFromAngleAndLength } from "../../../objects/Tools";
+import { angleFromPositionToPosition, distanceBetweenTwoPoints, getScreenCenter, keepAnglePositive, vectorFromAngleAndLength } from "../../../objects/Tools";
 import UserAvatarContainer from "../../../objects/UserAvatarContainer";
 import { calculateDistanceAndRotationFromTable } from "../../tools/HostTools";
 import { HostUserAvatars } from "../HostUserAvatars";
@@ -29,7 +29,7 @@ export class HostUserAvatarsAroundTable extends HostUserAvatars {
             // move user avatar to new position
             userAvatar.x = newX;
             userAvatar.y = newY;
-            userAvatar.tableRotation = angleFromCenterToUserAvatar;
+            userAvatar.tableRotation = keepAnglePositive(angleFromCenterToUserAvatar);
             // rotate user avatar to face the center
             userAvatar.rotation = positionAngle;
         });
