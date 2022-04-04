@@ -30,6 +30,8 @@ export default class CardContainer extends Phaser.GameObjects.Container {
         this.add(this.frontImage);
         // hide the card image
         this.frontImage.visible = false;
+        // set the card image to the back
+        this.setSize(this.backImage.width, this.backImage.height);
     }
 
     public getCardImageName() {
