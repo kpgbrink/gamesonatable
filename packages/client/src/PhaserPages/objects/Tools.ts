@@ -1,6 +1,7 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
 import PlayerScene from "../PlayerScenes/playerObjects/PlayerScene";
+import { CountdownTimer } from "./CountdownTimer";
 import { persistentData } from "./PersistantData";
 import { makeMyUserAvatar } from "./UserAvatarContainer";
 
@@ -230,4 +231,45 @@ export const positionAndRotationRelativeToObject = (positionRelative: PositionAn
         y: positionRelative.y + y2,
         rotation: positionRelative.rotation + position2.rotation
     };
+}
+
+
+export const calculateMovementFromTimer = (timer: CountdownTimer, delta: number, position: PositionAndRotation, toPosition: PositionAndRotation) => {
+    // calculate starting position from time that has already passed
+    const timePassedPercentage = timer.getTimePassedPercentage();
+
+    // move in direction of position and have at that position when timer hits 0
+    const vector = {
+        x: toPosition.x - position.x,
+        y: toPosition.y - position.y,
+        rotation: toPosition.rotation - position.rotation
+    };
+    if (timePassedPercentage === 1) {
+        console.log('timer done', vector);
+        return vector;
+    }
+    const movementVector = {
+        x: vector.x / (1 - timePassedPercentage),
+        y: vector.y / (1 - timePassedPercentage),
+        rotation: vector.rotation / (1 - timePassedPercentage)
+    };
+    // get movement vector per second 
+    const movementVectorPerSecond = {
+        x: movementVector.x / timer.startTime,
+        y: movementVector.y / timer.startTime,
+        rotation: movementVector.rotation / timer.startTime
+    };
+    // get movement vector per millisecond
+    const movementVectorPerMillisecond = {
+        x: movementVectorPerSecond.x / 1000,
+        y: movementVectorPerSecond.y / 1000,
+        rotation: movementVectorPerSecond.rotation / 1000
+    };
+    // get movement vector per delta
+    const movementVectorPerDelta = {
+        x: movementVectorPerMillisecond.x * delta,
+        y: movementVectorPerMillisecond.y * delta,
+        rotation: movementVectorPerMillisecond.rotation * delta
+    };
+    return movementVectorPerDelta;
 }

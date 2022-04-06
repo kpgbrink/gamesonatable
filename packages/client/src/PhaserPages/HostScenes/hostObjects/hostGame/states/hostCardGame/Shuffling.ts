@@ -1,3 +1,4 @@
+import { CountdownTimer } from "../../../../../objects/CountdownTimer";
 import { angleFromPositionToPosition, DegreesToRadians, distanceBetweenTwoPoints, getNormalVector, getScreenCenter, millisecondToSecond, randomFloatBetween, vectorFromAngleAndLength } from "../../../../../objects/Tools";
 import { calculateDistanceAndRotationFromTable } from "../../../../hostTools/HostTools";
 import { HostCardGame } from "../../HostCardGame";
@@ -11,7 +12,7 @@ export class Shuffling extends HostGameState {
     randomStartingMovementSpeed: number = 15 * 60;
     randomStartingRotationalVelocity: number = DegreesToRadians(360);
     massCenter = 50 * 60 * 60 * 4;
-    shufflingTime: number = 1;
+    shufflingTimer: CountdownTimer = new CountdownTimer(1);
 
     constructor(hostGame: HostCardGame) {
         super(hostGame);
@@ -84,8 +85,8 @@ export class Shuffling extends HostGameState {
         this.addGravityToCardMovement(delta);
         this.keepCardsOnTable();
 
-        this.shufflingTime -= millisecondToSecond(delta);
-        if (this.shufflingTime <= 0) {
+        this.shufflingTimer.update(delta);
+        if (this.shufflingTimer.isDone()) {
             return new GetReadyToDeal(this.hostGame);
         }
         return null;
