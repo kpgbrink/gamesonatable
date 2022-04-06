@@ -2,12 +2,12 @@ import Phaser from "phaser";
 import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
+import PhaserWrapper from "./PhaserWrapper";
 import Omaha from "./PlayerScenes/Omaha";
 import PlayerBeforeGameStart from "./PlayerScenes/PlayerBeforeGameStart";
 import PlayerStartingScene from "./PlayerScenes/PlayerStartingScene";
 import Texas from "./PlayerScenes/Texas";
 import ThirtyOne from "./PlayerScenes/ThirtyOne";
-import PhaserWrapper from "./tools/PhaserWrapper";
 
 export default function PlayerPage() {
   const { socket } = useContext(AppContext);

@@ -1,6 +1,6 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
-import PlayerScene from "../PlayerScenes/tools/playerObjects/PlayerScene";
+import PlayerScene from "../PlayerScenes/playerObjects/PlayerScene";
 import { persistentData } from "./PersistantData";
 import { makeMyUserAvatar } from "./UserAvatarContainer";
 

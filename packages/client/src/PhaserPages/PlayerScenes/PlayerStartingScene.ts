@@ -3,7 +3,7 @@ import socket from "../../SocketConnection";
 import { persistentData } from "../objects/PersistantData";
 import { findMyUser, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../objects/Tools";
 import { generateRandomUserAvatar, loadUserAvatarSprites } from "../objects/UserAvatarContainer";
-import PlayerScene from "./tools/playerObjects/PlayerScene";
+import PlayerScene from "./playerObjects/PlayerScene";
 
 export default class PlayerStartingScene extends PlayerScene {
   returnKey: Phaser.Input.Keyboard.Key | null;

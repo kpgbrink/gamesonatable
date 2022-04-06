@@ -3,7 +3,7 @@ import socket from "../../SocketConnection";
 import MenuButton from "../objects/MenuButton";
 import { addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../objects/Tools";
 import { loadUserAvatarSprites } from "../objects/UserAvatarContainer";
-import PlayerScene from "./tools/playerObjects/PlayerScene";
+import PlayerScene from "./playerObjects/PlayerScene";
 
 export default class PlayerBeforeGameStart extends PlayerScene {
     readyButton: MenuButton | null;

@@ -17,7 +17,7 @@ export class GetReadyToDeal extends HostGameState {
         // choose a random dealer
         this.hostGame.randomizeDealer();
         console.log(this.hostGame.currentDealerId);
-        // move the cards to the random dealer\
+        // move the cards to the random dealer
         this.moveCardsToDealer();
     }
 
@@ -25,7 +25,8 @@ export class GetReadyToDeal extends HostGameState {
         // for not just instantly move the cards to the dealer
         // but have them move to the dealer over time
         const dealer = this.hostGame.getDealer();
-        const positionRotation = positionAndRotationRelativeToObject(dealer, { x: 0, y: 100, rotation: 0 });
+
+        const positionRotation = positionAndRotationRelativeToObject(dealer, { x: 0, y: 150, rotation: 0 });
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
             cardContainer.setPosition(positionRotation.x, positionRotation.y);
             cardContainer.setRotation(positionRotation.rotation);

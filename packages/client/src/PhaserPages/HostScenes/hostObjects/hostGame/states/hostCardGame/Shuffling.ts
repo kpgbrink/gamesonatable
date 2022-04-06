@@ -1,5 +1,5 @@
 import { angleFromPositionToPosition, DegreesToRadians, distanceBetweenTwoPoints, getNormalVector, getScreenCenter, millisecondToSecond, randomFloatBetween, vectorFromAngleAndLength } from "../../../../../objects/Tools";
-import { calculateDistanceAndRotationFromTable } from "../../../../tools/HostTools";
+import { calculateDistanceAndRotationFromTable } from "../../../../hostTools/HostTools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 import { GetReadyToDeal } from "./GetReadyToDeal";

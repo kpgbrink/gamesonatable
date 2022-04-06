@@ -1,6 +1,6 @@
 import { angleFromPositionToPosition, distanceBetweenTwoPoints, getScreenCenter, keepAnglePositive, vectorFromAngleAndLength } from "../../../objects/Tools";
 import UserAvatarContainer from "../../../objects/UserAvatarContainer";
-import { calculateDistanceAndRotationFromTable } from "../../tools/HostTools";
+import { calculateDistanceAndRotationFromTable } from "../../hostTools/HostTools";
 import { HostUserAvatars } from "../HostUserAvatars";
 
 

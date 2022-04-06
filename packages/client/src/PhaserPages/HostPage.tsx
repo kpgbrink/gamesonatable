@@ -6,7 +6,7 @@ import HostBeforeGameStart from "./HostScenes/HostBeforeGameStart";
 import OmahaHostScene from "./HostScenes/OmahaHostScene";
 import TexasHostScene from "./HostScenes/TexasHostScene";
 import ThirtyOneHostScene from "./HostScenes/ThirtyOneHostScene";
-import PhaserWrapper from "./tools/PhaserWrapper";
+import PhaserWrapper from "./PhaserWrapper";
 
 export default function HostPage() {
   const { socket } = useContext(AppContext);
