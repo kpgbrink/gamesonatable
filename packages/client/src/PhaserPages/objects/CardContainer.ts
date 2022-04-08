@@ -1,6 +1,6 @@
-import { millisecondToSecond } from "./Tools";
+import { IStartPosition, millisecondToSecond, PositionAndRotation } from "./Tools";
 
-export default class CardContainer extends Phaser.GameObjects.Container {
+export default class CardContainer extends Phaser.GameObjects.Container implements IStartPosition {
     suit: string | null;
     card: string | null;
     joker: boolean | null;
@@ -9,6 +9,7 @@ export default class CardContainer extends Phaser.GameObjects.Container {
     velocity: { x: number, y: number } = { x: 0, y: 0 };
     rotationalVelocity: number = 0;
     mass: number = 1;
+    startPosition: PositionAndRotation | null = null;
 
     constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, joker: boolean = false) {
         super(scene, x, y);
@@ -78,6 +79,14 @@ export default class CardContainer extends Phaser.GameObjects.Container {
     public update(time: number, delta: number) {
         this.moveCardFromVelocity(delta);
         this.moveCardFromRotationalVelocity(delta);
+    }
+
+    public setStartPositionAsCurentPosition() {
+        this.startPosition = {
+            x: this.x,
+            y: this.y,
+            rotation: this.rotation
+        };
     }
 
 }

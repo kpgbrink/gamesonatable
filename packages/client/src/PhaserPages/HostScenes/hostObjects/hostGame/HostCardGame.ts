@@ -6,8 +6,8 @@ import { Shuffling } from "./states/hostCardGame/Shuffling";
 
 
 export class HostCardGame extends HostGame {
-    cards: Cards
-    scene: Phaser.Scene
+    cards: Cards;
+    scene: Phaser.Scene;
     hostUserAvatars: HostUserAvatarsAroundTableGame;
     dealAmount: number = 10;
     currentDealerId: string | null = null;
@@ -39,6 +39,10 @@ export class HostCardGame extends HostGame {
         this.currentDealerId = this.hostUserAvatars.getNextUserIdFromRotation(this.currentDealerId);
     }
 
+    getNextPlayerId(playerId: string) {
+        return this.hostUserAvatars.getNextUserIdFromRotation(playerId);
+    }
+
     create() {
         super.create();
         this.hostUserAvatars.createOnRoomData();
@@ -50,6 +54,10 @@ export class HostCardGame extends HostGame {
 
     update(time: number, delta: number) {
         super.update(time, delta);
+    }
+
+    getUser(userId: string) {
+        return this.hostUserAvatars.getUserById(userId);
     }
 
 }

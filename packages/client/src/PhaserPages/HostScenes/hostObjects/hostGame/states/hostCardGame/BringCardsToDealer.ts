@@ -2,10 +2,11 @@ import { CountdownTimer } from "../../../../../objects/CountdownTimer";
 import { calculateMovementFromTimer, positionAndRotationRelativeToObject } from "../../../../../objects/Tools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
+import { Dealing } from "./Dealing";
 
 
 // Bring cards to the random dealer and have the cards start going out to people.
-export class GetReadyToDeal extends HostGameState {
+export class BringCardsToDealer extends HostGameState {
     hostGame: HostCardGame;
     getReadyToDealTime: number = .5;
     moveCardToDealerTimer: CountdownTimer = new CountdownTimer(.5);
@@ -18,8 +19,14 @@ export class GetReadyToDeal extends HostGameState {
     enter() {
         // choose a random dealer
         this.hostGame.randomizeDealer();
-        console.log(this.hostGame.currentDealerId);
-        // move the cards to the random dealer
+        // start moving cards to random dealer
+        this.startMovingCardsToDealer();
+    }
+
+    startMovingCardsToDealer() {
+        this.hostGame.cards.cardContainers.forEach(cardContainer => {
+            cardContainer.setStartPositionAsCurentPosition();
+        });
     }
 
     moveCardsToDealer(delta: number) {
@@ -32,7 +39,6 @@ export class GetReadyToDeal extends HostGameState {
 
         this.moveCardToDealerTimer.update(delta);
         if (this.moveCardToDealerTimer.wasDone()) {
-            console.log('was done');
             return;
         }
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
@@ -48,7 +54,9 @@ export class GetReadyToDeal extends HostGameState {
 
     update(time: number, delta: number): HostGameState | null {
         this.moveCardsToDealer(delta);
-
+        if (this.moveCardToDealerTimer.wasDone()) {
+            return new Dealing(this.hostGame);
+        }
         return null;
     }
 

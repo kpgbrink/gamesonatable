@@ -1,10 +1,24 @@
-import { getScreenCenter } from "../../../../../objects/Tools";
+import CardContainer from "../../../../../objects/CardContainer";
+import { CountdownTimer } from "../../../../../objects/CountdownTimer";
+import { calculateMovementFromTimer, DegreesToRadians, positionAndRotationRelativeToObject } from "../../../../../objects/Tools";
+import UserAvatarContainer from "../../../../../objects/UserAvatarContainer";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 
+interface ISendingOutCard {
+    cardContainer: CardContainer
+    user: UserAvatarContainer
+    countdownTimer: CountdownTimer;
+}
 
 export class Dealing extends HostGameState {
     hostGame: HostCardGame;
+    // store the countdown timer for the movement of the card and the card that is moving
+    nextCardTimer: CountdownTimer = new CountdownTimer(.1);
+    sendingOutCards: ISendingOutCard[] = [];
+    sendingOutCardTime: number = 5;
+
+    currentPlayerGettingCard: string | null = null;
 
     constructor(hostGame: HostCardGame) {
         super(hostGame);
@@ -12,17 +26,73 @@ export class Dealing extends HostGameState {
     }
 
     enter() {
-        const screenCenter = getScreenCenter(this.hostGame.scene);
         // set the cards in the center of the table
-        this.hostGame.cards.cardContainers.forEach(cardContainer => {
-            cardContainer.x = screenCenter.x;
-            cardContainer.y = screenCenter.y;
+    }
+
+    getNextCardDeal(delta: number) {
+        // get the next card to deal
+        this.nextCardTimer.update(delta);
+        if (this.nextCardTimer.wasDone()) {
+            this.sendOutCard();
+            this.nextCardTimer.start();
+            return;
+        }
+    }
+
+    sendOutCard() {
+        // send out the next card
+        // if there are no cards left to deal then switch to player turn state  
+        // get the top player card
+        const cardContainer = this.hostGame.cards.cardContainers.pop();
+        if (!cardContainer) {
+            return;
+        }
+        // get the player that the card is going to
+        if (this.hostGame.currentDealerId === null) {
+            throw new Error('currentDealerId is null');
+        }
+        this.currentPlayerGettingCard ??= this.hostGame.currentDealerId;
+        this.currentPlayerGettingCard = this.hostGame.getNextPlayerId(this.currentPlayerGettingCard);
+
+        // get the player that the card is going to
+        const user = this.hostGame.getUser(this.currentPlayerGettingCard);
+        if (!user) {
+            throw new Error('user is null');
+        }
+
+        cardContainer.setStartPositionAsCurentPosition();
+        // add the player getting the card to the list of players getting cards
+        this.sendingOutCards.push({
+            cardContainer,
+            user: user,
+            countdownTimer: new CountdownTimer(this.sendingOutCardTime)
+        });
+    }
+
+    updateSendingOutCards(delta: number) {
+        // update the cards that are being sent out
+        this.sendingOutCards.forEach(sendingOutCard => {
+            sendingOutCard.countdownTimer.update(delta);
+            // move the card to the user
+            const positionRotation = positionAndRotationRelativeToObject(sendingOutCard.user, { x: 0, y: 350, rotation: DegreesToRadians(180) });
+            const movement = calculateMovementFromTimer(sendingOutCard.countdownTimer, delta, sendingOutCard.cardContainer, positionRotation);
+            sendingOutCard.cardContainer.x += movement.x;
+            sendingOutCard.cardContainer.y += movement.y;
+            sendingOutCard.cardContainer.rotation += movement.rotation;
+
+            // if the card is done moving then remove it from the list
+            if (sendingOutCard.countdownTimer.wasDone()) {
+                // todo gived the card to the player
+                // sendingOutCard.user.addCard(sendingOutCard.cardContainer);
+                this.sendingOutCards.splice(this.sendingOutCards.indexOf(sendingOutCard), 1);
+            }
         });
     }
 
     update(time: number, delta: number): HostGameState | null {
         // deal the cards then switch to player turn state
-
+        this.getNextCardDeal(delta);
+        this.updateSendingOutCards(delta);
         return null;
     }
 

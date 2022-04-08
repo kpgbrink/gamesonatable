@@ -165,6 +165,13 @@ export interface PositionAndRotation {
     rotation: number;
 }
 
+export interface IStartPosition {
+    startPosition: PositionAndRotation | null;
+    x: number;
+    y: number;
+    rotation: number;
+}
+
 export const shuffle = <T>(array: T[]): T[] => {
     let currentIndex = array.length, randomIndex;
     // While there remain elements to shuffle...
@@ -234,36 +241,46 @@ export const positionAndRotationRelativeToObject = (positionRelative: PositionAn
 }
 
 
-export const calculateMovementFromTimer = (timer: CountdownTimer, delta: number, position: PositionAndRotation, toPosition: PositionAndRotation) => {
+export const calculateMovementFromTimer = (
+    timer: CountdownTimer,
+    delta: number,
+    startPosition: IStartPosition,
+    toPosition: PositionAndRotation
+) => {
     // calculate starting position from time that has already passed
     const timePassedPercentage = timer.getTimePassedPercentage();
 
+    if (!startPosition.startPosition) {
+        return {
+            x: 0,
+            y: 0,
+            rotation: 0
+        };
+    }
+
+    const startPositionAndRotation = startPosition.startPosition;
+
     // move in direction of position and have at that position when timer hits 0
     const vector = {
-        x: toPosition.x - position.x,
-        y: toPosition.y - position.y,
-        rotation: toPosition.rotation - position.rotation
+        x: toPosition.x - startPositionAndRotation.x,
+        y: toPosition.y - startPositionAndRotation.y,
+        rotation: toPosition.rotation - startPositionAndRotation.rotation
     };
-    if (timePassedPercentage === 1) {
-        console.log('timer done', vector);
-        return vector;
-    }
-    const movementVector = {
-        x: vector.x / (1 - timePassedPercentage),
-        y: vector.y / (1 - timePassedPercentage),
-        rotation: vector.rotation / (1 - timePassedPercentage)
-    };
+
+    // if (timePassedPercentage === 1) {
+    //     return vector;
+    // }
     // get movement vector per second 
     const movementVectorPerSecond = {
-        x: movementVector.x / timer.startTime,
-        y: movementVector.y / timer.startTime,
-        rotation: movementVector.rotation / timer.startTime
+        x: vector.x / timer.startTime,
+        y: vector.y / timer.startTime,
+        rotation: vector.rotation / timer.startTime
     };
     // get movement vector per millisecond
     const movementVectorPerMillisecond = {
-        x: movementVectorPerSecond.x / 1000,
-        y: movementVectorPerSecond.y / 1000,
-        rotation: movementVectorPerSecond.rotation / 1000
+        x: millisecondToSecond(movementVectorPerSecond.x),
+        y: millisecondToSecond(movementVectorPerSecond.y),
+        rotation: millisecondToSecond(movementVectorPerSecond.rotation)
     };
     // get movement vector per delta
     const movementVectorPerDelta = {

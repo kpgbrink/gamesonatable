@@ -64,12 +64,15 @@ export class HostUserAvatars {
     }
 
     getNextUserIdFromRotation(userId: string) {
-        const currentDealerUserId = this.userAvatarContainers.find(u => u.user.id === userId)?.user.id;
         // order users by rotation
         const users = this.userAvatarContainers.sort((a, b) => a.rotation - b.rotation);
-        // fint the next user from the current dealer
-        const currentDealerIndex = users.findIndex(u => u.user.id === currentDealerUserId) || -1;
-        const nextDealerIndex = (currentDealerIndex + 1) % users.length;
-        return users[nextDealerIndex].user.id;
+        // find the next user from the current dealer`
+        const currentUserIndex = users.findIndex(u => u.user.id === userId);
+        if (currentUserIndex === -1) {
+            console.error(`User ${userId} not found in userAvatarContainers`);
+            throw new Error(`User ${userId} not found in userAvatarContainers`);
+        }
+        const nextUserIndex = (currentUserIndex + 1) % users.length;
+        return users[nextUserIndex].user.id;
     }
 }

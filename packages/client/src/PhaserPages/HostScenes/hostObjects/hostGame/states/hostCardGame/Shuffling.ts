@@ -3,7 +3,7 @@ import { angleFromPositionToPosition, DegreesToRadians, distanceBetweenTwoPoints
 import { calculateDistanceAndRotationFromTable } from "../../../../hostTools/HostTools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
-import { GetReadyToDeal } from "./GetReadyToDeal";
+import { BringCardsToDealer } from "./BringCardsToDealer";
 
 
 export class Shuffling extends HostGameState {
@@ -79,7 +79,6 @@ export class Shuffling extends HostGameState {
     }
 
     update(time: number, delta: number): HostGameState | null {
-        // console.log('delta time', delta);
         // shuffle then switch to deal state
         this.hostGame.cards.update(time, delta);
         this.addGravityToCardMovement(delta);
@@ -87,7 +86,7 @@ export class Shuffling extends HostGameState {
 
         this.shufflingTimer.update(delta);
         if (this.shufflingTimer.isDone()) {
-            return new GetReadyToDeal(this.hostGame);
+            return new BringCardsToDealer(this.hostGame);
         }
         return null;
     }

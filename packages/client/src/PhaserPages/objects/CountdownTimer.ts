@@ -37,7 +37,6 @@ export class CountdownTimer {
         }
         this.currentTime -= millisecondToSecond(delta);
         if (this.currentTime <= 0) {
-            console.log('timer done!!!!!!!!!!!');
             this.currentTime = 0;
             this.paused = true;
         }
