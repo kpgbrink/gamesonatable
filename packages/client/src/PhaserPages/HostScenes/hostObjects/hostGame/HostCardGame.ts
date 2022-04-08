@@ -60,4 +60,8 @@ export class HostCardGame extends HostGame {
         return this.hostUserAvatars.getUserById(userId);
     }
 
+    getPlayerCards(userId: string) {
+        return this.cards.getPlayerCards(userId);
+    }
+
 }

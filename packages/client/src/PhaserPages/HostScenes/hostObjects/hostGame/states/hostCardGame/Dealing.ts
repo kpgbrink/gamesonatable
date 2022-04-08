@@ -1,3 +1,4 @@
+import socket from "../../../../../../SocketConnection";
 import CardContainer from "../../../../../objects/CardContainer";
 import { CountdownTimer } from "../../../../../objects/CountdownTimer";
 import { calculateMovementFromTimer, DegreesToRadians, positionAndRotationRelativeToObject } from "../../../../../objects/Tools";
@@ -7,7 +8,7 @@ import { HostGameState } from "../HostGameState";
 
 interface ISendingOutCard {
     cardContainer: CardContainer
-    user: UserAvatarContainer
+    userContainer: UserAvatarContainer
     countdownTimer: CountdownTimer;
 }
 
@@ -16,7 +17,7 @@ export class Dealing extends HostGameState {
     // store the countdown timer for the movement of the card and the card that is moving
     nextCardTimer: CountdownTimer = new CountdownTimer(.1);
     sendingOutCards: ISendingOutCard[] = [];
-    sendingOutCardTime: number = 5;
+    sendingOutCardTime: number = .7;
 
     currentPlayerGettingCard: string | null = null;
 
@@ -43,10 +44,7 @@ export class Dealing extends HostGameState {
         // send out the next card
         // if there are no cards left to deal then switch to player turn state  
         // get the top player card
-        const cardContainer = this.hostGame.cards.cardContainers.pop();
-        if (!cardContainer) {
-            return;
-        }
+
         // get the player that the card is going to
         if (this.hostGame.currentDealerId === null) {
             throw new Error('currentDealerId is null');
@@ -54,9 +52,21 @@ export class Dealing extends HostGameState {
         this.currentPlayerGettingCard ??= this.hostGame.currentDealerId;
         this.currentPlayerGettingCard = this.hostGame.getNextPlayerId(this.currentPlayerGettingCard);
 
+        // check count of cards dealt to player. if they are at max then switch to player turn state
+        if (this.hostGame.getPlayerCards(this.currentPlayerGettingCard).length >= this.hostGame.dealAmount) {
+            return;
+        }
+
+        // get top card container that is not set to a player yet
+        const cardContainer = this.hostGame.cards.cardContainers.reverse().find(cardContainer => cardContainer.inUserHandId === null);
+        if (!cardContainer) {
+            return;
+        }
+        cardContainer.inUserHandId = this.currentPlayerGettingCard;
+
         // get the player that the card is going to
-        const user = this.hostGame.getUser(this.currentPlayerGettingCard);
-        if (!user) {
+        const userContainer = this.hostGame.getUser(this.currentPlayerGettingCard);
+        if (!userContainer) {
             throw new Error('user is null');
         }
 
@@ -64,7 +74,7 @@ export class Dealing extends HostGameState {
         // add the player getting the card to the list of players getting cards
         this.sendingOutCards.push({
             cardContainer,
-            user: user,
+            userContainer,
             countdownTimer: new CountdownTimer(this.sendingOutCardTime)
         });
     }
@@ -74,7 +84,7 @@ export class Dealing extends HostGameState {
         this.sendingOutCards.forEach(sendingOutCard => {
             sendingOutCard.countdownTimer.update(delta);
             // move the card to the user
-            const positionRotation = positionAndRotationRelativeToObject(sendingOutCard.user, { x: 0, y: 350, rotation: DegreesToRadians(180) });
+            const positionRotation = positionAndRotationRelativeToObject(sendingOutCard.userContainer, { x: 0, y: 350, rotation: DegreesToRadians(180) });
             const movement = calculateMovementFromTimer(sendingOutCard.countdownTimer, delta, sendingOutCard.cardContainer, positionRotation);
             sendingOutCard.cardContainer.x += movement.x;
             sendingOutCard.cardContainer.y += movement.y;
@@ -83,7 +93,8 @@ export class Dealing extends HostGameState {
             // if the card is done moving then remove it from the list
             if (sendingOutCard.countdownTimer.wasDone()) {
                 // todo gived the card to the player
-                // sendingOutCard.user.addCard(sendingOutCard.cardContainer);
+                console.log('trying to give card', sendingOutCard.userContainer.user.id, sendingOutCard.cardContainer.cardContent);
+                socket.emit('give card', sendingOutCard.userContainer.user.id, sendingOutCard.cardContainer.cardContent);
                 this.sendingOutCards.splice(this.sendingOutCards.indexOf(sendingOutCard), 1);
             }
         });

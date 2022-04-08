@@ -1,4 +1,4 @@
-import { NewRoomId, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
+import { CardContent, NewRoomId, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -139,4 +139,10 @@ io.on('connection', (socket) => {
         });
         io.to(user.room).emit('room data', room);
     });
+
+    socket.on('give card', (userId: string, cardContent: CardContent) => {
+        console.log('giveCard', userId, cardContent);
+        io.to(user.room).emit('giveCard', cardContent);
+    });
+
 });

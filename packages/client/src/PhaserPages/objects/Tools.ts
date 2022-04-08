@@ -240,7 +240,6 @@ export const positionAndRotationRelativeToObject = (positionRelative: PositionAn
     };
 }
 
-
 export const calculateMovementFromTimer = (
     timer: CountdownTimer,
     delta: number,
@@ -267,9 +266,14 @@ export const calculateMovementFromTimer = (
         rotation: toPosition.rotation - startPositionAndRotation.rotation
     };
 
-    // if (timePassedPercentage === 1) {
-    //     return vector;
-    // }
+    if (timePassedPercentage === 1) {
+        // return the position difference
+        return {
+            x: toPosition.x - startPosition.x,
+            y: toPosition.y - startPosition.y,
+            rotation: toPosition.rotation - startPosition.rotation
+        }
+    }
     // get movement vector per second 
     const movementVectorPerSecond = {
         x: vector.x / timer.startTime,
@@ -289,4 +293,9 @@ export const calculateMovementFromTimer = (
         rotation: movementVectorPerMillisecond.rotation * delta
     };
     return movementVectorPerDelta;
+}
+
+export interface ITableItem {
+    // the user the card belongs to atm.
+    inUserHandId: string | null;
 }

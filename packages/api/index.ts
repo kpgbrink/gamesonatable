@@ -40,3 +40,9 @@ export interface UserBeforeGameStartData {
 export interface UserBeforeGameStartDataDictionary {
     [userId: string]: UserBeforeGameStartData;
 }
+
+export interface CardContent {
+    suit: string | null;
+    card: string | null;
+    joker: boolean | null;
+};

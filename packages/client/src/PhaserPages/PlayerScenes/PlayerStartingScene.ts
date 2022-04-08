@@ -97,9 +97,9 @@ export default class PlayerStartingScene extends PlayerScene {
     var screenDimensions = getScreenDimensions(this);
     this.rotateDeviceText = this.add.text(screenDimensions.width / 2, screenDimensions.height - 200, 'Please rotate your device',
       { color: 'white', fontSize: '80px' }).setOrigin(0.5);
-    this.showSuggestionToRotateDevice();
+    this.toggleSuggestionsShown();
     const onWindowChange = () => {
-      this.showSuggestionToRotateDevice();
+      this.toggleSuggestionsShown();
     };
     window.addEventListener('resize', onWindowChange);
     this.events.on('shutdown', () => {
@@ -107,7 +107,7 @@ export default class PlayerStartingScene extends PlayerScene {
     });
   }
 
-  showSuggestionToRotateDevice() {
+  toggleSuggestionsShown() {
     var newWidth = window.innerWidth;
     var newHeight = window.innerHeight;
     if (!this) return;

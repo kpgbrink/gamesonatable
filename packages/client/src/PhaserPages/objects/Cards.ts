@@ -36,11 +36,11 @@ export class Cards {
         });
     }
 
-    setDepth(depth: number) {
-        this.cardContainers.forEach(cardContainer => cardContainer.setDepth(depth));
-    }
-
     update(time: number, delta: number) {
         this.cardContainers.forEach(cardContainer => cardContainer.update(time, delta));
+    }
+
+    getPlayerCards(playerId: string) {
+        return this.cardContainers.filter(cardContainer => cardContainer.inUserHandId === playerId);
     }
 }

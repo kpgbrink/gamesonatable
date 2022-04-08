@@ -1,23 +1,25 @@
-import { IStartPosition, millisecondToSecond, PositionAndRotation } from "./Tools";
+import { CardContent } from "api";
+import { IStartPosition, ITableItem, millisecondToSecond, PositionAndRotation } from "./Tools";
 
-export default class CardContainer extends Phaser.GameObjects.Container implements IStartPosition {
-    suit: string | null;
-    card: string | null;
-    joker: boolean | null;
+export default class CardContainer extends Phaser.GameObjects.Container implements IStartPosition, ITableItem {
+    cardContent: CardContent;
+
     backImage: Phaser.GameObjects.Image | null = null;
     frontImage: Phaser.GameObjects.Image | null = null;
     velocity: { x: number, y: number } = { x: 0, y: 0 };
     rotationalVelocity: number = 0;
     mass: number = 1;
     startPosition: PositionAndRotation | null = null;
+    inUserHandId: string | null = null;
 
     constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, joker: boolean = false) {
         super(scene, x, y);
-
         // take the 
-        this.suit = suit;
-        this.card = card;
-        this.joker = joker;
+        this.cardContent = {
+            suit,
+            card,
+            joker
+        };
         this.frontImage = null;
         this.addCardImages();
     }
@@ -36,15 +38,15 @@ export default class CardContainer extends Phaser.GameObjects.Container implemen
     }
 
     public getCardImageName() {
-        if (this.joker) {
+        if (this.cardContent.joker) {
             return 'joker';
         }
-        return `${this.suit}${this.card}`;
+        return `${this.cardContent.suit}${this.cardContent.card}`;
     }
 
     public setCard(suit: string, card: string) {
-        this.suit = suit;
-        this.card = card;
+        this.cardContent.suit = suit;
+        this.cardContent.card = card;
     }
 
     public setCardFaceUp(faceUp: boolean) {

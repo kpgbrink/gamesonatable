@@ -48,7 +48,6 @@ export class BringCardsToDealer extends HostGameState {
             cardContainer.x += movement.x;
             cardContainer.y += movement.y;
             cardContainer.rotation += movement.rotation;
-            cardContainer.setCardFaceUp(true);
         });
     }
 
