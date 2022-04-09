@@ -1,3 +1,4 @@
+import { CardContent } from "api";
 import CardContainer from "./CardContainer";
 import { shuffle } from "./Tools";
 
@@ -42,5 +43,9 @@ export class Cards {
 
     getPlayerCards(playerId: string) {
         return this.cardContainers.filter(cardContainer => cardContainer.inUserHandId === playerId);
+    }
+
+    getCard(cardContent: CardContent) {
+        return this.cardContainers.find(cardContainer => cardContainer.cardContent === cardContent);
     }
 }

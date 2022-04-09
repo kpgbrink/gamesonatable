@@ -141,8 +141,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('give card', (userId: string, cardContent: CardContent) => {
-        console.log('giveCard', userId, cardContent);
-        io.to(user.room).emit('giveCard', cardContent);
+        console.log('give card', userId, cardContent);
+        io.to(user.room).emit('gie card', cardContent);
     });
 
 });

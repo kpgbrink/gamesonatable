@@ -165,13 +165,6 @@ export interface PositionAndRotation {
     rotation: number;
 }
 
-export interface IStartPosition {
-    startPosition: PositionAndRotation | null;
-    x: number;
-    y: number;
-    rotation: number;
-}
-
 export const shuffle = <T>(array: T[]): T[] => {
     let currentIndex = array.length, randomIndex;
     // While there remain elements to shuffle...
@@ -243,35 +236,32 @@ export const positionAndRotationRelativeToObject = (positionRelative: PositionAn
 export const calculateMovementFromTimer = (
     timer: CountdownTimer,
     delta: number,
-    startPosition: IStartPosition,
+    startPosition: PositionAndRotation,
+    currentPosition: PositionAndRotation,
     toPosition: PositionAndRotation
 ) => {
-    // calculate starting position from time that has already passed
-    const timePassedPercentage = timer.getTimePassedPercentage();
-
-    if (!startPosition.startPosition) {
+    if (!startPosition) {
         return {
             x: 0,
             y: 0,
             rotation: 0
         };
     }
-
-    const startPositionAndRotation = startPosition.startPosition;
-
+    const startPositionAndRotation = startPosition;
     // move in direction of position and have at that position when timer hits 0
     const vector = {
         x: toPosition.x - startPositionAndRotation.x,
         y: toPosition.y - startPositionAndRotation.y,
         rotation: toPosition.rotation - startPositionAndRotation.rotation
     };
-
+    // calculate starting position from time that has already passed
+    const timePassedPercentage = timer.getTimePassedPercentage();
     if (timePassedPercentage === 1) {
         // return the position difference
         return {
-            x: toPosition.x - startPosition.x,
-            y: toPosition.y - startPosition.y,
-            rotation: toPosition.rotation - startPosition.rotation
+            x: toPosition.x - currentPosition.x,
+            y: toPosition.y - currentPosition.y,
+            rotation: toPosition.rotation - currentPosition.rotation
         }
     }
     // get movement vector per second 
@@ -298,4 +288,13 @@ export const calculateMovementFromTimer = (
 export interface ITableItem {
     // the user the card belongs to atm.
     inUserHandId: string | null;
+}
+
+export interface IMoveItemOverTime {
+    // start position
+    startPosition: PositionAndRotation | null;
+    // end position
+    endPosition: PositionAndRotation | null;
+    // time to move
+    movementCountdownTimer: CountdownTimer | null;
 }

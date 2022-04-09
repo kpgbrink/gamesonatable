@@ -35,10 +35,10 @@ export class Shuffling extends HostGameState {
             // set random velocity
             const x = randomFloatBetween(-this.randomStartingMovementSpeed, this.randomStartingMovementSpeed);
             const y = randomFloatBetween(-this.randomStartingMovementSpeed, this.randomStartingMovementSpeed);
-            cardContainer.velocity = { x, y };
+            const rotation = randomFloatBetween(-this.randomStartingRotationalVelocity, this.randomStartingRotationalVelocity);
+            cardContainer.velocity = { x, y, rotation };
 
             // set random rotational velocity
-            cardContainer.rotationalVelocity = randomFloatBetween(-this.randomStartingRotationalVelocity, this.randomStartingRotationalVelocity);
         });
     }
 
