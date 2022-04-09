@@ -1,8 +1,9 @@
 import { CardContent } from "api";
 import { CountdownTimer } from "./CountdownTimer";
-import { calculateMovementFromTimer, IMoveItemOverTime, ITableItem, millisecondToSecond, PositionAndRotation } from "./Tools";
+import ItemContainer from "./ItemContainer";
+import { IMoveItemOverTime, ITableItem, PositionAndRotation } from "./Tools";
 
-export default class CardContainer extends Phaser.GameObjects.Container implements IMoveItemOverTime, ITableItem {
+export default class CardContainer extends ItemContainer implements IMoveItemOverTime, ITableItem {
     cardContent: CardContent;
 
     backImage: Phaser.GameObjects.Image | null = null;
@@ -48,11 +49,6 @@ export default class CardContainer extends Phaser.GameObjects.Container implemen
         return `${this.cardContent.suit}${this.cardContent.card}`;
     }
 
-    public setCard(suit: string, card: string) {
-        this.cardContent.suit = suit;
-        this.cardContent.card = card;
-    }
-
     public setCardFaceUp(faceUp: boolean) {
         // Switch the card image to the back or front
         if (!this.frontImage || !this.backImage) return;
@@ -60,55 +56,7 @@ export default class CardContainer extends Phaser.GameObjects.Container implemen
         this.backImage.visible = !faceUp;
     }
 
-    public setCardPosition(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public setCardVelocity(x: number, y: number, rotation: number) {
-        this.velocity = { x, y, rotation };
-    }
-
-    public moveCardFromVelocity(delta: number) {
-        this.x += this.velocity.x * millisecondToSecond(delta);
-        this.y += this.velocity.y * millisecondToSecond(delta);
-        this.rotation += this.velocity.rotation * millisecondToSecond(delta);
-    }
-
-    public startMovingCardTo(toPosition: PositionAndRotation, time: number) {
-        this.velocity = { x: 0, y: 0, rotation: 0 };
-        this.endPosition = toPosition;
-        this.setStartPositionAsCurentPosition();
-        this.movementCountdownTimer = new CountdownTimer(time);
-    }
-
-    public moveCardOverTime(time: number, delta: number) {
-        if (!this.startPosition || !this.endPosition) return;
-        if (!this.movementCountdownTimer) return;
-        if (this.movementCountdownTimer.wasDone()) {
-            this.startPosition = null;
-            this.endPosition = null;
-            this.movementCountdownTimer = null;
-            return;
-        }
-        const movement = calculateMovementFromTimer(this.movementCountdownTimer, delta, this.startPosition, { x: this.x, y: this.y, rotation: this.rotation }, this.endPosition);
-        this.x += movement.x;
-        this.y += movement.y;
-        this.rotation += movement.rotation;
-        this.movementCountdownTimer.update(delta);
-    }
-
     public update(time: number, delta: number) {
-        this.moveCardOverTime(time, delta);
-        this.moveCardFromVelocity(delta);
+        super.update(time, delta);
     }
-
-    public setStartPositionAsCurentPosition() {
-        this.startPosition = {
-            x: this.x,
-            y: this.y,
-            rotation: this.rotation
-        };
-    }
-
 }

@@ -58,7 +58,7 @@ export class Dealing extends HostGameState {
 
         const positionRotation = positionAndRotationRelativeToObject(userContainer, { x: 0, y: 350, rotation: DegreesToRadians(180) });
 
-        cardContainer.startMovingCardTo(positionRotation, this.sendingOutCardTime);
+        cardContainer.startMovingOverTimeTo(positionRotation, this.sendingOutCardTime);
 
     }
 

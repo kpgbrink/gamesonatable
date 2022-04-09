@@ -1,6 +1,7 @@
 import { positionAndRotationRelativeToObject } from "../../../../../objects/Tools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
+import { Dealing } from "./Dealing";
 
 
 // Bring cards to the random dealer and have the cards start going out to people.
@@ -27,13 +28,16 @@ export class BringCardsToDealer extends HostGameState {
         const dealer = this.hostGame.getDealer();
         const positionRotation = positionAndRotationRelativeToObject(dealer, { x: 0, y: 150, rotation: 0 });
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
-            cardContainer.startMovingCardTo(positionRotation, this.getReadyToDealTime);
+            cardContainer.startMovingOverTimeTo(positionRotation, this.getReadyToDealTime);
         });
-
     }
 
     update(time: number, delta: number): HostGameState | null {
         this.hostGame.cards.update(time, delta);
+        // check if all cards are in the dealer
+        if (this.hostGame.cards.cardContainers.every(cardContainer => cardContainer.movementCountdownTimer === null)) {
+            return new Dealing(this.hostGame);
+        }
         return null;
     }
 
