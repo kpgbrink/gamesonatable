@@ -1,47 +1,44 @@
 import { CountdownTimer } from "./CountdownTimer";
 import { calculateMovementFromTimer, IMoveItemOverTime, ITableItem, millisecondToSecond, PositionAndRotation } from "./Tools";
 
-export default class ItemContainer extends Phaser.GameObjects.Container implements IMoveItemOverTime, ITableItem {
+export default class ItemContainer extends Phaser.GameObjects.Container implements ITableItem {
     velocity: { x: number, y: number, rotation: number } = { x: 0, y: 0, rotation: 0 };
     mass: number = 1;
 
     inUserHandId: string | null = null;
 
-    // for movement over time
-    startPosition: PositionAndRotation | null = null;
-    endPosition: PositionAndRotation | null = null;
-    movementCountdownTimer: CountdownTimer | null = null;
+    moveOnDuration: IMoveItemOverTime | null = null;
 
-
-    public startMovingOverTimeTo(toPosition: PositionAndRotation, time: number) {
+    public startMovingOverTimeTo(toPosition: PositionAndRotation, time: number, onMovementEndCallBack?: () => void) {
         this.velocity = { x: 0, y: 0, rotation: 0 };
-        this.endPosition = toPosition;
-        this.setStartPositionAsCurentPosition();
-        this.movementCountdownTimer = new CountdownTimer(time);
+        this.moveOnDuration = {
+            movementCountdownTimer: new CountdownTimer(time),
+            startPosition: { x: this.x, y: this.y, rotation: this.rotation },
+            endPosition: toPosition,
+            onMovementEndCallBack: onMovementEndCallBack || null
+        };
     }
 
     public moveOverTime(time: number, delta: number) {
-        if (!this.startPosition || !this.endPosition) return;
-        if (!this.movementCountdownTimer) return;
-        if (this.movementCountdownTimer.wasDone()) {
-            this.startPosition = null;
-            this.endPosition = null;
-            this.movementCountdownTimer = null;
+        if (!this.moveOnDuration) return;
+        if (this.moveOnDuration.movementCountdownTimer.wasDone()) {
+            if (this.moveOnDuration.onMovementEndCallBack) {
+                this.moveOnDuration.onMovementEndCallBack();
+            }
+            this.moveOnDuration = null;
             return;
         }
-        const movement = calculateMovementFromTimer(this.movementCountdownTimer, delta, this.startPosition, { x: this.x, y: this.y, rotation: this.rotation }, this.endPosition);
+        const movement = calculateMovementFromTimer(
+            this.moveOnDuration.movementCountdownTimer,
+            delta,
+            this.moveOnDuration.startPosition,
+            { x: this.x, y: this.y, rotation: this.rotation },
+            this.moveOnDuration.endPosition
+        );
         this.x += movement.x;
         this.y += movement.y;
         this.rotation += movement.rotation;
-        this.movementCountdownTimer.update(delta);
-    }
-
-    public setStartPositionAsCurentPosition() {
-        this.startPosition = {
-            x: this.x,
-            y: this.y,
-            rotation: this.rotation
-        };
+        this.moveOnDuration.movementCountdownTimer.update(delta);
     }
 
     public moveFromVelocity(delta: number) {

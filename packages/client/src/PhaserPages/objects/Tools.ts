@@ -291,10 +291,13 @@ export interface ITableItem {
 }
 
 export interface IMoveItemOverTime {
-    // start position
-    startPosition: PositionAndRotation | null;
-    // end position
-    endPosition: PositionAndRotation | null;
-    // time to move
-    movementCountdownTimer: CountdownTimer | null;
+    startPosition: PositionAndRotation;
+    endPosition: PositionAndRotation;
+    movementCountdownTimer: CountdownTimer;
+    onMovementEndCallBack: (() => void) | null;
+}
+
+// check if objects are equal
+export const isEqual = (obj1: any, obj2: any) => {
+    return JSON.stringify(obj1) === JSON.stringify(obj2);
 }

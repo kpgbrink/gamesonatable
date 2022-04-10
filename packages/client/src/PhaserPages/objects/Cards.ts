@@ -1,6 +1,6 @@
 import { CardContent } from "api";
 import CardContainer from "./CardContainer";
-import { shuffle } from "./Tools";
+import { isEqual, shuffle } from "./Tools";
 
 export const suites = ['hearts', 'diamonds', 'spades', 'clubs'];
 export const cards = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
@@ -46,6 +46,8 @@ export class Cards {
     }
 
     getCard(cardContent: CardContent) {
-        return this.cardContainers.find(cardContainer => cardContainer.cardContent === cardContent);
+        return this.cardContainers.find(cardContainer => {
+            return isEqual(cardContainer.cardContent, cardContent)
+        });
     }
 }

@@ -22,9 +22,6 @@ export class BringCardsToDealer extends HostGameState {
     }
 
     startMovingCardsToDealer() {
-        this.hostGame.cards.cardContainers.forEach(cardContainer => {
-            cardContainer.setStartPositionAsCurentPosition();
-        });
         const dealer = this.hostGame.getDealer();
         const positionRotation = positionAndRotationRelativeToObject(dealer, { x: 0, y: 150, rotation: 0 });
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
@@ -35,7 +32,9 @@ export class BringCardsToDealer extends HostGameState {
     update(time: number, delta: number): HostGameState | null {
         this.hostGame.cards.update(time, delta);
         // check if all cards are in the dealer
-        if (this.hostGame.cards.cardContainers.every(cardContainer => cardContainer.movementCountdownTimer === null)) {
+        if (this.hostGame.cards.cardContainers.every(cardContainer =>
+            cardContainer.moveOnDuration === null
+        )) {
             return new Dealing(this.hostGame);
         }
         return null;

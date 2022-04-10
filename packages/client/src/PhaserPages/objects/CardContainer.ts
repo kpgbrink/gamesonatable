@@ -1,9 +1,8 @@
 import { CardContent } from "api";
-import { CountdownTimer } from "./CountdownTimer";
 import ItemContainer from "./ItemContainer";
-import { IMoveItemOverTime, ITableItem, PositionAndRotation } from "./Tools";
+import { ITableItem } from "./Tools";
 
-export default class CardContainer extends ItemContainer implements IMoveItemOverTime, ITableItem {
+export default class CardContainer extends ItemContainer implements ITableItem {
     cardContent: CardContent;
 
     backImage: Phaser.GameObjects.Image | null = null;
@@ -11,11 +10,6 @@ export default class CardContainer extends ItemContainer implements IMoveItemOve
     velocity: { x: number, y: number, rotation: number } = { x: 0, y: 0, rotation: 0 };
     mass: number = 1;
     inUserHandId: string | null = null;
-
-    // for movement over time
-    startPosition: PositionAndRotation | null = null;
-    endPosition: PositionAndRotation | null = null;
-    movementCountdownTimer: CountdownTimer | null = null;
 
     constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, joker: boolean = false) {
         super(scene, x, y);
