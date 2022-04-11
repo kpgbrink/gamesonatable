@@ -4,8 +4,8 @@ import { getScreenCenter } from "../../objects/Tools";
 import UserAvatarContainer from "../../objects/UserAvatarContainer";
 
 export class HostUserAvatars {
-    userAvatarContainers: UserAvatarContainer[] = [];
     scene: Phaser.Scene;
+    userAvatarContainers: UserAvatarContainer[] = [];
     onlyThoseInGame = false;
     onSizeChange: (userAvatarContainer: UserAvatarContainer) => void = () => { };
 

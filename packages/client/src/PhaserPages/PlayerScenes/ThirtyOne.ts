@@ -19,8 +19,6 @@ export default class ThirtyOne extends PlayerScene {
         super.create();
         this.playerCardHand = new PlayerCardHand(this);
         this.playerCardHand.create();
-        // display the Phaser.VERSION
-        console.log('thirty one is running');
     }
 
     update(time: number, delta: number) {

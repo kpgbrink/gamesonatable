@@ -6,9 +6,9 @@ import { Shuffling } from "./states/hostCardGame/Shuffling";
 
 
 export class HostCardGame extends HostGame {
-    cards: Cards;
     scene: Phaser.Scene;
-    hostUserAvatars: HostUserAvatarsAroundTableGame;
+    cards: Cards;
+    hostUserAvatars: HostUserAvatarsAroundTableGame | null = null;
     dealAmount: number = 10;
     currentDealerId: string | null = null;
 
@@ -16,19 +16,18 @@ export class HostCardGame extends HostGame {
         super(scene);
         this.scene = scene;
         this.cards = new Cards(scene);
-        this.hostUserAvatars = new HostUserAvatarsAroundTableGame(this.scene);
     }
 
     getDealer() {
         if (!this.currentDealerId) throw new Error('No dealer set');
-        const dealer = this.hostUserAvatars.getUserById(this.currentDealerId);
+        const dealer = this.hostUserAvatars?.getUserById(this.currentDealerId);
         if (!dealer) throw new Error('No dealer found');
         return dealer;
     }
 
     randomizeDealer() {
         // choose a random dealer
-        this.currentDealerId = this.hostUserAvatars.getRandomUserId();
+        this.currentDealerId = this.hostUserAvatars?.getRandomUserId() || null;
     }
 
     nextDealer() {
@@ -36,15 +35,19 @@ export class HostCardGame extends HostGame {
             this.randomizeDealer();
             return;
         }
-        this.currentDealerId = this.hostUserAvatars.getNextUserIdFromRotation(this.currentDealerId);
+        this.currentDealerId = this.hostUserAvatars?.getNextUserIdFromRotation(this.currentDealerId) || null;
     }
 
     getNextPlayerId(playerId: string) {
+        if (!this.hostUserAvatars) {
+            throw new Error('Not made');
+        }
         return this.hostUserAvatars.getNextUserIdFromRotation(playerId);
     }
 
     create() {
         super.create();
+        this.hostUserAvatars = new HostUserAvatarsAroundTableGame(this.scene);
         this.hostUserAvatars.createOnRoomData();
         this.hostUserAvatars.moveToEdgeOfTable();
         const screenCenter = getScreenCenter(this.scene);
@@ -57,7 +60,7 @@ export class HostCardGame extends HostGame {
     }
 
     getUser(userId: string) {
-        return this.hostUserAvatars.getUserById(userId);
+        return this.hostUserAvatars?.getUserById(userId);
     }
 
     getPlayerCards(userId: string) {

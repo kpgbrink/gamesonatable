@@ -23,7 +23,7 @@ export class PlayerCardHand {
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, 100);
         this.cards.cardContainers.forEach(card => {
-            card.y = screenCenter.y;
+            card.y = -300;
             card.x = screenCenter.x;
         });
 
@@ -46,10 +46,10 @@ export class PlayerCardHand {
         const screenCenter = getScreenCenter(this.scene);
         // start moving this card
         card.startMovingOverTimeTo({
-            x: 0,
-            y: 0,
+            x: screenCenter.x,
+            y: screenCenter.y,
             rotation: DegreesToRadians(45)
-        }, 4);
+        }, 1);
         card.setCardFaceUp(true);
     }
 
