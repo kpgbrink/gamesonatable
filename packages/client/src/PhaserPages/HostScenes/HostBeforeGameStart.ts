@@ -12,14 +12,14 @@ export default class HostBeforeGameStart extends HostScene {
     startGameButton: MenuButton | null;
     userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary;
     gameTable: GameTable | null = null;
-    hostUserAvatars: HostUserAvatarsAroundTableSelectPosition;
+    hostUserAvatars: HostUserAvatarsAroundTableSelectPosition | null;
 
     constructor() {
         super({ key: 'HostBeforeGameStart' });
         this.instructionText = null;
         this.startGameButton = null;
         this.userBeforeGameStartDictionary = {};
-        this.hostUserAvatars = new HostUserAvatarsAroundTableSelectPosition(this);
+        this.hostUserAvatars = null;
     }
 
     preload() {
@@ -31,12 +31,13 @@ export default class HostBeforeGameStart extends HostScene {
 
     create() {
         super.create();
+        this.hostUserAvatars = new HostUserAvatarsAroundTableSelectPosition(this);
         socket.emit('set player current scene', 'PlayerBeforeGameStart');
         this.setUpStartGameButtonAndInstructionText();
         this.hostUserAvatars.createUsers(persistentData.roomData);
         this.onRoomDataUpdateInstructionsOrStartGameButton(persistentData.roomData);
         socket.on('room data', (roomData: RoomData) => {
-            this.hostUserAvatars.createUsers(roomData);
+            this.hostUserAvatars?.createUsers(roomData);
             this.onRoomDataUpdateInstructionsOrStartGameButton(roomData);
             this.startGameIfAllUsersReady();
         });
@@ -63,7 +64,7 @@ export default class HostBeforeGameStart extends HostScene {
             }
             socket.emit('userBeforeGameStart data', this.userBeforeGameStartDictionary);
             // Add a checkmark to the user avatar container
-            const userAvatarContainer = this.hostUserAvatars.userAvatarContainers.find((userAvatarContainer) => userAvatarContainer.user.id === userId);
+            const userAvatarContainer = this.hostUserAvatars?.userAvatarContainers.find((userAvatarContainer) => userAvatarContainer.user.id === userId);
             if (!userAvatarContainer) return;
             const checkmark = this.add.image(0, 0, 'checkmark');
             checkmark.setScale(.2);
@@ -84,7 +85,7 @@ export default class HostBeforeGameStart extends HostScene {
     removeUsersWhoDoNotExist() {
         // Remove users from dictionary if they don't exist in the room
         Object.keys(this.userBeforeGameStartDictionary).forEach((userId) => {
-            if (!this.hostUserAvatars.userAvatarContainers.find((userAvatarContainer) => userAvatarContainer.user.id === userId)) {
+            if (!this.hostUserAvatars?.userAvatarContainers.find((userAvatarContainer) => userAvatarContainer.user.id === userId)) {
                 delete this.userBeforeGameStartDictionary[userId];
             }
         });
@@ -148,8 +149,8 @@ export default class HostBeforeGameStart extends HostScene {
 
     update() {
         // slowly move user avatars to edge of table
-        this.hostUserAvatars.moveToEdgeOfTable();
-        this.hostUserAvatars.userAvatarContainers.forEach((userAvatar) => {
+        this.hostUserAvatars?.moveToEdgeOfTable();
+        this.hostUserAvatars?.userAvatarContainers.forEach((userAvatar) => {
             // update the avatar rotations to server if changed
             // but don't make the update send things out to everyone else because it doesn't really matter to the others atm.
             (() => {

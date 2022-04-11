@@ -2,7 +2,7 @@ import { CardContent } from "api";
 import socket from "../../../SocketConnection";
 import CardContainer from "../../objects/CardContainer";
 import { Cards } from "../../objects/Cards";
-import { getScreenCenter } from "../../objects/Tools";
+import { DegreesToRadians, getScreenCenter } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
 export class PlayerCardHand {
@@ -23,21 +23,17 @@ export class PlayerCardHand {
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, 100);
         this.cards.cardContainers.forEach(card => {
-            card.y += 100;
-
+            card.y = screenCenter.y;
+            card.x = screenCenter.x;
         });
 
         // add socket listeners
         socket.on('give card', (cardContent: CardContent) => {
-            this.cards.cardContainers.forEach(card => {
-                card.y += 100;
-
-            });
-
+            console.log('card given', cardContent);
             // get the card that has to be given to player
             const card = this.cards.getCard(cardContent);
             if (!card) throw new Error('card not found');
-            card.x += 100;
+            card.x += 200;
             // move the card to the player
             card.inUserHandId = socket.id;
             // move the card to the player hand
@@ -50,7 +46,9 @@ export class PlayerCardHand {
         const screenCenter = getScreenCenter(this.scene);
         // start moving this card
         card.startMovingOverTimeTo({
-            x: screenCenter.x, y: screenCenter.y, rotation: 0
+            x: 0,
+            y: 0,
+            rotation: DegreesToRadians(45)
         }, 4);
         card.setCardFaceUp(true);
     }

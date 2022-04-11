@@ -4,11 +4,11 @@ import PlayerScene from "./playerObjects/PlayerScene";
 
 
 export default class ThirtyOne extends PlayerScene {
-    playerCardHand: PlayerCardHand;
+    playerCardHand: PlayerCardHand | null;
 
     constructor() {
         super({ key: 'ThirtyOne' });
-        this.playerCardHand = new PlayerCardHand(this);
+        this.playerCardHand = null;
     }
 
     preload() {
@@ -17,12 +17,13 @@ export default class ThirtyOne extends PlayerScene {
 
     create() {
         super.create();
+        this.playerCardHand = new PlayerCardHand(this);
         this.playerCardHand.create();
         // display the Phaser.VERSION
         console.log('thirty one is running');
     }
 
     update(time: number, delta: number) {
-        this.playerCardHand.update(time, delta);
+        this.playerCardHand?.update(time, delta);
     }
 }

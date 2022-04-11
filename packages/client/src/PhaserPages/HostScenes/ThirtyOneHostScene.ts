@@ -6,11 +6,11 @@ import HostScene from "./hostObjects/HostScene";
 
 export default class ThirtyOneHostScene extends HostScene {
     gameTable: GameTable | null = null;
-    thirtyOneGame: ThirtyOneGame;
+    thirtyOneGame: ThirtyOneGame | null;
 
     constructor() {
         super({ key: 'ThirtyOne' });
-        this.thirtyOneGame = new ThirtyOneGame(this);
+        this.thirtyOneGame = null;
     }
 
     preload() {
@@ -24,11 +24,12 @@ export default class ThirtyOneHostScene extends HostScene {
         const screenCenter = getScreenCenter(this);
         this.gameTable = new GameTable(this, screenCenter.x, screenCenter.y);
         this.gameTable.setDepth(2);
+        this.thirtyOneGame = new ThirtyOneGame(this);
         this.thirtyOneGame.create();
     }
 
     update(time: number, delta: number) {
         super.update(time, delta);
-        this.thirtyOneGame.update(time, delta);
+        this.thirtyOneGame?.update(time, delta);
     }
 }

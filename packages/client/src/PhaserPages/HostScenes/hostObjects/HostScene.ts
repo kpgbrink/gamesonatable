@@ -5,9 +5,6 @@ import { onHostChangeGames } from "../hostTools/OnHostChangeGames";
 
 
 export default class HostScene extends Phaser.Scene {
-    constructor(config: Phaser.Types.Scenes.SettingsConfig) {
-        super(config);
-    }
 
     create() {
         onHostChangeGames(this);
