@@ -9,6 +9,8 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
 
     moveOnDuration: IMoveItemOverTime | null = null;
 
+    isDragging: boolean = false;
+
     public startMovingOverTimeTo(toPosition: PositionAndRotation, time: number, onMovementEndCallBack?: () => void) {
         this.velocity = { x: 0, y: 0, rotation: 0 };
         this.moveOnDuration = {
@@ -50,5 +52,10 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     public update(time: number, delta: number) {
         this.moveOverTime(time, delta);
         this.moveFromVelocity(delta);
+    }
+
+    public setScaleAndSize(scale: number) {
+        this.setScale(scale);
+        this.setSize(this.width * scale, this.height * scale);
     }
 }
