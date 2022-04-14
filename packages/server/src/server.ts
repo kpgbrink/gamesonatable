@@ -4,7 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import { Server, Socket } from "socket.io";
 import uniqid from 'uniqid';
-import { getRoom, removeUser, upsertUser } from './user';
+import { getRoom, getRoomHostId, removeUser, upsertUser } from './user';
 
 const app = express();
 const port = 3001;
@@ -49,6 +49,11 @@ io.on('connection', (socket) => {
     // The current room I am in
     socket.on('host room', (room: string) => {
         socketLeavePreviousRoom(socket, user);
+        // ensure there is only one host
+        const previousHost = getRoomHostId(room);
+        if (previousHost) {
+            removeUser(previousHost, room);
+        }
         user.isHost = true;
         user.room = room;
         user = upsertUser(user);
@@ -146,7 +151,14 @@ io.on('connection', (socket) => {
 
     socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: CardContent, hiddenCard: CardContent, turn: number) => {
         console.log('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn);
-        io.to(user.room).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn);
+        io.to(currentPlayerTurnId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn);
+    });
+
+    socket.on('player card hand', (cardContent: CardContent) => {
+        // send to user host in room
+        const userHostId = getRoomHostId(user.room);
+        if (!userHostId) return;
+        io.to(userHostId).emit('player card hand', cardContent);
     });
 
 });

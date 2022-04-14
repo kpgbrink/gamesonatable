@@ -1,10 +1,11 @@
 import { Cards } from "../objects/Cards";
 import { PlayerCardHand } from "./playerObjects/PlayerCardHand";
 import PlayerScene from "./playerObjects/PlayerScene";
+import { ThirtyOneCardHand } from "./playerObjects/ThirtyOneCardHand";
 
 
 export default class ThirtyOne extends PlayerScene {
-    playerCardHand: PlayerCardHand | null;
+    playerCardHand: ThirtyOneCardHand | null;
 
     constructor() {
         super({ key: 'ThirtyOne' });

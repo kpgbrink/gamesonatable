@@ -58,3 +58,13 @@ export const removeUser = (userId: string, roomId: string) => {
 
 // get room
 export const getRoom = (room: string) => rooms.get(room);
+
+export const getRoomHost = (room: string) => {
+    const roomData = getRoom(room);
+    if (!roomData) return;
+    return roomData.users.find(u => u.isHost);
+}
+
+export const getRoomHostId = (room: string) => {
+    return getRoomHost(room)?.id;
+}
