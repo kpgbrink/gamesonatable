@@ -3,14 +3,21 @@ import { getScreenCenter } from "../../../objects/Tools";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { Shuffling } from "./states/hostCardGame/Shuffling";
+import { HostGameState } from "./states/HostGameState";
 
+// construction of HostGameState interface
+export interface HostGameStateConstructor {
+    new(hostGame: HostCardGame): HostGameState;
+}
 
-export class HostCardGame extends HostGame {
+export abstract class HostCardGame extends HostGame {
     scene: Phaser.Scene;
     cards: Cards;
     hostUserAvatars: HostUserAvatarsAroundTableGame | null = null;
     dealAmount: number = 10;
     currentDealerId: string | null = null;
+
+    abstract gameStartStateConstructor: HostGameStateConstructor;
 
     constructor(scene: Phaser.Scene) {
         super(scene);
@@ -65,6 +72,10 @@ export class HostCardGame extends HostGame {
 
     getPlayerCards(userId: string) {
         return this.cards.getPlayerCards(userId);
+    }
+
+    getTableCards() {
+        return this.cards.getTableCards();
     }
 
 }

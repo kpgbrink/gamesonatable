@@ -1,21 +1,15 @@
 import { HostGame } from "../../HostGame";
 
-export class HostGameState {
+export abstract class HostGameState {
     hostGame: HostGame;
 
     constructor(hostGame: HostGame) {
         this.hostGame = hostGame;
     }
 
-    enter() {
-        throw new Error("Method not implemented.");
-    }
+    abstract enter(): void;
 
-    update(time: number, delta: number): HostGameState | null {
-        throw new Error("Method not implemented.");
-    }
+    abstract update(time: number, delta: number): void;
 
-    exit() {
-        throw new Error("Method not implemented.");
-    }
+    abstract exit(): void;
 }

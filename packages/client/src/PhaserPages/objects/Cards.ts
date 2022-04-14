@@ -50,4 +50,12 @@ export class Cards {
             return isEqual(cardContainer.cardContent, cardContent)
         });
     }
+
+    getTableCards() {
+        return this.cardContainers.filter(cardContainer => cardContainer.inUserHandId === null);
+    }
+
+    getTableTopCard() {
+        return this.cardContainers.reverse().find(cardContainer => cardContainer.inUserHandId === null)
+    }
 }

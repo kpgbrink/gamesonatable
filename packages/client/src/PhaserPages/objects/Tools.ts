@@ -301,3 +301,12 @@ export interface IMoveItemOverTime {
 export const isEqual = (obj1: any, obj2: any) => {
     return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
+
+export const positionAndRotationRelativeToScreenCenter = (scene: Phaser.Scene, position: PositionAndRotation) => {
+    const screenCenter = getScreenCenter(scene);
+    return {
+        x: position.x + screenCenter.x,
+        y: position.y + screenCenter.y,
+        rotation: position.rotation
+    }
+}

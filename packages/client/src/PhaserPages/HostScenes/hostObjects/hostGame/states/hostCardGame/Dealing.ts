@@ -45,7 +45,7 @@ export class Dealing extends HostGameState {
         }
 
         // get top card container that is not set to a player yet
-        const cardContainer = this.hostGame.cards.cardContainers.reverse().find(cardContainer => cardContainer.inUserHandId === null);
+        const cardContainer = this.hostGame.cards.getTableTopCard();
         if (!cardContainer) {
             return;
         }
@@ -57,7 +57,7 @@ export class Dealing extends HostGameState {
             throw new Error('user is null');
         }
 
-        const positionRotation = positionAndRotationRelativeToObject(userContainer, { x: 0, y: 350, rotation: DegreesToRadians(180) });
+        const positionRotation = positionAndRotationRelativeToObject(userContainer, { x: 0, y: 500, rotation: DegreesToRadians(180) });
 
         cardContainer.startMovingOverTimeTo(positionRotation, this.sendingOutCardTime, () => {
             // when the card is done moving, set the card to the player
@@ -66,9 +66,13 @@ export class Dealing extends HostGameState {
     }
 
     update(time: number, delta: number): HostGameState | null {
-        // deal the cards then switch to player turn state
         this.getNextCardDeal(delta);
         this.hostGame.cards.update(time, delta);
+        // check if every player has the amount of cards they need
+        if (this.hostGame.hostUserAvatars?.userAvatarContainers?.every(userAvatar =>
+            this.hostGame.getPlayerCards(userAvatar.user.id)?.length === this.hostGame.dealAmount)) {
+            return new this.hostGame.gameStartStateConstructor(this.hostGame);
+        }
         return null;
     }
 

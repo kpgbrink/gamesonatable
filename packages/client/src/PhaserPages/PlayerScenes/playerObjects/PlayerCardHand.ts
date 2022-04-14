@@ -2,6 +2,7 @@ import { CardContent } from "api";
 import socket from "../../../SocketConnection";
 import CardContainer from "../../objects/CardContainer";
 import { Cards } from "../../objects/Cards";
+import ItemContainer from "../../objects/ItemContainer";
 import { DegreesToRadians, getScreenCenter, getScreenDimensions } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
@@ -31,16 +32,18 @@ export class PlayerCardHand {
             card.setInteractive();
             this.scene.input.setDraggable(card);
 
-            this.scene.input.on('drag', (pointer: any, gameObject: CardContainer, dragX: number, dragY: number) => {
+            this.scene.input.on('drag', (pointer: any, gameObject: ItemContainer, dragX: number, dragY: number) => {
                 gameObject.x = dragX;
                 gameObject.y = dragY;
             });
             // on drag start set dragging true
-            this.scene.input.on('dragstart', (pointer: any, gameObject: CardContainer) => {
+            this.scene.input.on('dragstart', (pointer: any, gameObject: ItemContainer) => {
                 gameObject.isDragging = true;
+                gameObject.depth = 2;
+                gameObject.moveOnDuration = null;
             });
             // on drag end set dragging false
-            this.scene.input.on('dragend', (pointer: any, gameObject: CardContainer) => {
+            this.scene.input.on('dragend', (pointer: any, gameObject: ItemContainer) => {
                 gameObject.isDragging = false;
             });
         });
@@ -103,7 +106,7 @@ export class PlayerCardHand {
             if (card.isDragging) return;
 
             card.startMovingOverTimeTo(cardPositions[index], .4);
-            card.depth = index;
+            card.depth = index / cards.length;
         });
     }
 
