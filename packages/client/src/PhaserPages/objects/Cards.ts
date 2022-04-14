@@ -58,4 +58,14 @@ export class Cards {
     getTableTopCard() {
         return this.cardContainers.reverse().find(cardContainer => cardContainer.inUserHandId === null)
     }
+
+    getTopFaceDownCard() {
+        const faceUpCards = this.getTableCards().sort((c1, c2) => c1.depth - c2.depth).filter(cardContainer => cardContainer.getFaceUp());
+        return faceUpCards.length > 0 ? faceUpCards[0] : null;
+    }
+
+    getTopFaceUpCard() {
+        const faceUpCards = this.getTableCards().sort((c1, c2) => c1.depth - c2.depth).filter(cardContainer => !cardContainer.getFaceUp());
+        return faceUpCards.length > 0 ? faceUpCards[0] : null;
+    }
 }

@@ -1,6 +1,7 @@
 import { positionAndRotationRelativeToScreenCenter } from "../../../../../../objects/Tools";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
 import { HostGameState } from "../../HostGameState";
+import { ThirtyOneGamePlayerTurn } from "./ThirtyOneGamePlayerTurn";
 
 // Bring cards to the random dealer and have the cards start going out to people.
 export class ThirtyOneGameTurnOverCard extends HostGameState {
@@ -13,8 +14,6 @@ export class ThirtyOneGameTurnOverCard extends HostGameState {
     }
 
     enter() {
-        // choose a random dealer
-        this.hostGame.randomizeDealer();
         // start moving cards to random dealer
         this.startMovingCardsToCenter();
     }
@@ -38,7 +37,7 @@ export class ThirtyOneGameTurnOverCard extends HostGameState {
         if (this.hostGame.cards.cardContainers.every(cardContainer =>
             cardContainer.moveOnDuration === null
         )) {
-
+            return new ThirtyOneGamePlayerTurn(this.hostGame);
         }
         return null;
     }

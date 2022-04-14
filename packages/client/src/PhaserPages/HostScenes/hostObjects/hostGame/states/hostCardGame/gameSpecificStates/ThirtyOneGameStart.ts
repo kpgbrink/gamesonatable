@@ -14,8 +14,6 @@ export class ThirtyOneGameStart extends HostGameState {
     }
 
     enter() {
-        // choose a random dealer
-        this.hostGame.randomizeDealer();
         // start moving cards to random dealer
         this.startMovingCardsToCenter();
     }

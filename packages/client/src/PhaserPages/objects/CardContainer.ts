@@ -50,6 +50,10 @@ export default class CardContainer extends ItemContainer implements ITableItem {
         this.backImage.visible = !faceUp;
     }
 
+    public getFaceUp() {
+        return this.frontImage?.visible;
+    }
+
     public update(time: number, delta: number) {
         super.update(time, delta);
     }

@@ -16,6 +16,8 @@ export abstract class HostCardGame extends HostGame {
     hostUserAvatars: HostUserAvatarsAroundTableGame | null = null;
     dealAmount: number = 10;
     currentDealerId: string | null = null;
+    currentPlayerTurnId: string | null = null;
+    turn: number = 0;
 
     abstract gameStartStateConstructor: HostGameStateConstructor;
 
@@ -43,6 +45,15 @@ export abstract class HostCardGame extends HostGame {
             return;
         }
         this.currentDealerId = this.hostUserAvatars?.getNextUserIdFromRotation(this.currentDealerId) || null;
+    }
+
+    setNextPlayerTurn() {
+        this.turn++;
+        if (this.currentPlayerTurnId === null) {
+            this.currentPlayerTurnId = this.getNextPlayerId(this.getDealer().user.id);
+            return;
+        }
+        this.currentPlayerTurnId = this.getNextPlayerId(this.currentPlayerTurnId);
     }
 
     getNextPlayerId(playerId: string) {
