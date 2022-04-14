@@ -154,11 +154,4 @@ io.on('connection', (socket) => {
         io.to(currentPlayerTurnId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn);
     });
 
-    socket.on('player card hand', (cardContent: CardContent) => {
-        // send to user host in room
-        const userHostId = getRoomHostId(user.room);
-        if (!userHostId) return;
-        io.to(userHostId).emit('player card hand', cardContent);
-    });
-
 });

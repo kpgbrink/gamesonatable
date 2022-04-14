@@ -61,7 +61,6 @@ export class PlayerCardHand {
             // this.moveCardToPlayerHand(card);
             card.setCardFaceUp(true);
             // tell the table to put the card in the player hand
-            socket.emit('player card hand', cardContent);
         });
     }
 

@@ -1,5 +1,7 @@
+import CardContainer from "../../../objects/CardContainer";
 import { Cards } from "../../../objects/Cards";
-import { getScreenCenter } from "../../../objects/Tools";
+import { getScreenCenter, positionAndRotationRelativeToObject as setPositionAndRotationRelativeToObject } from "../../../objects/Tools";
+import UserAvatarContainer from "../../../objects/UserAvatarContainer";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { Shuffling } from "./states/hostCardGame/Shuffling";
@@ -75,6 +77,7 @@ export abstract class HostCardGame extends HostGame {
 
     update(time: number, delta: number) {
         super.update(time, delta);
+        this.startMovingCardToPrefferedPosition();
     }
 
     getUser(userId: string) {
@@ -87,6 +90,37 @@ export abstract class HostCardGame extends HostGame {
 
     getTableCards() {
         return this.cards.getTableCards();
+    }
+
+    calculateCardPrefferedPositions(userAvatarContainer: UserAvatarContainer, playerCards: CardContainer[]) {
+        if (playerCards.length === 0) return [];
+        const cardWidth = playerCards[0].width * playerCards[0].scaleX;
+        const distanceBetweenCards = Math.min(200 / playerCards.length, cardWidth);
+        // get the card prefered positions
+        const cardPositions = playerCards.map((card, index) => {
+            const x = ((playerCards.length - 1) / 2) * distanceBetweenCards + (index * distanceBetweenCards);
+            const y = 0;
+            return { x, y, rotation: 0 };
+        });
+        return cardPositions.map(cardPosition => {
+            return setPositionAndRotationRelativeToObject(userAvatarContainer, cardPosition);
+        });
+    }
+
+    // update the cards into the players hands
+    startMovingCardToPrefferedPosition() {
+        this.hostUserAvatars?.userAvatarContainers.forEach(userAvatarContainer => {
+            const playerCards = this.getPlayerCards(userAvatarContainer.user.id);
+            const playerCardPositions = this.calculateCardPrefferedPositions(userAvatarContainer, playerCards);
+            playerCards.forEach((card, index) => {
+                if (card.moveOnDuration) return;
+                // do not start moving if the card is already in the right position
+                if (card.x === playerCardPositions[index].x
+                    && card.y === playerCardPositions[index].y
+                    && card.rotation === playerCardPositions[index].rotation) return;
+                card.startMovingOverTimeTo(playerCardPositions[index], 1);
+            });
+        });
     }
 
 }
