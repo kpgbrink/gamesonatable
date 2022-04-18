@@ -165,6 +165,13 @@ export interface PositionAndRotation {
     rotation: number;
 }
 
+export interface Transform {
+    x: number;
+    y: number;
+    rotation: number;
+    scale: number;
+}
+
 export const shuffle = <T>(array: T[]): T[] => {
     let currentIndex = array.length, randomIndex;
     // While there remain elements to shuffle...
@@ -220,7 +227,7 @@ export const keepAnglePositive = (angle: number) => {
     return angle;
 }
 
-export const positionAndRotationRelativeToObject = (positionRelative: PositionAndRotation, position2: PositionAndRotation) => {
+export const transformRelativeToObject = (positionRelative: Transform, position2: Transform) => {
     // position2 changes based on rotation
     const x2 = Math.cos(positionRelative.rotation) * position2.x - Math.sin(positionRelative.rotation) * position2.y;
     const y2 = Math.sin(positionRelative.rotation) * position2.x + Math.cos(positionRelative.rotation) * position2.y;
@@ -229,30 +236,25 @@ export const positionAndRotationRelativeToObject = (positionRelative: PositionAn
     return {
         x: positionRelative.x + x2,
         y: positionRelative.y + y2,
-        rotation: positionRelative.rotation + position2.rotation
+        rotation: positionRelative.rotation + position2.rotation,
+        scale: positionRelative.scale * position2.scale
     };
 }
 
 export const calculateMovementFromTimer = (
     timer: CountdownTimer,
     delta: number,
-    startPosition: PositionAndRotation,
-    currentPosition: PositionAndRotation,
-    toPosition: PositionAndRotation
+    startPosition: Transform,
+    currentPosition: Transform,
+    toPosition: Transform
 ) => {
-    if (!startPosition) {
-        return {
-            x: 0,
-            y: 0,
-            rotation: 0
-        };
-    }
     const startPositionAndRotation = startPosition;
     // move in direction of position and have at that position when timer hits 0
     const vector = {
         x: toPosition.x - startPositionAndRotation.x,
         y: toPosition.y - startPositionAndRotation.y,
-        rotation: toPosition.rotation - startPositionAndRotation.rotation
+        rotation: toPosition.rotation - startPositionAndRotation.rotation,
+        scale: toPosition.scale - startPositionAndRotation.scale
     };
     // calculate starting position from time that has already passed
     const timePassedPercentage = timer.getTimePassedPercentage();
@@ -261,26 +263,30 @@ export const calculateMovementFromTimer = (
         return {
             x: toPosition.x - currentPosition.x,
             y: toPosition.y - currentPosition.y,
-            rotation: toPosition.rotation - currentPosition.rotation
+            rotation: toPosition.rotation - currentPosition.rotation,
+            scale: toPosition.scale - currentPosition.scale
         }
     }
     // get movement vector per second 
     const movementVectorPerSecond = {
         x: vector.x / timer.startTime,
         y: vector.y / timer.startTime,
-        rotation: vector.rotation / timer.startTime
+        rotation: vector.rotation / timer.startTime,
+        scale: vector.scale / timer.startTime
     };
     // get movement vector per millisecond
     const movementVectorPerMillisecond = {
         x: millisecondToSecond(movementVectorPerSecond.x),
         y: millisecondToSecond(movementVectorPerSecond.y),
-        rotation: millisecondToSecond(movementVectorPerSecond.rotation)
+        rotation: millisecondToSecond(movementVectorPerSecond.rotation),
+        scale: millisecondToSecond(movementVectorPerSecond.scale)
     };
     // get movement vector per delta
     const movementVectorPerDelta = {
         x: movementVectorPerMillisecond.x * delta,
         y: movementVectorPerMillisecond.y * delta,
-        rotation: movementVectorPerMillisecond.rotation * delta
+        rotation: movementVectorPerMillisecond.rotation * delta,
+        scale: movementVectorPerMillisecond.scale * delta
     };
     return movementVectorPerDelta;
 }
@@ -291,8 +297,8 @@ export interface ITableItem {
 }
 
 export interface IMoveItemOverTime {
-    startPosition: PositionAndRotation;
-    endPosition: PositionAndRotation;
+    startPosition: Transform;
+    endPosition: Transform;
     movementCountdownTimer: CountdownTimer;
     onMovementEndCallBack: (() => void) | null;
 }
@@ -302,11 +308,12 @@ export const isEqual = (obj1: any, obj2: any) => {
     return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
 
-export const positionAndRotationRelativeToScreenCenter = (scene: Phaser.Scene, position: PositionAndRotation) => {
+export const transformRelativeToScreenCenter = (scene: Phaser.Scene, position: Transform) => {
     const screenCenter = getScreenCenter(scene);
     return {
         x: position.x + screenCenter.x,
         y: position.y + screenCenter.y,
-        rotation: position.rotation
+        rotation: position.rotation,
+        scale: position.scale
     }
 }

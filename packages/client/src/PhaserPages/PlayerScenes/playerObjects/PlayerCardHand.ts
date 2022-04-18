@@ -71,7 +71,8 @@ export class PlayerCardHand {
         card.startMovingOverTimeTo({
             x: screenCenter.x,
             y: screenCenter.y,
-            rotation: 0
+            rotation: 0,
+            scale: 1
         }, 1);
         card.setCardFaceUp(true);
     }
@@ -88,7 +89,7 @@ export class PlayerCardHand {
         const cardPositions = cards.map((card, index) => {
             const x = screenCenter.x - ((cards.length - 1) / 2) * distanceBetweenCards + (index * distanceBetweenCards);
             const y = screenCenter.y;
-            return { x, y, rotation: 0 };
+            return { x, y, rotation: 0, scale: 1 };
         });
         return cardPositions;
     }
@@ -106,7 +107,7 @@ export class PlayerCardHand {
             // do not start moving the card if it is being dragged
             if (card.isDragging) return;
 
-            card.startMovingOverTimeTo(cardPositions[index], .4);
+            card.startMovingOverTimeTo(cardPositions[index], 1);
             card.depth = index / cards.length;
         });
     }

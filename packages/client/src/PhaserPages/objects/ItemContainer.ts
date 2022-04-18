@@ -1,5 +1,5 @@
 import { CountdownTimer } from "./CountdownTimer";
-import { calculateMovementFromTimer, IMoveItemOverTime, ITableItem, millisecondToSecond, PositionAndRotation } from "./Tools";
+import { calculateMovementFromTimer, IMoveItemOverTime, ITableItem, millisecondToSecond, Transform } from "./Tools";
 
 export default class ItemContainer extends Phaser.GameObjects.Container implements ITableItem {
     velocity: { x: number, y: number, rotation: number } = { x: 0, y: 0, rotation: 0 };
@@ -11,11 +11,11 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
 
     isDragging: boolean = false;
 
-    public startMovingOverTimeTo(toPosition: PositionAndRotation, time: number, onMovementEndCallBack?: () => void) {
+    public startMovingOverTimeTo(toPosition: Transform, time: number, onMovementEndCallBack?: () => void) {
         this.velocity = { x: 0, y: 0, rotation: 0 };
         this.moveOnDuration = {
             movementCountdownTimer: new CountdownTimer(time),
-            startPosition: { x: this.x, y: this.y, rotation: this.rotation },
+            startPosition: { x: this.x, y: this.y, rotation: this.rotation, scale: this.scale },
             endPosition: toPosition,
             onMovementEndCallBack: onMovementEndCallBack || null
         };
@@ -34,12 +34,13 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
             this.moveOnDuration.movementCountdownTimer,
             delta,
             this.moveOnDuration.startPosition,
-            { x: this.x, y: this.y, rotation: this.rotation },
+            this,
             this.moveOnDuration.endPosition
         );
         this.x += movement.x;
         this.y += movement.y;
         this.rotation += movement.rotation;
+        this.scale += movement.scale;
         this.moveOnDuration.movementCountdownTimer.update(delta);
     }
 
