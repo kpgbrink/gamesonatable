@@ -227,7 +227,7 @@ export const keepAnglePositive = (angle: number) => {
     return angle;
 }
 
-export const transformRelativeToObject = (positionRelative: Transform, position2: Transform) => {
+export const transformFromObject = (positionRelative: Transform, position2: Transform) => {
     // position2 changes based on rotation
     const x2 = Math.cos(positionRelative.rotation) * position2.x - Math.sin(positionRelative.rotation) * position2.y;
     const y2 = Math.sin(positionRelative.rotation) * position2.x + Math.cos(positionRelative.rotation) * position2.y;
@@ -238,6 +238,22 @@ export const transformRelativeToObject = (positionRelative: Transform, position2
         y: positionRelative.y + y2,
         rotation: positionRelative.rotation + position2.rotation,
         scale: positionRelative.scale * position2.scale
+    };
+}
+
+// TODO THIS IS WRONG.
+// undoes transformFromObject
+export const transformRelativeToObject = (positionRelative: Transform, position2: Transform) => {
+    // position2 changes based on rotation
+    const x2 = Math.cos(position2.rotation) * position2.x - Math.sin(position2.rotation) * position2.y;
+    const y2 = Math.sin(position2.rotation) * position2.x + Math.cos(position2.rotation) * position2.y;
+
+    // return new position and rotation
+    return {
+        x: positionRelative.x - x2,
+        y: positionRelative.y - y2,
+        rotation: positionRelative.rotation - position2.rotation,
+        scale: positionRelative.scale / position2.scale
     };
 }
 
@@ -316,4 +332,25 @@ export const transformRelativeToScreenCenter = (scene: Phaser.Scene, position: T
         rotation: position.rotation,
         scale: position.scale
     }
+}
+
+export const checkTransformsEqual = (transform1: Transform, transform2: Transform) => {
+    if (transform1.x !== transform2.x) {
+        return false;
+    }
+    if (transform1.y !== transform2.y) {
+        return false;
+    }
+    // set both rotations to positive
+    const rotation1 = keepAnglePositive(transform1.rotation);
+    const rotation2 = keepAnglePositive(transform2.rotation);
+    // check if rotations are almost equal
+    if (Math.abs(rotation1 - rotation2) > 0.001) {
+        console.log('rotation not equal');
+        return false;
+    }
+    if (transform1.scale !== transform2.scale) {
+        return false;
+    }
+    return true;
 }

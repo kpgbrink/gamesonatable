@@ -1,4 +1,4 @@
-import { transformRelativeToObject } from "../../../../../objects/Tools";
+import { transformFromObject } from "../../../../../objects/Tools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 import { Dealing } from "./Dealing";
@@ -23,7 +23,7 @@ export class BringCardsToDealer extends HostGameState {
 
     startMovingCardsToDealer() {
         const dealer = this.hostGame.getDealer();
-        const positionRotation = transformRelativeToObject(dealer, { x: 0, y: 150, rotation: 0, scale: 1 });
+        const positionRotation = transformFromObject(dealer, { x: 0, y: 150, rotation: 0, scale: 1 });
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
             cardContainer.startMovingOverTimeTo(positionRotation, this.getReadyToDealTime);
         });

@@ -1,6 +1,6 @@
 import socket from "../../../../../../SocketConnection";
 import { CountdownTimer } from "../../../../../objects/CountdownTimer";
-import { DegreesToRadians, transformRelativeToObject } from "../../../../../objects/Tools";
+import { DegreesToRadians, transformFromObject } from "../../../../../objects/Tools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 
@@ -57,7 +57,7 @@ export class Dealing extends HostGameState {
             throw new Error('user is null');
         }
 
-        const positionRotation = transformRelativeToObject(userContainer, { x: 0, y: 500, rotation: DegreesToRadians(180), scale: 1 });
+        const positionRotation = transformFromObject(userContainer, { x: 0, y: 500, rotation: DegreesToRadians(180), scale: 1 });
 
         cardContainer.startMovingOverTimeTo(positionRotation, this.sendingOutCardTime, () => {
             // when the card is done moving, set the card to the player

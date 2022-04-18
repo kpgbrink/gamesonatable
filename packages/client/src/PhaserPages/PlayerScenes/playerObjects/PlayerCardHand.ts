@@ -3,7 +3,7 @@ import socket from "../../../SocketConnection";
 import CardContainer from "../../objects/CardContainer";
 import { Cards } from "../../objects/Cards";
 import ItemContainer from "../../objects/ItemContainer";
-import { DegreesToRadians, getScreenCenter, getScreenDimensions } from "../../objects/Tools";
+import { checkTransformsEqual, DegreesToRadians, getScreenCenter, getScreenDimensions } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
 export class PlayerCardHand {
@@ -26,7 +26,7 @@ export class PlayerCardHand {
         this.cards.cardContainers.forEach(card => {
 
             card.rotation = DegreesToRadians(90);
-            card.setScale(2);
+            card.setScale(.5);
             card.y = -card.width * card.scale / 2 - 10;
             card.x = screenCenter.x;
             card.setInteractive();
@@ -89,7 +89,7 @@ export class PlayerCardHand {
         const cardPositions = cards.map((card, index) => {
             const x = screenCenter.x - ((cards.length - 1) / 2) * distanceBetweenCards + (index * distanceBetweenCards);
             const y = screenCenter.y;
-            return { x, y, rotation: 0, scale: 1 };
+            return { x, y, rotation: 0, scale: 2 };
         });
         return cardPositions;
     }
@@ -101,13 +101,11 @@ export class PlayerCardHand {
             if (card.moveOnDuration) return;
             // console.log('start the movement', card.x, cardPositions[index].x);
             // do not start moving if the card is already in the right position
-            if (card.x === cardPositions[index].x
-                && card.y === cardPositions[index].y
-                && card.rotation === cardPositions[index].rotation) return;
+            if (checkTransformsEqual(card, cardPositions[index])) return;
             // do not start moving the card if it is being dragged
             if (card.isDragging) return;
 
-            card.startMovingOverTimeTo(cardPositions[index], 1);
+            card.startMovingOverTimeTo(cardPositions[index], .5);
             card.depth = index / cards.length;
         });
     }
