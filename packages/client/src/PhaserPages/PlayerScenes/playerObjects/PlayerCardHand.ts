@@ -9,6 +9,7 @@ import PlayerScene from "./PlayerScene";
 export class PlayerCardHand {
     cards: Cards;
     scene: PlayerScene;
+    moveToHandTime: number = .2;
 
     constructor(scene: PlayerScene) {
         this.scene = scene;
@@ -114,7 +115,7 @@ export class PlayerCardHand {
             // do not start moving the card if it is being dragged
             if (card.isDragging) return;
 
-            card.startMovingOverTimeTo(cardPositions[index], 2, () => {
+            card.startMovingOverTimeTo(cardPositions[index], this.moveToHandTime, () => {
                 card.inUserHand = true;
             });
             card.depth = index / cards.length;
