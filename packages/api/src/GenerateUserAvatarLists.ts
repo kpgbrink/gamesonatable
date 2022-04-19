@@ -18,7 +18,7 @@ let generatedString = "";
     generatedString += `}\n`;
     generatedString = generatedString.slice(0, -1);
     console.log(generatedString);
-    await fs.writeFile('../client/src/PhaserPages/tools/objects/avatarImages.generated.ts', generatedString);
+    await fs.writeFile('../client/src/PhaserPages/objects/avatarImages.generated.ts', generatedString);
 })();
 
 
