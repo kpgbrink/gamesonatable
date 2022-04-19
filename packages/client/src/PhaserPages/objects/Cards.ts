@@ -42,7 +42,7 @@ export class Cards {
     }
 
     getPlayerCards(playerId: string) {
-        return this.cardContainers.filter(cardContainer => cardContainer.inUserHandId === playerId);
+        return this.cardContainers.filter(cardContainer => cardContainer.userHandId === playerId);
     }
 
     getCard(cardContent: CardContent) {
@@ -52,11 +52,11 @@ export class Cards {
     }
 
     getTableCards() {
-        return this.cardContainers.filter(cardContainer => cardContainer.inUserHandId === null);
+        return this.cardContainers.filter(cardContainer => cardContainer.userHandId === null);
     }
 
     getTableTopCard() {
-        return this.cardContainers.reverse().find(cardContainer => cardContainer.inUserHandId === null)
+        return this.cardContainers.reverse().find(cardContainer => cardContainer.userHandId === null)
     }
 
     getTopFaceDownCard() {

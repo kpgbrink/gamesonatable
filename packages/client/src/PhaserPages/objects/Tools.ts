@@ -310,7 +310,7 @@ export const calculateMovementFromTimer = (
 
 export interface ITableItem {
     // the user the card belongs to atm.
-    inUserHandId: string | null;
+    userHandId: string | null;
 }
 
 export interface IMoveItemOverTime {

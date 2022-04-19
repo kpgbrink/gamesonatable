@@ -5,7 +5,8 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     velocity: { x: number, y: number, rotation: number } = { x: 0, y: 0, rotation: 0 };
     mass: number = 1;
 
-    inUserHandId: string | null = null;
+    userHandId: string | null = null;
+    inUserHand: boolean = false;
     timeGivenToUser: number = 0;
 
     moveOnDuration: IMoveItemOverTime | null = null;
@@ -13,7 +14,7 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     isDragging: boolean = false;
 
     public setUserHand(userHandId: string, timeGivenToUser: number) {
-        this.inUserHandId = userHandId;
+        this.userHandId = userHandId;
         this.timeGivenToUser = timeGivenToUser;
     }
 

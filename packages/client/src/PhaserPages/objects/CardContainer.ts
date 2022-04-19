@@ -9,7 +9,6 @@ export default class CardContainer extends ItemContainer implements ITableItem {
     frontImage: Phaser.GameObjects.Image | null = null;
     velocity: { x: number, y: number, rotation: number } = { x: 0, y: 0, rotation: 0 };
     mass: number = 1;
-    inUserHandId: string | null = null;
 
     constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, joker: boolean = false) {
         super(scene, x, y);

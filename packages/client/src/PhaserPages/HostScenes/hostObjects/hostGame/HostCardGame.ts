@@ -118,7 +118,9 @@ export abstract class HostCardGame extends HostGame {
                 // do not start moving if the card is already in the right position
                 if (checkTransformsEqual(card, positionRotation)) return;
                 if (card.moveOnDuration) return;
-                card.startMovingOverTimeTo(positionRotation, 2);
+                card.startMovingOverTimeTo(positionRotation, .4, () => {
+                    card.inUserHand = true;
+                });
             });
         });
     }

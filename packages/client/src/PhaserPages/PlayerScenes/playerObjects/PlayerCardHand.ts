@@ -97,7 +97,16 @@ export class PlayerCardHand {
     startMovingCardToPrefferedPosition() {
         const cards = this.cardsInHand();
         const cardPositions = this.calculateCardPrefferedPositions();
-        cards.sort((a, b) => a.x - b.x).forEach((card, index) => {
+        cards.sort((a, b) => {
+            // if not in userHand yet then move to bottom
+            if (!a.inUserHand && b.inUserHand) return 1;
+            if (a.inUserHand && !b.inUserHand) return -1;
+            if (!a.inUserHand && !b.inUserHand) {
+                // if not moving yet then move to bottom
+                return a.timeGivenToUser - b.timeGivenToUser;
+            }
+            return a.x - b.x;
+        }).forEach((card, index) => {
             if (card.moveOnDuration) return;
             // console.log('start the movement', card.x, cardPositions[index].x);
             // do not start moving if the card is already in the right position
@@ -105,7 +114,9 @@ export class PlayerCardHand {
             // do not start moving the card if it is being dragged
             if (card.isDragging) return;
 
-            card.startMovingOverTimeTo(cardPositions[index], .5);
+            card.startMovingOverTimeTo(cardPositions[index], 2, () => {
+                card.inUserHand = true;
+            });
             card.depth = index / cards.length;
         });
     }
