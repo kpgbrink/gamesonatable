@@ -49,14 +49,14 @@ export class PlayerCardHand {
         });
 
         // add socket listeners
-        socket.on('give card', (cardContent: CardContent) => {
+        socket.on('give card', (cardContent: CardContent, timeGivenToUser: number) => {
             console.log('card given', cardContent);
             // get the card that has to be given to player
             const card = this.cards.getCard(cardContent);
             if (!card) throw new Error('card not found');
             card.x += 1;
             // move the card to the player
-            card.inUserHandId = socket.id;
+            card.setUserHand(socket.id, timeGivenToUser);
             // move the card to the player hand
             // this.moveCardToPlayerHand(card);
             card.setCardFaceUp(true);

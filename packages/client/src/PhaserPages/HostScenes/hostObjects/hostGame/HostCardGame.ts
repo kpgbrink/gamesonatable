@@ -1,6 +1,6 @@
 import CardContainer from "../../../objects/CardContainer";
 import { Cards } from "../../../objects/Cards";
-import { checkTransformsEqual, DegreesToRadians, getScreenCenter, transformFromObject, transformRelativeToObject } from "../../../objects/Tools";
+import { checkTransformsEqual, DegreesToRadians, getScreenCenter, transformFromObject } from "../../../objects/Tools";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { Shuffling } from "./states/hostCardGame/Shuffling";
@@ -111,10 +111,7 @@ export abstract class HostCardGame extends HostGame {
             const playerCards = this.getPlayerCards(userAvatarContainer.user.id);
             const playerCardTransforms = this.calculateCardPrefferedTransforms(playerCards);
             playerCards.sort((a, b) => {
-                const aTransform = transformRelativeToObject(a, userAvatarContainer);
-                const bTransform = transformRelativeToObject(b, userAvatarContainer);
-                console.log(aTransform, bTransform);
-                return bTransform.x - aTransform.x;
+                return a.timeGivenToUser - b.timeGivenToUser;
             }).forEach((card, index) => {
                 if (card.moveOnDuration) return;
                 const positionRotation = transformFromObject(userAvatarContainer, playerCardTransforms[index]);

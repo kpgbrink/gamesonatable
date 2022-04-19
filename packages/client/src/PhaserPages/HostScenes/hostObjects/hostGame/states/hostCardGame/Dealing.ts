@@ -49,7 +49,7 @@ export class Dealing extends HostGameState {
         if (!cardContainer) {
             return;
         }
-        cardContainer.inUserHandId = this.currentPlayerGettingCard;
+        cardContainer.setUserHand(this.currentPlayerGettingCard, this.hostGame.scene.time.now);
 
         // get the player that the card is going to
         const userContainer = this.hostGame.getUser(this.currentPlayerGettingCard);
@@ -61,7 +61,7 @@ export class Dealing extends HostGameState {
 
         cardContainer.startMovingOverTimeTo(positionRotation, this.sendingOutCardTime, () => {
             // when the card is done moving, set the card to the player
-            socket.emit('give card', cardContainer.inUserHandId, cardContainer.cardContent);
+            socket.emit('give card', cardContainer.inUserHandId, cardContainer.cardContent, cardContainer.timeGivenToUser);
         });
     }
 

@@ -6,10 +6,16 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     mass: number = 1;
 
     inUserHandId: string | null = null;
+    timeGivenToUser: number = 0;
 
     moveOnDuration: IMoveItemOverTime | null = null;
 
     isDragging: boolean = false;
+
+    public setUserHand(userHandId: string, timeGivenToUser: number) {
+        this.inUserHandId = userHandId;
+        this.timeGivenToUser = timeGivenToUser;
+    }
 
     public startMovingOverTimeTo(toPosition: Transform, time: number, onMovementEndCallBack?: () => void) {
         this.velocity = { x: 0, y: 0, rotation: 0 };

@@ -145,8 +145,8 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('room data', room);
     });
 
-    socket.on('give card', (userId: string, cardContent: CardContent) => {
-        io.to(userId).emit('give card', cardContent);
+    socket.on('give card', (userId: string, cardContent: CardContent, timeGivenToUser: number) => {
+        io.to(userId).emit('give card', cardContent, timeGivenToUser);
     });
 
     socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: CardContent, hiddenCard: CardContent, turn: number) => {

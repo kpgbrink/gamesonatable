@@ -241,18 +241,19 @@ export const transformFromObject = (positionRelative: Transform, position2: Tran
     };
 }
 
-// TODO THIS IS WRONG.
 // undoes transformFromObject
 export const transformRelativeToObject = (positionRelative: Transform, position2: Transform) => {
+    const x1 = position2.x - positionRelative.x;
+    const y1 = position2.y - positionRelative.y;
     // position2 changes based on rotation
-    const x2 = Math.cos(position2.rotation) * position2.x - Math.sin(position2.rotation) * position2.y;
-    const y2 = Math.sin(position2.rotation) * position2.x + Math.cos(position2.rotation) * position2.y;
+    const x2 = Math.cos(-positionRelative.rotation) * x1 - Math.sin(-positionRelative.rotation) * y1;
+    const y2 = Math.sin(-positionRelative.rotation) * x1 + Math.cos(-positionRelative.rotation) * y1;
 
     // return new position and rotation
     return {
-        x: positionRelative.x - x2,
-        y: positionRelative.y - y2,
-        rotation: positionRelative.rotation - position2.rotation,
+        x: x2,
+        y: y2,
+        rotation: keepAnglePositive(position2.rotation - positionRelative.rotation),
         scale: positionRelative.scale / position2.scale
     };
 }
