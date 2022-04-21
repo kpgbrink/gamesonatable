@@ -11,6 +11,8 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
 
     moveOnDuration: IMoveItemOverTime | null = null;
 
+    canTakeFromTable: boolean = false;
+
     isDragging: boolean = false;
 
     public setUserHand(userHandId: string, timeGivenToUser: number) {

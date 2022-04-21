@@ -3,7 +3,7 @@ import socket from "../../../SocketConnection";
 import CardContainer from "../../objects/CardContainer";
 import { Cards } from "../../objects/Cards";
 import ItemContainer from "../../objects/ItemContainer";
-import { checkTransformsEqual, DegreesToRadians, getScreenCenter, getScreenDimensions } from "../../objects/Tools";
+import { checkTransformsEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
 export class PlayerCardHand {
@@ -65,6 +65,13 @@ export class PlayerCardHand {
         });
     }
 
+    setCardToPickUp(card: CardContent, faceUp: boolean) {
+        const cardContainer = this.cards.getCard(card);
+        if (!cardContainer) throw new Error('card not found');
+        cardContainer.setCardFaceUp(faceUp);
+        cardContainer.canTakeFromTable = true;
+    }
+
     moveCardToPlayerHand(card: CardContainer) {
         // screen center
         const screenCenter = getScreenCenter(this.scene);
@@ -78,26 +85,25 @@ export class PlayerCardHand {
         card.setCardFaceUp(true);
     }
 
-    calculateCardPrefferedPositions() {
-        const cards = this.cardsInHand();
+    calculateCardPrefferedPositions(cards: CardContainer[], transform: Transform) {
         if (cards.length === 0) return [];
         const cardWidth = cards[0].width * cards[0].scaleX;
 
-        const screenCenter = getScreenCenter(this.scene);
         const screenDimensions = getScreenDimensions(this.scene);
         const distanceBetweenCards = Math.min((screenDimensions.width - 200) / cards.length, cardWidth);
         // get the card prefered positions
         const cardPositions = cards.map((card, index) => {
-            const x = screenCenter.x - ((cards.length - 1) / 2) * distanceBetweenCards + (index * distanceBetweenCards);
-            const y = screenCenter.y;
-            return { x, y, rotation: 0, scale: 2 };
+            const x = transform.x - ((cards.length - 1) / 2) * distanceBetweenCards + (index * distanceBetweenCards);
+            const y = transform.y;
+            return { x, y, rotation: 0, scale: transform.scale };
         });
         return cardPositions;
     }
 
-    startMovingCardToPrefferedPosition() {
+    startMovingCardsInHandToPrefferedPosition() {
         const cards = this.cardsInHand();
-        const cardPositions = this.calculateCardPrefferedPositions();
+        const screenCenter = getScreenCenter(this.scene);
+        const cardPositions = this.calculateCardPrefferedPositions(cards, { x: screenCenter.x, y: screenCenter.y, rotation: 0, scale: 2 });
         cards.sort((a, b) => {
             // if not in userHand yet then move to bottom
             if (!a.inUserHand && b.inUserHand) return 1;
@@ -122,8 +128,32 @@ export class PlayerCardHand {
         });
     }
 
+    startMovingCardsToPickUpToPrefferedPosition() {
+        const cards = this.cardToPickUp();
+        const screenCenter = getScreenCenter(this.scene);
+        const cardPositions = this.calculateCardPrefferedPositions(cards, { x: screenCenter.x, y: screenCenter.y - 400, rotation: 0, scale: 1 });
+        cards.sort((a, b) => {
+            return a.x - b.x;
+        }).forEach((card, index) => {
+            if (card.moveOnDuration) return;
+            // console.log('start the movement', card.x, cardPositions[index].x);
+            // do not start moving if the card is already in the right position
+            if (checkTransformsEqual(card, cardPositions[index])) return;
+            // do not start moving the card if it is being dragged
+            if (card.isDragging) return;
+            console.log('start moving the card to pickup locaiton')
+            card.startMovingOverTimeTo(cardPositions[index], this.moveToHandTime, () => {
+            });
+        });
+    }
+
+    cardToPickUp() {
+        return this.cards.cardContainers.filter(card => card.canTakeFromTable);
+    }
+
     update(time: number, delta: number) {
         this.cards.update(time, delta);
-        this.startMovingCardToPrefferedPosition();
+        this.startMovingCardsInHandToPrefferedPosition();
+        this.startMovingCardsToPickUpToPrefferedPosition();
     }
 }

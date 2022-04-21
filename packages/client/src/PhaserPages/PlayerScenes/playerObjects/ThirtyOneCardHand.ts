@@ -1,3 +1,4 @@
+import { CardContent } from "api";
 import socket from "../../../SocketConnection";
 import { PlayerCardHand } from "./PlayerCardHand";
 import PlayerScene from "./PlayerScene";
@@ -10,8 +11,11 @@ export class ThirtyOneCardHand extends PlayerCardHand {
 
     create() {
         super.create();
-        socket.on('thirty one player turn', (playerId: string, shownCard: string, hiddenCard: string, turn: number) => {
+        socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: CardContent, hiddenCard: CardContent, turn: number) => {
             // set the cards to show the player to choose it's cards
+            console.log('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn);
+            this.setCardToPickUp(shownCard, true);
+            this.setCardToPickUp(hiddenCard, false);
         });
     }
 

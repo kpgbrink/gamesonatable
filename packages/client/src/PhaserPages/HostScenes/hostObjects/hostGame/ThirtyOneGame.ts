@@ -3,7 +3,7 @@ import { ThirtyOneGameStart } from "./states/hostCardGame/gameSpecificStates/Thi
 
 
 export class ThirtyOneGame extends HostCardGame {
-    dealAmount: number = 100;
+    dealAmount: number = 3;
 
     gameStartStateConstructor: HostGameStateConstructor = ThirtyOneGameStart;
 

@@ -1,5 +1,4 @@
 import { Cards } from "../objects/Cards";
-import { PlayerCardHand } from "./playerObjects/PlayerCardHand";
 import PlayerScene from "./playerObjects/PlayerScene";
 import { ThirtyOneCardHand } from "./playerObjects/ThirtyOneCardHand";
 
@@ -18,7 +17,7 @@ export default class ThirtyOne extends PlayerScene {
 
     create() {
         super.create();
-        this.playerCardHand = new PlayerCardHand(this);
+        this.playerCardHand = new ThirtyOneCardHand(this);
         this.playerCardHand.create();
     }
 
