@@ -6,12 +6,14 @@ import ItemContainer from "../../objects/ItemContainer";
 import { checkTransformsEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
-export class PlayerCardHand {
+export abstract class PlayerCardHand {
     cards: Cards;
     scene: PlayerScene;
     moveToHandTime: number = .2;
+    allowedPickUpCardAmount = 0;
+    allowedDropCardAmount = 0;
 
-    deckPosition: Transform;
+    tablePosition: Transform;
     pickUpAndPlaceBasePosition: Transform;
     handBasePosition: Transform;
 
@@ -21,7 +23,7 @@ export class PlayerCardHand {
         this.scene = scene;
         this.cards = new Cards(scene);
         const screenCenter = getScreenCenter(scene);
-        this.deckPosition = { x: screenCenter.x, y: screenCenter.y - 400, rotation: 0, scale: 1.3 };
+        this.tablePosition = { x: screenCenter.x, y: 0 - 500, rotation: DegreesToRadians(90), scale: .5 };
         this.pickUpAndPlaceBasePosition = {
             x: screenCenter.x,
             y: screenCenter.y - 400,
@@ -34,7 +36,7 @@ export class PlayerCardHand {
             rotation: 0,
             scale: 2
         };
-        this.cardBasePositions.push(this.deckPosition);
+        this.cardBasePositions.push(this.tablePosition);
         this.cardBasePositions.push(this.handBasePosition);
         this.cardBasePositions.push(this.pickUpAndPlaceBasePosition);
     }
@@ -45,14 +47,9 @@ export class PlayerCardHand {
     }
 
     create() {
-        const screenCenter = getScreenCenter(this.scene);
         this.cards.create(0, 0);
         this.cards.cardContainers.forEach(card => {
-
-            card.rotation = DegreesToRadians(90);
-            card.setScale(.5);
-            card.y = -card.width * card.scale / 2 - 10;
-            card.x = screenCenter.x;
+            card.setTransform(this.tablePosition);
             card.setInteractive();
             this.scene.input.setDraggable(card);
 
@@ -61,14 +58,22 @@ export class PlayerCardHand {
                 gameObject.y = dragY;
             });
             // on drag start set dragging true
-            this.scene.input.on('dragstart', (pointer: any, gameObject: ItemContainer) => {
+            this.scene.input.on('dragstart', (pointer: any, gameObject: CardContainer) => {
+                gameObject.beforeDraggedTransform = {
+                    x: gameObject.x,
+                    y: gameObject.y,
+                    rotation: gameObject.rotation,
+                    scale: gameObject.scale
+                };
                 gameObject.isDragging = true;
                 gameObject.depth = 2;
                 gameObject.moveOnDuration = null;
             });
             // on drag end set dragging false
-            this.scene.input.on('dragend', (pointer: any, gameObject: ItemContainer) => {
+            this.scene.input.on('dragend', (pointer: any, gameObject: CardContainer) => {
                 gameObject.isDragging = false;
+                this.checkIfMoveCardToHand(gameObject);
+                this.checkIfMoveCardToTable(gameObject);
             });
         });
 
@@ -163,9 +168,7 @@ export class PlayerCardHand {
             if (checkTransformsEqual(card, cardPositions[index])) return;
             // do not start moving the card if it is being dragged
             if (card.isDragging) return;
-            console.log('start moving the card to pickup locaiton')
-            card.startMovingOverTimeTo(cardPositions[index], this.moveToHandTime, () => {
-            });
+            card.startMovingOverTimeTo(cardPositions[index], this.moveToHandTime, () => { });
             card.depth = index / cards.length;
         });
     }
@@ -174,9 +177,58 @@ export class PlayerCardHand {
         return this.cards.cardContainers.filter(card => card.canTakeFromTable);
     }
 
+    // move dragged card to player hand if being dragged down
+    checkIfMoveCardToHand(draggedCard: CardContainer) {
+        // check if the card is lower than the starting drag position
+        if (!draggedCard.canTakeFromTable) return;
+        if (draggedCard.beforeDraggedTransform === null) return;
+        if (draggedCard.y < draggedCard.beforeDraggedTransform.y) return;
+        draggedCard.setCardFaceUp(true);
+        draggedCard.userHandId = socket.id;
+        draggedCard.canTakeFromTable = false;
+        this.setAllowedPickUpCardAmount(this.allowedPickUpCardAmount - 1);
+    }
+
+    setAllowedPickUpCardAmount(amount: number) {
+        this.allowedPickUpCardAmount = amount;
+        if (amount === 0) {
+            console.log('no more cards to pick up');
+            // put all the pickupable cards back to the table
+            this.cardToPickUp().forEach(card => {
+                card.canTakeFromTable = false;
+                // move the card back to the table
+                card.cardBackOnTable = true;
+            });
+            this.onAllCardsPickedUp();
+        }
+    }
+
+    startMovingCardsBackToTable() {
+        const cards = this.cards.cardsInDeck();
+        cards.forEach(card => {
+            card.startMovingOverTimeTo(this.tablePosition, 1);
+        })
+    }
+
+    checkIfMoveCardToTable(card: CardContainer) {
+        if (card.cardBackOnTable) return;
+        if (!card.inUserHand) return;
+        if (card.beforeDraggedTransform === null) return;
+        if (card.y > card.beforeDraggedTransform?.y) return;
+        if (this.allowedDropCardAmount <= 0) return;
+        this.allowedDropCardAmount -= 1;
+        card.inUserHand = false;
+        card.userHandId = null;
+        card.canTakeFromTable = false;
+        card.cardBackOnTable = true;
+    }
+
     update(time: number, delta: number) {
         this.cards.update(time, delta);
         this.startMovingCardsInHandToPrefferedPosition();
         this.startMovingCardsToPickUpToPrefferedPosition();
+        this.startMovingCardsBackToTable();
     }
+
+    abstract onAllCardsPickedUp(): void
 }

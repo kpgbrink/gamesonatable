@@ -16,7 +16,14 @@ export class ThirtyOneCardHand extends PlayerCardHand {
             console.log('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn);
             this.setCardToPickUp(shownCard, true, 2);
             this.setCardToPickUp(hiddenCard, false, 1);
+            this.setAllowedPickUpCardAmount(1);
         });
+    }
+
+    onAllCardsPickedUp(): void {
+        // set 1 card to be able to put down.
+        console.log('set 1 drop card amount');
+        this.allowedDropCardAmount = 1;
     }
 
 }

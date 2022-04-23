@@ -68,4 +68,12 @@ export class Cards {
         const faceUpCards = this.getTableCards().sort((c1, c2) => c1.depth - c2.depth).filter(cardContainer => cardContainer.getFaceUp());
         return faceUpCards.length > 0 ? faceUpCards[0] : null;
     }
+
+    getDraggedCard() {
+        return this.cardContainers.find(cardContainer => cardContainer.isDragging);
+    }
+
+    cardsInDeck() {
+        return this.cardContainers.filter(cardContainer => cardContainer.cardBackOnTable);
+    }
 }

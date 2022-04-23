@@ -12,7 +12,9 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     moveOnDuration: IMoveItemOverTime | null = null;
 
     canTakeFromTable: boolean = false;
+    cardBackOnTable: boolean = false;
 
+    beforeDraggedTransform: Transform | null = null;
     isDragging: boolean = false;
     order: number = 0;
 
@@ -58,6 +60,13 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
         this.x += this.velocity.x * millisecondToSecond(delta);
         this.y += this.velocity.y * millisecondToSecond(delta);
         this.rotation += this.velocity.rotation * millisecondToSecond(delta);
+    }
+
+    public setTransform(transform: Transform) {
+        this.x = transform.x;
+        this.y = transform.y;
+        this.rotation = transform.rotation;
+        this.scale = transform.scale;
     }
 
     public update(time: number, delta: number) {

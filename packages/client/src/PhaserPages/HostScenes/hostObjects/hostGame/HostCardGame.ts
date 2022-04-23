@@ -124,5 +124,4 @@ export abstract class HostCardGame extends HostGame {
             });
         });
     }
-
 }
