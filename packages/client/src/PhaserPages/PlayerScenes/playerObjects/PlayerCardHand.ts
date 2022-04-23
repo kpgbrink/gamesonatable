@@ -11,9 +11,32 @@ export class PlayerCardHand {
     scene: PlayerScene;
     moveToHandTime: number = .2;
 
+    deckPosition: Transform;
+    pickUpAndPlaceBasePosition: Transform;
+    handBasePosition: Transform;
+
+    cardBasePositions: Transform[] = [];
+
     constructor(scene: PlayerScene) {
         this.scene = scene;
         this.cards = new Cards(scene);
+        const screenCenter = getScreenCenter(scene);
+        this.deckPosition = { x: screenCenter.x, y: screenCenter.y - 400, rotation: 0, scale: 1.3 };
+        this.pickUpAndPlaceBasePosition = {
+            x: screenCenter.x,
+            y: screenCenter.y - 400,
+            rotation: 0,
+            scale: 1.3
+        };
+        this.handBasePosition = {
+            x: screenCenter.x,
+            y: screenCenter.y,
+            rotation: 0,
+            scale: 2
+        };
+        this.cardBasePositions.push(this.deckPosition);
+        this.cardBasePositions.push(this.handBasePosition);
+        this.cardBasePositions.push(this.pickUpAndPlaceBasePosition);
     }
 
     cardsInHand() {
@@ -65,9 +88,10 @@ export class PlayerCardHand {
         });
     }
 
-    setCardToPickUp(card: CardContent, faceUp: boolean) {
+    setCardToPickUp(card: CardContent, faceUp: boolean, order: number) {
         const cardContainer = this.cards.getCard(card);
         if (!cardContainer) throw new Error('card not found');
+        cardContainer.order = order;
         cardContainer.setCardFaceUp(faceUp);
         cardContainer.canTakeFromTable = true;
     }
@@ -102,8 +126,7 @@ export class PlayerCardHand {
 
     startMovingCardsInHandToPrefferedPosition() {
         const cards = this.cardsInHand();
-        const screenCenter = getScreenCenter(this.scene);
-        const cardPositions = this.calculateCardPrefferedPositions(cards, { x: screenCenter.x, y: screenCenter.y, rotation: 0, scale: 2 });
+        const cardPositions = this.calculateCardPrefferedPositions(cards, this.handBasePosition);
         cards.sort((a, b) => {
             // if not in userHand yet then move to bottom
             if (!a.inUserHand && b.inUserHand) return 1;
@@ -130,10 +153,9 @@ export class PlayerCardHand {
 
     startMovingCardsToPickUpToPrefferedPosition() {
         const cards = this.cardToPickUp();
-        const screenCenter = getScreenCenter(this.scene);
-        const cardPositions = this.calculateCardPrefferedPositions(cards, { x: screenCenter.x, y: screenCenter.y - 400, rotation: 0, scale: 1 });
+        const cardPositions = this.calculateCardPrefferedPositions(cards, this.pickUpAndPlaceBasePosition);
         cards.sort((a, b) => {
-            return a.x - b.x;
+            return a.order - b.order;
         }).forEach((card, index) => {
             if (card.moveOnDuration) return;
             // console.log('start the movement', card.x, cardPositions[index].x);
@@ -144,6 +166,7 @@ export class PlayerCardHand {
             console.log('start moving the card to pickup locaiton')
             card.startMovingOverTimeTo(cardPositions[index], this.moveToHandTime, () => {
             });
+            card.depth = index / cards.length;
         });
     }
 

@@ -14,8 +14,8 @@ export class ThirtyOneCardHand extends PlayerCardHand {
         socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: CardContent, hiddenCard: CardContent, turn: number) => {
             // set the cards to show the player to choose it's cards
             console.log('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn);
-            this.setCardToPickUp(shownCard, true);
-            this.setCardToPickUp(hiddenCard, false);
+            this.setCardToPickUp(shownCard, true, 2);
+            this.setCardToPickUp(hiddenCard, false, 1);
         });
     }
 

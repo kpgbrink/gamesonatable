@@ -14,6 +14,7 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     canTakeFromTable: boolean = false;
 
     isDragging: boolean = false;
+    order: number = 0;
 
     public setUserHand(userHandId: string, timeGivenToUser: number) {
         this.userHandId = userHandId;
