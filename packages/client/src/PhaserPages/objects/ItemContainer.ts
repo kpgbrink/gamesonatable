@@ -64,9 +64,4 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
         this.moveOverTime(time, delta);
         this.moveFromVelocity(delta);
     }
-
-    public setScaleAndSize(scale: number) {
-        this.setScale(scale);
-        this.setSize(this.width * scale, this.height * scale);
-    }
 }
