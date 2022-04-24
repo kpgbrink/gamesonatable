@@ -1,6 +1,6 @@
 import { CardContent } from "api";
 import CardContainer from "./CardContainer";
-import { isEqual, shuffle } from "./Tools";
+import { shuffle } from "./Tools";
 
 export const suites = ['hearts', 'diamonds', 'spades', 'clubs'];
 export const cards = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
@@ -45,9 +45,18 @@ export class Cards {
         return this.cardContainers.filter(cardContainer => cardContainer.userHandId === playerId);
     }
 
+    isEqual(card1: CardContent, card2: CardContent) {
+        if (!card1 || !card2) return false;
+        return 1
+            && card1.suit === card2.suit
+            && card1.card === card2.card
+            && card1.joker === card2.joker;
+    }
+
+
     getCard(cardContent: CardContent) {
         return this.cardContainers.find(cardContainer => {
-            return isEqual(cardContainer.cardContent, cardContent)
+            return this.isEqual(cardContainer.cardContent, cardContent)
         });
     }
 

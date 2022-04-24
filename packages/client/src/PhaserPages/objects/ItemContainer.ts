@@ -28,7 +28,7 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
         this.moveOnDuration = {
             movementCountdownTimer: new CountdownTimer(time),
             startPosition: { x: this.x, y: this.y, rotation: this.rotation, scale: this.scale },
-            endPosition: toPosition,
+            endTransform: toPosition,
             onMovementEndCallBack: onMovementEndCallBack || null
         };
     }
@@ -47,7 +47,7 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
             delta,
             this.moveOnDuration.startPosition,
             this,
-            this.moveOnDuration.endPosition
+            this.moveOnDuration.endTransform
         );
         this.x += movement.x;
         this.y += movement.y;

@@ -1,4 +1,3 @@
-import { transformRelativeToScreenCenter } from "../../../../../../objects/Tools";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
 import { HostGameState } from "../../HostGameState";
 import { ThirtyOneGameTurnOverCard } from "./ThirtyOneTurnOverCard";
@@ -19,11 +18,9 @@ export class ThirtyOneGameStart extends HostGameState {
     }
 
     startMovingCardsToCenter() {
-        const positionRotation = { x: -100, y: 0, rotation: 0, scale: 1 };
-        const positionRotationRelativeScreenCenter = transformRelativeToScreenCenter(this.hostGame.scene, positionRotation);
         // move cards to center.
         this.hostGame.cards.getTableCards().forEach(cardContainer => {
-            cardContainer.startMovingOverTimeTo(positionRotationRelativeScreenCenter, this.bringToCenterTime);
+            cardContainer.startMovingOverTimeTo(this.hostGame.deckTransform, this.bringToCenterTime);
         });
     }
 

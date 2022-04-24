@@ -154,4 +154,18 @@ io.on('connection', (socket) => {
         io.to(currentPlayerTurnId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn);
     });
 
+
+    socket.on('moveCardToHand', (cardContent: CardContent) => {
+        console.log('move card to hand');
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser) return;
+        io.to(hostUser.id).emit('moveCardToHand', user.id, cardContent);
+    });
+
+    socket.on('moveCardToTable', (cardContent: CardContent) => {
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser) return;
+        io.to(hostUser.id).emit('moveCardToTable', user.id, cardContent);
+    });
+
 });

@@ -7,6 +7,10 @@ export abstract class HostGameState {
         this.hostGame = hostGame;
     }
 
+    onItemMoveToTable() {
+
+    }
+
     abstract enter(): void;
 
     abstract update(time: number, delta: number): void;

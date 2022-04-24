@@ -315,14 +315,9 @@ export interface ITableItem {
 
 export interface IMoveItemOverTime {
     startPosition: Transform;
-    endPosition: Transform;
+    endTransform: Transform;
     movementCountdownTimer: CountdownTimer;
     onMovementEndCallBack: (() => void) | null;
-}
-
-// check if objects are equal
-export const isEqual = (obj1: any, obj2: any) => {
-    return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
 
 export const transformRelativeToScreenCenter = (scene: Phaser.Scene, position: Transform) => {
@@ -335,23 +330,38 @@ export const transformRelativeToScreenCenter = (scene: Phaser.Scene, position: T
     }
 }
 
-export const checkTransformsEqual = (transform1: Transform, transform2: Transform) => {
-    if (transform1.x !== transform2.x) {
+export const checkTransformsAlmostEqual = (transform1: Transform, transform2: Transform) => {
+    if (approximiatelyEqual(transform1.x, transform2.x) === false) {
+        console.log('x not equal');
         return false;
     }
-    if (transform1.y !== transform2.y) {
+    if (approximiatelyEqual(transform1.y, transform2.y) === false) {
+        console.log('y not equal');
         return false;
     }
     // set both rotations to positive
-    const rotation1 = keepAnglePositive(transform1.rotation);
-    const rotation2 = keepAnglePositive(transform2.rotation);
-    // check if rotations are almost equal
-    if (Math.abs(rotation1 - rotation2) > 0.001) {
-        console.log('rotation not equal');
+    // https://stackoverflow.com/a/24943671/2948122
+    let diff = transform1.rotation - transform2.rotation;
+    diff = diff / Math.PI * 2;
+    if (diff > Math.PI) diff -= 2 * Math.PI;
+    console.log(diff);
+
+    if (diff > errorMargin) {
         return false;
     }
-    if (transform1.scale !== transform2.scale) {
+    // check if rotations are almost equal
+    // if (approximiatelyEqual(rotation1, rotation2) === false) {
+    //     console.log('rotation not equal', RadiansToDegrees(rotation1), RadiansToDegrees(rotation2));
+    //     return false;
+    // }
+    if (approximiatelyEqual(transform1.scale, transform2.scale) === false) {
         return false;
     }
     return true;
+}
+const errorMargin = 0.0001;
+
+
+const approximiatelyEqual = (value1: number, value2: number) => {
+    return Math.abs(value1 - value2) < errorMargin;
 }

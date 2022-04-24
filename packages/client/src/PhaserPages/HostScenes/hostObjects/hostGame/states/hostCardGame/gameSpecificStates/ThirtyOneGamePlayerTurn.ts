@@ -22,9 +22,7 @@ export class ThirtyOneGamePlayerTurn extends HostGameState {
             throw new Error("No shown card found");
         }
         if (!hiddenCard) {
-            // no hidden card then the game is over
-            console.log('todo handle the game weirdly ending');
-            return;
+            throw new Error("No hidden card found");
         }
 
         socket.emit("thirty one player turn", this.hostGame.currentPlayerTurnId, shownCard.cardContent, hiddenCard.cardContent, this.hostGame.turn);
@@ -33,12 +31,11 @@ export class ThirtyOneGamePlayerTurn extends HostGameState {
     update(time: number, delta: number): HostGameState | null {
         this.hostGame.cards.update(time, delta);
         // check if all cards are in the dealer
-        if (this.hostGame.cards.cardContainers.every(cardContainer =>
-            cardContainer.moveOnDuration === null
-        )) {
-
-        }
         return null;
+    }
+
+    onItemMoveToTable(): void {
+        this.hostGame.changeState(new ThirtyOneGamePlayerTurn(this.hostGame));
     }
 
     exit() {

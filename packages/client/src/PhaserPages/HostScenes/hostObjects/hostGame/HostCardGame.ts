@@ -1,15 +1,12 @@
+import { CardContent } from "api";
+import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/CardContainer";
 import { Cards } from "../../../objects/Cards";
-import { checkTransformsEqual, DegreesToRadians, getScreenCenter, transformFromObject } from "../../../objects/Tools";
+import { checkTransformsAlmostEqual, DegreesToRadians, getScreenCenter, transformFromObject } from "../../../objects/Tools";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { Shuffling } from "./states/hostCardGame/Shuffling";
 import { HostGameState } from "./states/HostGameState";
-
-// construction of HostGameState interface
-export interface HostGameStateConstructor {
-    new(hostGame: HostCardGame): HostGameState;
-}
 
 export abstract class HostCardGame extends HostGame {
     scene: Phaser.Scene;
@@ -20,7 +17,7 @@ export abstract class HostCardGame extends HostGame {
     currentPlayerTurnId: string | null = null;
     turn: number = 0;
 
-    abstract gameStartStateConstructor: HostGameStateConstructor;
+    abstract createGameState(): HostGameState;
 
     constructor(scene: Phaser.Scene) {
         super(scene);
@@ -72,7 +69,24 @@ export abstract class HostCardGame extends HostGame {
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, screenCenter.y);
         this.changeState(new Shuffling(this));
+
+        socket.on('moveCardToHand', (userId: string, cardContent: CardContent) => {
+            const user = this.getUser(userId);
+            if (!user) return;
+            const card = this.cards.getCard(cardContent);
+            if (!card) return;
+            card.userHandId = user.user.id;
+        });
+        socket.on('moveCardToTable', (userId: string, cardContent: CardContent) => {
+            const user = this.getUser(userId);
+            if (!user) return;
+            const card = this.cards.getCard(cardContent);
+            if (!card) return;
+            this.onCardMoveToTable(userId, card);
+        });
     }
+
+    abstract onCardMoveToTable(userId: string, card: CardContainer): void;
 
     update(time: number, delta: number) {
         super.update(time, delta);
@@ -116,7 +130,7 @@ export abstract class HostCardGame extends HostGame {
                 if (card.moveOnDuration) return;
                 const positionRotation = transformFromObject(userAvatarContainer, playerCardTransforms[index]);
                 // do not start moving if the card is already in the right position
-                if (checkTransformsEqual(card, positionRotation)) return;
+                if (checkTransformsAlmostEqual(card, positionRotation)) return;
                 if (card.moveOnDuration) return;
                 card.startMovingOverTimeTo(positionRotation, .4, () => {
                     card.inUserHand = true;

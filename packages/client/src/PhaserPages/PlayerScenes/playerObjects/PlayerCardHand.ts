@@ -3,7 +3,7 @@ import socket from "../../../SocketConnection";
 import CardContainer from "../../objects/CardContainer";
 import { Cards } from "../../objects/Cards";
 import ItemContainer from "../../objects/ItemContainer";
-import { checkTransformsEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
+import { checkTransformsAlmostEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
 export abstract class PlayerCardHand {
@@ -99,6 +99,9 @@ export abstract class PlayerCardHand {
         cardContainer.order = order;
         cardContainer.setCardFaceUp(faceUp);
         cardContainer.canTakeFromTable = true;
+        cardContainer.userHandId = null;
+        cardContainer.inUserHand = false;
+        cardContainer.cardBackOnTable = false;
     }
 
     moveCardToPlayerHand(card: CardContainer) {
@@ -142,10 +145,14 @@ export abstract class PlayerCardHand {
             }
             return a.x - b.x;
         }).forEach((card, index) => {
-            if (card.moveOnDuration) return;
-            // console.log('start the movement', card.x, cardPositions[index].x);
+            // do not start new movement if old movement already going to same position
+            if (card.moveOnDuration?.endTransform && checkTransformsAlmostEqual(card.moveOnDuration.endTransform, cardPositions[index])) return;
             // do not start moving if the card is already in the right position
-            if (checkTransformsEqual(card, cardPositions[index])) return;
+            if (checkTransformsAlmostEqual(card, cardPositions[index])) {
+                console.log('this is exact position');
+                card.inUserHand = true;
+                return;
+            }
             // do not start moving the card if it is being dragged
             if (card.isDragging) return;
 
@@ -162,10 +169,9 @@ export abstract class PlayerCardHand {
         cards.sort((a, b) => {
             return a.order - b.order;
         }).forEach((card, index) => {
-            if (card.moveOnDuration) return;
             // console.log('start the movement', card.x, cardPositions[index].x);
             // do not start moving if the card is already in the right position
-            if (checkTransformsEqual(card, cardPositions[index])) return;
+            if (checkTransformsAlmostEqual(card, cardPositions[index])) return;
             // do not start moving the card if it is being dragged
             if (card.isDragging) return;
             card.startMovingOverTimeTo(cardPositions[index], this.moveToHandTime, () => { });
@@ -183,6 +189,7 @@ export abstract class PlayerCardHand {
         if (!draggedCard.canTakeFromTable) return;
         if (draggedCard.beforeDraggedTransform === null) return;
         if (draggedCard.y < draggedCard.beforeDraggedTransform.y) return;
+        socket.emit('moveCardToHand', draggedCard.cardContent);
         draggedCard.setCardFaceUp(true);
         draggedCard.userHandId = socket.id;
         draggedCard.canTakeFromTable = false;
@@ -207,15 +214,18 @@ export abstract class PlayerCardHand {
         const cards = this.cards.cardsInDeck();
         cards.forEach(card => {
             card.startMovingOverTimeTo(this.tablePosition, 1);
-        })
+        });
     }
 
     checkIfMoveCardToTable(card: CardContainer) {
-        if (card.cardBackOnTable) return;
-        if (!card.inUserHand) return;
         if (card.beforeDraggedTransform === null) return;
         if (card.y > card.beforeDraggedTransform?.y) return;
+        if (card.cardBackOnTable) return;
+        if (!card.inUserHand) return;
         if (this.allowedDropCardAmount <= 0) return;
+        // tell host to move the card to the table
+        socket.emit('moveCardToTable', card.cardContent);
+        console.log('card to table');
         this.allowedDropCardAmount -= 1;
         card.inUserHand = false;
         card.userHandId = null;
