@@ -79,7 +79,6 @@ export abstract class PlayerCardHand {
 
         // add socket listeners
         socket.on('give card', (cardContent: CardContent, timeGivenToUser: number) => {
-            console.log('card given', cardContent);
             // get the card that has to be given to player
             const card = this.cards.getCard(cardContent);
             if (!card) throw new Error('card not found');
@@ -199,7 +198,6 @@ export abstract class PlayerCardHand {
     setAllowedPickUpCardAmount(amount: number) {
         this.allowedPickUpCardAmount = amount;
         if (amount === 0) {
-            console.log('no more cards to pick up');
             // put all the pickupable cards back to the table
             this.cardToPickUp().forEach(card => {
                 card.canTakeFromTable = false;
@@ -221,7 +219,7 @@ export abstract class PlayerCardHand {
         if (card.beforeDraggedTransform === null) return;
         if (card.y > card.beforeDraggedTransform?.y) return;
         if (card.cardBackOnTable) return;
-        if (!card.inUserHand) return;
+        if (!card.userHandId) return;
         if (this.allowedDropCardAmount <= 0) return;
         // tell host to move the card to the table
         socket.emit('moveCardToTable', card.cardContent);

@@ -22,7 +22,6 @@ export class ThirtyOneCardHand extends PlayerCardHand {
 
     onAllCardsPickedUp(): void {
         // set 1 card to be able to put down.
-        console.log('set 1 drop card amount');
         this.allowedDropCardAmount = 1;
     }
 

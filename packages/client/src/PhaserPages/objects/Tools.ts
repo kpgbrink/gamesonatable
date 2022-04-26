@@ -332,11 +332,9 @@ export const transformRelativeToScreenCenter = (scene: Phaser.Scene, position: T
 
 export const checkTransformsAlmostEqual = (transform1: Transform, transform2: Transform) => {
     if (approximiatelyEqual(transform1.x, transform2.x) === false) {
-        console.log('x not equal');
         return false;
     }
     if (approximiatelyEqual(transform1.y, transform2.y) === false) {
-        console.log('y not equal');
         return false;
     }
     // set both rotations to positive
@@ -344,8 +342,6 @@ export const checkTransformsAlmostEqual = (transform1: Transform, transform2: Tr
     let diff = transform1.rotation - transform2.rotation;
     diff = diff / Math.PI * 2;
     if (diff > Math.PI) diff -= 2 * Math.PI;
-    console.log(diff);
-
     if (diff > errorMargin) {
         return false;
     }

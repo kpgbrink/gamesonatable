@@ -4,7 +4,6 @@ import { persistentData } from "../../objects/PersistantData";
 
 export const onPlayerChangeGames = (phaserScene: Phaser.Scene) => {
     socket.on("room data", (roomData: RoomData) => {
-        // console.log('set room persistent data');
         // start scene if scene is different
         (() => {
             if (!roomData.currentPlayerScene) {

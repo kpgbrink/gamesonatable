@@ -32,6 +32,9 @@ export class ThirtyOneGame extends HostCardGame {
         card.startMovingOverTimeTo(this.cardPlaceTransform, .8, () => {
 
         });
+        const topFaceUpCard = this.cards.getTopFaceUpCard();
+        console.log('top face up card', topFaceUpCard?.cardContent);
+        card.depth = topFaceUpCard ? topFaceUpCard.depth + 1 : 0;
         this.currentState?.onItemMoveToTable();
     }
 
