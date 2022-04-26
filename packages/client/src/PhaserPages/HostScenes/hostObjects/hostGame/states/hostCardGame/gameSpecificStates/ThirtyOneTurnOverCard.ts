@@ -19,7 +19,7 @@ export class ThirtyOneGameTurnOverCard extends HostGameState {
 
     startMovingCardsToCenter() {
         // move cards to center.
-        const cardContainer = this.hostGame.cards.getTableTopCard();
+        const cardContainer = this.hostGame.cards.getTopFaceDownCard();
         if (!cardContainer) {
             throw new Error("No card container found");
         }

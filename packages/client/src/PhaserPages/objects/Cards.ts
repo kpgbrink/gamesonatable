@@ -64,10 +64,6 @@ export class Cards {
         return this.cardContainers.filter(cardContainer => cardContainer.userHandId === null);
     }
 
-    getTableTopCard() {
-        return this.cardContainers.reverse().find(cardContainer => cardContainer.userHandId === null)
-    }
-
     getTableCardsSortedByDepth() {
         return this.getTableCards().sort((c1, c2) => c2.depth - c1.depth);
     }

@@ -45,7 +45,7 @@ export class Dealing extends HostGameState {
         }
 
         // get top card container that is not set to a player yet
-        const cardContainer = this.hostGame.cards.getTableTopCard();
+        const cardContainer = this.hostGame.cards.getTopFaceDownCard();
         if (!cardContainer) {
             return;
         }

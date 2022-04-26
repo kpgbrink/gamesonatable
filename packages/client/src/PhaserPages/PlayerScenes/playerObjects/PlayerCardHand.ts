@@ -10,6 +10,7 @@ export abstract class PlayerCardHand {
     cards: Cards;
     scene: PlayerScene;
     moveToHandTime: number = .2;
+    moveToPickUpTime: number = .05;
     allowedPickUpCardAmount = 0;
     allowedDropCardAmount = 0;
 
@@ -173,7 +174,7 @@ export abstract class PlayerCardHand {
             if (checkTransformsAlmostEqual(card, cardPositions[index])) return;
             // do not start moving the card if it is being dragged
             if (card.isDragging) return;
-            card.startMovingOverTimeTo(cardPositions[index], this.moveToHandTime, () => { });
+            card.startMovingOverTimeTo(cardPositions[index], this.moveToPickUpTime, () => { });
             card.depth = index / cards.length;
         });
     }

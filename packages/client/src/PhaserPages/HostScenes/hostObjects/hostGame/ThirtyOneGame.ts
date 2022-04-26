@@ -11,14 +11,16 @@ export class ThirtyOneGame extends HostCardGame {
     deckTransform: Transform;
     cardPlaceTransform: Transform;
 
+    knockPlayerId: string | null = null;
+
     constructor(scene: Phaser.Scene) {
         super(scene);
         this.deckTransform = (() => {
-            const transform = { x: -100, y: 0, rotation: 0, scale: 1 };
+            const transform = { x: -330, y: 0, rotation: 0, scale: 4 };
             return transformRelativeToScreenCenter(this.scene, transform);
         })();
         this.cardPlaceTransform = (() => {
-            const transform = { x: 100, y: 0, rotation: 0, scale: 1 };
+            const transform = { x: 330, y: 0, rotation: 0, scale: 4 };
             return transformRelativeToScreenCenter(this.scene, transform);
         })();
     }
