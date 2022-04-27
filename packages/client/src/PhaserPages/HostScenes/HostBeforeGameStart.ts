@@ -94,7 +94,7 @@ export default class HostBeforeGameStart extends HostScene {
     setUpStartGameButtonAndInstructionText() {
         // Create both the instruction text and the start game button
         const screenCenter = getScreenCenter(this);
-        this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 50,
+        this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 250,
             'Drag your avatar to your starting position!',
             {
                 fontFamily: 'Arial',
@@ -144,7 +144,7 @@ export default class HostBeforeGameStart extends HostScene {
 
     setStartGameButton() {
         this.startGameButton?.setVisible(true);
-        this.instructionText?.setVisible(false);
+        this.instructionText?.setVisible(true);
     }
 
     update() {

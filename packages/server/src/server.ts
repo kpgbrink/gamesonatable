@@ -168,4 +168,10 @@ io.on('connection', (socket) => {
         io.to(hostUser.id).emit('moveCardToTable', user.id, cardContent);
     });
 
+    socket.on('thirty one knock', () => {
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser) return;
+        io.to(hostUser.id).emit('thirty one knock', user.id);
+    });
+
 });

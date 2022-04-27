@@ -149,7 +149,6 @@ export abstract class PlayerCardHand {
             if (card.moveOnDuration?.endTransform && checkTransformsAlmostEqual(card.moveOnDuration.endTransform, cardPositions[index])) return;
             // do not start moving if the card is already in the right position
             if (checkTransformsAlmostEqual(card, cardPositions[index])) {
-                console.log('this is exact position');
                 card.inUserHand = true;
                 return;
             }

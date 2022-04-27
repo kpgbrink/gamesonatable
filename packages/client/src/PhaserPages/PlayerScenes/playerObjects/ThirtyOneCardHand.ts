@@ -1,10 +1,15 @@
 import { CardContent } from "api";
 import socket from "../../../SocketConnection";
+import MenuButton from "../../objects/MenuButton";
+import { getScreenDimensions } from "../../objects/Tools";
 import { PlayerCardHand } from "./PlayerCardHand";
 import PlayerScene from "./PlayerScene";
 
 
 export class ThirtyOneCardHand extends PlayerCardHand {
+    knockButton: MenuButton | null = null;
+
+
     constructor(scene: PlayerScene) {
         super(scene);
     }
@@ -18,6 +23,21 @@ export class ThirtyOneCardHand extends PlayerCardHand {
             this.setCardToPickUp(hiddenCard, false, 1);
             this.setAllowedPickUpCardAmount(1);
         });
+        const screenDimensions = getScreenDimensions(this.scene);
+        this.knockButton = new MenuButton(screenDimensions.width - 200, screenDimensions.height - 80, this.scene);
+        this.knockButton.setInteractive();
+        this.knockButton.setText('Knock');
+        this.knockButton.on('pointerdown', () => {
+            console.log('knock');
+            socket.emit('thirty one knock');
+        });
+        this.knockButton.setVisible(false);
+        this.scene.add.existing(this.knockButton);
+    }
+
+    setAllowedPickUpCardAmount(amount: number): void {
+        super.setAllowedPickUpCardAmount(amount);
+        this.knockButton?.setVisible(amount !== 0);
     }
 
     onAllCardsPickedUp(): void {
