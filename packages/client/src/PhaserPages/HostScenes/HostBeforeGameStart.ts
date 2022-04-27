@@ -44,7 +44,7 @@ export default class HostBeforeGameStart extends HostScene {
         this.input.on('drag', (pointer: any, gameObject: any, dragX: number, dragY: number) => {
             gameObject.x = dragX;
             gameObject.y = dragY;
-            this.setStartGameButton();
+            this.removeInstructionText();
         });
         socket.emit('get room data');
         this.setUpUserReady();
@@ -109,8 +109,8 @@ export default class HostBeforeGameStart extends HostScene {
         this.startGameButton.on('pointerdown', () => this.startGame());
         this.startGameButton.setText('Start game');
         this.add.existing(this.startGameButton);
-        this.instructionText.setVisible(false);
-        this.startGameButton.setVisible(false);
+        this.instructionText.setVisible(true);
+        this.startGameButton.setVisible(true);
     }
 
     startGame() {
@@ -130,21 +130,14 @@ export default class HostBeforeGameStart extends HostScene {
         if (allRotationsSet) {
             // Do not show the start game button if previously was not showing it.
             if (!this.instructionText?.visible) {
-                this.setStartGameButton();
             }
         } else {
-            this.setInstructionText();
+            this.removeInstructionText();
         }
     }
 
-    setInstructionText() {
-        this.startGameButton?.setVisible(false);
-        this.instructionText?.setVisible(true);
-    }
-
-    setStartGameButton() {
-        this.startGameButton?.setVisible(true);
-        this.instructionText?.setVisible(true);
+    removeInstructionText() {
+        this.instructionText?.setVisible(false);
     }
 
     update() {

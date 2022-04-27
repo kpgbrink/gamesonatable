@@ -1,6 +1,8 @@
+import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/CardContainer";
 import { Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
 import { HostCardGame } from "./HostCardGame";
+import { ThirtyOneGamePlayerTurn } from "./states/hostCardGame/gameSpecificStates/ThirtyOneGamePlayerTurn";
 import { ThirtyOneGameStart } from "./states/hostCardGame/gameSpecificStates/ThirtyOneGameStart";
 import { HostGameState } from "./states/HostGameState";
 
@@ -23,6 +25,16 @@ export class ThirtyOneGame extends HostCardGame {
             const transform = { x: 330, y: 0, rotation: 0, scale: 4 };
             return transformRelativeToScreenCenter(this.scene, transform);
         })();
+    }
+
+    create() {
+        super.create();
+        socket.on('thirty one knock', (userId: string) => {
+            console.log('knock happened');
+            this.knockPlayerId = userId;
+            // set next player turn
+            this.changeState(new ThirtyOneGamePlayerTurn(this));
+        });
     }
 
     onCardMoveToTable(userId: string, card: CardContainer): void {

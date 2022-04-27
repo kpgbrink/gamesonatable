@@ -24,8 +24,9 @@ export class ThirtyOneGamePlayerTurn extends HostGameState {
         if (!hiddenCard) {
             throw new Error("No hidden card found");
         }
+        console.log('knock player id', this.hostGame.knockPlayerId);
 
-        socket.emit("thirty one player turn", this.hostGame.currentPlayerTurnId, shownCard.cardContent, hiddenCard.cardContent, this.hostGame.turn);
+        socket.emit("thirty one player turn", this.hostGame.currentPlayerTurnId, shownCard.cardContent, hiddenCard.cardContent, this.hostGame.turn, this.hostGame.knockPlayerId);
     }
 
     update(time: number, delta: number): HostGameState | null {

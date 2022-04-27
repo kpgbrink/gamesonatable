@@ -25,6 +25,31 @@ export abstract class HostCardGame extends HostGame {
         this.cards = new Cards(scene);
     }
 
+    create() {
+        super.create();
+        this.hostUserAvatars = new HostUserAvatarsAroundTableGame(this.scene);
+        this.hostUserAvatars.createOnRoomData();
+        this.hostUserAvatars.moveToEdgeOfTable();
+        const screenCenter = getScreenCenter(this.scene);
+        this.cards.create(screenCenter.x, screenCenter.y);
+        this.changeState(new Shuffling(this));
+
+        socket.on('moveCardToHand', (userId: string, cardContent: CardContent) => {
+            const user = this.getUser(userId);
+            if (!user) return;
+            const card = this.cards.getCard(cardContent);
+            if (!card) return;
+            card.userHandId = user.user.id;
+        });
+        socket.on('moveCardToTable', (userId: string, cardContent: CardContent) => {
+            const user = this.getUser(userId);
+            if (!user) return;
+            const card = this.cards.getCard(cardContent);
+            if (!card) return;
+            this.onCardMoveToTable(userId, card);
+        });
+    }
+
     getDealer() {
         if (!this.currentDealerId) throw new Error('No dealer set');
         const dealer = this.hostUserAvatars?.getUserById(this.currentDealerId);
@@ -59,31 +84,6 @@ export abstract class HostCardGame extends HostGame {
             throw new Error('Not made');
         }
         return this.hostUserAvatars.getNextUserIdFromRotation(playerId);
-    }
-
-    create() {
-        super.create();
-        this.hostUserAvatars = new HostUserAvatarsAroundTableGame(this.scene);
-        this.hostUserAvatars.createOnRoomData();
-        this.hostUserAvatars.moveToEdgeOfTable();
-        const screenCenter = getScreenCenter(this.scene);
-        this.cards.create(screenCenter.x, screenCenter.y);
-        this.changeState(new Shuffling(this));
-
-        socket.on('moveCardToHand', (userId: string, cardContent: CardContent) => {
-            const user = this.getUser(userId);
-            if (!user) return;
-            const card = this.cards.getCard(cardContent);
-            if (!card) return;
-            card.userHandId = user.user.id;
-        });
-        socket.on('moveCardToTable', (userId: string, cardContent: CardContent) => {
-            const user = this.getUser(userId);
-            if (!user) return;
-            const card = this.cards.getCard(cardContent);
-            if (!card) return;
-            this.onCardMoveToTable(userId, card);
-        });
     }
 
     abstract onCardMoveToTable(userId: string, card: CardContainer): void;
