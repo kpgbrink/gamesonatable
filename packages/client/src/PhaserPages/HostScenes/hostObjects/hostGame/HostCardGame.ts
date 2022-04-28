@@ -2,7 +2,8 @@ import { CardContent } from "api";
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/CardContainer";
 import { Cards } from "../../../objects/Cards";
-import { checkTransformsAlmostEqual, DegreesToRadians, getScreenCenter, transformFromObject } from "../../../objects/Tools";
+import { ValueWithDefault } from "../../../objects/NumberWithDefault";
+import { checkTransformsAlmostEqual, getScreenCenter, Transform, transformFromObject, transformRelativeToObject } from "../../../objects/Tools";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { Shuffling } from "./states/hostCardGame/Shuffling";
@@ -16,6 +17,10 @@ export abstract class HostCardGame extends HostGame {
     currentDealerId: string | null = null;
     currentPlayerTurnId: string | null = null;
     turn: number = 0;
+
+    cardInHandTransform: ValueWithDefault<Transform> = new ValueWithDefault({ x: 0, y: 0, rotation: 0, scale: 0.5 });
+
+    minDistanceBetweenCards: ValueWithDefault<number> = new ValueWithDefault(0.5);
 
     abstract createGameState(): HostGameState;
 
@@ -39,6 +44,7 @@ export abstract class HostCardGame extends HostGame {
             if (!user) return;
             const card = this.cards.getCard(cardContent);
             if (!card) return;
+            card.setFaceUp(false);
             card.userHandId = user.user.id;
         });
         socket.on('moveCardToTable', (userId: string, cardContent: CardContent) => {
@@ -108,12 +114,13 @@ export abstract class HostCardGame extends HostGame {
     calculateCardInHandPrefferedTransforms(playerCards: CardContainer[]) {
         if (playerCards.length === 0) return [];
         const cardWidth = playerCards[0].width * playerCards[0].scaleX;
-        const distanceBetweenCards = Math.min(200 / playerCards.length, cardWidth);
+        const distanceBetweenCards = Math.min(this.minDistanceBetweenCards.value / playerCards.length, cardWidth);
         // get the card prefered positions
+        const cardInHandTransform = this.cardInHandTransform.value;
         const cardPositions = playerCards.map((card, index) => {
-            const x = ((playerCards.length - 1) / 2) * distanceBetweenCards - (index * distanceBetweenCards);
-            const y = 0;
-            return { x, y, rotation: DegreesToRadians(0), scale: .5 };
+            const x = ((playerCards.length - 1) / 2) * distanceBetweenCards - (index * distanceBetweenCards) + cardInHandTransform.x;
+            const y = cardInHandTransform.y;
+            return { x, y, rotation: cardInHandTransform.rotation, scale: cardInHandTransform.scale };
         });
         return cardPositions;
     }
@@ -134,6 +141,14 @@ export abstract class HostCardGame extends HostGame {
                 card.startMovingOverTimeTo(positionRotation, .4, () => {
                     card.inUserHand = true;
                 });
+            });
+            // set the depth of the cards based on x position relative to user avatar
+            playerCards.sort((a, b) => {
+                const aR = transformRelativeToObject(userAvatarContainer, a);
+                const bR = transformRelativeToObject(userAvatarContainer, b);
+                return aR.x - bR.x;
+            }).forEach((card, index) => {
+                card.depth = index;
             });
         });
     }

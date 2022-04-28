@@ -88,7 +88,7 @@ export abstract class PlayerCardHand {
             card.setUserHand(socket.id, timeGivenToUser);
             // move the card to the player hand
             // this.moveCardToPlayerHand(card);
-            card.setCardFaceUp(true);
+            card.setFaceUp(true);
             // tell the table to put the card in the player hand
         });
     }
@@ -97,7 +97,7 @@ export abstract class PlayerCardHand {
         const cardContainer = this.cards.getCard(card);
         if (!cardContainer) throw new Error('card not found');
         cardContainer.order = order;
-        cardContainer.setCardFaceUp(faceUp);
+        cardContainer.setFaceUp(faceUp);
         cardContainer.canTakeFromTable = true;
         cardContainer.userHandId = null;
         cardContainer.inUserHand = false;
@@ -114,7 +114,7 @@ export abstract class PlayerCardHand {
             rotation: 0,
             scale: 1
         }, 1);
-        card.setCardFaceUp(true);
+        card.setFaceUp(true);
     }
 
     calculateCardPrefferedPositions(cards: CardContainer[], transform: Transform) {
@@ -188,7 +188,7 @@ export abstract class PlayerCardHand {
         if (draggedCard.beforeDraggedTransform === null) return;
         if (draggedCard.y < draggedCard.beforeDraggedTransform.y) return;
         socket.emit('moveCardToHand', draggedCard.cardContent);
-        draggedCard.setCardFaceUp(true);
+        draggedCard.setFaceUp(true);
         draggedCard.userHandId = socket.id;
         draggedCard.canTakeFromTable = false;
         this.setAllowedPickUpCardAmount(this.allowedPickUpCardAmount - 1);

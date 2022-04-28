@@ -24,7 +24,7 @@ export class ThirtyOneGameTurnOverCard extends HostGameState {
             throw new Error("No card container found");
         }
         cardContainer.startMovingOverTimeTo(this.hostGame.cardPlaceTransform, this.bringShownCardToPositionTime, () => {
-            cardContainer.setCardFaceUp(true);
+            cardContainer.setFaceUp(true);
         });
     }
 

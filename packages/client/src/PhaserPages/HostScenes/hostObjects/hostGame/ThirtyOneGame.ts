@@ -38,7 +38,7 @@ export class ThirtyOneGame extends HostCardGame {
 
     onCardMoveToTable(userId: string, card: CardContainer): void {
         if (!card) return;
-        card.setCardFaceUp(true);
+        card.setFaceUp(true);
         card.userHandId = null;
         card.inUserHand = false;
         card.startMovingOverTimeTo(this.cardPlaceTransform, .8, () => {

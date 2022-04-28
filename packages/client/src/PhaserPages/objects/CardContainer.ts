@@ -42,7 +42,7 @@ export default class CardContainer extends ItemContainer implements ITableItem {
         return `${this.cardContent.suit}${this.cardContent.card}`;
     }
 
-    public setCardFaceUp(faceUp: boolean) {
+    public setFaceUp(faceUp: boolean) {
         // Switch the card image to the back or front
         if (!this.frontImage || !this.backImage) return;
         this.frontImage.visible = faceUp;
