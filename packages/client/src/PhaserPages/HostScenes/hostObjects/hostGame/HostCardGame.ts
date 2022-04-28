@@ -20,7 +20,7 @@ export abstract class HostCardGame extends HostGame {
 
     cardInHandTransform: ValueWithDefault<Transform> = new ValueWithDefault({ x: 0, y: 0, rotation: 0, scale: 0.5 });
 
-    minDistanceBetweenCards: ValueWithDefault<number> = new ValueWithDefault(0.5);
+    minDistanceBetweenCards: ValueWithDefault<number> = new ValueWithDefault(200);
 
     abstract createGameState(): HostGameState;
 
