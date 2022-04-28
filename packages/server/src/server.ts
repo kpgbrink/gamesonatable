@@ -150,12 +150,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: CardContent, hiddenCard: CardContent, turn: number, knockPlayerId: string | null) => {
-        console.log('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn);
         io.to(currentPlayerTurnId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn, knockPlayerId);
     });
 
     socket.on('moveCardToHand', (cardContent: CardContent) => {
-        console.log('move card to hand');
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser) return;
         io.to(hostUser.id).emit('moveCardToHand', user.id, cardContent);

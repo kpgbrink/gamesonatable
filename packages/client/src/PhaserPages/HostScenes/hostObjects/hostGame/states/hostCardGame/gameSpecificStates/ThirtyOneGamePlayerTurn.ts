@@ -1,6 +1,7 @@
 import socket from "../../../../../../../SocketConnection";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
 import { HostGameState } from "../../HostGameState";
+import { ThirtyOneRoundEnd } from "./ThirtyOneRoundEnd";
 
 // Bring cards to the random dealer and have the cards start going out to people.
 export class ThirtyOneGamePlayerTurn extends HostGameState {
@@ -24,8 +25,12 @@ export class ThirtyOneGamePlayerTurn extends HostGameState {
         if (!hiddenCard) {
             throw new Error("No hidden card found");
         }
-        console.log('knock player id', this.hostGame.knockPlayerId);
 
+        // check if the turn has gone back to the player who knocked. Then need to go to end game state.
+        if (this.hostGame.knockPlayerId === this.hostGame.currentPlayerTurnId) {
+            this.hostGame.changeState(new ThirtyOneRoundEnd(this.hostGame));
+            return;
+        }
         socket.emit("thirty one player turn", this.hostGame.currentPlayerTurnId, shownCard.cardContent, hiddenCard.cardContent, this.hostGame.turn, this.hostGame.knockPlayerId);
     }
 

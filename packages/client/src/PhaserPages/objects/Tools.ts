@@ -345,11 +345,6 @@ export const checkTransformsAlmostEqual = (transform1: Transform, transform2: Tr
     if (diff > errorMargin) {
         return false;
     }
-    // check if rotations are almost equal
-    // if (approximiatelyEqual(rotation1, rotation2) === false) {
-    //     console.log('rotation not equal', RadiansToDegrees(rotation1), RadiansToDegrees(rotation2));
-    //     return false;
-    // }
     if (approximiatelyEqual(transform1.scale, transform2.scale) === false) {
         return false;
     }

@@ -18,18 +18,18 @@ export class ThirtyOneCardHand extends PlayerCardHand {
         super.create();
         socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: CardContent, hiddenCard: CardContent, turn: number, knockPlayerId: string | null) => {
             // set the cards to show the player to choose it's cards
-            console.log('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn);
             this.knockPlayerId = knockPlayerId;
             this.setCardToPickUp(shownCard, true, 2);
             this.setCardToPickUp(hiddenCard, false, 1);
             this.setAllowedPickUpCardAmount(1);
         });
+
         const screenDimensions = getScreenDimensions(this.scene);
         this.knockButton = new MenuButton(screenDimensions.width - 200, screenDimensions.height - 80, this.scene);
         this.knockButton.setInteractive();
         this.knockButton.setText('Knock');
         this.knockButton.on('pointerdown', () => {
-            console.log('knock');
+            this.knockPlayerId = socket.id;
             socket.emit('thirty one knock');
             this.setAllowedPickUpCardAmount(0);
         });
@@ -44,6 +44,7 @@ export class ThirtyOneCardHand extends PlayerCardHand {
 
     onAllCardsPickedUp(): void {
         // set 1 card to be able to put down.
+        if (this.knockPlayerId === socket.id) return; // prevent picking up if you knocked.
         this.allowedDropCardAmount = 1;
     }
 

@@ -24,7 +24,6 @@ export const generateRandomUserAvatar = (): UserAvatar => {
     const head = randomNegativeOne(.15) || randomIndex(avatarImages.head);
     const legs = randomNegativeOne(.03) || randomIndex(avatarImages.legs);
     const userAvatar = { base, beard, body, cloak, gloves, boots, hair, head, legs };
-    console.log(userAvatar);
     socket.emit('set player avatar', userAvatar);
     return userAvatar;
 }

@@ -90,7 +90,7 @@ export abstract class HostCardGame extends HostGame {
 
     update(time: number, delta: number) {
         super.update(time, delta);
-        this.startMovingCardToPrefferedPosition();
+        this.startMovingCardInHandToPrefferedPosition();
     }
 
     getUser(userId: string) {
@@ -105,13 +105,12 @@ export abstract class HostCardGame extends HostGame {
         return this.cards.getTableCards();
     }
 
-    calculateCardPrefferedTransforms(playerCards: CardContainer[]) {
+    calculateCardInHandPrefferedTransforms(playerCards: CardContainer[]) {
         if (playerCards.length === 0) return [];
         const cardWidth = playerCards[0].width * playerCards[0].scaleX;
         const distanceBetweenCards = Math.min(200 / playerCards.length, cardWidth);
         // get the card prefered positions
         const cardPositions = playerCards.map((card, index) => {
-            card.setCardFaceUp(true);
             const x = ((playerCards.length - 1) / 2) * distanceBetweenCards - (index * distanceBetweenCards);
             const y = 0;
             return { x, y, rotation: DegreesToRadians(0), scale: .5 };
@@ -120,10 +119,10 @@ export abstract class HostCardGame extends HostGame {
     }
 
     // update the cards into the players hands
-    startMovingCardToPrefferedPosition() {
+    startMovingCardInHandToPrefferedPosition() {
         this.hostUserAvatars?.userAvatarContainers.forEach(userAvatarContainer => {
             const playerCards = this.getPlayerCards(userAvatarContainer.user.id);
-            const playerCardTransforms = this.calculateCardPrefferedTransforms(playerCards);
+            const playerCardTransforms = this.calculateCardInHandPrefferedTransforms(playerCards);
             playerCards.sort((a, b) => {
                 return a.timeGivenToUser - b.timeGivenToUser;
             }).forEach((card, index) => {

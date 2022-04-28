@@ -30,7 +30,6 @@ export class ThirtyOneGame extends HostCardGame {
     create() {
         super.create();
         socket.on('thirty one knock', (userId: string) => {
-            console.log('knock happened');
             this.knockPlayerId = userId;
             // set next player turn
             this.changeState(new ThirtyOneGamePlayerTurn(this));
@@ -40,14 +39,12 @@ export class ThirtyOneGame extends HostCardGame {
     onCardMoveToTable(userId: string, card: CardContainer): void {
         if (!card) return;
         card.setCardFaceUp(true);
-        console.log('move the card to the table yeee');
         card.userHandId = null;
         card.inUserHand = false;
         card.startMovingOverTimeTo(this.cardPlaceTransform, .8, () => {
 
         });
         const topFaceUpCard = this.cards.getTopFaceUpCard();
-        console.log('top face up card', topFaceUpCard?.cardContent);
         card.depth = topFaceUpCard ? topFaceUpCard.depth + 1 : 0;
         this.currentState?.onItemMoveToTable();
     }

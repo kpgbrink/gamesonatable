@@ -168,7 +168,6 @@ export abstract class PlayerCardHand {
         cards.sort((a, b) => {
             return a.order - b.order;
         }).forEach((card, index) => {
-            // console.log('start the movement', card.x, cardPositions[index].x);
             // do not start moving if the card is already in the right position
             if (checkTransformsAlmostEqual(card, cardPositions[index])) return;
             // do not start moving the card if it is being dragged
@@ -223,7 +222,6 @@ export abstract class PlayerCardHand {
         if (this.allowedDropCardAmount <= 0) return;
         // tell host to move the card to the table
         socket.emit('moveCardToTable', card.cardContent);
-        console.log('card to table');
         this.allowedDropCardAmount -= 1;
         card.inUserHand = false;
         card.userHandId = null;
