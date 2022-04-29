@@ -22,6 +22,8 @@ export class ThirtyOneRoundEnd extends HostGameState {
             this.hostGame.cardInHandTransform.value = { ...this.hostGame.cardInHandTransform.value, y: 200, scale: 2 };
             cardContainer.setFaceUp(true);
         });
+        // calculate the score
+        this.calculateScores();
     }
 
     update(time: number, delta: number): HostGameState | null {
@@ -33,17 +35,48 @@ export class ThirtyOneRoundEnd extends HostGameState {
     calculateScores() {
         // calculate the score for each player
         this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
-
+            const cardContainers = this.hostGame.cards.cardContainers.filter(c => c.userHandId === userAvatar.user.id);
+            const { score, cardsThatMatter } = ThirtyOneRoundEnd.calculateScoreAndCardsThatMatter(cardContainers);
+            console.log('score', score);
+            console.log('cardsThatMatter', cardsThatMatter);
         });
     }
 
     static calculateScoreAndCardsThatMatter(cardContainers: CardContainer[]) {
+        debugger;
         // check if all cards have same number then score is 31
         const allCardsSameNumber = cardContainers.every(c => c.cardContent.card === cardContainers[0].cardContent.card);
         if (allCardsSameNumber) {
-            return
+            return { score: 30, cardsThatMatter: cardContainers };
         }
-        // check if all cards 
+
+        // add up all points of the cards for each suit
+        const cardsBySuit = (() => {
+            const cardsBySuit: { suit: string, score: number }[] = [];
+            cardContainers.forEach(cardContainer => {
+                const card = cardContainer.cardContent;
+                if (!card.suit || !card.card) return;
+                const suit = card.suit;
+                const score = (() => {
+                    if (card.card === 'Ace') return 11;
+                    if (card.card === 'Jack' || card.card === 'Queen' || card.card === 'King') return 10;
+                    return parseInt(card.card);
+                })();
+                const cardBySuit = cardsBySuit.find(c => c.suit === suit);
+                if (cardBySuit) {
+                    cardBySuit.score += score;
+                } else {
+                    cardsBySuit.push({ suit, score });
+                }
+            });
+            return cardsBySuit;
+        })();
+        // get the highest score and suit
+        const highestScore = Math.max(...cardsBySuit.map(c => c.score));
+        const suitAndScore = cardsBySuit.find(c => c.score === highestScore);
+        if (!suitAndScore) return { score: 0, cardsThatMatter: cardContainers };
+        const cardsInSuit = cardContainers.filter(c => c.cardContent.suit === suitAndScore.suit);
+        return { score: highestScore, cardsThatMatter: cardsInSuit };
     }
 
     exit() {
