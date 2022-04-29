@@ -168,6 +168,8 @@ export abstract class PlayerCardHand {
         cards.sort((a, b) => {
             return a.order - b.order;
         }).forEach((card, index) => {
+            // do not start new movement if old movement already going to same position
+            if (card.moveOnDuration?.endTransform && checkTransformsAlmostEqual(card.moveOnDuration.endTransform, cardPositions[index])) return;
             // do not start moving if the card is already in the right position
             if (checkTransformsAlmostEqual(card, cardPositions[index])) return;
             // do not start moving the card if it is being dragged
@@ -210,6 +212,7 @@ export abstract class PlayerCardHand {
     startMovingCardsBackToTable() {
         const cards = this.cards.cardsInDeck();
         cards.forEach(card => {
+            if (card.moveOnDuration) return;
             card.startMovingOverTimeTo(this.tablePosition, 1);
         });
     }

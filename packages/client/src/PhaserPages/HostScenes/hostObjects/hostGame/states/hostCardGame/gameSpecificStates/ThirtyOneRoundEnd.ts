@@ -1,3 +1,4 @@
+import CardContainer from "../../../../../../objects/CardContainer";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
 import { HostGameState } from "../../HostGameState";
 
@@ -26,6 +27,23 @@ export class ThirtyOneRoundEnd extends HostGameState {
     update(time: number, delta: number): HostGameState | null {
         this.hostGame.cards.update(time, delta);
         return null;
+    }
+
+    // calculate the score for each player
+    calculateScores() {
+        // calculate the score for each player
+        this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
+
+        });
+    }
+
+    static calculateScoreAndCardsThatMatter(cardContainers: CardContainer[]) {
+        // check if all cards have same number then score is 31
+        const allCardsSameNumber = cardContainers.every(c => c.cardContent.card === cardContainers[0].cardContent.card);
+        if (allCardsSameNumber) {
+            return
+        }
+        // check if all cards 
     }
 
     exit() {
