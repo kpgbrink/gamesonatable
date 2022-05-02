@@ -254,7 +254,7 @@ export const transformRelativeToObject = (positionRelative: Transform, position2
         x: x2,
         y: y2,
         rotation: keepAnglePositive(position2.rotation - positionRelative.rotation),
-        scale: positionRelative.scale / position2.scale
+        scale: positionRelative.scale * position2.scale
     };
 }
 

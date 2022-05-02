@@ -1,6 +1,6 @@
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/CardContainer";
-import { Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
+import { loadIfImageNotLoaded, Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
 import ThirtyOneHostUserAvatarsAroundTableGame from "../HostUserAvatars/HostUserAvatarsAroundTable/ThirtyOneHostUserAvatarsAroundTableGame";
 import { HostCardGame } from "./HostCardGame";
 import { ThirtyOneGamePlayerTurn } from "./states/hostCardGame/gameSpecificStates/ThirtyOneGamePlayerTurn";
@@ -18,17 +18,13 @@ export class ThirtyOneGame extends HostCardGame {
 
     knockPlayerId: string | null = null;
 
-    bluePokerChip: Phaser.GameObjects.Image | null = null;
-
     constructor(scene: Phaser.Scene) {
         super(scene);
-
     }
 
     preload() {
         super.preload();
-        // load blue poker chip
-        this.scene.load.image('bluePokerChip', 'assets/pokerChips/bluePokerChip.png');
+        loadIfImageNotLoaded(this.scene, 'bluePokerChip', 'assets/pokerChips/bluePokerChip.png');
     }
 
     // override this maybe
@@ -40,6 +36,9 @@ export class ThirtyOneGame extends HostCardGame {
 
     create() {
         super.create();
+        this.hostUserAvatars?.userAvatarContainers.forEach(player => {
+            player.create();
+        });
         this.deckTransform = (() => {
             const transform = { x: -330, y: 0, rotation: 0, scale: 4 };
             return transformRelativeToScreenCenter(this.scene, transform);
