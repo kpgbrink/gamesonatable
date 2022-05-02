@@ -1,6 +1,7 @@
 import { CardContent } from "api";
 import ItemContainer from "./ItemContainer";
-import { ITableItem } from "./Tools";
+import { ITableItem, Transform } from "./Tools";
+import { ValueWithDefault } from "./ValueWithDefault";
 
 export default class CardContainer extends ItemContainer implements ITableItem {
     cardContent: CardContent;
@@ -9,6 +10,8 @@ export default class CardContainer extends ItemContainer implements ITableItem {
     frontImage: Phaser.GameObjects.Image | null = null;
     velocity: { x: number, y: number, rotation: number } = { x: 0, y: 0, rotation: 0 };
     mass: number = 1;
+
+    cardInHandOffsetTransform: ValueWithDefault<Transform> = new ValueWithDefault({ x: 0, y: 0, rotation: 0, scale: 1 });
 
     constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, joker: boolean = false) {
         super(scene, x, y);
@@ -20,6 +23,11 @@ export default class CardContainer extends ItemContainer implements ITableItem {
         };
         this.frontImage = null;
         this.addCardImages();
+    }
+
+    public setDefault() {
+        this.setFaceUp(false);
+
     }
 
     public addCardImages() {

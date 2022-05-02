@@ -2,8 +2,8 @@ import { CardContent } from "api";
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/CardContainer";
 import { Cards } from "../../../objects/Cards";
-import { ValueWithDefault } from "../../../objects/NumberWithDefault";
 import { checkTransformsAlmostEqual, getScreenCenter, Transform, transformFromObject, transformRelativeToObject } from "../../../objects/Tools";
+import { ValueWithDefault } from "../../../objects/ValueWithDefault";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { Shuffling } from "./states/hostCardGame/Shuffling";
@@ -118,9 +118,10 @@ export abstract class HostCardGame extends HostGame {
         // get the card prefered positions
         const cardInHandTransform = this.cardInHandTransform.value;
         const cardPositions = playerCards.map((card, index) => {
-            const x = ((playerCards.length - 1) / 2) * distanceBetweenCards - (index * distanceBetweenCards) + cardInHandTransform.x;
-            const y = cardInHandTransform.y;
-            return { x, y, rotation: cardInHandTransform.rotation, scale: cardInHandTransform.scale };
+            const cardInHandOffsetTransform = card.cardInHandOffsetTransform.value;
+            const x = ((playerCards.length - 1) / 2) * distanceBetweenCards - (index * distanceBetweenCards) + cardInHandTransform.x + cardInHandOffsetTransform.x;
+            const y = cardInHandTransform.y + cardInHandOffsetTransform.y;
+            return { x, y, rotation: cardInHandTransform.rotation + cardInHandOffsetTransform.rotation, scale: cardInHandTransform.scale * cardInHandOffsetTransform.scale };
         });
         return cardPositions;
     }
@@ -128,11 +129,9 @@ export abstract class HostCardGame extends HostGame {
     // update the cards into the players hands
     startMovingCardInHandToPrefferedPosition() {
         this.hostUserAvatars?.userAvatarContainers.forEach(userAvatarContainer => {
-            const playerCards = this.getPlayerCards(userAvatarContainer.user.id);
+            const playerCards = this.getPlayerCards(userAvatarContainer.user.id).sort((a, b) => a.timeGivenToUser - b.timeGivenToUser);
             const playerCardTransforms = this.calculateCardInHandPrefferedTransforms(playerCards);
-            playerCards.sort((a, b) => {
-                return a.timeGivenToUser - b.timeGivenToUser;
-            }).forEach((card, index) => {
+            playerCards.forEach((card, index) => {
                 if (card.moveOnDuration) return;
                 const positionRotation = transformFromObject(userAvatarContainer, playerCardTransforms[index]);
                 // do not start moving if the card is already in the right position

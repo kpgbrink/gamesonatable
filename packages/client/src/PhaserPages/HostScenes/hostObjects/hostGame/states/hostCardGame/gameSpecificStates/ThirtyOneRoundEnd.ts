@@ -14,16 +14,17 @@ export class ThirtyOneRoundEnd extends HostGameState {
 
     enter() {
         // display the player's cards and their scores.
-        console.log('show the scores of the player cards');
+
         // increate the size of the cards in player hands and make them face up
         console.log('increase the size of the cards in player hands and make them face up');
         this.hostGame.cards.cardContainers.filter(c => c.userHandId).forEach(cardContainer => {
             this.hostGame.minDistanceBetweenCards.value = 500;
-            this.hostGame.cardInHandTransform.value = { ...this.hostGame.cardInHandTransform.value, y: 200, scale: 2 };
+            this.hostGame.cardInHandTransform.value = { ...this.hostGame.cardInHandTransform.value, scale: 1.5 };
+            cardContainer.frontImage?.setTint(0x555555);
             cardContainer.setFaceUp(true);
         });
-        // calculate the score
         this.calculateScores();
+
     }
 
     update(time: number, delta: number): HostGameState | null {
@@ -34,16 +35,22 @@ export class ThirtyOneRoundEnd extends HostGameState {
     // calculate the score for each player
     calculateScores() {
         // calculate the score for each player
-        this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
+        this.hostGame.hostUserAvatars?.userAvatarContainers.map(userAvatar => {
             const cardContainers = this.hostGame.cards.cardContainers.filter(c => c.userHandId === userAvatar.user.id);
             const { score, cardsThatMatter } = ThirtyOneRoundEnd.calculateScoreAndCardsThatMatter(cardContainers);
             console.log('score', score);
             console.log('cardsThatMatter', cardsThatMatter);
+            // show the cards that matter differently
+            cardsThatMatter.forEach(cardContainer => {
+                cardContainer.frontImage?.setTint(0xffffff);
+                console.log('cardContainer', cardContainer.cardContent);
+                cardContainer.cardInHandOffsetTransform.value = { ...cardContainer.cardInHandOffsetTransform.value, y: 200, scale: 2 };
+            });
+            return { score, cardsThatMatter };
         });
     }
 
     static calculateScoreAndCardsThatMatter(cardContainers: CardContainer[]) {
-        debugger;
         // check if all cards have same number then score is 31
         const allCardsSameNumber = cardContainers.every(c => c.cardContent.card === cardContainers[0].cardContent.card);
         if (allCardsSameNumber) {
