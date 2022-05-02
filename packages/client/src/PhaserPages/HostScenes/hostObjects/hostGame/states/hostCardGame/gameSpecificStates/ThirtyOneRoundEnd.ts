@@ -24,7 +24,6 @@ export class ThirtyOneRoundEnd extends HostGameState {
             cardContainer.setFaceUp(true);
         });
         this.calculateScores();
-
     }
 
     update(time: number, delta: number): HostGameState | null {
@@ -44,7 +43,7 @@ export class ThirtyOneRoundEnd extends HostGameState {
             cardsThatMatter.forEach(cardContainer => {
                 cardContainer.frontImage?.setTint(0xffffff);
                 console.log('cardContainer', cardContainer.cardContent);
-                cardContainer.cardInHandOffsetTransform.value = { ...cardContainer.cardInHandOffsetTransform.value, y: 200, scale: 2 };
+                cardContainer.cardInHandOffsetTransform.value = { ...cardContainer.cardInHandOffsetTransform.value, y: 200, scale: 2 / 1.5 };
             });
             return { score, cardsThatMatter };
         });

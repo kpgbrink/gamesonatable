@@ -30,6 +30,10 @@ export abstract class HostCardGame extends HostGame {
         this.cards = new Cards(scene);
     }
 
+    preload() {
+        super.preload();
+    }
+
     create() {
         super.create();
         this.hostUserAvatars = new HostUserAvatarsAroundTableGame(this.scene);

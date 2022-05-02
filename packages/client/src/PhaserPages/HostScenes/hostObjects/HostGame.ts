@@ -8,6 +8,9 @@ export class HostGame {
         this.scene = scene;
     }
 
+    preload() {
+    }
+
     create() {
     }
 
