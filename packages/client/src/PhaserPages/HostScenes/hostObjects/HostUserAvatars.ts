@@ -1,4 +1,4 @@
-import { RoomData } from "api";
+import { RoomData, User } from "api";
 import { persistentData } from "../../objects/PersistantData";
 import { getScreenCenter } from "../../objects/Tools";
 import UserAvatarContainer from "../../objects/UserAvatarContainer";
@@ -7,6 +7,7 @@ export class HostUserAvatars {
     scene: Phaser.Scene;
     userAvatarContainers: UserAvatarContainer[] = [];
     onlyThoseInGame = false;
+
     onSizeChange: (userAvatarContainer: UserAvatarContainer) => void = () => { };
 
     constructor(
@@ -22,6 +23,11 @@ export class HostUserAvatars {
         });
     }
 
+    createUserAvatarContainer(x: number, y: number, user: User) {
+        const userAvatarContainer = new UserAvatarContainer(this.scene, x, y, user);
+        return userAvatarContainer;
+    }
+
     createUsers(roomData: RoomData | null) {
         if (roomData === null) return;
         // Create a user avatar for each user
@@ -32,7 +38,8 @@ export class HostUserAvatars {
             // Don't recreate a user avatar if it already exists
             if (this.userAvatarContainers.find((userAvatar) => userAvatar.user.id === user.id)) return;
             const screenCenter = getScreenCenter(this.scene);
-            const userAvatarContainer = new UserAvatarContainer(this.scene, screenCenter.x + Math.random() - .5, screenCenter.y + Math.random() - .5, user);
+            // const userAvatarContainer = new UserAvatarContainer(this.scene, screenCenter.x + Math.random() - .5, screenCenter.y + Math.random() - .5, user);
+            const userAvatarContainer = this.createUserAvatarContainer(screenCenter.x + Math.random() - .5, screenCenter.y + Math.random() - .5, user);
             this.afterUserAvatarCreated(userAvatarContainer);
             this.scene.add.existing(userAvatarContainer);
             this.userAvatarContainers.push(userAvatarContainer);

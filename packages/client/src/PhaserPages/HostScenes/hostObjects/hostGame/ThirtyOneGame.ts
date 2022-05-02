@@ -1,6 +1,7 @@
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/CardContainer";
 import { Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
+import ThirtyOneHostUserAvatarsAroundTableGame from "../HostUserAvatars/HostUserAvatarsAroundTable/ThirtyOneHostUserAvatarsAroundTableGame";
 import { HostCardGame } from "./HostCardGame";
 import { ThirtyOneGamePlayerTurn } from "./states/hostCardGame/gameSpecificStates/ThirtyOneGamePlayerTurn";
 import { ThirtyOneGameStart } from "./states/hostCardGame/gameSpecificStates/ThirtyOneGameStart";
@@ -10,12 +11,12 @@ import { HostGameState } from "./states/HostGameState";
 export class ThirtyOneGame extends HostCardGame {
     dealAmount: number = 3;
 
+    hostUserAvatars: ThirtyOneHostUserAvatarsAroundTableGame | null = null;
+
     deckTransform: Transform = { x: 0, y: 0, rotation: 0, scale: 1 };
     cardPlaceTransform: Transform = { x: 0, y: 0, rotation: 0, scale: 1 };
 
     knockPlayerId: string | null = null;
-
-    playerLives: { [userId: string]: number } = {};
 
     bluePokerChip: Phaser.GameObjects.Image | null = null;
 
@@ -28,6 +29,13 @@ export class ThirtyOneGame extends HostCardGame {
         super.preload();
         // load blue poker chip
         this.scene.load.image('bluePokerChip', 'assets/pokerChips/bluePokerChip.png');
+    }
+
+    // override this maybe
+    createHostUserAvatarsAroundTableGame() {
+        this.hostUserAvatars = new ThirtyOneHostUserAvatarsAroundTableGame(this.scene);
+        this.hostUserAvatars.createOnRoomData();
+        this.hostUserAvatars.moveToEdgeOfTable();
     }
 
     create() {
@@ -46,21 +54,14 @@ export class ThirtyOneGame extends HostCardGame {
             // set next player turn
             this.changeState(new ThirtyOneGamePlayerTurn(this));
         });
-        // set 3 lives for each player
-        this.hostUserAvatars?.userAvatarContainers.forEach(player => {
-            this.playerLives[player.user.id] = 3;
-        });
         // start showing the lives of each player
         this.showLivesOfPlayers();
     }
 
     showLivesOfPlayers() {
         this.hostUserAvatars?.userAvatarContainers.forEach(player => {
-            const lives = this.playerLives[player.user.id];
-            if (lives) {
-                player.showLives(lives);
-            }
-
+            const lives = player.lives;
+            console.log('lives', lives);
         });
     }
 

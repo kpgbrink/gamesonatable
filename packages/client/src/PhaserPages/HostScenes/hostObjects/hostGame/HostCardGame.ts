@@ -34,11 +34,16 @@ export abstract class HostCardGame extends HostGame {
         super.preload();
     }
 
-    create() {
-        super.create();
+    // override this maybe
+    createHostUserAvatarsAroundTableGame() {
         this.hostUserAvatars = new HostUserAvatarsAroundTableGame(this.scene);
         this.hostUserAvatars.createOnRoomData();
         this.hostUserAvatars.moveToEdgeOfTable();
+    }
+
+    create() {
+        super.create();
+        this.createHostUserAvatarsAroundTableGame();
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, screenCenter.y);
         this.changeState(new Shuffling(this));
