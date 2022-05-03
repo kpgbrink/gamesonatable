@@ -11,7 +11,6 @@ export default class ThirtyOneHostUserAvatarsAroundTableGame extends HostUserAva
     }
 
     createUserAvatarContainer(x: number, y: number, user: User) {
-        console.log('create user avatar override is running');
         const userAvatarContainer = new ThirtyOneUserAvatarContainer(this.scene, x, y, user);
         return userAvatarContainer;
     }

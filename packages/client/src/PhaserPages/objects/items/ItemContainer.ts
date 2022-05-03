@@ -36,10 +36,11 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     public moveOverTime(time: number, delta: number) {
         if (!this.moveOnDuration) return;
         if (this.moveOnDuration.movementCountdownTimer.wasDone()) {
-            if (this.moveOnDuration.onMovementEndCallBack) {
-                this.moveOnDuration.onMovementEndCallBack();
-            }
+            const moveOnDurationCallback = this.moveOnDuration.onMovementEndCallBack;
             this.moveOnDuration = null;
+            if (moveOnDurationCallback) {
+                moveOnDurationCallback();
+            }
             return;
         }
         const movement = calculateMovementFromTimer(

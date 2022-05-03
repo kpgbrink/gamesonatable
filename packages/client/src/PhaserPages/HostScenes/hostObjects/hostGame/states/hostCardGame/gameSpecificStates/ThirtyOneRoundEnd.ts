@@ -34,7 +34,7 @@ export class ThirtyOneRoundEnd extends HostGameState {
     // calculate the score for each player
     calculateScores() {
         // calculate the score for each player
-        this.hostGame.hostUserAvatars?.userAvatarContainers.map(userAvatar => {
+        this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
             const cardContainers = this.hostGame.cards.cardContainers.filter(c => c.userHandId === userAvatar.user.id);
             const { score, cardsThatMatter } = ThirtyOneRoundEnd.calculateScoreAndCardsThatMatter(cardContainers);
             console.log('score', score);
@@ -45,7 +45,47 @@ export class ThirtyOneRoundEnd extends HostGameState {
                 console.log('cardContainer', cardContainer.cardContent);
                 cardContainer.cardInHandOffsetTransform.value = { ...cardContainer.cardInHandOffsetTransform.value, y: 200, scale: 2 / 1.5 };
             });
+            userAvatar.roundScore = score;
             return { score, cardsThatMatter };
+        });
+        // get all users with the lowest score
+        if (!this.hostGame.hostUserAvatars) throw new Error('no host user avatars');
+        const lowestScore = Math.min(...this.hostGame.hostUserAvatars?.userAvatarContainers.map(u => u.roundScore));
+        const lowestScoreUsers = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.roundScore === lowestScore);
+        // all users with the lowest score lose a life except for the user who knocked if there are more than 1
+        // if the user who knocked is the lowest score user then they lose 2 lives
+        // if a player got 31 then everyone else loses a life
+        // check if there is a 31 score
+        (() => {
+            const thirtyOneScoreUsers = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.roundScore === 31);
+            if (thirtyOneScoreUsers.length > 0) {
+                const nonThirtyOneScoreUsers = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.roundScore !== 31);
+                nonThirtyOneScoreUsers.forEach(userAvatar => {
+                    userAvatar.lives -= 1;
+                });
+                return;
+            }
+            if (lowestScoreUsers.length === 1) {
+                const lowestScoreUser = lowestScoreUsers[0];
+                lowestScoreUser.lives -= 1;
+                if (lowestScoreUser.user.id === this.hostGame.knockPlayerId) { lowestScoreUser.lives -= 1; }
+                return;
+            }
+            lowestScoreUsers.forEach(lowestScoreUser => {
+                lowestScoreUser.lives -= 1;
+                if (lowestScoreUser.user.id === this.hostGame.knockPlayerId) lowestScoreUser.lives += 1;
+            });
+        })();
+
+        // if only one user has lives then they win
+        const usersWithLives = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.lives > 0);
+        if (usersWithLives.length === 1) {
+            const winner = usersWithLives[0];
+            // TODO go to the win state or whatever
+        }
+        // update the poker chips in front of each user
+        this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
+            userAvatar.updatePokerChips();
         });
     }
 

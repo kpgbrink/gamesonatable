@@ -53,15 +53,6 @@ export class ThirtyOneGame extends HostCardGame {
             // set next player turn
             this.changeState(new ThirtyOneGamePlayerTurn(this));
         });
-        // start showing the lives of each player
-        this.showLivesOfPlayers();
-    }
-
-    showLivesOfPlayers() {
-        this.hostUserAvatars?.userAvatarContainers.forEach(player => {
-            const lives = player.lives;
-            console.log('lives', lives);
-        });
     }
 
     onCardMoveToTable(userId: string, card: CardContainer): void {
