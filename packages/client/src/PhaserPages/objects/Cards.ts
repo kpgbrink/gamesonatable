@@ -1,5 +1,5 @@
 import { CardContent } from "api";
-import CardContainer from "./CardContainer";
+import CardContainer from "./items/CardContainer";
 import { shuffle } from "./Tools";
 
 export const suites = ['hearts', 'diamonds', 'spades', 'clubs'];

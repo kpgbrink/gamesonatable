@@ -82,4 +82,10 @@ export class HostUserAvatars {
         const nextUserIndex = (currentUserIndex + 1) % users.length;
         return users[nextUserIndex].user.id;
     }
+
+    update(time: number, delta: number) {
+        this.userAvatarContainers.forEach((userAvatar) => {
+            userAvatar.update(time, delta);
+        });
+    }
 }

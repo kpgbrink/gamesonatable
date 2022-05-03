@@ -1,4 +1,4 @@
-import CardContainer from "../../../../../../objects/CardContainer";
+import CardContainer from "../../../../../../objects/items/CardContainer";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
 import { HostGameState } from "../../HostGameState";
 

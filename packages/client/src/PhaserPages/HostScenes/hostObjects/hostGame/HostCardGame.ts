@@ -1,7 +1,7 @@
 import { CardContent } from "api";
 import socket from "../../../../SocketConnection";
-import CardContainer from "../../../objects/CardContainer";
 import { Cards } from "../../../objects/Cards";
+import CardContainer from "../../../objects/items/CardContainer";
 import { checkTransformsAlmostEqual, getScreenCenter, Transform, transformFromObject, transformRelativeToObject } from "../../../objects/Tools";
 import { ValueWithDefault } from "../../../objects/ValueWithDefault";
 import { HostGame } from "../HostGame";

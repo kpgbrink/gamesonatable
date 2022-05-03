@@ -1,5 +1,5 @@
-import { CountdownTimer } from "./CountdownTimer";
-import { calculateMovementFromTimer, IMoveItemOverTime, ITableItem, millisecondToSecond, Transform } from "./Tools";
+import { CountdownTimer } from "../CountdownTimer";
+import { calculateMovementFromTimer, IMoveItemOverTime, ITableItem, millisecondToSecond, Transform } from "../Tools";
 
 export default class ItemContainer extends Phaser.GameObjects.Container implements ITableItem {
     velocity: { x: number, y: number, rotation: number } = { x: 0, y: 0, rotation: 0 };

@@ -1,8 +1,8 @@
 import { CardContent } from "api";
 import socket from "../../../SocketConnection";
-import CardContainer from "../../objects/CardContainer";
 import { Cards } from "../../objects/Cards";
-import ItemContainer from "../../objects/ItemContainer";
+import CardContainer from "../../objects/items/CardContainer";
+import ItemContainer from "../../objects/items/ItemContainer";
 import { checkTransformsAlmostEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 

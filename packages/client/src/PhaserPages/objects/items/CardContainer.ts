@@ -1,9 +1,9 @@
 import { CardContent } from "api";
+import { Transform } from "../Tools";
+import { ValueWithDefault } from "../ValueWithDefault";
 import ItemContainer from "./ItemContainer";
-import { ITableItem, Transform } from "./Tools";
-import { ValueWithDefault } from "./ValueWithDefault";
 
-export default class CardContainer extends ItemContainer implements ITableItem {
+export default class CardContainer extends ItemContainer {
     cardContent: CardContent;
 
     backImage: Phaser.GameObjects.Image | null = null;
@@ -27,7 +27,6 @@ export default class CardContainer extends ItemContainer implements ITableItem {
 
     public setDefault() {
         this.setFaceUp(false);
-
     }
 
     public addCardImages() {

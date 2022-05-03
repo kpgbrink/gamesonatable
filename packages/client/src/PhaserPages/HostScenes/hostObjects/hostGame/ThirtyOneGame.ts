@@ -1,5 +1,5 @@
 import socket from "../../../../SocketConnection";
-import CardContainer from "../../../objects/CardContainer";
+import CardContainer from "../../../objects/items/CardContainer";
 import { loadIfImageNotLoaded, Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
 import ThirtyOneHostUserAvatarsAroundTableGame from "../HostUserAvatars/HostUserAvatarsAroundTable/ThirtyOneHostUserAvatarsAroundTableGame";
 import { HostCardGame } from "./HostCardGame";
@@ -83,6 +83,7 @@ export class ThirtyOneGame extends HostCardGame {
 
     update(time: number, delta: number) {
         super.update(time, delta);
+        this.hostUserAvatars?.update(time, delta);
     }
 
 }

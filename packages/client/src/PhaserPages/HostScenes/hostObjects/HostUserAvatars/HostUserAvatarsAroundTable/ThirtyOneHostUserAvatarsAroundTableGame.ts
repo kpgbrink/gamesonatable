@@ -15,4 +15,8 @@ export default class ThirtyOneHostUserAvatarsAroundTableGame extends HostUserAva
         const userAvatarContainer = new ThirtyOneUserAvatarContainer(this.scene, x, y, user);
         return userAvatarContainer;
     }
+
+    update(time: number, delta: number) {
+        super.update(time, delta);
+    }
 }
