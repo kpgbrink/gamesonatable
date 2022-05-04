@@ -91,6 +91,16 @@ export abstract class PlayerCardHand {
             card.setFaceUp(true);
             // tell the table to put the card in the player hand
         });
+
+        socket.on('moveCardToTable', (cardContent: CardContent) => {
+            // get the card that has to be given to player
+            const card = this.cards.getCard(cardContent);
+            if (!card) throw new Error('card not found');
+            // move the card back to the table
+            this.putCardBackOnTable(card);
+
+            // tell the table to put the card in the player hand
+        });
     }
 
     setCardToPickUp(card: CardContent, faceUp: boolean, order: number) {
@@ -226,6 +236,10 @@ export abstract class PlayerCardHand {
         // tell host to move the card to the table
         socket.emit('moveCardToTable', card.cardContent);
         this.allowedDropCardAmount -= 1;
+        this.putCardBackOnTable(card);
+    }
+
+    putCardBackOnTable(card: CardContainer) {
         card.inUserHand = false;
         card.userHandId = null;
         card.canTakeFromTable = false;

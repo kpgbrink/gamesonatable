@@ -1,3 +1,4 @@
+import socket from "../../../../../../SocketConnection";
 import { getScreenCenter } from "../../../../../objects/Tools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
@@ -15,11 +16,18 @@ export class StartGettingReadyToShuffle extends HostGameState {
 
     enter() {
         const screenCenter = getScreenCenter(this.hostGame.scene);
+        this.hostGame.cardInHandTransform.setToDefault();
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
+            // tell user to move the card to the table
+            socket.emit('moveCardToTable', cardContainer.cardContent, cardContainer.userHandId);
+            // remove all cards from the player hand
+            cardContainer.userHandId = null;
             // set all cards face down
             cardContainer.setFaceUp(false);
             // remove tint from all cards
             cardContainer.frontImage?.setTint(0xffffff);
+            // remove the special transform on the card
+            cardContainer.cardInHandOffsetTransform.setToDefault();
             // start moving all of the cards to the center
             cardContainer.startMovingOverTimeTo({ x: screenCenter.x, y: screenCenter.y, rotation: 0, scale: 1 }, this.sendingOutCardTime);
         });

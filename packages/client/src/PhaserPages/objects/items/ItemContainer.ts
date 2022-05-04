@@ -21,6 +21,8 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     public setUserHand(userHandId: string, timeGivenToUser: number) {
         this.userHandId = userHandId;
         this.timeGivenToUser = timeGivenToUser;
+        this.canTakeFromTable = false;
+        this.cardBackOnTable = false;
     }
 
     public startMovingOverTimeTo(toPosition: Transform, time: number, onMovementEndCallBack?: () => void) {

@@ -138,5 +138,6 @@ export class ThirtyOneRoundEnd extends HostGameState {
     }
 
     exit() {
+        this.hostGame.knockPlayerId = null;
     }
 }

@@ -171,4 +171,8 @@ io.on('connection', (socket) => {
         io.to(hostUser.id).emit('thirty one knock', user.id);
     });
 
+    socket.on('moveCardToTable', (cardContent: CardContent, userHandId: string) => {
+        io.to(userHandId).emit('moveCardToTable', cardContent);
+    });
+
 });
