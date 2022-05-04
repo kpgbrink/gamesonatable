@@ -1,11 +1,17 @@
+import { CountdownTimer } from "../../../../../../objects/CountdownTimer";
 import CardContainer from "../../../../../../objects/items/CardContainer";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
 import { HostGameState } from "../../HostGameState";
+import { StartGettingReadyToShuffle } from "../StartGettingReadyToShuffle";
 
 // Bring cards to the random dealer and have the cards start going out to people.
 export class ThirtyOneRoundEnd extends HostGameState {
     hostGame: ThirtyOneGame;
     bringShownCardToPositionTime: number = 1;
+
+    timeToNextRound: number = 10;
+    // timer for starting the next round
+    timerNextRound: CountdownTimer = new CountdownTimer(this.timeToNextRound);
 
     constructor(hostGame: ThirtyOneGame) {
         super(hostGame);
@@ -28,6 +34,12 @@ export class ThirtyOneRoundEnd extends HostGameState {
 
     update(time: number, delta: number): HostGameState | null {
         this.hostGame.cards.update(time, delta);
+        this.timerNextRound.update(delta);
+        console.log('timer going down', this.timerNextRound.currentTime);
+        if (this.timerNextRound.isDone()) {
+            console.log('timer is done');
+            this.hostGame.changeState(new StartGettingReadyToShuffle(this.hostGame));
+        }
         return null;
     }
 
