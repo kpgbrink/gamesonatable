@@ -2,7 +2,6 @@ import { CardContent } from "api";
 import socket from "../../../SocketConnection";
 import { Cards } from "../../objects/Cards";
 import CardContainer from "../../objects/items/CardContainer";
-import ItemContainer from "../../objects/items/ItemContainer";
 import { checkTransformsAlmostEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
@@ -54,9 +53,11 @@ export abstract class PlayerCardHand {
             card.setInteractive();
             this.scene.input.setDraggable(card);
 
-            this.scene.input.on('drag', (pointer: any, gameObject: ItemContainer, dragX: number, dragY: number) => {
+            this.scene.input.on('drag', (pointer: any, gameObject: CardContainer, dragX: number, dragY: number) => {
+                if (gameObject.cardBackOnTable) return;
                 gameObject.x = dragX;
                 gameObject.y = dragY;
+
             });
             // on drag start set dragging true
             this.scene.input.on('dragstart', (pointer: any, gameObject: CardContainer) => {
