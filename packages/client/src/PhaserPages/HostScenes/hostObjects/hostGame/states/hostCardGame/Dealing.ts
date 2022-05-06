@@ -63,16 +63,22 @@ export class Dealing extends HostGameState {
             // when the card is done moving, set the card to the player
             socket.emit('give card', cardContainer.userHandId, cardContainer.cardContent, cardContainer.timeGivenToUser);
         });
+        // check if every player in game has the amount of cards they need
+        if (this.hostGame.hostUserAvatars?.getUsersInGame().every(userAvatar => {
+            return this.hostGame.getPlayerCards(userAvatar.user.id)?.length === this.hostGame.dealAmount;
+        })) {
+            this.hostGame.changeState(this.hostGame.createGameState());
+        }
     }
 
     update(time: number, delta: number): HostGameState | null {
         this.getNextCardDeal(delta);
         this.hostGame.cards.update(time, delta);
-        // check if every player has the amount of cards they need
-        if (this.hostGame.hostUserAvatars?.userAvatarContainers?.every(userAvatar =>
-            this.hostGame.getPlayerCards(userAvatar.user.id)?.length === this.hostGame.dealAmount)) {
-            return this.hostGame.createGameState();
-        }
+        // check if every player in game has the amount of cards they need
+        // if (this.hostGame.hostUserAvatars?.userAvatarContainers?.every(userAvatar =>
+        //     this.hostGame.getPlayerCards(userAvatar.user.id)?.length === this.hostGame.dealAmount)) {
+        //     return this.hostGame.createGameState();
+        // }
         return null;
     }
 

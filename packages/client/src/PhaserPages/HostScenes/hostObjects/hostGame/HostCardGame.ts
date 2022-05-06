@@ -74,7 +74,7 @@ export abstract class HostCardGame extends HostGame {
 
     randomizeDealer() {
         // choose a random dealer
-        this.currentDealerId = this.hostUserAvatars?.getRandomUserId() || null;
+        this.currentDealerId = this.hostUserAvatars?.getRandomUserIdInGame() || null;
     }
 
     nextDealer() {
@@ -82,7 +82,7 @@ export abstract class HostCardGame extends HostGame {
             this.randomizeDealer();
             return;
         }
-        this.currentDealerId = this.hostUserAvatars?.getNextUserIdFromRotation(this.currentDealerId) || null;
+        this.currentDealerId = this.hostUserAvatars?.getNextUserIdFromRotationInGame(this.currentDealerId) || null;
     }
 
     setNextPlayerTurn() {
@@ -98,7 +98,7 @@ export abstract class HostCardGame extends HostGame {
         if (!this.hostUserAvatars) {
             throw new Error('Not made');
         }
-        return this.hostUserAvatars.getNextUserIdFromRotation(playerId);
+        return this.hostUserAvatars.getNextUserIdFromRotationInGame(playerId);
     }
 
     abstract onCardMoveToTable(userId: string, card: CardContainer): void;

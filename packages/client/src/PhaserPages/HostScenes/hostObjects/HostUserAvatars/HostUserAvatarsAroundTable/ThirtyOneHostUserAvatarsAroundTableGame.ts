@@ -10,6 +10,11 @@ export default class ThirtyOneHostUserAvatarsAroundTableGame extends HostUserAva
         super(scene);
     }
 
+    getUsersInGame() {
+        // only get users with lives still
+        return this.userAvatarContainers.filter((userAvatar) => userAvatar.user.inGame).filter((userAvatar) => userAvatar.lives > 0);
+    }
+
     createUserAvatarContainer(x: number, y: number, user: User) {
         const userAvatarContainer = new ThirtyOneUserAvatarContainer(this.scene, x, y, user);
         return userAvatarContainer;

@@ -40,7 +40,7 @@ export default class ThirtyOneUserAvatarContainer extends UserAvatarContainer {
 
     updatePokerChips() {
         // remove any poker chips that are not in the life anymore
-        while (this.bluePokerChips.length > this.lives) {
+        while (this.bluePokerChips.length > Math.max(this.lives, 0)) {
             const pokerChip = this.bluePokerChips.pop();
             if (pokerChip) {
                 this.removingPokerChips.push(pokerChip);

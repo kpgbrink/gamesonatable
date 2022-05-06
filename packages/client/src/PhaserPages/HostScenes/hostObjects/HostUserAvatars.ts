@@ -62,17 +62,28 @@ export class HostUserAvatars {
         });
     }
 
+    getUsersInGame() {
+        return this.userAvatarContainers.filter((userAvatar) => userAvatar.user.inGame);
+    }
+
     getUserById(userId: string) {
         return this.userAvatarContainers.find((userAvatar) => userAvatar.user.id === userId);
     }
 
-    getRandomUserId() {
-        return this.userAvatarContainers[Math.floor(Math.random() * this.userAvatarContainers.length)].user.id;
+    getRandomUserIdInGame() {
+        return this.getUsersInGame()[Math.floor(Math.random() * this.getUsersInGame().length)].user.id;
     }
 
-    getNextUserIdFromRotation(userId: string) {
+    getNextUserIdFromRotationInGame(userId: string) {
         // order users by rotation
-        const users = this.userAvatarContainers.sort((a, b) => a.rotation - b.rotation);
+        // make sure that the userId is in the list even though if not in game
+        const usersInGame = this.getUsersInGame();
+        if (!usersInGame.find((userAvatar) => userAvatar.user.id === userId)) {
+            const currentUser = this.getUserById(userId);
+            if (!currentUser) { throw new Error(`User ${userId} not found`); }
+            usersInGame.push(currentUser);
+        }
+        const users = this.getUsersInGame().sort((a, b) => a.rotation - b.rotation);
         // find the next user from the current dealer`
         const currentUserIndex = users.findIndex(u => u.user.id === userId);
         if (currentUserIndex === -1) {
