@@ -1,3 +1,4 @@
+import { persistentData } from "../../objects/PersistantData";
 import { HostGameState } from "./hostGame/states/HostGameState";
 
 export class HostGame {
@@ -25,5 +26,15 @@ export class HostGame {
         this.currentState?.exit();
         this.currentState = newState;
         this.currentState.enter();
+    }
+
+    // maybe this https://stackoverflow.com/a/68835401/2948122
+
+    setUrlToHomeScreen() {
+        // set the url to the home screen
+        // change the url using react router
+        const { CustomEvent } = window;
+        const event = new CustomEvent('changeroute', { detail: `/room/${persistentData.roomData?.room}` });
+        window.dispatchEvent(event);
     }
 }

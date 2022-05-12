@@ -3,6 +3,7 @@ import CardContainer from "../../../../../../objects/items/CardContainer";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
 import { HostGameState } from "../../HostGameState";
 import { StartGettingReadyToShuffle } from "../StartGettingReadyToShuffle";
+import { ThirtyOneGameEnd } from "./ThirtyOneGameEnd";
 
 // Bring cards to the random dealer and have the cards start going out to people.
 export class ThirtyOneRoundEnd extends HostGameState {
@@ -22,7 +23,6 @@ export class ThirtyOneRoundEnd extends HostGameState {
         // display the player's cards and their scores.
 
         // increate the size of the cards in player hands and make them face up
-        console.log('increase the size of the cards in player hands and make them face up');
         this.hostGame.cards.cardContainers.filter(c => c.userHandId).forEach(cardContainer => {
             this.hostGame.minDistanceBetweenCards.value = 500;
             this.hostGame.cardInHandTransform.value = { ...this.hostGame.cardInHandTransform.value, scale: 1.5 };
@@ -35,9 +35,7 @@ export class ThirtyOneRoundEnd extends HostGameState {
     update(time: number, delta: number): HostGameState | null {
         this.hostGame.cards.update(time, delta);
         this.timerNextRound.update(delta);
-        console.log('timer going down', this.timerNextRound.currentTime);
         if (this.timerNextRound.isDone()) {
-            console.log('timer is done');
             this.hostGame.changeState(new StartGettingReadyToShuffle(this.hostGame));
         }
         return null;
@@ -49,12 +47,12 @@ export class ThirtyOneRoundEnd extends HostGameState {
         this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
             const cardContainers = this.hostGame.cards.cardContainers.filter(c => c.userHandId === userAvatar.user.id);
             const { score, cardsThatMatter } = ThirtyOneRoundEnd.calculateScoreAndCardsThatMatter(cardContainers);
-            console.log('score', score);
-            console.log('cardsThatMatter', cardsThatMatter);
+            // console.log('score', score);
+            // console.log('cardsThatMatter', cardsThatMatter);
             // show the cards that matter differently
             cardsThatMatter.forEach(cardContainer => {
                 cardContainer.frontImage?.setTint(0xffffff);
-                console.log('cardContainer', cardContainer.cardContent);
+                // console.log('cardContainer', cardContainer.cardContent);
                 cardContainer.cardInHandOffsetTransform.value = { ...cardContainer.cardInHandOffsetTransform.value, y: 200, scale: 2 / 1.5 };
             });
             userAvatar.roundScore = score;
@@ -89,16 +87,21 @@ export class ThirtyOneRoundEnd extends HostGameState {
             });
         })();
 
+
+        // update the poker chips in front of each user
+        this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
+            userAvatar.updatePokerChips();
+        });
+
         // if only one user has lives then they win
         const usersWithLives = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.lives > 0);
         if (usersWithLives.length === 1) {
             const winner = usersWithLives[0];
             // TODO go to the win state or whatever
+            console.log('winner', winner);
+            // set state to the winner
+            this.hostGame.changeState(new ThirtyOneGameEnd(this.hostGame));
         }
-        // update the poker chips in front of each user
-        this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
-            userAvatar.updatePokerChips();
-        });
     }
 
     static calculateScoreAndCardsThatMatter(cardContainers: CardContainer[]) {
