@@ -71,7 +71,8 @@ export class HostUserAvatars {
     }
 
     getRandomUserIdInGame() {
-        return this.getUsersInGame()[Math.floor(Math.random() * this.getUsersInGame().length)].user.id;
+        const randomIndex = Math.floor(Math.random() * this.getUsersInGame().length);
+        return this.getUsersInGame()[Math.floor(Math.random() * this.getUsersInGame().length)]?.user.id;
     }
 
     getNextUserIdFromRotationInGame(userId: string) {

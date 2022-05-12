@@ -54,15 +54,10 @@ export default class ThirtyOneUserAvatarContainer extends UserAvatarContainer {
         const transformHitPlayer = transformFromObject(this, { x: 0, y: 50, rotation: 0, scale: .2 });
         const transformOffTable = transformFromObject(this, { x: 0, y: 10000, rotation: 0, scale: .4 });
         pokerChip.startMovingOverTimeTo(transformAboveHead, 1, () => {
-            console.log('1');
             pokerChip.startMovingOverTimeTo(transformHitPlayer, .5, () => {
-                console.log('2');
                 pokerChip.startMovingOverTimeTo(transformAboveHead, 1, () => {
-                    console.log('3');
                     pokerChip.startMovingOverTimeTo(transformHitPlayer, .3, () => {
-                        console.log('4');
                         pokerChip.startMovingOverTimeTo(transformAboveHead, 1, () => {
-                            console.log('5');
                             pokerChip.startMovingOverTimeTo(transformHitPlayer, .2, () => {
                                 pokerChip.startMovingOverTimeTo(transformOffTable, 1, () => {
                                     this.removingPokerChips.splice(this.removingPokerChips.indexOf(pokerChip), 1);

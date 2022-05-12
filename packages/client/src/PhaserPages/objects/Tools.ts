@@ -356,3 +356,7 @@ const errorMargin = 0.0001;
 const approximiatelyEqual = (value1: number, value2: number) => {
     return Math.abs(value1 - value2) < errorMargin;
 }
+
+export const getRandomInArray = (array: any[]) => {
+    return array[Math.floor(Math.random() * array.length)];
+}
