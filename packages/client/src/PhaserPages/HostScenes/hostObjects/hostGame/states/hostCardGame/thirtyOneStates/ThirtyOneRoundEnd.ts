@@ -1,3 +1,4 @@
+import socket from "../../../../../../../SocketConnection";
 import { CountdownTimer } from "../../../../../../objects/CountdownTimer";
 import CardContainer from "../../../../../../objects/items/CardContainer";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
@@ -101,7 +102,17 @@ export class ThirtyOneRoundEnd extends HostGameState {
             console.log('winner', winner);
             // set state to the winner
             this.hostGame.changeState(new ThirtyOneGameEnd(this.hostGame));
+            return;
         }
+
+        // tell dealer they can deal
+        this.hostGame.setDealButtonOnUser();
+
+        // listen to the user clicking the deal button
+        socket.on('deal', () => {
+            // set timeer to 0 and go to the next round
+            this.timerNextRound.currentTime = 0;
+        });
     }
 
     static calculateScoreAndCardsThatMatter(cardContainers: CardContainer[]) {
@@ -141,6 +152,8 @@ export class ThirtyOneRoundEnd extends HostGameState {
     }
 
     exit() {
+        // remove deal listener
+        socket.off('deal');
         this.hostGame.knockPlayerId = null;
     }
 }

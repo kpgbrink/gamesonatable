@@ -71,7 +71,6 @@ export class HostUserAvatars {
     }
 
     getRandomUserIdInGame() {
-        const randomIndex = Math.floor(Math.random() * this.getUsersInGame().length);
         return this.getUsersInGame()[Math.floor(Math.random() * this.getUsersInGame().length)]?.user.id;
     }
 
@@ -88,6 +87,7 @@ export class HostUserAvatars {
         // find the next user from the current dealer`
         const currentUserIndex = users.findIndex(u => u.user.id === userId);
         if (currentUserIndex === -1) {
+            console.log(users);
             console.error(`User ${userId} not found in userAvatarContainers`);
             throw new Error(`User ${userId} not found in userAvatarContainers`);
         }

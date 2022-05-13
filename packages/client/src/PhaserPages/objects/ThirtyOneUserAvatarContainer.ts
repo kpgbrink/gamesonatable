@@ -1,6 +1,6 @@
 import { User } from "api";
 import PokerChip from "./items/PokerChip";
-import { getScreenCenter, transformFromObject } from "./Tools";
+import { DegreesToRadians, getScreenCenter, randomizeTransform, transformFromObject, TransformRandomizer } from "./Tools";
 import UserAvatarContainer from "./UserAvatarContainer";
 
 export default class ThirtyOneUserAvatarContainer extends UserAvatarContainer {
@@ -50,15 +50,25 @@ export default class ThirtyOneUserAvatarContainer extends UserAvatarContainer {
     }
 
     movePokerChipOffTableCooly(pokerChip: PokerChip) {
-        const transformAboveHead = transformFromObject(this, { x: 0, y: 300, rotation: 0, scale: .8 });
+        const transformAboveHead = transformFromObject(this, { x: 0, y: -300, rotation: 0, scale: .8 });
         const transformHitPlayer = transformFromObject(this, { x: 0, y: 50, rotation: 0, scale: .2 });
         const transformOffTable = transformFromObject(this, { x: 0, y: 10000, rotation: 0, scale: .4 });
-        pokerChip.startMovingOverTimeTo(transformAboveHead, 1, () => {
-            pokerChip.startMovingOverTimeTo(transformHitPlayer, .5, () => {
-                pokerChip.startMovingOverTimeTo(transformAboveHead, 1, () => {
-                    pokerChip.startMovingOverTimeTo(transformHitPlayer, .3, () => {
-                        pokerChip.startMovingOverTimeTo(transformAboveHead, 1, () => {
-                            pokerChip.startMovingOverTimeTo(transformHitPlayer, .2, () => {
+        const randomizedTransformAboveHead: TransformRandomizer = {
+            magnitude: 200,
+            rotation: DegreesToRadians(100),
+            scale: .3,
+        };
+        const randomizedTransformHit: TransformRandomizer = {
+            magnitude: 50,
+            rotation: DegreesToRadians(30),
+            scale: .1,
+        };
+        pokerChip.startMovingOverTimeTo(randomizeTransform(transformAboveHead, randomizedTransformAboveHead), 1, () => {
+            pokerChip.startMovingOverTimeTo(randomizeTransform(transformHitPlayer, randomizedTransformHit), .5, () => {
+                pokerChip.startMovingOverTimeTo(randomizeTransform(transformAboveHead, randomizedTransformAboveHead), 1, () => {
+                    pokerChip.startMovingOverTimeTo(randomizeTransform(transformHitPlayer, randomizedTransformHit), .3, () => {
+                        pokerChip.startMovingOverTimeTo(randomizeTransform(transformAboveHead, randomizedTransformAboveHead), 1, () => {
+                            pokerChip.startMovingOverTimeTo(randomizeTransform(transformHitPlayer, randomizedTransformHit), .2, () => {
                                 pokerChip.startMovingOverTimeTo(transformOffTable, 1, () => {
                                     this.removingPokerChips.splice(this.removingPokerChips.indexOf(pokerChip), 1);
                                     pokerChip.destroy();

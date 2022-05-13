@@ -175,4 +175,16 @@ io.on('connection', (socket) => {
         io.to(userHandId).emit('moveCardToTable', cardContent);
     });
 
+    socket.on('can deal', (userId: string) => {
+        console.log('can deal');
+        io.to(userId).emit('can deal', user.id);
+    });
+
+    socket.on('deal', (userId: string) => {
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser) return;
+        console.log('deal with it');
+        io.to(hostUser.id).emit('deal', userId);
+    });
+
 });

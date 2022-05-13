@@ -2,10 +2,12 @@ import { CardContent } from "api";
 import socket from "../../../SocketConnection";
 import { Cards } from "../../objects/Cards";
 import CardContainer from "../../objects/items/CardContainer";
+import MenuButton from "../../objects/MenuButton";
 import { checkTransformsAlmostEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
 export abstract class PlayerCardHand {
+    dealButton: MenuButton | null = null;
     cards: Cards;
     scene: PlayerScene;
     moveToHandTime: number = .2;
@@ -91,6 +93,8 @@ export abstract class PlayerCardHand {
             // this.moveCardToPlayerHand(card);
             card.setFaceUp(true);
             // tell the table to put the card in the player hand
+
+            this.dealButton?.setVisible(false);
         });
 
         socket.on('moveCardToTable', (cardContent: CardContent) => {
@@ -102,7 +106,24 @@ export abstract class PlayerCardHand {
 
             // tell the table to put the card in the player hand
         });
+
+        // create deal button
+        const screenDimensions = getScreenDimensions(this.scene);
+        this.dealButton = new MenuButton(screenDimensions.width / 2, 100, this.scene);
+        this.dealButton.setInteractive();
+        this.dealButton.setText('DEAL');
+        this.dealButton.on('pointerdown', () => {
+            this.dealButton?.setVisible(false);
+            socket.emit('deal');
+        });
+        this.dealButton.setVisible(false);
+        this.scene.add.existing(this.dealButton);
+
+        socket.on('can deal', () => {
+            this.dealButton?.setVisible(true);
+        });
     }
+
 
     setCardToPickUp(card: CardContent, faceUp: boolean, order: number) {
         const cardContainer = this.cards.getCard(card);

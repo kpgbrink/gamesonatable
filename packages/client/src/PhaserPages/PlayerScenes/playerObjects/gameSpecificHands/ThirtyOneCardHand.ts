@@ -1,18 +1,13 @@
 import { CardContent } from "api";
-import socket from "../../../SocketConnection";
-import MenuButton from "../../objects/MenuButton";
-import { getScreenDimensions } from "../../objects/Tools";
-import { PlayerCardHand } from "./PlayerCardHand";
-import PlayerScene from "./PlayerScene";
+import socket from "../../../../SocketConnection";
+import MenuButton from "../../../objects/MenuButton";
+import { getScreenDimensions } from "../../../objects/Tools";
+import { PlayerCardHand } from "../PlayerCardHand";
 
 
 export class ThirtyOneCardHand extends PlayerCardHand {
     knockButton: MenuButton | null = null;
     knockPlayerId: string | null = null;
-
-    constructor(scene: PlayerScene) {
-        super(scene);
-    }
 
     create() {
         super.create();

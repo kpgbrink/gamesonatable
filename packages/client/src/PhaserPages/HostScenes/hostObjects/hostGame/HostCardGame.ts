@@ -160,4 +160,14 @@ export abstract class HostCardGame extends HostGame {
             });
         });
     }
+
+    setDealButtonOnUser() {
+        // set that the next dealer can deal with the deal button
+        // get the next player after the dealer
+        if (!this.currentDealerId) {
+            throw new Error('No dealer set');
+        }
+        const nextDealerId = this.getNextPlayerId(this.currentDealerId);
+        socket.emit('can deal', nextDealerId);
+    }
 }

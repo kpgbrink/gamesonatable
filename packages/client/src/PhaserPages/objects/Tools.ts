@@ -360,3 +360,23 @@ const approximiatelyEqual = (value1: number, value2: number) => {
 export const getRandomInArray = (array: any[]) => {
     return array[Math.floor(Math.random() * array.length)];
 }
+
+export interface TransformRandomizer {
+    magnitude: number;
+    rotation: number;
+    scale: number;
+}
+
+export const randomizeTransform = (transform: Transform, TransformRanomizer: TransformRandomizer) => {
+    const { magnitude, rotation, scale } = TransformRanomizer;
+    const randomX = Math.random() * magnitude - magnitude / 2;
+    const randomY = Math.random() * magnitude - magnitude / 2;
+    const randomRotation = Math.random() * rotation - rotation / 2;
+    const randomScale = Math.random() * scale - scale / 2;
+    return {
+        x: transform.x + randomX,
+        y: transform.y + randomY,
+        rotation: transform.rotation + randomRotation,
+        scale: transform.scale + randomScale
+    }
+} 

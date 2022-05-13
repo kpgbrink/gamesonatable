@@ -3,8 +3,8 @@ import CardContainer from "../../../objects/items/CardContainer";
 import { loadIfImageNotLoaded, Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
 import ThirtyOneHostUserAvatarsAroundTableGame from "../HostUserAvatars/HostUserAvatarsAroundTable/ThirtyOneHostUserAvatarsAroundTableGame";
 import { HostCardGame } from "./HostCardGame";
-import { ThirtyOneGamePlayerTurn } from "./states/hostCardGame/gameSpecificStates/ThirtyOneGamePlayerTurn";
-import { ThirtyOneGameStart } from "./states/hostCardGame/gameSpecificStates/ThirtyOneGameStart";
+import { ThirtyOneGamePlayerTurn } from "./states/hostCardGame/thirtyOneStates/ThirtyOneGamePlayerTurn";
+import { ThirtyOneGameStart } from "./states/hostCardGame/thirtyOneStates/ThirtyOneGameStart";
 import { HostGameState } from "./states/HostGameState";
 
 
@@ -17,10 +17,6 @@ export class ThirtyOneGame extends HostCardGame {
     cardPlaceTransform: Transform = { x: 0, y: 0, rotation: 0, scale: 1 };
 
     knockPlayerId: string | null = null;
-
-    constructor(scene: Phaser.Scene) {
-        super(scene);
-    }
 
     preload() {
         super.preload();
