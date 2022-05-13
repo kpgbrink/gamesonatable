@@ -81,15 +81,12 @@ export class HostUserAvatars {
         if (!usersInGame.find((userAvatar) => userAvatar.user.id === userId)) {
             const currentUser = this.getUserById(userId);
             if (!currentUser) { throw new Error(`User ${userId} not found`); }
-            console.log('player had to be added but not in game anymore');
             usersInGame.push(currentUser);
         }
         const users = usersInGame.sort((a, b) => a.rotation - b.rotation);
         // find the next user from the current dealer`
         const currentUserIndex = users.findIndex(u => u.user.id === userId);
         if (currentUserIndex === -1) {
-            console.log(users);
-            console.error(`User ${userId} not found in userAvatarContainers`);
             throw new Error(`User ${userId} not found in userAvatarContainers`);
         }
         const nextUserIndex = (currentUserIndex + 1) % users.length;
