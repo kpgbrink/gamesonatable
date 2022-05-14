@@ -77,12 +77,12 @@ export abstract class HostCardGame extends HostGame {
         this.currentDealerId = this.hostUserAvatars?.getRandomUserIdInGame() || null;
     }
 
-    nextDealer() {
+    setNextDealer() {
         if (!this.currentDealerId) {
             this.randomizeDealer();
             return;
         }
-        this.currentDealerId = this.hostUserAvatars?.getNextUserIdFromRotationInGame(this.currentDealerId) || null;
+        this.currentDealerId = this.getNextPlayerId(this.currentDealerId);
     }
 
     setNextPlayerTurn() {

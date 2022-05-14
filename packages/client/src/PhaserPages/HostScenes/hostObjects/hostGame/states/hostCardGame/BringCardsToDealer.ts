@@ -15,8 +15,7 @@ export class BringCardsToDealer extends HostGameState {
     }
 
     enter() {
-        // choose a random dealer
-        this.hostGame.randomizeDealer();
+        this.hostGame.setNextDealer();
         // start moving cards to random dealer
         this.startMovingCardsToDealer();
     }

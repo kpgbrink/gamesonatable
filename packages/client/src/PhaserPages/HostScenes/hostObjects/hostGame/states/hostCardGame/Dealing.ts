@@ -19,6 +19,7 @@ export class Dealing extends HostGameState {
 
     enter() {
         // set the cards in the center of the table
+
     }
 
     getNextCardDeal(delta: number) {
