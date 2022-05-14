@@ -16,6 +16,8 @@ export class BringCardsToDealer extends HostGameState {
 
     enter() {
         this.hostGame.setNextDealer();
+        // set the current user turn to null
+        this.hostGame.currentPlayerTurnId = null;
         // start moving cards to random dealer
         this.startMovingCardsToDealer();
     }

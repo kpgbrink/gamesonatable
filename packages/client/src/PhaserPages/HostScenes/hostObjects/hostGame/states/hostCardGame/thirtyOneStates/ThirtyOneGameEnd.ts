@@ -32,6 +32,5 @@ export class ThirtyOneGameEnd extends HostGameState {
     }
 
     exit() {
-        this.hostGame.knockPlayerId = null;
     }
 }
