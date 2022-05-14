@@ -56,7 +56,15 @@ export class ThirtyOneGame extends HostCardGame {
         card.setFaceUp(true);
         card.userHandId = null;
         card.inUserHand = false;
-        card.startMovingOverTimeTo(this.cardPlaceTransform, .8, () => {
+        // get count of face up cards
+        const faceUpCards = this.cards.getTableCards().filter(card => card.getFaceUp());
+        const faceUpCardsCount = faceUpCards.length;
+        const transform = {
+            ...this.cardPlaceTransform,
+            x: this.cardPlaceTransform.x + (faceUpCardsCount * 2),
+            y: this.cardPlaceTransform.y + (faceUpCardsCount * 2),
+        };
+        card.startMovingOverTimeTo(transform, .8, () => {
 
         });
         const topFaceUpCard = this.cards.getTopFaceUpCard();

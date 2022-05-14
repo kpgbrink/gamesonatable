@@ -8,6 +8,7 @@ import PlayerScene from "./PlayerScene";
 
 export abstract class PlayerCardHand {
     dealButton: MenuButton | null = null;
+    hideShowCardButton: MenuButton | null = null;
     cards: Cards;
     scene: PlayerScene;
     moveToHandTime: number = .2;
@@ -18,6 +19,8 @@ export abstract class PlayerCardHand {
     tablePosition: Transform;
     pickUpAndPlaceBasePosition: Transform;
     handBasePosition: Transform;
+
+    showCardsInHand = true;
 
     cardBasePositions: Transform[] = [];
 
@@ -81,6 +84,10 @@ export abstract class PlayerCardHand {
             });
         });
 
+        socket.on('starting to shuffle', () => {
+            this.dealButton?.setVisible(false);
+        });
+
         // add socket listeners
         socket.on('give card', (cardContent: CardContent, timeGivenToUser: number) => {
             // get the card that has to be given to player
@@ -91,10 +98,8 @@ export abstract class PlayerCardHand {
             card.setUserHand(socket.id, timeGivenToUser);
             // move the card to the player hand
             // this.moveCardToPlayerHand(card);
-            card.setFaceUp(true);
+            card.setFaceUp(this.showCardsInHand);
             // tell the table to put the card in the player hand
-
-            this.dealButton?.setVisible(false);
         });
 
         socket.on('moveCardToTable', (cardContent: CardContent) => {
@@ -122,8 +127,24 @@ export abstract class PlayerCardHand {
         socket.on('can deal', () => {
             this.dealButton?.setVisible(true);
         });
-    }
 
+        // create hide card/ show card button
+        this.hideShowCardButton = new MenuButton(200, screenDimensions.height - 200, this.scene);
+        this.hideShowCardButton.setInteractive();
+        this.hideShowCardButton.setText('HIDE CARDS');
+        this.hideShowCardButton.setStyle({
+            fontSize: '40px',
+            strokeThickness: 2
+        });
+        this.hideShowCardButton.on('pointerdown', () => {
+            this.showCardsInHand = !this.showCardsInHand;
+            this.hideShowCardButton?.setText(this.showCardsInHand ? 'HIDE CARDSS' : 'SHOW CARDS');
+            this.cardsInHand().forEach(card => {
+                card.setFaceUp(this.showCardsInHand);
+            });
+        });
+        this.scene.add.existing(this.hideShowCardButton);
+    }
 
     setCardToPickUp(card: CardContent, faceUp: boolean, order: number) {
         const cardContainer = this.cards.getCard(card);
@@ -146,7 +167,7 @@ export abstract class PlayerCardHand {
             rotation: 0,
             scale: 1
         }, 1);
-        card.setFaceUp(true);
+        card.setFaceUp(this.showCardsInHand);
     }
 
     calculateCardPrefferedPositions(cards: CardContainer[], transform: Transform) {
@@ -222,7 +243,7 @@ export abstract class PlayerCardHand {
         if (draggedCard.beforeDraggedTransform === null) return;
         if (draggedCard.y < draggedCard.beforeDraggedTransform.y) return;
         socket.emit('moveCardToHand', draggedCard.cardContent);
-        draggedCard.setFaceUp(true);
+        draggedCard.setFaceUp(this.showCardsInHand);
         draggedCard.userHandId = socket.id;
         draggedCard.canTakeFromTable = false;
         this.setAllowedPickUpCardAmount(this.allowedPickUpCardAmount - 1);

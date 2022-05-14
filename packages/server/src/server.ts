@@ -185,4 +185,8 @@ io.on('connection', (socket) => {
         io.to(hostUser.id).emit('deal', userId);
     });
 
+    socket.on('starting to shuffle', () => {
+        io.to(user.room).emit('starting to shuffle', user.id);
+    });
+
 });

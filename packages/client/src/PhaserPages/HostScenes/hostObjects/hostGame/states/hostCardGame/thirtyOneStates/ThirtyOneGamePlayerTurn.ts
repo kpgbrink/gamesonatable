@@ -23,7 +23,8 @@ export class ThirtyOneGamePlayerTurn extends HostGameState {
             throw new Error("No shown card found");
         }
         if (!hiddenCard) {
-            throw new Error("No hidden card found");
+            this.hostGame.changeState(new ThirtyOneRoundEnd(this.hostGame));
+            return;
         }
 
         // check if the turn has gone back to the player who knocked. Then need to go to end game state.

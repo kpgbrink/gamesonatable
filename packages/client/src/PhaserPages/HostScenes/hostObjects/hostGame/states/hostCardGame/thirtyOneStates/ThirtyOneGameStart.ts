@@ -19,8 +19,12 @@ export class ThirtyOneGameStart extends HostGameState {
 
     startMovingCardsToCenter() {
         // move cards to center.
-        this.hostGame.cards.getTableCards().forEach(cardContainer => {
-            cardContainer.startMovingOverTimeTo(this.hostGame.deckTransform, this.bringToCenterTime);
+        this.hostGame.cards.getTableCards().forEach((cardContainer, i) => {
+            // add offest to make the number of cards visible
+            const offset = i * 2;
+            const deckTransform = this.hostGame.deckTransform;
+            const transform = { ...deckTransform, x: deckTransform.x + offset, y: deckTransform.y + offset };
+            cardContainer.startMovingOverTimeTo(transform, this.bringToCenterTime);
         });
     }
 

@@ -31,6 +31,7 @@ export class StartGettingReadyToShuffle extends HostGameState {
             // start moving all of the cards to the center
             cardContainer.startMovingOverTimeTo({ x: screenCenter.x, y: screenCenter.y, rotation: 0, scale: 1 }, this.sendingOutCardTime);
         });
+        socket.emit('starting to shuffle');
     }
 
     update(time: number, delta: number): HostGameState | null {
