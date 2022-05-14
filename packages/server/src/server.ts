@@ -189,4 +189,10 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('starting to shuffle', user.id);
     });
 
+    socket.on('thirty one round end', (cardContent: CardContent) => {
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser) return;
+        io.to(hostUser.id).emit('thirty one round end', user.id, cardContent);
+    });
+
 });

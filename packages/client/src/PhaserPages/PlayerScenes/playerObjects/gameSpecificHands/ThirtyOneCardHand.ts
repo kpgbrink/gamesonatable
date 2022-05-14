@@ -1,5 +1,7 @@
 import { CardContent } from "api";
 import socket from "../../../../SocketConnection";
+import { ThirtyOneRoundEnd } from "../../../HostScenes/hostObjects/hostGame/states/hostCardGame/thirtyOneStates/ThirtyOneRoundEnd";
+import CardContainer from "../../../objects/items/CardContainer";
 import MenuButton from "../../../objects/MenuButton";
 import { getScreenDimensions } from "../../../objects/Tools";
 import { PlayerCardHand } from "../PlayerCardHand";
@@ -41,6 +43,29 @@ export class ThirtyOneCardHand extends PlayerCardHand {
         // set 1 card to be able to put down.
         if (this.knockPlayerId === socket.id) return; // prevent picking up if you knocked.
         this.allowedDropCardAmount = 1;
+    }
+
+    checkIfMoveCardToTable(card: CardContainer) {
+        if (card.beforeDraggedTransform === null) return;
+        if (card.y > card.beforeDraggedTransform?.y) return;
+        if (card.cardBackOnTable) return;
+        if (!card.userHandId) return;
+        if (this.allowedDropCardAmount <= 0) return;
+        // tell host to move the card to the table
+        this.allowedDropCardAmount -= 1;
+        this.putCardBackOnTable(card);
+        // check if you have 31 now and there if there is no tonk player then you do 31 and round ends.
+        const cardsInHand = this.cardsInHand();
+        if (cardsInHand.length !== 3) {
+            throw new Error('cards in hand is not 3');
+
+        }
+        const scoresAndCardsThatMatter = ThirtyOneRoundEnd.calculateScoreAndCardsThatMatter(cardsInHand)
+        if (scoresAndCardsThatMatter.score === 31) {
+            socket.emit('thirty one round end', card.cardContent);
+            return;
+        }
+        socket.emit('moveCardToTable', card.cardContent);
     }
 
 }

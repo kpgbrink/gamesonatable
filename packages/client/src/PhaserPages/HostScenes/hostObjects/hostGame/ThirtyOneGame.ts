@@ -1,3 +1,4 @@
+import { CardContent } from "api";
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/items/CardContainer";
 import { loadIfImageNotLoaded, Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
@@ -5,6 +6,7 @@ import ThirtyOneHostUserAvatarsAroundTableGame from "../HostUserAvatars/HostUser
 import { HostCardGame } from "./HostCardGame";
 import { ThirtyOneGamePlayerTurn } from "./states/hostCardGame/thirtyOneStates/ThirtyOneGamePlayerTurn";
 import { ThirtyOneGameStart } from "./states/hostCardGame/thirtyOneStates/ThirtyOneGameStart";
+import { ThirtyOneRoundEnd } from "./states/hostCardGame/thirtyOneStates/ThirtyOneRoundEnd";
 import { HostGameState } from "./states/HostGameState";
 
 
@@ -17,6 +19,7 @@ export class ThirtyOneGame extends HostCardGame {
     cardPlaceTransform: Transform = { x: 0, y: 0, rotation: 0, scale: 1 };
 
     knockPlayerId: string | null = null;
+    thirtyOnePlayerId: string | null = null;
 
     preload() {
         super.preload();
@@ -48,6 +51,16 @@ export class ThirtyOneGame extends HostCardGame {
             this.knockPlayerId = userId;
             // set next player turn
             this.changeState(new ThirtyOneGamePlayerTurn(this));
+        });
+
+        socket.on('thirty one round end', (userId: string, cardContent: CardContent) => {
+            const user = this.getUser(userId);
+            if (!user) return;
+            const card = this.cards.getCard(cardContent);
+            if (!card) return;
+            this.thirtyOnePlayerId = userId;
+            this.onCardMoveToTable(userId, card);
+            this.changeState(new ThirtyOneRoundEnd(this));
         });
     }
 

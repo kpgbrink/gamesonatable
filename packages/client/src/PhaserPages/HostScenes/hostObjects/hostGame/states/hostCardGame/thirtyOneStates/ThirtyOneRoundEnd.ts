@@ -68,13 +68,21 @@ export class ThirtyOneRoundEnd extends HostGameState {
         // if a player got 31 then everyone else loses a life
         // check if there is a 31 score
         (() => {
-            const thirtyOneScoreUsers = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.roundScore === 31);
-            if (thirtyOneScoreUsers.length > 0) {
-                const nonThirtyOneScoreUsers = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.roundScore !== 31);
-                nonThirtyOneScoreUsers.forEach(userAvatar => {
-                    userAvatar.lives -= 1;
+            // const thirtyOneScoreUsers = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.roundScore === 31);
+            // if (thirtyOneScoreUsers.length > 0) {
+            //     const nonThirtyOneScoreUsers = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.roundScore !== 31);
+            //     nonThirtyOneScoreUsers.forEach(userAvatar => {
+            //         userAvatar.lives -= 1;
+            //     });
+            //     return;
+            // }
+            if (this.hostGame.thirtyOnePlayerId) {
+                // make every other user lose 1 life
+                this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
+                    if (userAvatar.user.id !== this.hostGame.thirtyOnePlayerId) {
+                        userAvatar.lives -= 1;
+                    }
                 });
-                return;
             }
             if (lowestScoreUsers.length === 1) {
                 const lowestScoreUser = lowestScoreUsers[0];
@@ -155,5 +163,6 @@ export class ThirtyOneRoundEnd extends HostGameState {
         // remove deal listener
         socket.off('deal');
         this.hostGame.knockPlayerId = null;
+        this.hostGame.thirtyOnePlayerId = null;
     }
 }
