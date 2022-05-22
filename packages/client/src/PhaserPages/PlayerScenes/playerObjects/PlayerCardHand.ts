@@ -138,7 +138,7 @@ export abstract class PlayerCardHand {
         });
         this.hideShowCardButton.on('pointerdown', () => {
             this.showCardsInHand = !this.showCardsInHand;
-            this.hideShowCardButton?.setText(this.showCardsInHand ? 'HIDE CARDSS' : 'SHOW CARDS');
+            this.hideShowCardButton?.setText(this.showCardsInHand ? 'HIDE CARDS' : 'SHOW CARDS');
             this.cardsInHand().forEach(card => {
                 card.setFaceUp(this.showCardsInHand);
             });
