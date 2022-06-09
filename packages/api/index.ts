@@ -17,6 +17,7 @@ export interface UserAvatar {
 
 export interface User {
     id: string;
+    socketId: string;
     name: string;
     room: string;
     isHost: boolean;
@@ -24,6 +25,7 @@ export interface User {
     userAvatar: UserAvatar | null;
     rotation: number | null;
     inGame: boolean;
+    hasSetName: boolean;
 }
 
 export interface RoomData {
@@ -45,4 +47,4 @@ export interface CardContent {
     suit: string | null;
     card: string | null;
     joker: boolean | null;
-};
+}

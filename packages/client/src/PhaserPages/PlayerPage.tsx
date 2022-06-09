@@ -11,14 +11,14 @@ import ThirtyOne from "./PlayerScenes/ThirtyOne";
 
 export default function PlayerPage() {
   const { socket } = useContext(AppContext);
-  const { roomId } = useParams();
+  const { roomId, userId } = useParams();
 
   useEffect(() => {
-    socket.emit("join room", roomId);
+    socket.emit("join room", roomId, userId);
     return () => {
       socket.off();
     };
-  }, [roomId, socket]);
+  }, [roomId, socket, userId]);
 
   return (
     <PhaserWrapper

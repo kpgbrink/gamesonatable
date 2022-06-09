@@ -3,10 +3,10 @@ import { allRaces, nameByRace } from 'fantasy-name-generator';
 
 const rooms: Map<string, RoomData> = new Map();
 
-export const upsertUser = ({ id, name, room, isHost, userAvatar, rotation }: User) => {
-    name = name.trim();
-    if (name === '' && !isHost) {
-        name = (() => {
+export const upsertUser = (upsertingUser: User) => {
+    upsertingUser.name = upsertingUser.name.trim();
+    if (upsertingUser.name === '' && !upsertingUser.isHost) {
+        upsertingUser.name = (() => {
             const allRacesList = [...allRaces.racesWithGender, ...allRaces.otherRaces];
             const gender: "male" | "female" = (() => {
                 const randomNumber = Math.random();
@@ -20,9 +20,8 @@ export const upsertUser = ({ id, name, room, isHost, userAvatar, rotation }: Use
             return newName
         })();
     };
-    room = room;
 
-    const user: User = { id, name, room, isHost, userColor: null, userAvatar, rotation, inGame: false };
+    const user: User = upsertingUser;
     // add room if it doesn't exist yet
     if (!rooms.has(user.room)) {
         rooms.set(user.room, { currentPlayerScene: 'PlayerStartingScene', selectedGame: null, room: user.room, users: [] });
@@ -35,11 +34,11 @@ export const upsertUser = ({ id, name, room, isHost, userAvatar, rotation }: Use
     return user;
 }
 
-export const removeUser = (userId: string, roomId: string) => {
+export const removeUser = (userSocketSocketId: string, roomId: string) => {
     const room = getRoom(roomId);
     if (!room) return;
     const index = room.users.findIndex((user) => {
-        return user.id === userId
+        return user.socketId === userSocketSocketId
     });
     if (index == -1) {
         return;
@@ -47,7 +46,7 @@ export const removeUser = (userId: string, roomId: string) => {
     // remove user from room map
     if (room) {
         room.users = room.users.filter((user) => {
-            return user.id !== userId;
+            return user.socketId !== userSocketSocketId;
         });
     }
     // delete room if no users
@@ -57,7 +56,13 @@ export const removeUser = (userId: string, roomId: string) => {
 }
 
 // get room
-export const getRoom = (room: string) => rooms.get(room);
+export const getRoom = (roomId: string) => {
+    const room = rooms.get(roomId);
+    if (!room) {
+        console.log('could not find room');
+    }
+    return room;
+}
 
 export const getRoomHost = (room: string) => {
     const roomData = getRoom(room);
@@ -66,5 +71,5 @@ export const getRoomHost = (room: string) => {
 }
 
 export const getRoomHostId = (room: string) => {
-    return getRoomHost(room)?.id;
+    return getRoomHost(room)?.socketId;
 }
