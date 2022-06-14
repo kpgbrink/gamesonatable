@@ -16,18 +16,27 @@ export default function PlayerJoin() {
 
   // Get new room id
   useEffect(() => {
-    if (roomId || roomCreated) return;
-    console.log("get new room id", roomId);
+    const abortController = new AbortController();
+
     const fetchData = async () => {
-      const response = await fetch("/getNewRoomId");
+      if (roomId || roomCreated) return;
+      console.log("how many times fetchData is called?");
+      const response = await fetch("/getNewRoomId", {
+        signal: abortController.signal,
+      });
       const data: NewRoomId = await response.json();
-      const roomId = data.roomId;
+      const newRoomId = data.roomId;
       // Change the URL to the new room id
-      window.history.pushState("", "", `/room/${roomId}`);
-      setRoomCreated(roomId);
+      console.log("roomId", roomId, "roomCreated", roomCreated);
+      window.history.pushState("", "", `/room/${newRoomId}`);
+      setRoomCreated(newRoomId);
+      console.log("room id that was just set", newRoomId, roomId, roomCreated);
     };
     fetchData().catch(console.error);
-  }, [setRoomCreated, roomCreated, roomId]);
+    return () => {
+      abortController.abort();
+    };
+  }, [roomId, roomCreated, setRoomCreated]);
 
   // Start hosting room
   useEffect(() => {

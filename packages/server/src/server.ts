@@ -50,6 +50,7 @@ io.on('connection', (socket) => {
 
     // The current room I am in
     socket.on('host room', (room: string) => {
+        console.log('start hosting room', room);
         socketLeavePreviousRoom(socket, user);
         // ensure there is only one host
         const previousHost = getRoomHostId(room);

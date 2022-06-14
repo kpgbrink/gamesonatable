@@ -14,11 +14,9 @@ export default function HostPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("starting to host room!!!!", roomId);
     socket.emit("host room", roomId);
     socket.emit("select game", game);
-    // socket.on("backToHomeScreen", () => {
-    //   navigate(`/room/${roomId}`);
-    // });
     window.addEventListener(
       "changeroute",
       (e: any) => {
