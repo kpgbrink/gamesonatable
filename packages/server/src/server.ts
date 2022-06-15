@@ -186,7 +186,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('moveCardToTable', (cardContent: CardContent, userHandId: string) => {
-        io.to(userHandId).emit('moveCardToTable', cardContent);
+        const userHand = getRoom(user.room)?.users.find(u => u.id === userHandId);
+        if (!userHand) return;
+        io.to(userHand.socketId).emit('moveCardToTable', cardContent);
     });
 
     socket.on('can deal', (userId: string) => {
