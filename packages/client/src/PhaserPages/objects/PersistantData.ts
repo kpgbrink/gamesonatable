@@ -4,9 +4,12 @@ import { RoomData } from "api";
 export class PersistantData {
     constructor() {
         this.roomData = null;
+        this.myUserId = null;
     }
 
     public roomData: RoomData | null;
+
+    public myUserId: string | null;
 }
 
 export const persistentData: PersistantData = new PersistantData();

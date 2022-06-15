@@ -1,6 +1,7 @@
 import { UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import MenuButton from "../objects/MenuButton";
+import { persistentData } from "../objects/PersistantData";
 import { addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../objects/Tools";
 import { loadUserAvatarSprites } from "../objects/UserAvatarContainer";
 import PlayerScene from "./playerObjects/PlayerScene";
@@ -43,7 +44,8 @@ export default class PlayerBeforeGameStart extends PlayerScene {
     checkIfIAmReady() {
         socket.on('userBeforeGameStart data', (userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary) => {
             // if my user is ready
-            if (userBeforeGameStartDictionary[socket.id]?.ready) {
+            if (!persistentData.myUserId) return;
+            if (userBeforeGameStartDictionary[persistentData.myUserId]?.ready) {
                 this.showWaitingForPlayersText();
             } else {
                 this.showReadyButton();

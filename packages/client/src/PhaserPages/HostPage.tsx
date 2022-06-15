@@ -14,9 +14,9 @@ export default function HostPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("starting to host room!!!!", roomId);
     socket.emit("host room", roomId);
     socket.emit("select game", game);
+    // add listener to allow phaser code to change url
     window.addEventListener(
       "changeroute",
       (e: any) => {

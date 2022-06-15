@@ -4,7 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import { Server, Socket } from "socket.io";
 import uniqid from 'uniqid';
-import { getRoom, getRoomHostId, removeUser, upsertUser } from './user';
+import { getRoom, getRoomHostSocketId, removeUser, upsertUser } from './user';
 
 const app = express();
 const port = 3001;
@@ -53,8 +53,9 @@ io.on('connection', (socket) => {
         console.log('start hosting room', room);
         socketLeavePreviousRoom(socket, user);
         // ensure there is only one host
-        const previousHost = getRoomHostId(room);
+        const previousHost = getRoomHostSocketId(room);
         if (previousHost) {
+            console.log('remove previous host');
             removeUser(previousHost, room);
         }
         user.isHost = true;
@@ -71,11 +72,13 @@ io.on('connection', (socket) => {
         user.id = userId ?? uniqid();
         user = upsertUser(user);
         socket.join(user.room);
+        io.to(user.socketId).emit('user id', user.id);
         io.to(user.room).emit('room data', getRoom(user.room));
     });
 
     // On disconnect
     socket.on('disconnect', () => {
+        // TODO make users in game not dissapear but they can be replaced by a reconnect instead
         removeUser(socket.id, user.room);
         io.to(user.room).emit('room data', getRoom(user.room));
     });
@@ -109,6 +112,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('set player avatar', (avatar: UserAvatar) => {
+        console.log('set player avatar', avatar);
         // Don't set avatar if already set
         if (user.userAvatar) return;
         user = upsertUser({ ...user, userAvatar: avatar });
@@ -117,18 +121,19 @@ io.on('connection', (socket) => {
 
     socket.on('set player rotation', (userId: string, rotation: number) => {
         // find user with userId
-        const editingUser = getRoom(user.room)?.users.find(u => u.socketId === userId);
+        const editingUser = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!editingUser) return;
         editingUser.rotation = rotation;
     });
 
     socket.on('get room data', () => {
+        console.log(user.id);
         io.to(user.socketId).emit('room data', getRoom(user.room));
     });
 
     // Tell Host user is ready to start the game
     socket.on('ready', () => {
-        io.to(user.room).emit('ready', user.socketId);
+        io.to(user.room).emit('ready', user.id);
     });
 
     // Host tells user it is ready to start the game
@@ -142,7 +147,7 @@ io.on('connection', (socket) => {
         const room = getRoom(user.room);
         // Set ready users to inGame
         room?.users.forEach(u => {
-            if (usersInGame.find(uig => u.socketId === uig.socketId)) {
+            if (usersInGame.find(uig => u.id === uig.id)) {
                 u.inGame = true;
             }
         });
@@ -150,29 +155,34 @@ io.on('connection', (socket) => {
     });
 
     socket.on('give card', (userId: string, cardContent: CardContent, timeGivenToUser: number) => {
-        io.to(userId).emit('give card', cardContent, timeGivenToUser);
+        const userGivenCard = getRoom(user.room)?.users.find(u => u.id === userId);
+        console.log('give card', userGivenCard);
+        if (!userGivenCard) return;
+        io.to(userGivenCard.socketId).emit('give card', cardContent, timeGivenToUser);
     });
 
     socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: CardContent, hiddenCard: CardContent, turn: number, knockPlayerId: string | null) => {
-        io.to(currentPlayerTurnId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn, knockPlayerId);
+        const userTurn = getRoom(user.room)?.users.find(u => u.id === currentPlayerTurnId);
+        if (!userTurn) return;
+        io.to(userTurn.socketId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn, knockPlayerId);
     });
 
     socket.on('moveCardToHand', (cardContent: CardContent) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser) return;
-        io.to(hostUser.socketId).emit('moveCardToHand', user.socketId, cardContent);
+        io.to(hostUser.socketId).emit('moveCardToHand', user.id, cardContent);
     });
 
     socket.on('moveCardToTable', (cardContent: CardContent) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser) return;
-        io.to(hostUser.socketId).emit('moveCardToTable', user.socketId, cardContent);
+        io.to(hostUser.socketId).emit('moveCardToTable', user.id, cardContent);
     });
 
     socket.on('thirty one knock', () => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser) return;
-        io.to(hostUser.socketId).emit('thirty one knock', user.socketId);
+        io.to(hostUser.socketId).emit('thirty one knock', user.id);
     });
 
     socket.on('moveCardToTable', (cardContent: CardContent, userHandId: string) => {
@@ -180,7 +190,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('can deal', (userId: string) => {
-        io.to(userId).emit('can deal', user.socketId);
+        const userDeal = getRoom(user.room)?.users.find(u => u.id === userId);
+        if (!userDeal) return;
+        io.to(userDeal.socketId).emit('can deal', user.id);
     });
 
     socket.on('deal', (userId: string) => {
@@ -190,13 +202,13 @@ io.on('connection', (socket) => {
     });
 
     socket.on('starting to shuffle', () => {
-        io.to(user.room).emit('starting to shuffle', user.socketId);
+        io.to(user.room).emit('starting to shuffle', user.id);
     });
 
     socket.on('thirty one round end', (cardContent: CardContent) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser) return;
-        io.to(hostUser.socketId).emit('thirty one round end', user.socketId, cardContent);
+        io.to(hostUser.socketId).emit('thirty one round end', user.id, cardContent);
     });
 
 });

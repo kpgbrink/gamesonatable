@@ -12,7 +12,7 @@ export const randomIndex = (array: any[]) => {
 
 export const findMyUser = (roomData: RoomData | undefined) => {
     if (!roomData) return;
-    return roomData.users.find(user => user?.id === socket.id);
+    return roomData.users.find(user => user?.id === persistentData.myUserId);
 }
 
 export const loadIfImageNotLoadedAndUserAvatarHasIt = (scene: Phaser.Scene, name: string, url: string, arrayIndex: number) => {

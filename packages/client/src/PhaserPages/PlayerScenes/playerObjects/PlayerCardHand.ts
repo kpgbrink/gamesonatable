@@ -3,6 +3,7 @@ import socket from "../../../SocketConnection";
 import { Cards } from "../../objects/Cards";
 import CardContainer from "../../objects/items/CardContainer";
 import MenuButton from "../../objects/MenuButton";
+import { persistentData } from "../../objects/PersistantData";
 import { checkTransformsAlmostEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
@@ -47,7 +48,8 @@ export abstract class PlayerCardHand {
     }
 
     cardsInHand() {
-        const userId = socket.id;
+        const userId = persistentData.myUserId;
+        if (!userId) return [];
         return this.cards.getPlayerCards(userId);
     }
 
@@ -90,12 +92,13 @@ export abstract class PlayerCardHand {
 
         // add socket listeners
         socket.on('give card', (cardContent: CardContent, timeGivenToUser: number) => {
+            console.log('give card', cardContent);
             // get the card that has to be given to player
             const card = this.cards.getCard(cardContent);
             if (!card) throw new Error('card not found');
             card.x += 1;
             // move the card to the player
-            card.setUserHand(socket.id, timeGivenToUser);
+            card.setUserHand(persistentData.myUserId, timeGivenToUser);
             // move the card to the player hand
             // this.moveCardToPlayerHand(card);
             card.setFaceUp(this.showCardsInHand);
@@ -244,7 +247,7 @@ export abstract class PlayerCardHand {
         if (draggedCard.y < draggedCard.beforeDraggedTransform.y) return;
         socket.emit('moveCardToHand', draggedCard.cardContent);
         draggedCard.setFaceUp(this.showCardsInHand);
-        draggedCard.userHandId = socket.id;
+        draggedCard.userHandId = persistentData.myUserId;
         draggedCard.canTakeFromTable = false;
         this.setAllowedPickUpCardAmount(this.allowedPickUpCardAmount - 1);
     }

@@ -30,6 +30,7 @@ export const generateRandomUserAvatar = (): UserAvatar => {
 
 export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
     socket.on('room data', (roomData: RoomData) => {
+        console.log('room data');
         roomData?.users.forEach(user => {
             const userId = user.id;
             const userAvatar = user.userAvatar;
@@ -49,8 +50,8 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
 }
 
 export const makeMyUserAvatar = (scene: Phaser.Scene, x: number, y: number, userAvatarContainer: UserAvatarContainer | null) => {
-    if (!socket.id || userAvatarContainer) return;
-    const user = persistentData.roomData?.users.find(user => user.id === socket.id);
+    if (!persistentData.myUserId || userAvatarContainer) return;
+    const user = persistentData.roomData?.users.find(user => user.id === persistentData.myUserId);
     if (!user) return;
     userAvatarContainer = new UserAvatarContainer(scene, x, y, user);
     scene.add.existing(userAvatarContainer);

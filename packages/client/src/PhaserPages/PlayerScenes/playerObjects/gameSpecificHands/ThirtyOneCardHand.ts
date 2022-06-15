@@ -3,6 +3,7 @@ import socket from "../../../../SocketConnection";
 import { ThirtyOneRoundEnd } from "../../../HostScenes/hostObjects/hostGame/states/hostCardGame/thirtyOneStates/ThirtyOneRoundEnd";
 import CardContainer from "../../../objects/items/CardContainer";
 import MenuButton from "../../../objects/MenuButton";
+import { persistentData } from "../../../objects/PersistantData";
 import { getScreenDimensions } from "../../../objects/Tools";
 import { PlayerCardHand } from "../PlayerCardHand";
 
@@ -26,7 +27,7 @@ export class ThirtyOneCardHand extends PlayerCardHand {
         this.knockButton.setInteractive();
         this.knockButton.setText('Knock');
         this.knockButton.on('pointerdown', () => {
-            this.knockPlayerId = socket.id;
+            this.knockPlayerId = persistentData.myUserId;
             socket.emit('thirty one knock');
             this.setAllowedPickUpCardAmount(0);
         });
@@ -41,7 +42,7 @@ export class ThirtyOneCardHand extends PlayerCardHand {
 
     onAllCardsPickedUp(): void {
         // set 1 card to be able to put down.
-        if (this.knockPlayerId === socket.id) return; // prevent picking up if you knocked.
+        if (this.knockPlayerId === persistentData.myUserId) return; // prevent picking up if you knocked.
         this.allowedDropCardAmount = 1;
     }
 

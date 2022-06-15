@@ -2,6 +2,10 @@ export interface NewRoomId {
     roomId: string;
 };
 
+export interface NewUserId {
+    userId: string;
+}
+
 export interface UserAvatar {
     // Index of image in avatar Images
     base: number; // The base image

@@ -58,9 +58,6 @@ export const removeUser = (userSocketSocketId: string, roomId: string) => {
 // get room
 export const getRoom = (roomId: string) => {
     const room = rooms.get(roomId);
-    if (!room) {
-        console.log('!!!!!could not find room');
-    }
     return room;
 }
 
@@ -72,7 +69,7 @@ export const getRoomHost = (room: string) => {
     return roomData.users.find(u => u.isHost);
 }
 
-export const getRoomHostId = (room: string) => {
+export const getRoomHostSocketId = (room: string) => {
     console.log('getRoomHostId');
     return getRoomHost(room)?.socketId;
 }
