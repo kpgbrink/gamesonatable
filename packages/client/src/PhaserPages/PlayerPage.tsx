@@ -10,33 +10,24 @@ import PlayerStartingScene from "./PlayerScenes/PlayerStartingScene";
 import Texas from "./PlayerScenes/Texas";
 import ThirtyOne from "./PlayerScenes/ThirtyOne";
 
-export default function PlayerPage() {
+export default function PlayerPage(props: any) {
   const { socket } = useContext(AppContext);
   const { roomId, userId } = useParams();
 
+  console.log("props", props.match);
+
   useEffect(() => {
-    if (userId) {
-      persistentData.myUserId = userId;
+    if (!userId) {
+      throw new Error("userId is not defined");
     }
+    persistentData.myUserId = userId;
     socket.emit("join room", roomId, userId);
     return () => {
       socket.off();
     };
   }, [roomId, socket, userId]);
 
-  // add listener to get the user id
-  useEffect(() => {
-    const listener = (newUserId: string) => {
-      console.log("user id", newUserId);
-      persistentData.myUserId = newUserId;
-      window.history.pushState("", "", `/player/${roomId}/${newUserId}`);
-    };
-    socket.on("user id", listener);
-    return () => {
-      socket.off("user id", listener);
-    };
-  }, [socket, roomId]);
-
+  console.log("userId", userId, "myPersistentuserId", persistentData.myUserId);
   return (
     <PhaserWrapper
       config={{
