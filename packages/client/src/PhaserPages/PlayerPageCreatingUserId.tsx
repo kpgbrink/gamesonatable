@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
 import { persistentData } from "./objects/PersistantData";
 
-export default function PlayerPageCreatingUserId(props: any) {
+export default function PlayerPageCreatingUserId() {
   const { socket } = useContext(AppContext);
   const { roomId, userId } = useParams();
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function PlayerPageCreatingUserId(props: any) {
     const listener = (newUserId: string) => {
       console.log("user id", newUserId);
       persistentData.myUserId = newUserId;
-      navigate(`/player/${roomId}/userId/${newUserId}`);
+      navigate(`/room/${roomId}/player/${newUserId}`);
     };
     socket.on("user id", listener);
     socket.emit("join room", roomId, null);
@@ -25,9 +25,5 @@ export default function PlayerPageCreatingUserId(props: any) {
   }, [navigate, socket, roomId]);
 
   console.log("userId", userId, "myPersistentuserId", persistentData.myUserId);
-  return (
-    <>
-      <LinearProgress />
-    </>
-  );
+  return <LinearProgress />;
 }

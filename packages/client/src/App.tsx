@@ -29,11 +29,11 @@ export default function App() {
             <Route path="/about" element={<AboutPage />} />
 
             <Route
-              path="/player/:roomId"
+              path="/room/:roomId/player"
               element={<PlayerPageCreatingUserId />}
             />
             <Route
-              path="/player/:roomId/userId/:userId"
+              path="/room/:roomId/player/:userId"
               element={<PlayerPage />}
             />
 

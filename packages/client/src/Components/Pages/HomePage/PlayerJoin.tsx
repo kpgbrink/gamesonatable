@@ -40,7 +40,7 @@ export default function PlayerJoin() {
     socket.emit("set player current scene", "PlayerStartingScene");
   }, [roomId, socket]);
 
-  const joinURL = `${window.location.origin}/player/${roomCreated}`;
+  const joinURL = `${window.location.origin}/room/${roomCreated}/player`;
 
   return (
     <div className="playerJoin">
