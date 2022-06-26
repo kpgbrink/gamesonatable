@@ -21,7 +21,7 @@ export interface UserAvatar {
 
 export interface User {
     id: string;
-    socketId: string;
+    socketId: string | null;
     name: string;
     room: string;
     isHost: boolean;

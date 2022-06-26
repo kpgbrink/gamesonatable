@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
 import { persistentData } from "./objects/PersistantData";
 import PhaserWrapper from "./PhaserWrapper";
@@ -13,6 +13,7 @@ import ThirtyOne from "./PlayerScenes/ThirtyOne";
 export default function PlayerPage(props: any) {
   const { socket } = useContext(AppContext);
   const { roomId, userId } = useParams();
+  const navigate = useNavigate();
 
   console.log("props", props.match);
 
@@ -20,12 +21,21 @@ export default function PlayerPage(props: any) {
     if (!userId) {
       throw new Error("userId is not defined");
     }
+    const listener = (newUserId: string) => {
+      console.log("user id", newUserId);
+      persistentData.myUserId = newUserId;
+      if (newUserId !== userId) {
+        navigate(`/room/${roomId}/player/${newUserId}`);
+      }
+    };
+    socket.on("user id", listener);
     persistentData.myUserId = userId;
     socket.emit("join room", roomId, userId);
     return () => {
+      socket.off("user id", listener);
       socket.off();
     };
-  }, [roomId, socket, userId]);
+  }, [roomId, socket, userId, navigate]);
 
   console.log("userId", userId, "myPersistentuserId", persistentData.myUserId);
   return (

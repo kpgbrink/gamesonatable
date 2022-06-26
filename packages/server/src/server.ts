@@ -14,7 +14,7 @@ const httpServer = app.listen(port, () => {
 });
 const io = new Server(httpServer, {
     cors: config.get('cors.origin'),
-    pingInterval: 20000,
+    pingInterval: 10000,
 });
 
 app.use(cors({ origin: config.get('cors.origin'), credentials: config.get('cors.credentials') }));
@@ -69,9 +69,48 @@ io.on('connection', (socket) => {
         socketLeavePreviousRoom(socket, user);
         user.isHost = false;
         user.room = room;
+        // find any users that need to be replaced
+        const roomData = getRoom(room);
+        if (!roomData) return;
+        const users = roomData.users;
+        const usersWithoutSocketIds = users.filter(u => u.socketId === null);
+        const userWithoutSocketIdMatchingUserId = usersWithoutSocketIds.find(u => u.id === userId)
+        if (usersWithoutSocketIds.length > 0) {
+            // if only one user is missing a socket id, then replace that user
+            if (usersWithoutSocketIds.length === 1) {
+                const userToReplace = usersWithoutSocketIds[0];
+                userToReplace.socketId = socket.id;
+                upsertUser(userToReplace);
+                console.log('replace user only 1 user to replace', userToReplace.id);
+                io.to(userToReplace.socketId).emit('user id', user.id);
+                io.to(user.room).emit('room data', getRoom(user.room));
+                return;
+            }
+            if (userWithoutSocketIdMatchingUserId) {
+                // if the user id matches a user that is missing a socket id, then replace that user
+                const userToReplace = userWithoutSocketIdMatchingUserId;
+                userToReplace.socketId = socket.id;
+                upsertUser(userToReplace);
+                console.log('replace user user id matches user to replace', userToReplace.id);
+                io.to(userToReplace.socketId).emit('user id', user.id);
+                io.to(user.room).emit('room data', getRoom(user.room));
+                return;
+            }
+            // if more than one user is missing a socket id 
+            // and no matching to the user id, then send a list of users to replace
+            else {
+                console.log('replace user more than 1 user to replace');
+                const usersToReplace = usersWithoutSocketIds.map(u => u.id);
+                socket.emit('users to replace', usersToReplace);
+                return;
+            }
+        }
+        // if no users are missing a socket id, then add the user
         user.id = userId ?? uniqid();
+        user.socketId = socket.id;
         user = upsertUser(user);
         socket.join(user.room);
+        if (!user.socketId) return;
         io.to(user.socketId).emit('user id', user.id);
         io.to(user.room).emit('room data', getRoom(user.room));
     });
@@ -103,7 +142,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('set player avatar', (avatar: UserAvatar) => {
-        console.log('set player avatar', avatar);
         // Don't set avatar if already set
         if (user.userAvatar) return;
         user = upsertUser({ ...user, userAvatar: avatar });
@@ -119,6 +157,7 @@ io.on('connection', (socket) => {
 
     socket.on('get room data', () => {
         console.log(user.id);
+        if (!user.socketId) return;
         io.to(user.socketId).emit('room data', getRoom(user.room));
     });
 
@@ -147,49 +186,49 @@ io.on('connection', (socket) => {
 
     socket.on('give card', (userId: string, cardContent: CardContent, timeGivenToUser: number) => {
         const userGivenCard = getRoom(user.room)?.users.find(u => u.id === userId);
-        if (!userGivenCard) return;
+        if (!userGivenCard?.socketId) return;
         io.to(userGivenCard.socketId).emit('give card', cardContent, timeGivenToUser);
     });
 
     socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: CardContent, hiddenCard: CardContent, turn: number, knockPlayerId: string | null) => {
         const userTurn = getRoom(user.room)?.users.find(u => u.id === currentPlayerTurnId);
-        if (!userTurn) return;
+        if (!userTurn?.socketId) return;
         io.to(userTurn.socketId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn, knockPlayerId);
     });
 
     socket.on('moveCardToHand', (cardContent: CardContent) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser) return;
+        if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('moveCardToHand', user.id, cardContent);
     });
 
     socket.on('moveCardToTable', (cardContent: CardContent) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser) return;
+        if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('moveCardToTable', user.id, cardContent);
     });
 
     socket.on('thirty one knock', () => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser) return;
+        if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('thirty one knock', user.id);
     });
 
     socket.on('moveCardToTable', (cardContent: CardContent, userHandId: string) => {
         const userHand = getRoom(user.room)?.users.find(u => u.id === userHandId);
-        if (!userHand) return;
+        if (!userHand?.socketId) return;
         io.to(userHand.socketId).emit('moveCardToTable', cardContent);
     });
 
     socket.on('can deal', (userId: string) => {
         const userDeal = getRoom(user.room)?.users.find(u => u.id === userId);
-        if (!userDeal) return;
+        if (!userDeal?.socketId) return;
         io.to(userDeal.socketId).emit('can deal', user.id);
     });
 
     socket.on('deal', (userId: string) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser) return;
+        if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('deal', userId);
     });
 
@@ -199,7 +238,7 @@ io.on('connection', (socket) => {
 
     socket.on('thirty one round end', (cardContent: CardContent) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser) return;
+        if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('thirty one round end', user.id, cardContent);
     });
 

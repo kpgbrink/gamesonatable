@@ -51,17 +51,48 @@ export const removeUser = (userSocketSocketId: string, roomId: string) => {
     if (index == -1) {
         return;
     }
+    // If the user is in game and the game is not leavable, keep the user in the game
+    const user = room.users[index];
+    if (room.game.leavable === false && user.inGame) {
+        console.log('user is in game that is not leavable so keep them in game');
+        // remove the socket id from the user
+        room.users[index].socketId = null;
+        console.log('keeping user in game');
+        checkIfShouldDeleteRoom(room);
+        return;
+    }
+    console.log('deleting user');
     // remove user from room map
     if (room) {
         room.users = room.users.filter((user) => {
             return user.socketId !== userSocketSocketId;
         });
     }
-    // delete room if no users
-    if (room && room.users.length === 0) {
-        rooms.delete(roomId);
+    checkIfShouldDeleteRoom(room);
+}
+
+// delete room if no users or all users have no socket id
+const checkIfShouldDeleteRoom = (room: RoomData) => {
+    // delete room if no users or all users have no socket id
+    if (room && room.users.length === 0 || room.users.every((user) => { return user.socketId === null })) {
+        console.log('all existing rooms', rooms);
+        console.log('deleting room', room);
+        rooms.delete(room.room);
     }
 }
+
+export const removeAllUsersWithoutSocketId = (roomId: string) => {
+    // remove all users without socket id
+    const room = getRoom(roomId);
+    if (!room) return;
+    room.users = room.users.filter((user) => {
+        return user.socketId !== null;
+    });
+    checkIfShouldDeleteRoom(room);
+}
+
+
+
 
 // get room
 export const getRoom = (roomId: string) => {
