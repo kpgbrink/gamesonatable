@@ -1,7 +1,7 @@
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { RoomData } from "api";
+import { Game, RoomData } from "api";
 import QRCode from "qrcode.react";
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -37,7 +37,13 @@ export default function PlayerJoin() {
   }, [setRoomCreated, roomCreated, roomId, socket]);
 
   useEffect(() => {
-    socket.emit("set player current scene", "PlayerStartingScene");
+    const updateGame: Game = {
+      currentPlayerScene: "PlayerStartingScene",
+      selectedGame: null,
+      joinable: null,
+      leavable: null,
+    };
+    socket.emit("update game", updateGame);
   }, [roomId, socket]);
 
   const joinURL = `${window.location.origin}/room/${roomCreated}/player`;

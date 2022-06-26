@@ -32,13 +32,16 @@ export interface User {
     hasSetName: boolean;
 }
 
-export interface Game {
-    currentPlayerScene: string | null;
-    selectedGame: string | null;
+export interface GameData {
     // If someone is able to leave a game in the middle of a game
     leavable: boolean | null;
     // If game is joinable when the game is running
     joinable: boolean | null;
+}
+
+export interface Game extends GameData {
+    currentPlayerScene: string | null;
+    selectedGame: string | null;
 }
 
 export interface RoomData {

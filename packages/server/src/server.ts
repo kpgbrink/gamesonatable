@@ -1,4 +1,4 @@
-import { CardContent, NewRoomId, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
+import { CardContent, Game, NewRoomId, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -87,19 +87,10 @@ io.on('connection', (socket) => {
         console.log(err);
     });
 
-    socket.on('select game', (game: string) => {
-        // set room game
+    socket.on('update game', (game: Partial<Game>) => {
         const room = getRoom(user.room);
         if (!room) return;
-        room.game.selectedGame = game;
-        io.to(user.room).emit('room data', room);
-    });
-
-    socket.on('set player current scene', (scene: string) => {
-        // set room game
-        const room = getRoom(user.room);
-        if (!room) return;
-        room.game.currentPlayerScene = scene;
+        room.game = { ...room.game, ...game };
         io.to(user.room).emit('room data', room);
     });
 
@@ -156,7 +147,6 @@ io.on('connection', (socket) => {
 
     socket.on('give card', (userId: string, cardContent: CardContent, timeGivenToUser: number) => {
         const userGivenCard = getRoom(user.room)?.users.find(u => u.id === userId);
-        console.log('give card', userGivenCard);
         if (!userGivenCard) return;
         io.to(userGivenCard.socketId).emit('give card', cardContent, timeGivenToUser);
     });

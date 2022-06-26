@@ -1,4 +1,4 @@
-import { RoomData, UserBeforeGameStartDataDictionary } from "api";
+import { Game, RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import GameTable from "../objects/GameTable";
 import MenuButton from "../objects/MenuButton";
@@ -32,7 +32,10 @@ export default class HostBeforeGameStart extends HostScene {
     create() {
         super.create();
         this.hostUserAvatars = new HostUserAvatarsAroundTableSelectPosition(this);
-        socket.emit('set player current scene', 'PlayerBeforeGameStart');
+        const updateGame: Partial<Game> = {
+            currentPlayerScene: 'PlayerBeforeGameStart',
+        };
+        socket.emit('update game', updateGame);
         this.setUpStartGameButtonAndInstructionText();
         this.hostUserAvatars.createUsers(persistentData.roomData);
         this.onRoomDataUpdateInstructionsOrStartGameButton(persistentData.roomData);
@@ -122,7 +125,13 @@ export default class HostBeforeGameStart extends HostScene {
         persistentData.roomData?.users.forEach(user => {
             user.inGame = true;
         });
-        socket.emit('set player current scene', persistentData.roomData?.game.selectedGame);
+        {
+            // set the game scene
+            const updateGame: Partial<Game> = {
+                currentPlayerScene: persistentData.roomData?.game.selectedGame,
+            };
+            socket.emit('update game', updateGame);
+        }
         if (!persistentData.roomData?.game.selectedGame) return;
         this.scene.start(persistentData.roomData?.game.selectedGame);
     }
