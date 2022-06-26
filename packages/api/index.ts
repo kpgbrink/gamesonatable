@@ -32,11 +32,19 @@ export interface User {
     hasSetName: boolean;
 }
 
+export interface Game {
+    currentPlayerScene: string | null;
+    selectedGame: string | null;
+    // If someone is able to leave a game in the middle of a game
+    leavable: boolean | null;
+    // If game is joinable when the game is running
+    joinable: boolean | null;
+}
+
 export interface RoomData {
-    currentPlayerScene: string | null; // The current Phaser scene
-    selectedGame: string | null; // The current game we are trying to play
     room: string;
     users: User[];
+    game: Game;
 }
 
 export interface UserBeforeGameStartData {

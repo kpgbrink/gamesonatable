@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
         // set room game
         const room = getRoom(user.room);
         if (!room) return;
-        room.selectedGame = game;
+        room.game.selectedGame = game;
         io.to(user.room).emit('room data', room);
     });
 
@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
         // set room game
         const room = getRoom(user.room);
         if (!room) return;
-        room.currentPlayerScene = scene;
+        room.game.currentPlayerScene = scene;
         io.to(user.room).emit('room data', room);
     });
 

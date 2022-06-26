@@ -122,9 +122,9 @@ export default class HostBeforeGameStart extends HostScene {
         persistentData.roomData?.users.forEach(user => {
             user.inGame = true;
         });
-        socket.emit('set player current scene', persistentData.roomData?.selectedGame);
-        if (!persistentData.roomData?.selectedGame) return;
-        this.scene.start(persistentData.roomData?.selectedGame);
+        socket.emit('set player current scene', persistentData.roomData?.game.selectedGame);
+        if (!persistentData.roomData?.game.selectedGame) return;
+        this.scene.start(persistentData.roomData?.game.selectedGame);
     }
 
     onRoomDataUpdateInstructionsOrStartGameButton(roomData: RoomData | null) {

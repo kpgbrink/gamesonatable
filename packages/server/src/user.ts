@@ -24,7 +24,15 @@ export const upsertUser = (upsertingUser: User) => {
     const user: User = upsertingUser;
     // add room if it doesn't exist yet
     if (!rooms.has(user.room)) {
-        rooms.set(user.room, { currentPlayerScene: 'PlayerStartingScene', selectedGame: null, room: user.room, users: [] });
+        rooms.set(user.room, {
+            game: {
+                currentPlayerScene: 'PlayerStartingScene',
+                selectedGame: null,
+                leavable: null,
+                joinable: null,
+            },
+            room: user.room, users: []
+        });
     }
     const roomData = rooms.get(user.room);
     if (roomData) {
