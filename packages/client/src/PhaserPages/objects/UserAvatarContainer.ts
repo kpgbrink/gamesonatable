@@ -25,12 +25,14 @@ export const generateRandomUserAvatar = (): UserAvatar => {
     const legs = randomNegativeOne(.03) || randomIndex(avatarImages.legs);
     const userAvatar = { base, beard, body, cloak, gloves, boots, hair, head, legs };
     socket.emit('set player avatar', userAvatar);
+    console.log('set player avatar', userAvatar);
     return userAvatar;
 }
 
 export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
+    console.log('loadUserAvatarSprites', socket.id);
     socket.on('room data', (roomData: RoomData) => {
-        console.log('room data');
+        console.log('room data', roomData);
         roomData?.users.forEach(user => {
             const userId = user.id;
             const userAvatar = user.userAvatar;

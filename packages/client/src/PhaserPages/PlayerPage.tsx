@@ -21,19 +21,28 @@ export default function PlayerPage(props: any) {
     if (!userId) {
       throw new Error("userId is not defined");
     }
-    const listener = (newUserId: string) => {
-      console.log("user id", newUserId);
+    const newUserIdListenener = (newUserId: string) => {
       persistentData.myUserId = newUserId;
       if (newUserId !== userId) {
+        console.log("new user id user id", newUserId);
         navigate(`/room/${roomId}/player/${newUserId}`);
+        socket.emit("get room data");
       }
     };
-    socket.on("user id", listener);
+    socket.on("new user id", newUserIdListenener);
+    const existingUserIdListener = (existingUserId: string) => {
+      if (existingUserId !== userId) {
+        console.log("existing user id", existingUserId);
+        navigate(`/room/${roomId}/player/${existingUserId}`);
+        socket.emit("get room data");
+      }
+    };
+    socket.on("existing user id", existingUserIdListener);
     persistentData.myUserId = userId;
     socket.emit("join room", roomId, userId);
     return () => {
-      socket.off("user id", listener);
-      socket.off();
+      socket.off("new user id", newUserIdListenener);
+      socket.off("existing user id", existingUserIdListener);
     };
   }, [roomId, socket, userId, navigate]);
 

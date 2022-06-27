@@ -13,14 +13,14 @@ export default function PlayerPageCreatingUserId() {
   useEffect(() => {
     console.log("start listening to the user id");
     const listener = (newUserId: string) => {
-      console.log("user id", newUserId);
       persistentData.myUserId = newUserId;
+      console.log("new user id on player page creating user id", newUserId);
       navigate(`/room/${roomId}/player/${newUserId}`);
     };
-    socket.on("user id", listener);
+    socket.on("new user id", listener);
     socket.emit("join room", roomId, null);
     return () => {
-      socket.off("user id", listener);
+      socket.off("new user id", listener);
     };
   }, [navigate, socket, roomId]);
 

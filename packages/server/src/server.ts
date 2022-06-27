@@ -14,7 +14,7 @@ const httpServer = app.listen(port, () => {
 });
 const io = new Server(httpServer, {
     cors: config.get('cors.origin'),
-    pingInterval: 10000,
+    pingInterval: 5000,
 });
 
 app.use(cors({ origin: config.get('cors.origin'), credentials: config.get('cors.credentials') }));
@@ -66,13 +66,21 @@ io.on('connection', (socket) => {
 
     socket.on('join room', (room: string, userId: string) => {
         if (room === null) return;
+        console.log('start joining the room');
         socketLeavePreviousRoom(socket, user);
         user.isHost = false;
         user.room = room;
+        user.socketId = socket.id;
+        // make the socket join the room
+        socket.join(user.room);
         // find any users that need to be replaced
         const roomData = getRoom(room);
-        if (!roomData) return;
+        if (!roomData) {
+            socket.emit('room does not exist', room);
+            return;
+        }
         const users = roomData.users;
+        // Handle taking over a user that lost connection
         const usersWithoutSocketIds = users.filter(u => u.socketId === null);
         const userWithoutSocketIdMatchingUserId = usersWithoutSocketIds.find(u => u.id === userId)
         if (usersWithoutSocketIds.length > 0) {
@@ -80,9 +88,9 @@ io.on('connection', (socket) => {
             if (usersWithoutSocketIds.length === 1) {
                 const userToReplace = usersWithoutSocketIds[0];
                 userToReplace.socketId = socket.id;
-                upsertUser(userToReplace);
+                user = upsertUser(userToReplace);
                 console.log('replace user only 1 user to replace', userToReplace.id);
-                io.to(userToReplace.socketId).emit('user id', user.id);
+                io.to(userToReplace.socketId).emit('existing user id', user.id);
                 io.to(user.room).emit('room data', getRoom(user.room));
                 return;
             }
@@ -90,9 +98,9 @@ io.on('connection', (socket) => {
                 // if the user id matches a user that is missing a socket id, then replace that user
                 const userToReplace = userWithoutSocketIdMatchingUserId;
                 userToReplace.socketId = socket.id;
-                upsertUser(userToReplace);
+                user = upsertUser(userToReplace);
                 console.log('replace user user id matches user to replace', userToReplace.id);
-                io.to(userToReplace.socketId).emit('user id', user.id);
+                io.to(userToReplace.socketId).emit('existing user id', user.id);
                 io.to(user.room).emit('room data', getRoom(user.room));
                 return;
             }
@@ -105,14 +113,41 @@ io.on('connection', (socket) => {
                 return;
             }
         }
-        // if no users are missing a socket id, then add the user
-        user.id = userId ?? uniqid();
-        user.socketId = socket.id;
-        user = upsertUser(user);
-        socket.join(user.room);
-        if (!user.socketId) return;
-        io.to(user.socketId).emit('user id', user.id);
-        io.to(user.room).emit('room data', getRoom(user.room));
+        // Handle giving a user a new id if they connect but someone is already using the id
+        // if given an id but a user already exists with that id, then give that person a new id. Someone might have
+        // sent the link of their id to someone else
+        // maybe just not handle this.. this is too hard...
+        const userWithSameUserId = users.find(u => u.id === userId && u.socketId !== socket.id);
+        if (userWithSameUserId) {
+            console.log('a user already has that id so make a new uniqid');
+            console.log('user with same id', userWithSameUserId, userWithSameUserId.id, userId, socket.id);
+            user.socketId = socket.id;
+            user = upsertUser(user);
+            if (!user.socketId) return;
+            io.to(user.socketId).emit('existing user id', user.id);
+            return;
+        }
+        // If not given a user id then just send the user their id
+        if (!userId) {
+            user.socketId = socket.id;
+            user = upsertUser(user);
+            if (!user.socketId) return;
+            console.log('the user id', user.id);
+            io.to(user.socketId).emit('new user id', user.id);
+            io.to(user.room).emit('room data', getRoom(user.room));
+            return;
+        }
+        if (userId) {
+            // If given a user id then send the user their id
+            user.socketId = socket.id;
+            user = upsertUser(user);
+            if (!user.socketId) return;
+            console.log('the user id', user.id);
+            io.to(user.socketId).emit('existing user id', user.id);
+            io.to(user.room).emit('room data', getRoom(user.room));
+            return;
+        }
+        console.log('do nothing');
     });
 
     // On disconnect
