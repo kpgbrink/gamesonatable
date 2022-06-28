@@ -75,9 +75,9 @@ export const removeUser = (userSocketSocketId: string, roomId: string) => {
 const checkIfShouldDeleteRoom = (room: RoomData) => {
     // delete room if no users or all users have no socket id
     if (room && room.users.length === 0 || room.users.every((user) => { return user.socketId === null })) {
-        console.log('all existing rooms', rooms);
-        console.log('deleting room', room);
         rooms.delete(room.room);
+        console.log('all existing rooms count ', rooms.size);
+        console.log('all existing rooms', rooms);
     }
 }
 
@@ -91,9 +91,6 @@ export const removeAllUsersWithoutSocketId = (roomId: string) => {
     checkIfShouldDeleteRoom(room);
 }
 
-
-
-
 // get room
 export const getRoom = (roomId: string) => {
     const room = rooms.get(roomId);
@@ -101,14 +98,11 @@ export const getRoom = (roomId: string) => {
 }
 
 export const getRoomHost = (room: string) => {
-    console.log('getRoomHost', room);
     const roomData = getRoom(room);
-    console.log('getRoomHost', roomData);
     if (!roomData) return;
     return roomData.users.find(u => u.isHost);
 }
 
 export const getRoomHostSocketId = (room: string) => {
-    console.log('getRoomHostId');
     return getRoomHost(room)?.socketId;
 }

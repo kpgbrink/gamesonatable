@@ -63,3 +63,14 @@ export interface CardContent {
     card: string | null;
     joker: boolean | null;
 }
+
+export interface StoredBrowserIds {
+    localStorage: {
+        socketId: string | null;
+        userId: string | null;
+    };
+    sessionStorage: {
+        socketId: string | null;
+        userId: string | null;
+    };
+}

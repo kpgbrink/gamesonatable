@@ -9,6 +9,7 @@ import PlayerBeforeGameStart from "./PlayerScenes/PlayerBeforeGameStart";
 import PlayerStartingScene from "./PlayerScenes/PlayerStartingScene";
 import Texas from "./PlayerScenes/Texas";
 import ThirtyOne from "./PlayerScenes/ThirtyOne";
+import { getStoredIds, storeIds } from "./StoredBrowserIds";
 
 export default function PlayerPage(props: any) {
   const { socket } = useContext(AppContext);
@@ -22,8 +23,9 @@ export default function PlayerPage(props: any) {
       throw new Error("userId is not defined");
     }
     const newUserIdListenener = (newUserId: string) => {
-      persistentData.myUserId = newUserId;
       if (newUserId !== userId) {
+        persistentData.myUserId = newUserId;
+        storeIds(socket.id, newUserId);
         console.log("new user id user id", newUserId);
         navigate(`/room/${roomId}/player/${newUserId}`);
         socket.emit("get room data");
@@ -32,6 +34,8 @@ export default function PlayerPage(props: any) {
     socket.on("new user id", newUserIdListenener);
     const existingUserIdListener = (existingUserId: string) => {
       if (existingUserId !== userId) {
+        persistentData.myUserId = existingUserId;
+        storeIds(socket.id, existingUserId);
         console.log("existing user id", existingUserId);
         navigate(`/room/${roomId}/player/${existingUserId}`);
         socket.emit("get room data");
@@ -39,7 +43,7 @@ export default function PlayerPage(props: any) {
     };
     socket.on("existing user id", existingUserIdListener);
     persistentData.myUserId = userId;
-    socket.emit("join room", roomId, userId);
+    socket.emit("join room", roomId, userId, getStoredIds());
     return () => {
       socket.off("new user id", newUserIdListenener);
       socket.off("existing user id", existingUserIdListener);

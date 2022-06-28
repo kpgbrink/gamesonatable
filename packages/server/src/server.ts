@@ -1,4 +1,4 @@
-import { CardContent, Game, NewRoomId, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
+import { CardContent, Game, NewRoomId, StoredBrowserIds, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -64,9 +64,12 @@ io.on('connection', (socket) => {
         socket.join(user.room);
     });
 
-    socket.on('join room', (room: string, userId: string) => {
+    socket.on('join room', (room: string, userId: string, storedIds: StoredBrowserIds) => {
         if (room === null) return;
         console.log('start joining the room');
+        console.log('stored ids', storedIds);
+        const storedUserId = storedIds.sessionStorage.userId ?? storedIds.localStorage.userId;
+        const storedSocketId = storedIds.sessionStorage.socketId ?? storedIds.localStorage.socketId;
         socketLeavePreviousRoom(socket, user);
         user.isHost = false;
         user.room = room;
@@ -113,14 +116,22 @@ io.on('connection', (socket) => {
                 return;
             }
         }
+        // TODO add way to instantly replace a user that still exists
+
+
         // Handle giving a user a new id if they connect but someone is already using the id
         // if given an id but a user already exists with that id, then give that person a new id. Someone might have
         // sent the link of their id to someone else
         // maybe just not handle this.. this is too hard...
+        // Yeah I think I'm just going to have users override other users' ids this is hard...
+        // maybe switch to local storage... to keep this simple. so if the user has this id in their local storage then they can over take it.
+        // other wise it's probably a different device.
         const userWithSameUserId = users.find(u => u.id === userId && u.socketId !== socket.id);
-        if (userWithSameUserId) {
+        // If the stored user id is the same as the user id, then override the user id
+        const sessionIdIsSame = storedUserId === userId
+        console.log('sesions id is same', sessionIdIsSame);
+        if (userWithSameUserId && !sessionIdIsSame) {
             console.log('a user already has that id so make a new uniqid');
-            console.log('user with same id', userWithSameUserId, userWithSameUserId.id, userId, socket.id);
             user.socketId = socket.id;
             user = upsertUser(user);
             if (!user.socketId) return;
@@ -191,7 +202,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('get room data', () => {
-        console.log(user.id);
         if (!user.socketId) return;
         io.to(user.socketId).emit('room data', getRoom(user.room));
     });
