@@ -82,6 +82,14 @@ io.on('connection', (socket) => {
             return;
         }
         const users = roomData.users;
+        // if I already match with a user socketId then I just send that user id
+        const userSocketMatch = users.find(u => u.socketId === socket.id);
+        if (userSocketMatch) {
+            console.log('user socket match');
+            socket.emit('user id', userSocketMatch.id);
+            return;
+        }
+
         // Handle taking over a user that lost connection
         const usersWithoutSocketIds = users.filter(u => u.socketId === null);
         const userWithoutSocketIdMatchingUserId = usersWithoutSocketIds.find(u => u.id === userId)
@@ -92,6 +100,7 @@ io.on('connection', (socket) => {
                 userToReplace.socketId = socket.id;
                 user = upsertUser(userToReplace);
                 console.log('replace user only 1 user to replace', userToReplace.id);
+                console.log('user.id', user.id);
                 io.to(userToReplace.socketId).emit('user id', user.id);
                 io.to(user.room).emit('room data', getRoom(user.room));
                 return;
@@ -150,13 +159,17 @@ io.on('connection', (socket) => {
         }
         if (userId) {
             console.log('user id given so send them their id');
-            // If given a user id then send the user their id
-            user.id = userId;
+            // If given a user id then send the user their id if it matches the session storage unless if they have replaced a different user
+            // otherwise make a new id...
+            if (storedIds.sessionStorage.userId === userId) {
+                user.id = userId;
+                console.log('just give them back the id in url');
+            }
             user.socketId = socket.id;
             user = upsertUser(user);
             if (!user.socketId) return;
             console.log('the user id', user.id);
-            io.to(user.socketId).emit('existing user id', user.id);
+            io.to(user.socketId).emit('user id', user.id);
             io.to(user.room).emit('room data', getRoom(user.room));
             return;
         }
@@ -192,6 +205,7 @@ io.on('connection', (socket) => {
     socket.on('set player avatar', (avatar: UserAvatar) => {
         // Don't set avatar if already set
         if (user.userAvatar) return;
+        console.log('user avatar', user.userAvatar, avatar);
         user = upsertUser({ ...user, userAvatar: avatar });
         io.to(user.room).emit('room data', getRoom(user.room));
     });
