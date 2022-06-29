@@ -66,8 +66,7 @@ io.on('connection', (socket) => {
 
     socket.on('join room', (room: string, userId: string, storedIds: StoredBrowserIds) => {
         if (room === null) return;
-        console.log('start joining the room');
-        console.log('stored ids', storedIds);
+        console.log('---------------');
         const storedUserId = storedIds.sessionStorage.userId ?? storedIds.localStorage.userId;
         const storedSocketId = storedIds.sessionStorage.socketId ?? storedIds.localStorage.socketId;
         socketLeavePreviousRoom(socket, user);
@@ -93,7 +92,7 @@ io.on('connection', (socket) => {
                 userToReplace.socketId = socket.id;
                 user = upsertUser(userToReplace);
                 console.log('replace user only 1 user to replace', userToReplace.id);
-                io.to(userToReplace.socketId).emit('existing user id', user.id);
+                io.to(userToReplace.socketId).emit('user id', user.id);
                 io.to(user.room).emit('room data', getRoom(user.room));
                 return;
             }
@@ -103,7 +102,7 @@ io.on('connection', (socket) => {
                 userToReplace.socketId = socket.id;
                 user = upsertUser(userToReplace);
                 console.log('replace user user id matches user to replace', userToReplace.id);
-                io.to(userToReplace.socketId).emit('existing user id', user.id);
+                io.to(userToReplace.socketId).emit('user id', user.id);
                 io.to(user.room).emit('room data', getRoom(user.room));
                 return;
             }
@@ -128,28 +127,31 @@ io.on('connection', (socket) => {
         // other wise it's probably a different device.
         const userWithSameUserId = users.find(u => u.id === userId && u.socketId !== socket.id);
         // If the stored user id is the same as the user id, then override the user id
-        const sessionIdIsSame = storedUserId === userId
+        const sessionIdIsSame = storedIds.sessionStorage.userId === userId
         console.log('sesions id is same', sessionIdIsSame);
         if (userWithSameUserId && !sessionIdIsSame) {
             console.log('a user already has that id so make a new uniqid');
             user.socketId = socket.id;
             user = upsertUser(user);
             if (!user.socketId) return;
-            io.to(user.socketId).emit('existing user id', user.id);
+            io.to(user.socketId).emit('user id', user.id);
             return;
         }
         // If not given a user id then just send the user their id
         if (!userId) {
+            console.log('no user id given so send them their id');
             user.socketId = socket.id;
             user = upsertUser(user);
             if (!user.socketId) return;
             console.log('the user id', user.id);
-            io.to(user.socketId).emit('new user id', user.id);
+            io.to(user.socketId).emit('user id', user.id);
             io.to(user.room).emit('room data', getRoom(user.room));
             return;
         }
         if (userId) {
+            console.log('user id given so send them their id');
             // If given a user id then send the user their id
+            user.id = userId;
             user.socketId = socket.id;
             user = upsertUser(user);
             if (!user.socketId) return;

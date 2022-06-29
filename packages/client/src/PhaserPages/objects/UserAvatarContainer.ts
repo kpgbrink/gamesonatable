@@ -3,7 +3,7 @@ import Phaser from "phaser";
 import socket from "../../SocketConnection";
 import { avatarImages } from "./avatarImages.generated";
 import { persistentData } from "./PersistantData";
-import { loadIfImageNotLoaded, loadIfImageNotLoadedAndUserAvatarHasIt, randomIndex } from "./Tools";
+import { loadIfImageNotLoadedAndUserAvatarHasIt, randomIndex } from "./Tools";
 
 const playerFolder = 'assets/player/';
 
@@ -37,7 +37,10 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
             const userId = user.id;
             const userAvatar = user.userAvatar;
             if (!userAvatar) return;
-            loadIfImageNotLoaded(scene, `${userId}-base`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`);
+            console.log('userAvatar', userAvatar);
+            console.log('userId', userId);
+            console.log('scene', scene);
+            loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-base`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`, userAvatar.base);
             loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-cloak`, `${playerFolder}cloak/${avatarImages.cloak[userAvatar.cloak]}`, userAvatar.cloak);
             loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-gloves`, `${playerFolder}gloves/${avatarImages.gloves[userAvatar.gloves]}`, userAvatar.gloves);
             loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-body`, `${playerFolder}body/${avatarImages.body[userAvatar.body]}`, userAvatar.body);

@@ -19,10 +19,10 @@ export default function PlayerPageCreatingUserId() {
       console.log("new user id on player page creating user id", newUserId);
       navigate(`/room/${roomId}/player/${newUserId}`);
     };
-    socket.on("new user id", listener);
+    socket.on("user id", listener);
     socket.emit("join room", roomId, null, getStoredIds());
     return () => {
-      socket.off("new user id", listener);
+      socket.off("user id", listener);
     };
   }, [navigate, socket, roomId]);
 
