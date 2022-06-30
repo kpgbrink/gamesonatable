@@ -3,7 +3,8 @@ import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
 import { persistentData } from "./objects/PersistantData";
-import { getStoredIds, storeIds } from "./StoredBrowserIds";
+import ShowRoomNotExist from "./PlayerPage/ShowRoomNotExist";
+import { getStoredIds, storeIds } from "./PlayerPage/StoredBrowserIds";
 
 export default function PlayerPageCreatingUserId() {
   const { socket } = useContext(AppContext);
@@ -27,5 +28,10 @@ export default function PlayerPageCreatingUserId() {
   }, [navigate, socket, roomId]);
 
   console.log("userId", userId, "myPersistentuserId", persistentData.myUserId);
-  return <LinearProgress />;
+  return (
+    <>
+      <LinearProgress />
+      <ShowRoomNotExist />
+    </>
+  );
 }
