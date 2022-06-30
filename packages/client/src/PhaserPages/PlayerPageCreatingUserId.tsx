@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
 import { persistentData } from "./objects/PersistantData";
 import ShowRoomNotExist from "./PlayerPage/ShowRoomNotExist";
+import ShowUserReplaceOptions from "./PlayerPage/ShowUserReplaceOptions";
 import { getStoredIds, storeIds } from "./PlayerPage/StoredBrowserIds";
 
 export default function PlayerPageCreatingUserId() {
@@ -32,6 +33,7 @@ export default function PlayerPageCreatingUserId() {
     <>
       <LinearProgress />
       <ShowRoomNotExist />
+      <ShowUserReplaceOptions />
     </>
   );
 }

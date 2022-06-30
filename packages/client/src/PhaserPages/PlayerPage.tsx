@@ -5,6 +5,7 @@ import { AppContext } from "../AppContext";
 import { persistentData } from "./objects/PersistantData";
 import PhaserWrapper from "./PhaserWrapper";
 import ShowRoomNotExist from "./PlayerPage/ShowRoomNotExist";
+import ShowUserReplaceOptions from "./PlayerPage/ShowUserReplaceOptions";
 import { getStoredIds, storeIds } from "./PlayerPage/StoredBrowserIds";
 import Omaha from "./PlayerScenes/Omaha";
 import PlayerBeforeGameStart from "./PlayerScenes/PlayerBeforeGameStart";
@@ -76,6 +77,7 @@ export default function PlayerPage() {
         gameName="Client"
       />
       <ShowRoomNotExist />
+      <ShowUserReplaceOptions />
     </>
   );
 }
