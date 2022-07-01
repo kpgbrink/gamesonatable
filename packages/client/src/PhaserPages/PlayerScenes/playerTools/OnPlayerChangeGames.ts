@@ -6,7 +6,7 @@ export const onPlayerChangeGames = (phaserScene: Phaser.Scene) => {
     socket.on("room data", (roomData: RoomData) => {
         // start scene if scene is different
         (() => {
-            if (!roomData.game.currentPlayerScene) {
+            if (!roomData?.game.currentPlayerScene) {
                 return;
             }
             if (phaserScene.scene.key === roomData.game.currentPlayerScene) {

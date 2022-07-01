@@ -6,6 +6,7 @@ import {
   List,
   ListItem,
 } from "@mui/material";
+import { RoomData } from "api";
 import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import socket from "../../SocketConnection";
@@ -14,6 +15,7 @@ export default function ShowUserReplaceOptions() {
   const [open, setOpen] = useState(false);
   const [usersToReplace, setUsersToReplace] = useState<string[]>([]);
   const { roomId } = useParams();
+  const [roomData, setRoomData] = useState<RoomData>();
 
   useEffect(() => {
     const listener = (usersToReplaceData: string[]) => {
@@ -27,12 +29,23 @@ export default function ShowUserReplaceOptions() {
     };
   }, [open, usersToReplace]);
 
+  useEffect(() => {
+    const listener = (roomData: RoomData) => {
+      setRoomData(roomData);
+    };
+    socket.on("room data", listener);
+    socket.emit("get room data");
+    return () => {
+      socket.off("room data", listener);
+    };
+  }, [roomData]);
+
   // auto choose on the server of the userId thing based on the local data of the user.
 
   return (
     <>
       {/* <Button onClick={() => setOpen(true)}>Open dialog</Button> */}
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      <Dialog open={open}>
         <DialogTitle>Select User to Replace</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -43,13 +56,14 @@ export default function ShowUserReplaceOptions() {
             {usersToReplace.map((userId) => (
               <ListItem>
                 <NavLink
+                  key={userId}
                   to={`/room/${roomId}/player/${userId}`}
                   onClick={() => {
                     setOpen(false);
-                    window.location.reload();
                   }}
                 >
-                  {userId}
+                  {roomData?.users.find((user) => user.id === userId)?.name ??
+                    userId}
                 </NavLink>
               </ListItem>
             ))}

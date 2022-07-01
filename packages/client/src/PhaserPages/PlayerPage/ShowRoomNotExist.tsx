@@ -26,7 +26,7 @@ export default function ShowRoomNotExist() {
   return (
     <>
       {/* <Button onClick={() => setOpen(true)}>Open dialog</Button> */}
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      <Dialog open={open}>
         <DialogTitle>Room does not exist</DialogTitle>
         <DialogContent>
           <DialogContentText>

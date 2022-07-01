@@ -42,6 +42,21 @@ export const upsertUser = (upsertingUser: User) => {
     return user;
 }
 
+export const updateUser = (userUpdate: Partial<User>, user: User) => {
+    // only update if user is in room
+    const roomData = rooms.get(user.room);
+    if (!roomData) {
+        console.log('does not have room');
+        return;
+    }
+    const foundUser = roomData.users.find(u => u.id === user.id);
+    if (!foundUser) {
+        console.log('does not have user');
+        return;
+    }
+    Object.assign(foundUser, userUpdate);
+}
+
 export const removeUser = (userSocketSocketId: string, roomId: string) => {
     const room = getRoom(roomId);
     if (!room) return;

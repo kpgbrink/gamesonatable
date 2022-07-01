@@ -4,7 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import { Server, Socket } from "socket.io";
 import uniqid from 'uniqid';
-import { getRoom, getRoomHostSocketId, removeUser, upsertUser } from './user';
+import { getRoom, getRoomHostSocketId, removeUser, updateUser, upsertUser } from './user';
 
 const app = express();
 const port = 3001;
@@ -82,10 +82,13 @@ io.on('connection', (socket) => {
             return;
         }
         const users = roomData.users;
+
         // if I already match with a user socketId then I just send that user id
         const userSocketMatch = users.find(u => u.socketId === socket.id);
         if (userSocketMatch) {
-            console.log('user socket match');
+            console.log('users in room', users);
+            console.log('matched user', userSocketMatch);
+            console.log('user socket match', userSocketMatch.id, userSocketMatch.socketId);
             socket.emit('user id', userSocketMatch.id);
             return;
         }
@@ -110,7 +113,7 @@ io.on('connection', (socket) => {
                 const userToReplace = userWithoutSocketIdMatchingUserId;
                 userToReplace.socketId = socket.id;
                 user = upsertUser(userToReplace);
-                console.log('replace user user id matches user to replace', userToReplace.id);
+                console.log('replace user user id matches user to replace', userToReplace.id, user.id);
                 io.to(userToReplace.socketId).emit('user id', user.id);
                 io.to(user.room).emit('room data', getRoom(user.room));
                 return;
@@ -197,7 +200,7 @@ io.on('connection', (socket) => {
     socket.on('set player name', (name: string) => {
         // Keep name if ''
         if (name === '') return;
-        user = upsertUser({ ...user, name: name, hasSetName: true });
+        updateUser({ name: name, hasSetName: true }, user);
         // TODO
         io.to(user.room).emit('room data', getRoom(user.room));
     });
@@ -205,7 +208,7 @@ io.on('connection', (socket) => {
     socket.on('set player avatar', (avatar: UserAvatar) => {
         // Don't set avatar if already set
         if (user.userAvatar) return;
-        user = upsertUser({ ...user, userAvatar: avatar });
+        updateUser({ userAvatar: avatar }, user);
         io.to(user.room).emit('room data', getRoom(user.room));
     });
 
