@@ -4,7 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import { Server, Socket } from "socket.io";
 import uniqid from 'uniqid';
-import { getRoom, getRoomHostSocketId, removeUser, updateUser, upsertUser } from './user';
+import { addUserToRoom, getRoom, getRoomHostSocketId, removeUser, updateUser } from './user';
 
 const app = express();
 const port = 3001;
@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
         }
         user.isHost = true;
         user.room = room;
-        user = upsertUser(user);
+        user = addUserToRoom(user);
         socket.join(user.room);
     });
 
@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
             if (usersWithoutSocketIds.length === 1) {
                 const userToReplace = usersWithoutSocketIds[0];
                 userToReplace.socketId = socket.id;
-                user = upsertUser(userToReplace);
+                user = addUserToRoom(userToReplace);
                 console.log('replace user only 1 user to replace', userToReplace.id);
                 console.log('user.id', user.id);
                 io.to(userToReplace.socketId).emit('user id', user.id);
@@ -112,7 +112,7 @@ io.on('connection', (socket) => {
                 // if the user id matches a user that is missing a socket id, then replace that user
                 const userToReplace = userWithoutSocketIdMatchingUserId;
                 userToReplace.socketId = socket.id;
-                user = upsertUser(userToReplace);
+                user = addUserToRoom(userToReplace);
                 console.log('replace user user id matches user to replace', userToReplace.id, user.id);
                 io.to(userToReplace.socketId).emit('user id', user.id);
                 io.to(user.room).emit('room data', getRoom(user.room));
@@ -144,7 +144,7 @@ io.on('connection', (socket) => {
         if (userWithSameUserId && !sessionIdIsSame) {
             console.log('a user already has that id so make a new uniqid');
             user.socketId = socket.id;
-            user = upsertUser(user);
+            user = addUserToRoom(user);
             if (!user.socketId) return;
             io.to(user.socketId).emit('user id', user.id);
             return;
@@ -153,7 +153,7 @@ io.on('connection', (socket) => {
         if (!userId) {
             console.log('no user id given so send them their id');
             user.socketId = socket.id;
-            user = upsertUser(user);
+            user = addUserToRoom(user);
             if (!user.socketId) return;
             console.log('the user id', user.id);
             io.to(user.socketId).emit('user id', user.id);
@@ -169,7 +169,7 @@ io.on('connection', (socket) => {
                 console.log('just give them back the id in url');
             }
             user.socketId = socket.id;
-            user = upsertUser(user);
+            user = addUserToRoom(user);
             if (!user.socketId) return;
             console.log('the user id', user.id);
             io.to(user.socketId).emit('user id', user.id);
@@ -221,6 +221,7 @@ io.on('connection', (socket) => {
 
     socket.on('get room data', () => {
         if (!user.socketId) return;
+        console.log('get room data');
         io.to(user.socketId).emit('room data', getRoom(user.room));
     });
 

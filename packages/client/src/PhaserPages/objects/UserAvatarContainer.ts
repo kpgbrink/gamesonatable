@@ -32,14 +32,10 @@ export const generateRandomUserAvatar = (): UserAvatar => {
 export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
     console.log('loadUserAvatarSprites', socket.id);
     socket.on('room data', (roomData: RoomData) => {
-        console.log('room data', roomData);
         roomData?.users.forEach(user => {
             const userId = user.id;
             const userAvatar = user.userAvatar;
             if (!userAvatar) return;
-            console.log('userAvatar', userAvatar);
-            console.log('userId', userId);
-            console.log('scene', scene);
             loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-base`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`, userAvatar.base);
             loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-cloak`, `${playerFolder}cloak/${avatarImages.cloak[userAvatar.cloak]}`, userAvatar.cloak);
             loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-gloves`, `${playerFolder}gloves/${avatarImages.gloves[userAvatar.gloves]}`, userAvatar.gloves);

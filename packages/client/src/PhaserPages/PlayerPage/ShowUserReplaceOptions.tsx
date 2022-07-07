@@ -38,7 +38,7 @@ export default function ShowUserReplaceOptions() {
     return () => {
       socket.off("room data", listener);
     };
-  }, [roomData]);
+  }, []);
 
   // auto choose on the server of the userId thing based on the local data of the user.
 
