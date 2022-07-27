@@ -1,4 +1,3 @@
-import { CardContent } from "api";
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/items/CardContainer";
 import { loadIfImageNotLoaded, Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
@@ -53,10 +52,10 @@ export class ThirtyOneGame extends HostCardGame {
             this.changeState(new ThirtyOneGamePlayerTurn(this));
         });
 
-        socket.on('thirty one round end', (userId: string, cardContent: CardContent) => {
+        socket.on('thirty one round end', (userId: string, cardId: number) => {
             const user = this.getUser(userId);
             if (!user) return;
-            const card = this.cards.getCard(cardContent);
+            const card = this.cards.getCard(cardId);
             if (!card) return;
             this.thirtyOnePlayerId = userId;
             this.onCardMoveToTable(userId, card);

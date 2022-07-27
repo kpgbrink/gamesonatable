@@ -1,4 +1,3 @@
-import { CardContent } from "api";
 import socket from "../../../../SocketConnection";
 import { Cards } from "../../../objects/Cards";
 import CardContainer from "../../../objects/items/CardContainer";
@@ -48,18 +47,18 @@ export abstract class HostCardGame extends HostGame {
         this.cards.create(screenCenter.x, screenCenter.y);
         this.changeState(new Shuffling(this));
 
-        socket.on('moveCardToHand', (userId: string, cardContent: CardContent) => {
+        socket.on('moveCardToHand', (userId: string, cardId: number) => {
             const user = this.getUser(userId);
             if (!user) return;
-            const card = this.cards.getCard(cardContent);
+            const card = this.cards.getCard(cardId);
             if (!card) return;
             card.setFaceUp(false);
             card.userHandId = user.user.id;
         });
-        socket.on('moveCardToTable', (userId: string, cardContent: CardContent) => {
+        socket.on('moveCardToTable', (userId: string, cardId: number) => {
             const user = this.getUser(userId);
             if (!user) return;
-            const card = this.cards.getCard(cardContent);
+            const card = this.cards.getCard(cardId);
             if (!card) return;
             this.onCardMoveToTable(userId, card);
         });

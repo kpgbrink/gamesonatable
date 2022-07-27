@@ -60,7 +60,7 @@ export interface UserBeforeGameStartDataDictionary {
 
 export interface CardContent {
     suit: string | null;
-    card: string | null;
+    rank: string | null;
     joker: boolean | null;
 }
 

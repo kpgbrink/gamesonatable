@@ -62,7 +62,7 @@ export class Dealing extends HostGameState {
 
         cardContainer.startMovingOverTimeTo(positionRotation, this.sendingOutCardTime, () => {
             // when the card is done moving, set the card to the player
-            socket.emit('give card', cardContainer.userHandId, cardContainer.cardContent, cardContainer.timeGivenToUser);
+            socket.emit('give card', cardContainer.userHandId, cardContainer.cardId, cardContainer.timeGivenToUser);
         });
         // check if every player in game has the amount of cards they need
         if (this.hostGame.hostUserAvatars?.getUsersInGame().every(userAvatar => {

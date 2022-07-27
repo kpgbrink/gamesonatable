@@ -10,15 +10,17 @@ export default class CardContainer extends ItemContainer {
     frontImage: Phaser.GameObjects.Image | null = null;
     velocity: { x: number, y: number, rotation: number } = { x: 0, y: 0, rotation: 0 };
     mass: number = 1;
+    cardId: number;
 
     cardInHandOffsetTransform: ValueWithDefault<Transform> = new ValueWithDefault({ x: 0, y: 0, rotation: 0, scale: 1 });
 
-    constructor(scene: Phaser.Scene, x: number, y: number, suit: string, card: string, joker: boolean = false) {
+    constructor(scene: Phaser.Scene, x: number, y: number, cardId: number, suit: string, rank: string, joker: boolean = false) {
         super(scene, x, y);
+        this.cardId = cardId;
         // take the 
         this.cardContent = {
             suit,
-            card,
+            rank,
             joker
         };
         this.frontImage = null;
@@ -46,7 +48,7 @@ export default class CardContainer extends ItemContainer {
         if (this.cardContent.joker) {
             return 'joker';
         }
-        return `${this.cardContent.suit}${this.cardContent.card}`;
+        return `${this.cardContent.suit}${this.cardContent.rank}`;
     }
 
     public setFaceUp(faceUp: boolean) {

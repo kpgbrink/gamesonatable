@@ -1,4 +1,4 @@
-import { CardContent, Game, NewRoomId, StoredBrowserIds, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
+import { Game, NewRoomId, StoredBrowserIds, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -248,28 +248,35 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('room data', room);
     });
 
-    socket.on('give card', (userId: string, cardContent: CardContent, timeGivenToUser: number) => {
+    socket.on('give card', (userId: string, cardId: number, timeGivenToUser: number) => {
         const userGivenCard = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userGivenCard?.socketId) return;
-        io.to(userGivenCard.socketId).emit('give card', cardContent, timeGivenToUser);
+        io.to(userGivenCard.socketId).emit('give card', cardId, timeGivenToUser);
     });
 
-    socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: CardContent, hiddenCard: CardContent, turn: number, knockPlayerId: string | null) => {
+    // TODO use this
+    socket.on('set player card hand', (userId: string, cardIds: number[], timeGivenToUser: number) => {
+        const userGivenCard = getRoom(user.room)?.users.find(u => u.id === userId);
+        if (!userGivenCard?.socketId) return;
+        io.to(userGivenCard.socketId).emit('give card', cardIds, timeGivenToUser);
+    });
+
+    socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
         const userTurn = getRoom(user.room)?.users.find(u => u.id === currentPlayerTurnId);
         if (!userTurn?.socketId) return;
         io.to(userTurn.socketId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn, knockPlayerId);
     });
 
-    socket.on('moveCardToHand', (cardContent: CardContent) => {
+    socket.on('moveCardToHand', (cardId: number) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('moveCardToHand', user.id, cardContent);
+        io.to(hostUser.socketId).emit('moveCardToHand', user.id, cardId);
     });
 
-    socket.on('moveCardToTable', (cardContent: CardContent) => {
+    socket.on('moveCardToTable', (cardId: number) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('moveCardToTable', user.id, cardContent);
+        io.to(hostUser.socketId).emit('moveCardToTable', user.id, cardId);
     });
 
     socket.on('thirty one knock', () => {
@@ -278,10 +285,10 @@ io.on('connection', (socket) => {
         io.to(hostUser.socketId).emit('thirty one knock', user.id);
     });
 
-    socket.on('moveCardToTable', (cardContent: CardContent, userHandId: string) => {
+    socket.on('moveCardToTable', (cardId: number, userHandId: string) => {
         const userHand = getRoom(user.room)?.users.find(u => u.id === userHandId);
         if (!userHand?.socketId) return;
-        io.to(userHand.socketId).emit('moveCardToTable', cardContent);
+        io.to(userHand.socketId).emit('moveCardToTable', cardId);
     });
 
     socket.on('can deal', (userId: string) => {
@@ -300,10 +307,10 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('starting to shuffle', user.id);
     });
 
-    socket.on('thirty one round end', (cardContent: CardContent) => {
+    socket.on('thirty one round end', (cardId: number) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('thirty one round end', user.id, cardContent);
+        io.to(hostUser.socketId).emit('thirty one round end', user.id, cardId);
     });
 
 });

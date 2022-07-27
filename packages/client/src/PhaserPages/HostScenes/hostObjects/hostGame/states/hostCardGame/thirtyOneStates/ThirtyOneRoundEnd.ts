@@ -53,7 +53,6 @@ export class ThirtyOneRoundEnd extends HostGameState {
             // show the cards that matter differently
             cardsThatMatter.forEach(cardContainer => {
                 cardContainer.frontImage?.setTint(0xffffff);
-                // console.log('cardContainer', cardContainer.cardContent);
                 cardContainer.cardInHandOffsetTransform.value = { ...cardContainer.cardInHandOffsetTransform.value, y: 200, scale: 2 / 1.5 };
             });
             userAvatar.roundScore = score;
@@ -125,7 +124,7 @@ export class ThirtyOneRoundEnd extends HostGameState {
 
     static calculateScoreAndCardsThatMatter(cardContainers: CardContainer[]) {
         // check if all cards have same number then score is 31
-        const allCardsSameNumber = cardContainers.every(c => c.cardContent.card === cardContainers[0].cardContent.card);
+        const allCardsSameNumber = cardContainers.every(c => c.cardContent.rank === cardContainers[0].cardContent.rank);
         if (allCardsSameNumber) {
             return { score: 30, cardsThatMatter: cardContainers };
         }
@@ -135,12 +134,12 @@ export class ThirtyOneRoundEnd extends HostGameState {
             const cardsBySuit: { suit: string, score: number }[] = [];
             cardContainers.forEach(cardContainer => {
                 const card = cardContainer.cardContent;
-                if (!card.suit || !card.card) return;
+                if (!card.suit || !card.rank) return;
                 const suit = card.suit;
                 const score = (() => {
-                    if (card.card === 'Ace') return 11;
-                    if (card.card === 'Jack' || card.card === 'Queen' || card.card === 'King') return 10;
-                    return parseInt(card.card);
+                    if (card.rank === 'Ace') return 11;
+                    if (card.rank === 'Jack' || card.rank === 'Queen' || card.rank === 'King') return 10;
+                    return parseInt(card.rank);
                 })();
                 const cardBySuit = cardsBySuit.find(c => c.suit === suit);
                 if (cardBySuit) {

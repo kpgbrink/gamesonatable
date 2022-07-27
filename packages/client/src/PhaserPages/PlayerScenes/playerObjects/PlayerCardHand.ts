@@ -1,4 +1,3 @@
-import { CardContent } from "api";
 import socket from "../../../SocketConnection";
 import { Cards } from "../../objects/Cards";
 import CardContainer from "../../objects/items/CardContainer";
@@ -91,10 +90,10 @@ export abstract class PlayerCardHand {
         });
 
         // add socket listeners
-        socket.on('give card', (cardContent: CardContent, timeGivenToUser: number) => {
-            console.log('give card', cardContent);
+        socket.on('give card', (cardId: number, timeGivenToUser: number) => {
+            console.log('give card', cardId);
             // get the card that has to be given to player
-            const card = this.cards.getCard(cardContent);
+            const card = this.cards.getCard(cardId);
             if (!card) throw new Error('card not found');
             card.x += 1;
             // move the card to the player
@@ -105,9 +104,9 @@ export abstract class PlayerCardHand {
             // tell the table to put the card in the player hand
         });
 
-        socket.on('moveCardToTable', (cardContent: CardContent) => {
+        socket.on('moveCardToTable', (cardId: number) => {
             // get the card that has to be given to player
-            const card = this.cards.getCard(cardContent);
+            const card = this.cards.getCard(cardId);
             if (!card) throw new Error('card not found');
             // move the card back to the table
             this.putCardBackOnTable(card);
@@ -149,7 +148,7 @@ export abstract class PlayerCardHand {
         this.scene.add.existing(this.hideShowCardButton);
     }
 
-    setCardToPickUp(card: CardContent, faceUp: boolean, order: number) {
+    setCardToPickUp(card: number, faceUp: boolean, order: number) {
         const cardContainer = this.cards.getCard(card);
         if (!cardContainer) throw new Error('card not found');
         cardContainer.order = order;
@@ -245,7 +244,7 @@ export abstract class PlayerCardHand {
         if (!draggedCard.canTakeFromTable) return;
         if (draggedCard.beforeDraggedTransform === null) return;
         if (draggedCard.y < draggedCard.beforeDraggedTransform.y) return;
-        socket.emit('moveCardToHand', draggedCard.cardContent);
+        socket.emit('moveCardToHand', draggedCard.cardId);
         draggedCard.setFaceUp(this.showCardsInHand);
         draggedCard.userHandId = persistentData.myUserId;
         draggedCard.canTakeFromTable = false;
@@ -280,7 +279,7 @@ export abstract class PlayerCardHand {
         if (!card.userHandId) return;
         if (this.allowedDropCardAmount <= 0) return;
         // tell host to move the card to the table
-        socket.emit('moveCardToTable', card.cardContent);
+        socket.emit('moveCardToTable', card.cardId);
         this.allowedDropCardAmount -= 1;
         this.putCardBackOnTable(card);
     }

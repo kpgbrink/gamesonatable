@@ -1,4 +1,3 @@
-import { CardContent } from "api";
 import CardContainer from "./items/CardContainer";
 import { shuffle } from "./Tools";
 
@@ -21,9 +20,10 @@ export class Cards {
     // default cards to create. the whole deck excluding jokers
     create(x: number, y: number) {
         // create the cards
+        let i: number = 0;
         for (let suite of suites) {
             for (let card of cards) {
-                const cardContainer = new CardContainer(this.scene, x, y, suite, card);
+                const cardContainer = new CardContainer(this.scene, x, y, i++, suite, card);
                 this.cardContainers.push(cardContainer);
                 this.scene.add.existing(cardContainer);
             }
@@ -45,18 +45,9 @@ export class Cards {
         return this.cardContainers.filter(cardContainer => cardContainer.userHandId === playerId);
     }
 
-    isEqual(card1: CardContent, card2: CardContent) {
-        if (!card1 || !card2) return false;
-        return 1
-            && card1.suit === card2.suit
-            && card1.card === card2.card
-            && card1.joker === card2.joker;
-    }
-
-
-    getCard(cardContent: CardContent) {
+    getCard(cardId: number) {
         return this.cardContainers.find(cardContainer => {
-            return this.isEqual(cardContainer.cardContent, cardContent)
+            return cardContainer.cardId === cardId;
         });
     }
 
