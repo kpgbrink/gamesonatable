@@ -41,7 +41,10 @@ export class Cards {
         this.cardContainers.forEach(cardContainer => cardContainer.update(time, delta));
     }
 
-    getPlayerCards(playerId: string) {
+    getPlayerCards(playerId: string | null) {
+        if (playerId === null) {
+            return [];
+        }
         return this.cardContainers.filter(cardContainer => cardContainer.userHandId === playerId);
     }
 

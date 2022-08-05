@@ -248,17 +248,11 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('room data', room);
     });
 
-    socket.on('give card', (userId: string, cardId: number, timeGivenToUser: number) => {
-        const userGivenCard = getRoom(user.room)?.users.find(u => u.id === userId);
-        if (!userGivenCard?.socketId) return;
-        io.to(userGivenCard.socketId).emit('give card', cardId, timeGivenToUser);
-    });
-
     // TODO use this
-    socket.on('set player card hand', (userId: string, cardIds: number[], timeGivenToUser: number) => {
+    socket.on('set player cards in hand', (userId: string, cardIds: number[], timeGivenToUser: number) => {
         const userGivenCard = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userGivenCard?.socketId) return;
-        io.to(userGivenCard.socketId).emit('give card', cardIds, timeGivenToUser);
+        io.to(userGivenCard.socketId).emit('set player cards in hand', cardIds, timeGivenToUser);
     });
 
     socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {

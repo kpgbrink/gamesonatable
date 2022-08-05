@@ -89,19 +89,18 @@ export abstract class PlayerCardHand {
             this.dealButton?.setVisible(false);
         });
 
-        // add socket listeners
-        socket.on('give card', (cardId: number, timeGivenToUser: number) => {
-            console.log('give card', cardId);
-            // get the card that has to be given to player
-            const card = this.cards.getCard(cardId);
-            if (!card) throw new Error('card not found');
-            card.x += 1;
-            // move the card to the player
-            card.setUserHand(persistentData.myUserId, timeGivenToUser);
-            // move the card to the player hand
-            // this.moveCardToPlayerHand(card);
-            card.setFaceUp(this.showCardsInHand);
-            // tell the table to put the card in the player hand
+        // add socket listeners 
+        socket.on('set player cards in hand', (cardIds: number[], timeGivenToUser: number) => { // cards is an array of card ids
+            console.log('cardIds', cardIds);
+            const myUserId = persistentData.myUserId;
+            cardIds.forEach(cardId => {
+                const card = this.cards.getCard(cardId);
+                if (!card) throw new Error('card not found');
+                card.setUserHand(myUserId, timeGivenToUser);
+                // move the card to the player hand
+                // this.moveCardToPlayerHand(card);
+                card.setFaceUp(this.showCardsInHand);
+            });
         });
 
         socket.on('moveCardToTable', (cardId: number) => {

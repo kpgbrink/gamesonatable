@@ -111,7 +111,7 @@ export abstract class HostCardGame extends HostGame {
         return this.hostUserAvatars?.getUserById(userId);
     }
 
-    getPlayerCards(userId: string) {
+    getPlayerCards(userId: string | null) {
         return this.cards.getPlayerCards(userId);
     }
 

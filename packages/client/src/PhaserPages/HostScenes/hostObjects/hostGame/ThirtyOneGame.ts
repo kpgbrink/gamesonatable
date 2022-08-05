@@ -93,4 +93,4 @@ export class ThirtyOneGame extends HostCardGame {
         this.hostUserAvatars?.update(time, delta);
     }
 
-}
+} 

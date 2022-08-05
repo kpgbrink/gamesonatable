@@ -1,6 +1,5 @@
 import socket from "../../../../../../SocketConnection";
 import { CountdownTimer } from "../../../../../objects/CountdownTimer";
-import { DegreesToRadians, transformFromObject } from "../../../../../objects/Tools";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 
@@ -48,7 +47,7 @@ export class Dealing extends HostGameState {
         // get top card container that is not set to a player yet
         const cardContainer = this.hostGame.cards.getTopFaceDownCard();
         if (!cardContainer) {
-            return;
+            throw new Error('no card container');
         }
         cardContainer.setUserHand(this.currentPlayerGettingCard, this.hostGame.scene.time.now);
 
@@ -58,12 +57,11 @@ export class Dealing extends HostGameState {
             throw new Error('user is null');
         }
 
-        const positionRotation = transformFromObject(userContainer, { x: 0, y: 500, rotation: DegreesToRadians(180), scale: 1 });
+        // const playerCards = this.currentPlayerGettingCard  ?? this.hostGame.cards.getPlayerCards(this.currentPlayerGettingCard) || [];
+        const playerCards = this.hostGame.getPlayerCards(this.currentPlayerGettingCard);
 
-        cardContainer.startMovingOverTimeTo(positionRotation, this.sendingOutCardTime, () => {
-            // when the card is done moving, set the card to the player
-            socket.emit('give card', cardContainer.userHandId, cardContainer.cardId, cardContainer.timeGivenToUser);
-        });
+        socket.emit('set player cards in hand', cardContainer.userHandId, playerCards.map(pcs => pcs.cardId), cardContainer.timeGivenToUser);
+        // });
         // check if every player in game has the amount of cards they need
         if (this.hostGame.hostUserAvatars?.getUsersInGame().every(userAvatar => {
             return this.hostGame.getPlayerCards(userAvatar.user.id)?.length === this.hostGame.dealAmount;
