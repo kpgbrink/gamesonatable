@@ -19,7 +19,7 @@ export class StartGettingReadyToShuffle extends HostGameState {
         this.hostGame.cardInHandTransform.setToDefault();
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
             // tell user to move the card to the table
-            socket.emit('moveCardToTable', cardContainer.cardId, cardContainer.userHandId);
+            socket.emit('moveCardToTable', cardContainer.id, cardContainer.userHandId);
             // remove all cards from the player hand
             cardContainer.userHandId = null;
             // set all cards face down

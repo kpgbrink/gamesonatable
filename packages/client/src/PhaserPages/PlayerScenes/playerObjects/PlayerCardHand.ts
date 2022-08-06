@@ -53,6 +53,9 @@ export abstract class PlayerCardHand {
     }
 
     create() {
+        // ask for my current state
+        socket.emit('get player card hand state', persistentData.myUserId);
+
         this.cards.create(0, 0);
         this.cards.cardContainers.forEach(card => {
             card.setTransform(this.tablePosition);
@@ -90,7 +93,7 @@ export abstract class PlayerCardHand {
         });
 
         // add socket listeners 
-        socket.on('set player cards in hand', (cardIds: number[], timeGivenToUser: number) => { // cards is an array of card ids
+        socket.on('player card hand state', (cardIds: number[], timeGivenToUser: number) => { // cards is an array of card ids
             console.log('cardIds', cardIds);
             const myUserId = persistentData.myUserId;
             cardIds.forEach(cardId => {
@@ -243,7 +246,7 @@ export abstract class PlayerCardHand {
         if (!draggedCard.canTakeFromTable) return;
         if (draggedCard.beforeDraggedTransform === null) return;
         if (draggedCard.y < draggedCard.beforeDraggedTransform.y) return;
-        socket.emit('moveCardToHand', draggedCard.cardId);
+        socket.emit('moveCardToHand', draggedCard.id);
         draggedCard.setFaceUp(this.showCardsInHand);
         draggedCard.userHandId = persistentData.myUserId;
         draggedCard.canTakeFromTable = false;
@@ -278,7 +281,7 @@ export abstract class PlayerCardHand {
         if (!card.userHandId) return;
         if (this.allowedDropCardAmount <= 0) return;
         // tell host to move the card to the table
-        socket.emit('moveCardToTable', card.cardId);
+        socket.emit('moveCardToTable', card.id);
         this.allowedDropCardAmount -= 1;
         this.putCardBackOnTable(card);
     }

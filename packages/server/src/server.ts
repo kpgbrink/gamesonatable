@@ -90,6 +90,7 @@ io.on('connection', (socket) => {
             console.log('matched user', userSocketMatch);
             console.log('user socket match', userSocketMatch.id, userSocketMatch.socketId);
             socket.emit('user id', userSocketMatch.id);
+            io.to(user.room).emit('room data', getRoom(user.room));
             return;
         }
 
@@ -147,6 +148,7 @@ io.on('connection', (socket) => {
             user = addUserToRoom(user);
             if (!user.socketId) return;
             io.to(user.socketId).emit('user id', user.id);
+            io.to(user.room).emit('room data', getRoom(user.room));
             return;
         }
         // If not given a user id then just send the user their id
@@ -249,10 +251,10 @@ io.on('connection', (socket) => {
     });
 
     // TODO use this
-    socket.on('set player cards in hand', (userId: string, cardIds: number[], timeGivenToUser: number) => {
+    socket.on('player card hand state', (userId: string, cardIds: number[], timeGivenToUser: number) => {
         const userGivenCard = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userGivenCard?.socketId) return;
-        io.to(userGivenCard.socketId).emit('set player cards in hand', cardIds, timeGivenToUser);
+        io.to(userGivenCard.socketId).emit('player card hand state', cardIds, timeGivenToUser);
     });
 
     socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
@@ -305,6 +307,13 @@ io.on('connection', (socket) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('thirty one round end', user.id, cardId);
+    });
+
+    socket.on('get player card hand state', (userId: string) => {
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser?.socketId) return;
+        console.log('send player card hand state')
+        io.to(hostUser.socketId).emit('get player card hand state', userId);
     });
 
 });

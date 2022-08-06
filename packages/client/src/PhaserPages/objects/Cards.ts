@@ -50,7 +50,7 @@ export class Cards {
 
     getCard(cardId: number) {
         return this.cardContainers.find(cardContainer => {
-            return cardContainer.cardId === cardId;
+            return cardContainer.id === cardId;
         });
     }
 

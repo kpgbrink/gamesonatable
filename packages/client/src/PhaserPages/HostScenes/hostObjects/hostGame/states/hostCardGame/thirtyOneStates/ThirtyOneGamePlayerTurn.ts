@@ -32,7 +32,7 @@ export class ThirtyOneGamePlayerTurn extends HostGameState {
             this.hostGame.changeState(new ThirtyOneRoundEnd(this.hostGame));
             return;
         }
-        socket.emit("thirty one player turn", this.hostGame.currentPlayerTurnId, shownCard.cardId, hiddenCard.cardId, this.hostGame.turn, this.hostGame.knockPlayerId);
+        socket.emit("thirty one player turn", this.hostGame.currentPlayerTurnId, shownCard.id, hiddenCard.id, this.hostGame.turn, this.hostGame.knockPlayerId);
     }
 
     update(time: number, delta: number): HostGameState | null {

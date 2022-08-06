@@ -13,6 +13,7 @@ export class ThirtyOneCardHand extends PlayerCardHand {
 
     create() {
         super.create();
+
         socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
             // set the cards to show the player to choose it's cards
             this.knockPlayerId = knockPlayerId;
@@ -65,7 +66,7 @@ export class ThirtyOneCardHand extends PlayerCardHand {
             socket.emit('thirty one round end', card.cardContent);
             return;
         }
-        socket.emit('moveCardToTable', card.cardId);
+        socket.emit('moveCardToTable', card.id);
     }
 
 }

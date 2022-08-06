@@ -1,4 +1,3 @@
-import socket from "../../../../../../SocketConnection";
 import { CountdownTimer } from "../../../../../objects/CountdownTimer";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
@@ -57,10 +56,7 @@ export class Dealing extends HostGameState {
             throw new Error('user is null');
         }
 
-        // const playerCards = this.currentPlayerGettingCard  ?? this.hostGame.cards.getPlayerCards(this.currentPlayerGettingCard) || [];
-        const playerCards = this.hostGame.getPlayerCards(this.currentPlayerGettingCard);
-
-        socket.emit('set player cards in hand', cardContainer.userHandId, playerCards.map(pcs => pcs.cardId), cardContainer.timeGivenToUser);
+        this.hostGame.sendUserHand(this.currentPlayerGettingCard);
         // });
         // check if every player in game has the amount of cards they need
         if (this.hostGame.hostUserAvatars?.getUsersInGame().every(userAvatar => {

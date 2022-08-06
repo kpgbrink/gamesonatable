@@ -93,4 +93,8 @@ export class ThirtyOneGame extends HostCardGame {
         this.hostUserAvatars?.update(time, delta);
     }
 
+    sendUserState(userId: string): void {
+        this.sendUserHand(userId);
+    }
+
 } 

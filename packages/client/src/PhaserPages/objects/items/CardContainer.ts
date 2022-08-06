@@ -10,13 +10,13 @@ export default class CardContainer extends ItemContainer {
     frontImage: Phaser.GameObjects.Image | null = null;
     velocity: { x: number, y: number, rotation: number } = { x: 0, y: 0, rotation: 0 };
     mass: number = 1;
-    cardId: number;
+    id: number;
 
     cardInHandOffsetTransform: ValueWithDefault<Transform> = new ValueWithDefault({ x: 0, y: 0, rotation: 0, scale: 1 });
 
     constructor(scene: Phaser.Scene, x: number, y: number, cardId: number, suit: string, rank: string, joker: boolean = false) {
         super(scene, x, y);
-        this.cardId = cardId;
+        this.id = cardId;
         // take the 
         this.cardContent = {
             suit,

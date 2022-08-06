@@ -28,7 +28,6 @@ export default function PlayerPage() {
         storeIds(socket.id, existingUserId);
         console.log("existing user id", existingUserId);
         navigate(`/room/${roomId}/player/${existingUserId}`);
-        socket.emit("get room data");
         // reload page
         window.location.reload();
       }

@@ -62,6 +62,9 @@ export abstract class HostCardGame extends HostGame {
             if (!card) return;
             this.onCardMoveToTable(userId, card);
         });
+        socket.on('get player card hand state', (userId: string) => {
+            this.sendUserState(userId);
+        });
     }
 
     getDealer() {
@@ -159,6 +162,15 @@ export abstract class HostCardGame extends HostGame {
             });
         });
     }
+
+    sendUserHand(userId: string) {
+        const playerCards = this.getPlayerCards(userId);
+        socket.emit('player card hand state', userId, playerCards.map(card => card.id));
+    }
+
+    // override this
+    // this sends the user whole state so that if a user refreshes the page they can continue the game
+    abstract sendUserState(userId: string): void;
 
     setDealButtonOnUser() {
         // set that the next dealer can deal with the deal button
