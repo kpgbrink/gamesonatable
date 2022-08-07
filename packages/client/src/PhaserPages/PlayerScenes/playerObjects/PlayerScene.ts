@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import socket from "../../../SocketConnection";
 import { addFullScreenButton, socketOffOnSceneShutdown } from "../../objects/Tools";
 import UserAvatarContainer from "../../objects/UserAvatarContainer";
 import { onPlayerChangeGames } from "../playerTools/OnPlayerChangeGames";
@@ -16,5 +17,6 @@ export default class PlayerScene extends Phaser.Scene {
         onPlayerChangeGames(this);
         socketOffOnSceneShutdown(this);
         addFullScreenButton(this);
+        socket.emit('get room data');
     }
 }
