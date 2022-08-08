@@ -12,14 +12,21 @@ export class ThirtyOneCardHand extends PlayerCardHand {
     knockPlayerId: string | null = null;
 
     create() {
+
         super.create();
 
         socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
+            console.log('thirty on player turn socket on');
             // set the cards to show the player to choose it's cards
             this.knockPlayerId = knockPlayerId;
-            this.setCardToPickUp(shownCard, true, 2);
-            this.setCardToPickUp(hiddenCard, false, 1);
-            this.setAllowedPickUpCardAmount(1);
+            // if I only have 3 cards in my hand
+            if (this.cardsInHand().length === 3) {
+                this.setCardToPickUp(shownCard, true, 2);
+                this.setCardToPickUp(hiddenCard, false, 1);
+                this.setAllowedPickUpCardAmount(1);
+            } else {
+                this.onAllCardsPickedUp();
+            }
         });
 
         const screenDimensions = getScreenDimensions(this.scene);

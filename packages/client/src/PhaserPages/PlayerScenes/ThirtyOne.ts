@@ -17,6 +17,7 @@ export default class ThirtyOne extends PlayerScene {
 
     create() {
         super.create();
+        console.log('thirty one create ran');
         this.playerCardHand = new ThirtyOneCardHand(this);
         this.playerCardHand.create();
     }

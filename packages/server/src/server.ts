@@ -310,6 +310,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('get player card hand state', (userId: string) => {
+        console.log('get player card hand state requested');
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
         console.log('send player card hand state')

@@ -63,6 +63,7 @@ export abstract class HostCardGame extends HostGame {
             this.onCardMoveToTable(userId, card);
         });
         socket.on('get player card hand state', (userId: string) => {
+            console.log('send get player card hand state');
             this.sendUserState(userId);
         });
     }
@@ -163,9 +164,10 @@ export abstract class HostCardGame extends HostGame {
         });
     }
 
-    sendUserHand(userId: string) {
+    sendUserHand(userId: string, onSendPlayerCards?: () => void) {
         const playerCards = this.getPlayerCards(userId);
-        socket.emit('player card hand state', userId, playerCards.map(card => card.id));
+        console.log('sendUserHand', userId, playerCards);
+        socket.emit('player card hand state', userId, playerCards.map(card => card.id), onSendPlayerCards);
     }
 
     // override this
@@ -180,5 +182,9 @@ export abstract class HostCardGame extends HostGame {
         }
         const nextDealerId = this.getNextPlayerId(this.currentDealerId);
         socket.emit('can deal', nextDealerId);
+    }
+
+    isUserTurn(userId: string) {
+        return this.currentPlayerTurnId === userId;
     }
 }

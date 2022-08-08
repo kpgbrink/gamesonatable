@@ -94,7 +94,33 @@ export class ThirtyOneGame extends HostCardGame {
     }
 
     sendUserState(userId: string): void {
-        this.sendUserHand(userId);
+        this.sendUserHand(userId, () => {
+            console.log('successfully sent the player hand to the player');
+            // this.sendPlayerPickUpCards();
+        });
+        // also send the stuff if it's the user turn
+        this.sendPlayerPickUpCards();
+    }
+
+    sendPlayerPickUpCards() {
+        // tell the player that it is their turn
+        const hiddenCard = this.cards.getTopFaceDownCard();
+        const shownCard = this.cards.getTopFaceUpCard();
+        if (!shownCard) {
+            console.log("No shown card found");
+            return;
+        }
+        if (!hiddenCard) {
+            this.changeState(new ThirtyOneRoundEnd(this));
+            return;
+        }
+
+        // check if the turn has gone back to the player who knocked. Then need to go to end round state.
+        if (this.knockPlayerId === this.currentPlayerTurnId) {
+            this.changeState(new ThirtyOneRoundEnd(this));
+            return;
+        }
+        socket.emit("thirty one player turn", this.currentPlayerTurnId, shownCard.id, hiddenCard.id, this.turn, this.knockPlayerId);
     }
 
 } 

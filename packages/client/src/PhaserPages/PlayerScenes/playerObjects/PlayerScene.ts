@@ -14,6 +14,7 @@ export default class PlayerScene extends Phaser.Scene {
     }
 
     create() {
+        socket.off();
         onPlayerChangeGames(this);
         socketOffOnSceneShutdown(this);
         addFullScreenButton(this);

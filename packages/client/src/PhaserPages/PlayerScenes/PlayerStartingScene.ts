@@ -131,8 +131,6 @@ export default class PlayerStartingScene extends PlayerScene {
     this.userAvatarContainer.setUserName(generatedName);
   }
 
-
-
   update() {
 
   }
