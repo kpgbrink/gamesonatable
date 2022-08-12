@@ -69,11 +69,7 @@ export class Dealing extends HostGameState {
     update(time: number, delta: number): HostGameState | null {
         this.getNextCardDeal(delta);
         this.hostGame.cards.update(time, delta);
-        // check if every player in game has the amount of cards they need
-        // if (this.hostGame.hostUserAvatars?.userAvatarContainers?.every(userAvatar =>
-        //     this.hostGame.getPlayerCards(userAvatar.user.id)?.length === this.hostGame.dealAmount)) {
-        //     return this.hostGame.createGameState();
-        // }
+
         return null;
     }
 
