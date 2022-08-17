@@ -1,4 +1,4 @@
-import { StoredBrowserIds } from "api";
+import { StoredBrowserIds } from "@kbrink/api";
 
 
 export const storeIds = (socketId: string, userId: string) => {

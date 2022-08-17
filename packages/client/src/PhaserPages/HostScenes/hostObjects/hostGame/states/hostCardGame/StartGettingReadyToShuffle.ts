@@ -17,6 +17,8 @@ export class StartGettingReadyToShuffle extends HostGameState {
     enter() {
         const screenCenter = getScreenCenter(this.hostGame.scene);
         this.hostGame.cardInHandTransform.setToDefault();
+
+
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
             // tell user to move the card to the table
             socket.emit('moveCardToTable', cardContainer.id, cardContainer.userHandId);

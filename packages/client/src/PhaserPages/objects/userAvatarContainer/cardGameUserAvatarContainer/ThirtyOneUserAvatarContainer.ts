@@ -1,9 +1,9 @@
-import { User } from "api";
-import PokerChip from "./items/PokerChip";
-import { DegreesToRadians, getScreenCenter, randomizeTransform, transformFromObject, TransformRandomizer } from "./Tools";
-import UserAvatarContainer from "./UserAvatarContainer";
+import { User } from "@kbrink/api";
+import PokerChip from "../../items/PokerChip";
+import { DegreesToRadians, getScreenCenter, randomizeTransform, transformFromObject, TransformRandomizer } from "../../Tools";
+import { CardGameUserAvatarContainer } from "../CardGameUserAvatarContainer";
 
-export default class ThirtyOneUserAvatarContainer extends UserAvatarContainer {
+export class ThirtyOneUserAvatarContainer extends CardGameUserAvatarContainer {
     lives: number = 3;
     pokerChipsDistance: number = 160;
     bluePokerChips: PokerChip[] = [];

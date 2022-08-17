@@ -105,16 +105,12 @@ export abstract class PlayerCardHand {
                 // this.moveCardToPlayerHand(card);
                 card.setFaceUp(this.showCardsInHand);
             });
-        });
-
-        socket.on('moveCardToTable', (cardId: number) => {
-            // get the card that has to be given to player
-            const card = this.cards.getCard(cardId);
-            if (!card) throw new Error('card not found');
-            // move the card back to the table
-            this.putCardBackOnTable(card);
-
-            // tell the table to put the card in the player hand
+            // for each card in hand that is not in the cardIds array, set it to not in hand
+            this.cards.cardContainers.forEach(card => {
+                if (!cardIds.includes(card.id) && card.userHandId === myUserId) {
+                    this.putCardBackOnTable(card);
+                }
+            });
         });
 
         // create deal button

@@ -1,4 +1,4 @@
-import { User } from "api";
+import { User } from "@kbrink/api";
 import React from "react";
 import { Socket } from "socket.io-client";
 import socket from "./SocketConnection";

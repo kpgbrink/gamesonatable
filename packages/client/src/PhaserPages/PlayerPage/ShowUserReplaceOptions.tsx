@@ -1,3 +1,4 @@
+import { RoomData } from "@kbrink/api";
 import {
   Dialog,
   DialogContent,
@@ -6,7 +7,6 @@ import {
   List,
   ListItem,
 } from "@mui/material";
-import { RoomData } from "api";
 import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import socket from "../../SocketConnection";

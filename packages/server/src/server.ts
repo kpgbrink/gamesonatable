@@ -1,4 +1,5 @@
 import { Game, NewRoomId, StoredBrowserIds, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
+import { PlayerCardHandState } from 'api/src/playerCardHandState/playerCardHandState';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -250,7 +251,19 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('room data', room);
     });
 
-    // TODO use this
+    // TODO use this eventually
+    socket.on('playerCardHandStateToHost', (playerCardHandState: PlayerCardHandState) => {
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser?.socketId) return;
+        io.to(hostUser.socketId).emit('playerCardHandStateToHost', playerCardHandState);
+    });
+
+    socket.on('playerCardHandStateToUser', (playerCardHandState: PlayerCardHandState) => {
+        const userTo = getRoom(user.room)?.users.find(u => u.id === playerCardHandState.userId);
+        if (!userTo?.socketId) return;
+        io.to(userTo.socketId).emit('playerCardHandStateToUser', playerCardHandState);
+    });
+
     socket.on('player card hand state', (userId: string, cardIds: number[], timeGivenToUser: number) => {
         const userGivenCard = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userGivenCard?.socketId) return;
@@ -279,12 +292,6 @@ io.on('connection', (socket) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('thirty one knock', user.id);
-    });
-
-    socket.on('moveCardToTable', (cardId: number, userHandId: string) => {
-        const userHand = getRoom(user.room)?.users.find(u => u.id === userHandId);
-        if (!userHand?.socketId) return;
-        io.to(userHand.socketId).emit('moveCardToTable', cardId);
     });
 
     socket.on('can deal', (userId: string) => {

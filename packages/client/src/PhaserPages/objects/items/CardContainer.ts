@@ -1,4 +1,4 @@
-import { CardContent } from "api";
+import { CardContent } from "@kbrink/api";
 import { Transform } from "../Tools";
 import { ValueWithDefault } from "../ValueWithDefault";
 import ItemContainer from "./ItemContainer";

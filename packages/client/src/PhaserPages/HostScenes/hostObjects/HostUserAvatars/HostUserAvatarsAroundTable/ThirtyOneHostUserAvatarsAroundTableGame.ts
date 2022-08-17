@@ -1,14 +1,10 @@
-import { User } from "api";
-import ThirtyOneUserAvatarContainer from "../../../../objects/ThirtyOneUserAvatarContainer";
+import { User } from "@kbrink/api";
+import { ThirtyOneUserAvatarContainer } from "../../../../objects/userAvatarContainer/cardGameUserAvatarContainer/ThirtyOneUserAvatarContainer";
 import { HostUserAvatarsAroundTableGame } from "./HostUserAvatarsAroundTableGame";
 
 
 export default class ThirtyOneHostUserAvatarsAroundTableGame extends HostUserAvatarsAroundTableGame {
     userAvatarContainers: ThirtyOneUserAvatarContainer[] = [];
-
-    constructor(scene: Phaser.Scene) {
-        super(scene);
-    }
 
     getUsersInGame() {
         // only get users with lives still

@@ -12,7 +12,6 @@ export class ThirtyOneCardHand extends PlayerCardHand {
     knockPlayerId: string | null = null;
 
     create() {
-
         super.create();
 
         socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {

@@ -1,11 +1,12 @@
 {
-    "name": "client",
+    "name": "@kbrink/client",
     "version": "0.1.0",
     "private": true,
     "proxy": "http://localhost:3001",
     "dependencies": {
         "@emotion/react": "^11.9.0",
         "@emotion/styled": "^11.8.1",
+        "@material-ui/core": "^4.12.4",
         "@mui/material": "^5.8.0",
         "phaser": "^3.55.2",
         "qrcode.react": "^3.0.2",
@@ -14,13 +15,14 @@
         "react-router-dom": "^6.3.0",
         "react-scripts": "5.0.1",
         "socket.io-client": "^4.5.1",
-        "web-vitals": "^2.1.4"
+        "web-vitals": "^2.1.4",
+        "@kbrink/api": "0.1.0"
     },
     "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "start": "craco start",
+        "build": "craco build",
+        "test": "craco test",
+        "eject": "craco eject"
     },
     "eslintConfig": {
         "extends": [
