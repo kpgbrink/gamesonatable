@@ -1,4 +1,4 @@
-import { RoomData } from "@kbrink/api";
+import { RoomData } from "api";
 import socket from "../../SocketConnection";
 import PlayerScene from "../PlayerScenes/playerObjects/PlayerScene";
 import { CountdownTimer } from "./CountdownTimer";

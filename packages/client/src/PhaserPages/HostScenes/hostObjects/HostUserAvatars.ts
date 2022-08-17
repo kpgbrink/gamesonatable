@@ -1,4 +1,4 @@
-import { RoomData, User } from "@kbrink/api";
+import { RoomData, User } from "api";
 import { persistentData } from "../../objects/PersistantData";
 import { getScreenCenter } from "../../objects/Tools";
 import UserAvatarContainer from "../../objects/UserAvatarContainer";

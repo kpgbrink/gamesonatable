@@ -1,5 +1,5 @@
 {
-    "name": "@kbrink/server",
+    "name": "server",
     "version": "1.0.0",
     "main": "index.js",
     "license": "MIT",
@@ -16,7 +16,7 @@
         "fantasy-name-generator": "^2.0.0",
         "socket.io": "^4.5.1",
         "uniqid": "^5.4.0",
-        "@kbrink/api": "0.1.0"
+        "api": "0.1.0"
     },
     "devDependencies": {
         "@types/config": "^0.0.41",

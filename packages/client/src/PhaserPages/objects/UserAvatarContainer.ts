@@ -1,4 +1,4 @@
-import { RoomData, User, UserAvatar } from "@kbrink/api";
+import { RoomData, User, UserAvatar } from "api";
 import Phaser from "phaser";
 import socket from "../../SocketConnection";
 import { avatarImages } from "./avatarImages.generated";

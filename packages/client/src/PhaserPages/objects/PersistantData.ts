@@ -1,4 +1,4 @@
-import { RoomData } from "@kbrink/api";
+import { RoomData } from "api";
 
 // create class that stores persistent data between scenes
 export class PersistantData {

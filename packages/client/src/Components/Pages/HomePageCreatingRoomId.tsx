@@ -1,5 +1,5 @@
-import { NewRoomId } from "@kbrink/api";
 import { LinearProgress } from "@mui/material";
+import { NewRoomId } from "api";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../AppContext";

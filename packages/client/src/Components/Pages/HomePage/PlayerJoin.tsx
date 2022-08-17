@@ -1,7 +1,7 @@
-import { Game, RoomData } from "@kbrink/api";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import { Game, RoomData } from "api";
 import QRCode from "qrcode.react";
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";

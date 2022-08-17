@@ -1,4 +1,4 @@
-import { Game, GameData } from "@kbrink/api";
+import { Game, GameData } from "api";
 import Phaser from "phaser";
 import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";

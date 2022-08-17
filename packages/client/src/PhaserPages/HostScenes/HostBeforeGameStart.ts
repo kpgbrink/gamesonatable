@@ -1,4 +1,4 @@
-import { Game, RoomData, UserBeforeGameStartDataDictionary } from "@kbrink/api";
+import { Game, RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import GameTable from "../objects/GameTable";
 import MenuButton from "../objects/MenuButton";

@@ -1,4 +1,4 @@
-import { User } from "@kbrink/api";
+import { User } from "api";
 import PokerChip from "../../items/PokerChip";
 import { DegreesToRadians, getScreenCenter, randomizeTransform, transformFromObject, TransformRandomizer } from "../../Tools";
 import { CardGameUserAvatarContainer } from "../CardGameUserAvatarContainer";

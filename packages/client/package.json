@@ -1,5 +1,5 @@
 {
-    "name": "@kbrink/client",
+    "name": "client",
     "version": "0.1.0",
     "private": true,
     "proxy": "http://localhost:3001",
@@ -16,7 +16,7 @@
         "react-scripts": "5.0.1",
         "socket.io-client": "^4.5.1",
         "web-vitals": "^2.1.4",
-        "@kbrink/api": "0.1.0"
+        "api": "0.1.0"
     },
     "scripts": {
         "start": "craco start",
