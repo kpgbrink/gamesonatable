@@ -20,6 +20,10 @@ export class ThirtyOneGame extends HostCardGame {
     knockPlayerId: string | null = null;
     thirtyOnePlayerId: string | null = null;
 
+    updateUserAvatar(userId: string) {
+        // TODO make the update thing happen to the thingy
+    }
+
     preload() {
         super.preload();
         loadIfImageNotLoaded(this.scene, 'bluePokerChip', 'assets/pokerChips/bluePokerChip.png');
@@ -93,15 +97,20 @@ export class ThirtyOneGame extends HostCardGame {
         this.hostUserAvatars?.update(time, delta);
     }
 
-    sendUserState(userId: string): void {
-        this.sendUserHand(userId, () => {
-            console.log('successfully sent the player hand to the player');
-            // this.sendPlayerPickUpCards();
-        });
+    override sendUserState(userId: string): void {
         // also send the stuff if it's the user turn
-        this.sendPlayerPickUpCards();
+        // this.sendPlayerPickUpCards();
+
+        // send the ThirtyOnePlayerState
+        if (!this.hostUserAvatars) return;
+        const userAvatarContainer = this.hostUserAvatars.getUserAvatarContainer(userId);
+        this.hostUserAvatars
+        if (!userAvatarContainer) return;
+        const thirtyOnePlayerCardHandState = userAvatarContainer.playerCardHandState;
+        socket.emit("thirtyOnePlayerStateToUser", userId, thirtyOnePlayerCardHandState);
     }
 
+    // TODO remove this
     sendPlayerPickUpCards() {
         // tell the player that it is their turn
         const hiddenCard = this.cards.getTopFaceDownCard();

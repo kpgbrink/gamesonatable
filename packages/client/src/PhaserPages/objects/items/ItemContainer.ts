@@ -18,9 +18,11 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     isDragging: boolean = false;
     order: number = 0;
 
-    public setUserHand(userHandId: string | null, timeGivenToUser: number) {
+    public setUserHand(userHandId: string | null, timeGivenToUser: number | null = null) {
+        if (this.userHandId === userHandId) return; // already in user hand
         this.userHandId = userHandId;
-        this.timeGivenToUser = timeGivenToUser;
+        const currentTime = Date.now();
+        this.timeGivenToUser = timeGivenToUser ?? currentTime;
         this.canTakeFromTable = false;
         this.cardBackOnTable = false;
     }

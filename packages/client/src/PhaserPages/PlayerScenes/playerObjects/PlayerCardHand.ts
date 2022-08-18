@@ -1,3 +1,4 @@
+import { PlayerCardHandState } from "api/src/playerState/playerStates/PlayerCardHandState";
 import socket from "../../../SocketConnection";
 import { Cards } from "../../objects/Cards";
 import CardContainer from "../../objects/items/CardContainer";
@@ -23,6 +24,8 @@ export abstract class PlayerCardHand {
     showCardsInHand = true;
 
     cardBasePositions: Transform[] = [];
+
+    playerCardHandState: PlayerCardHandState = new PlayerCardHandState();
 
     constructor(scene: PlayerScene) {
         this.scene = scene;
@@ -298,6 +301,28 @@ export abstract class PlayerCardHand {
         this.startMovingCardsInHandToPrefferedPosition();
         this.startMovingCardsToPickUpToPrefferedPosition();
         this.startMovingCardsBackToTable();
+    }
+
+    onUpdateCardHandState(playerCardHandState: PlayerCardHandState) {
+        // update the cards in the hand 
+        const myUserId = persistentData.myUserId;
+
+        // update the cards in the hand
+        const cardIds = playerCardHandState.cardIds;
+        cardIds.forEach(cardId => {
+            const card = this.cards.getCard(cardId);
+            if (!card) throw new Error('card not found');
+            card.setUserHand(myUserId);
+            // move the card to the player hand
+            // this.moveCardToPlayerHand(card);
+            card.setFaceUp(this.showCardsInHand);
+        });
+        // for each card in hand that is not in the cardIds array, set it to not in hand
+        this.cards.cardContainers.forEach(card => {
+            if (!cardIds.includes(card.id) && card.userHandId === myUserId) {
+                this.putCardBackOnTable(card);
+            }
+        });
     }
 
     abstract onAllCardsPickedUp(): void

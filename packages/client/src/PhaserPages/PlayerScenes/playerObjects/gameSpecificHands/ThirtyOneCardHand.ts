@@ -1,3 +1,4 @@
+import { ThirtyOneCardHandState } from "api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOneCardHandState";
 import socket from "../../../../SocketConnection";
 import { ThirtyOneRoundEnd } from "../../../HostScenes/hostObjects/hostGame/states/hostCardGame/thirtyOneStates/ThirtyOneRoundEnd";
 import CardContainer from "../../../objects/items/CardContainer";
@@ -75,4 +76,8 @@ export class ThirtyOneCardHand extends PlayerCardHand {
         socket.emit('moveCardToTable', card.id);
     }
 
+    onUpdateCardHandState(thirtyOneCardHandState: ThirtyOneCardHandState) {
+        super.onUpdateCardHandState(thirtyOneCardHandState);
+        this.knockButton?.setVisible(thirtyOneCardHandState.canTonk && this.knockPlayerId === null);
+    }
 }

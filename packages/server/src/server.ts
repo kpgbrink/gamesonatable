@@ -1,5 +1,6 @@
 import { Game, NewRoomId, StoredBrowserIds, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
-import { PlayerCardHandState } from 'api/src/playerCardHandState/playerCardHandState';
+import { PlayerCardHandState } from 'api/src/playerState/playerStates/PlayerCardHandState';
+import { ThirtyOneCardHandState } from 'api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOneCardHandState';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -258,10 +259,22 @@ io.on('connection', (socket) => {
         io.to(hostUser.socketId).emit('playerCardHandStateToHost', playerCardHandState);
     });
 
-    socket.on('playerCardHandStateToUser', (playerCardHandState: PlayerCardHandState) => {
-        const userTo = getRoom(user.room)?.users.find(u => u.id === playerCardHandState.userId);
+    socket.on('playerCardHandStateToUser', (userId: string, playerCardHandState: PlayerCardHandState) => {
+        const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userTo?.socketId) return;
         io.to(userTo.socketId).emit('playerCardHandStateToUser', playerCardHandState);
+    });
+
+    socket.on('thirtyOneCardHandStateToHost', (playerCardHandState: ThirtyOneCardHandState) => {
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser?.socketId) return;
+        io.to(hostUser.socketId).emit('thirtyOneCardHandStateToHost', playerCardHandState);
+    });
+
+    socket.on('thirtyOneCardHandStateToUser', (userId: string, playerCardHandState: ThirtyOneCardHandState) => {
+        const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
+        if (!userTo?.socketId) return;
+        io.to(userTo.socketId).emit('thirtyOneCardHandStateToUser', playerCardHandState);
     });
 
     socket.on('player card hand state', (userId: string, cardIds: number[], timeGivenToUser: number) => {

@@ -1,17 +1,19 @@
-import { User } from "api";
+import { ThirtyOneCardHandState } from "api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOneCardHandState";
 import PokerChip from "../../items/PokerChip";
 import { DegreesToRadians, getScreenCenter, randomizeTransform, transformFromObject, TransformRandomizer } from "../../Tools";
 import { CardGameUserAvatarContainer } from "../CardGameUserAvatarContainer";
 
-export class ThirtyOneUserAvatarContainer extends CardGameUserAvatarContainer {
+export class ThirtyOneUserAvatarContainer extends CardGameUserAvatarContainer<ThirtyOneCardHandState> {
     lives: number = 3;
     pokerChipsDistance: number = 160;
     bluePokerChips: PokerChip[] = [];
     removingPokerChips: PokerChip[] = [];
     roundScore: number = 0;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, user: User) {
-        super(scene, x, y, user);
+    playerCardHandState: ThirtyOneCardHandState = new ThirtyOneCardHandState();
+
+    createPlayerCardHandState(): ThirtyOneCardHandState {
+        return new ThirtyOneCardHandState();
     }
 
     create() {

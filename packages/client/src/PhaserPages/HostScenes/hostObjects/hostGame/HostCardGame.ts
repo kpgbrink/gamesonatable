@@ -2,6 +2,7 @@ import socket from "../../../../SocketConnection";
 import { Cards } from "../../../objects/Cards";
 import CardContainer from "../../../objects/items/CardContainer";
 import { checkTransformsAlmostEqual, getScreenCenter, Transform, transformFromObject, transformRelativeToObject } from "../../../objects/Tools";
+import UserAvatarContainer from "../../../objects/UserAvatarContainer";
 import { ValueWithDefault } from "../../../objects/ValueWithDefault";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
@@ -11,7 +12,7 @@ import { HostGameState } from "./states/HostGameState";
 export abstract class HostCardGame extends HostGame {
     scene: Phaser.Scene;
     cards: Cards;
-    hostUserAvatars: HostUserAvatarsAroundTableGame | null = null;
+    hostUserAvatars: HostUserAvatarsAroundTableGame<UserAvatarContainer> | null = null;
     dealAmount: number = 10;
     currentDealerId: string | null = null;
     currentPlayerTurnId: string | null = null;
@@ -62,7 +63,7 @@ export abstract class HostCardGame extends HostGame {
             if (!card) return;
             this.onCardMoveToTable(userId, card);
         });
-        socket.on('get player card hand state', (userId: string) => {
+        socket.on('get player state', (userId: string) => {
             console.log('send get player card hand state');
             this.sendUserState(userId);
         });
@@ -162,12 +163,6 @@ export abstract class HostCardGame extends HostGame {
                 card.depth = index;
             });
         });
-    }
-
-    sendUserHand(userId: string, onSendPlayerCards?: () => void) {
-        const playerCards = this.getPlayerCards(userId);
-        console.log('sendUserHand', userId, playerCards);
-        socket.emit('player card hand state', userId, playerCards.map(card => card.id), onSendPlayerCards);
     }
 
     // override this
