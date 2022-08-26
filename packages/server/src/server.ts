@@ -1,6 +1,5 @@
 import { Game, NewRoomId, StoredBrowserIds, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
-import { PlayerCardHandState } from 'api/src/playerState/playerStates/PlayerCardHandState';
-import { ThirtyOneCardHandState } from 'api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOneCardHandState';
+import { ThirtyOnePlayerCardHandState } from 'api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOnePlayerCardHandState';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -252,35 +251,18 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('room data', room);
     });
 
+
     // TODO use this eventually
-    socket.on('playerCardHandStateToHost', (playerCardHandState: PlayerCardHandState) => {
+    socket.on('thirtyOnePlayerStateToHost', (playerCardHandState: ThirtyOnePlayerCardHandState) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('playerCardHandStateToHost', playerCardHandState);
+        io.to(hostUser.socketId).emit('thirtyOnePlayerStateToHost', playerCardHandState);
     });
 
-    socket.on('playerCardHandStateToUser', (userId: string, playerCardHandState: PlayerCardHandState) => {
+    socket.on('thirtyOnePlayerStateToUser', (userId: string, playerCardHandState: ThirtyOnePlayerCardHandState) => {
         const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userTo?.socketId) return;
-        io.to(userTo.socketId).emit('playerCardHandStateToUser', playerCardHandState);
-    });
-
-    socket.on('thirtyOneCardHandStateToHost', (playerCardHandState: ThirtyOneCardHandState) => {
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('thirtyOneCardHandStateToHost', playerCardHandState);
-    });
-
-    socket.on('thirtyOneCardHandStateToUser', (userId: string, playerCardHandState: ThirtyOneCardHandState) => {
-        const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
-        if (!userTo?.socketId) return;
-        io.to(userTo.socketId).emit('thirtyOneCardHandStateToUser', playerCardHandState);
-    });
-
-    socket.on('player card hand state', (userId: string, cardIds: number[], timeGivenToUser: number) => {
-        const userGivenCard = getRoom(user.room)?.users.find(u => u.id === userId);
-        if (!userGivenCard?.socketId) return;
-        io.to(userGivenCard.socketId).emit('player card hand state', cardIds, timeGivenToUser);
+        io.to(userTo.socketId).emit('thirtyOnePlayerStateToUser', playerCardHandState);
     });
 
     socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
@@ -329,12 +311,12 @@ io.on('connection', (socket) => {
         io.to(hostUser.socketId).emit('thirty one round end', user.id, cardId);
     });
 
-    socket.on('get player card hand state', (userId: string) => {
-        console.log('get player card hand state requested');
+    socket.on('getPlayerState', (userId: string) => {
+        console.log('getPlayerState requested');
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        console.log('send player card hand state')
-        io.to(hostUser.socketId).emit('get player card hand state', userId);
+        console.log('sendPlayerState')
+        io.to(hostUser.socketId).emit('getPlayerState', userId);
     });
 
 });

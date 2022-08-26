@@ -1,6 +1,8 @@
+import { ThirtyOnePlayerCardHandState } from "api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOnePlayerCardHandState";
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/items/CardContainer";
 import { loadIfImageNotLoaded, Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
+import { ThirtyOneUserAvatarContainer } from "../../../objects/userAvatarContainer/cardGameUserAvatarContainer/ThirtyOneUserAvatarContainer";
 import ThirtyOneHostUserAvatarsAroundTableGame from "../HostUserAvatars/HostUserAvatarsAroundTable/ThirtyOneHostUserAvatarsAroundTableGame";
 import { HostCardGame } from "./HostCardGame";
 import { ThirtyOneGamePlayerTurn } from "./states/hostCardGame/thirtyOneStates/ThirtyOneGamePlayerTurn";
@@ -9,7 +11,9 @@ import { ThirtyOneRoundEnd } from "./states/hostCardGame/thirtyOneStates/ThirtyO
 import { HostGameState } from "./states/HostGameState";
 
 
-export class ThirtyOneGame extends HostCardGame {
+export class ThirtyOneGame
+    extends HostCardGame<ThirtyOneHostUserAvatarsAroundTableGame, ThirtyOneUserAvatarContainer> {
+    sendUserStateString: string = "thirtyOnePlayerStateToUser";
     dealAmount: number = 3;
 
     hostUserAvatars: ThirtyOneHostUserAvatarsAroundTableGame | null = null;
@@ -22,6 +26,13 @@ export class ThirtyOneGame extends HostCardGame {
 
     updateUserAvatar(userId: string) {
         // TODO make the update thing happen to the thingy
+    }
+
+    override userState(userId: string) {
+        const user = this.getUser(userId);
+        if (!user) return;
+        const playerCardHandState = super.userState(userId);
+        return
     }
 
     preload() {
@@ -97,6 +108,8 @@ export class ThirtyOneGame extends HostCardGame {
         this.hostUserAvatars?.update(time, delta);
     }
 
+    // instead of send user state being overrided why not have the updateUserState or whatever be overrided first and the
+    // send user state will run the updates on it.  
     override sendUserState(userId: string): void {
         // also send the stuff if it's the user turn
         // this.sendPlayerPickUpCards();
@@ -104,10 +117,17 @@ export class ThirtyOneGame extends HostCardGame {
         // send the ThirtyOnePlayerState
         if (!this.hostUserAvatars) return;
         const userAvatarContainer = this.hostUserAvatars.getUserAvatarContainer(userId);
-        this.hostUserAvatars
         if (!userAvatarContainer) return;
         const thirtyOnePlayerCardHandState = userAvatarContainer.playerCardHandState;
         socket.emit("thirtyOnePlayerStateToUser", userId, thirtyOnePlayerCardHandState);
+    }
+
+    override getUserState() {
+        socket.on("thirtyOnePlayerStateToHost", (userId: string, playerState: ThirtyOnePlayerCardHandState) => {
+            const user = this.getUser(userId);
+            if (!user) return;
+
+        });
     }
 
     // TODO remove this

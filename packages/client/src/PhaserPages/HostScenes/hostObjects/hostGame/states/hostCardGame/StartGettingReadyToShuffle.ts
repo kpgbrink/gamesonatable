@@ -1,15 +1,20 @@
+import { PlayerCardHandState } from "api/src/playerState/playerStates/PlayerCardHandState";
 import socket from "../../../../../../SocketConnection";
 import { getScreenCenter } from "../../../../../objects/Tools";
+import { CardGameUserAvatarContainer } from "../../../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
+import { HostUserAvatarsAroundTableGame } from "../../../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 import { Shuffling } from "./Shuffling";
 
-export class StartGettingReadyToShuffle extends HostGameState {
-    hostGame: HostCardGame;
+export class StartGettingReadyToShuffle<
+    UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerCardHandState>> extends HostGameState {
+    hostGame: HostCardGame<UserAvatars, UserAvatarType>;
     // store the countdown timer for the movement of the card and the card that is moving
     sendingOutCardTime: number = .7;
 
-    constructor(hostGame: HostCardGame) {
+    constructor(hostGame: HostCardGame<UserAvatars, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }

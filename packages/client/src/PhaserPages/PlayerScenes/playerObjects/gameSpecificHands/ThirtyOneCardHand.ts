@@ -1,4 +1,4 @@
-import { ThirtyOneCardHandState } from "api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOneCardHandState";
+import { ThirtyOnePlayerCardHandState } from "api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOnePlayerCardHandState";
 import socket from "../../../../SocketConnection";
 import { ThirtyOneRoundEnd } from "../../../HostScenes/hostObjects/hostGame/states/hostCardGame/thirtyOneStates/ThirtyOneRoundEnd";
 import CardContainer from "../../../objects/items/CardContainer";
@@ -8,13 +8,14 @@ import { getScreenDimensions } from "../../../objects/Tools";
 import { PlayerCardHand } from "../PlayerCardHand";
 
 
-export class ThirtyOneCardHand extends PlayerCardHand {
+export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandState> {
+    listenForState: string = "thirtyOnePlayerStateToUser";
+
     knockButton: MenuButton | null = null;
     knockPlayerId: string | null = null;
 
     create() {
         super.create();
-
         socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
             console.log('thirty on player turn socket on');
             // set the cards to show the player to choose it's cards
@@ -40,6 +41,10 @@ export class ThirtyOneCardHand extends PlayerCardHand {
         });
         this.knockButton.setVisible(false);
         this.scene.add.existing(this.knockButton);
+    }
+
+    override updatePlayerState(playerState: ThirtyOnePlayerCardHandState): void {
+
     }
 
     setAllowedPickUpCardAmount(amount: number): void {
@@ -76,7 +81,7 @@ export class ThirtyOneCardHand extends PlayerCardHand {
         socket.emit('moveCardToTable', card.id);
     }
 
-    onUpdateCardHandState(thirtyOneCardHandState: ThirtyOneCardHandState) {
+    onUpdateCardHandState(thirtyOneCardHandState: ThirtyOnePlayerCardHandState) {
         super.onUpdateCardHandState(thirtyOneCardHandState);
         this.knockButton?.setVisible(thirtyOneCardHandState.canTonk && this.knockPlayerId === null);
     }

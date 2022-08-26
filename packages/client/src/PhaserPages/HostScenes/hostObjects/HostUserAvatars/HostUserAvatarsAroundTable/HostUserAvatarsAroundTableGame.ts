@@ -1,9 +1,9 @@
-import { User } from "api";
 import { DegreesToRadians } from "../../../../objects/Tools";
 import UserAvatarContainer from "../../../../objects/UserAvatarContainer";
 import { HostUserAvatarsAroundTable } from "../HostUserAvatarsAroundTable";
 
-export class HostUserAvatarsAroundTableGame<UserAvatarContainerType extends UserAvatarContainer> extends HostUserAvatarsAroundTable {
+export abstract class HostUserAvatarsAroundTableGame<UserAvatarContainerType extends UserAvatarContainer> extends HostUserAvatarsAroundTable<UserAvatarContainerType> {
+
     userAvatarContainers: UserAvatarContainerType[] = [];
     moveToEdgeOfTableSpeed: number = 10;
 
@@ -16,11 +16,6 @@ export class HostUserAvatarsAroundTableGame<UserAvatarContainerType extends User
 
     override afterUserAvatarCreated(userAvatarContainer: UserAvatarContainerType): void {
         super.afterUserAvatarCreated(userAvatarContainer);
-    }
-
-    createUserAvatarContainer(x: number, y: number, user: User) {
-        const userAvatarContainer = new UserAvatarContainer(this.scene, x, y, user);
-        return userAvatarContainer;
     }
 
     update(time: number, delta: number) {

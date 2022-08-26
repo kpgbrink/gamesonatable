@@ -1,16 +1,22 @@
+import { PlayerCardHandState } from "api/src/playerState/playerStates/PlayerCardHandState";
 import { CountdownTimer } from "../../../../../objects/CountdownTimer";
+import { CardGameUserAvatarContainer } from "../../../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
+import { HostUserAvatarsAroundTableGame } from "../../../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 
-export class Dealing extends HostGameState {
-    hostGame: HostCardGame;
+export class Dealing<
+    UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerCardHandState>> extends HostGameState {
+
+    hostGame: HostCardGame<UserAvatars, UserAvatarType>;
     // store the countdown timer for the movement of the card and the card that is moving
     nextCardTimer: CountdownTimer = new CountdownTimer(.1);
     sendingOutCardTime: number = .7;
 
     currentPlayerGettingCard: string | null = null;
 
-    constructor(hostGame: HostCardGame) {
+    constructor(hostGame: HostCardGame<UserAvatars, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }
@@ -56,7 +62,7 @@ export class Dealing extends HostGameState {
             throw new Error('user is null');
         }
 
-        this.hostGame.sendUserHand(this.currentPlayerGettingCard);
+        this.hostGame.sendUserState(this.currentPlayerGettingCard);
         // });
         // check if every player in game has the amount of cards they need
         if (this.hostGame.hostUserAvatars?.getUsersInGame().every(userAvatar => {

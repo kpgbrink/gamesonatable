@@ -7,7 +7,8 @@ import { persistentData } from "../../objects/PersistantData";
 import { checkTransformsAlmostEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
-export abstract class PlayerCardHand {
+export abstract class PlayerCardHand<T extends PlayerCardHandState> {
+    abstract listenForState: string;
     dealButton: MenuButton | null = null;
     hideShowCardButton: MenuButton | null = null;
     cards: Cards;
@@ -57,8 +58,7 @@ export abstract class PlayerCardHand {
 
     create() {
         // ask for my current state
-        socket.emit('get player card hand state', persistentData.myUserId);
-        console.log('requesting player card hand state');
+        socket.emit('getPlayerState', persistentData.myUserId);
 
         this.cards.create(0, 0);
         this.cards.cardContainers.forEach(card => {
@@ -96,26 +96,6 @@ export abstract class PlayerCardHand {
             this.dealButton?.setVisible(false);
         });
 
-        // add socket listeners 
-        socket.on('player card hand state', (cardIds: number[], timeGivenToUser: number) => { // cards is an array of card ids
-            console.log('cardIds', cardIds);
-            const myUserId = persistentData.myUserId;
-            cardIds.forEach(cardId => {
-                const card = this.cards.getCard(cardId);
-                if (!card) throw new Error('card not found');
-                card.setUserHand(myUserId, timeGivenToUser);
-                // move the card to the player hand
-                // this.moveCardToPlayerHand(card);
-                card.setFaceUp(this.showCardsInHand);
-            });
-            // for each card in hand that is not in the cardIds array, set it to not in hand
-            this.cards.cardContainers.forEach(card => {
-                if (!cardIds.includes(card.id) && card.userHandId === myUserId) {
-                    this.putCardBackOnTable(card);
-                }
-            });
-        });
-
         // create deal button
         const screenDimensions = getScreenDimensions(this.scene);
         this.dealButton = new MenuButton(screenDimensions.width / 2, 100, this.scene);
@@ -148,6 +128,47 @@ export abstract class PlayerCardHand {
             });
         });
         this.scene.add.existing(this.hideShowCardButton);
+        this.listenForStateChange();
+    }
+
+    listenForStateChange() {
+        socket.on(this.listenForState, (playerState: T) => {
+            this.updatePlayerPlayerCardHandState(playerState);
+            this.updatePlayerState(playerState);
+        });
+    }
+
+    abstract updatePlayerState(playerState: T): void;
+
+    updatePlayerPlayerCardHandState(cardHandState: PlayerCardHandState) {
+        this.playerCardHandState = cardHandState;
+        // move the cards to the hand
+        // TODO change the Date.now() to the time given to the user
+        this.updateCards(cardHandState.cardIds, Date.now());
+        this.updateDealing(cardHandState.dealing);
+    }
+
+    updateCards(cardIds: number[], timeGivenToUser: number) {
+        console.log('cardIds', cardIds);
+        const myUserId = persistentData.myUserId;
+        cardIds.forEach(cardId => {
+            const card = this.cards.getCard(cardId);
+            if (!card) throw new Error('card not found');
+            card.setUserHand(myUserId, timeGivenToUser);
+            // move the card to the player hand
+            // this.moveCardToPlayerHand(card);
+            card.setFaceUp(this.showCardsInHand);
+        });
+        // for each card in hand that is not in the cardIds array, set it to not in hand
+        this.cards.cardContainers.forEach(card => {
+            if (!cardIds.includes(card.id) && card.userHandId === myUserId) {
+                this.putCardBackOnTable(card);
+            }
+        });
+    }
+
+    updateDealing(dealing: boolean) {
+        this.dealButton?.setVisible(dealing);
     }
 
     setCardToPickUp(card: number, faceUp: boolean, order: number) {

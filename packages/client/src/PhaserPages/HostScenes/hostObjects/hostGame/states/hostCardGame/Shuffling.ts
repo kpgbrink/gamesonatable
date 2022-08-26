@@ -1,20 +1,25 @@
+import { PlayerCardHandState } from "api/src/playerState/playerStates/PlayerCardHandState";
 import { CountdownTimer } from "../../../../../objects/CountdownTimer";
 import { angleFromPositionToPosition, DegreesToRadians, distanceBetweenTwoPoints, getNormalVector, getScreenCenter, millisecondToSecond, randomFloatBetween, vectorFromAngleAndLength } from "../../../../../objects/Tools";
+import { CardGameUserAvatarContainer } from "../../../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
 import { calculateDistanceAndRotationFromTable } from "../../../../hostTools/HostTools";
+import { HostUserAvatarsAroundTableGame } from "../../../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 import { BringCardsToDealer } from "./BringCardsToDealer";
 
 
-export class Shuffling extends HostGameState {
-    hostGame: HostCardGame;
+export class Shuffling<
+    UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerCardHandState>> extends HostGameState {
+    hostGame: HostCardGame<UserAvatars, UserAvatarType>;
     randomStartingOffset: number = 500;
     randomStartingMovementSpeed: number = 15 * 60;
     randomStartingRotationalVelocity: number = DegreesToRadians(360);
     massCenter = 50 * 60 * 60 * 4;
     shufflingTimer: CountdownTimer = new CountdownTimer(1);
 
-    constructor(hostGame: HostCardGame) {
+    constructor(hostGame: HostCardGame<UserAvatars, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }

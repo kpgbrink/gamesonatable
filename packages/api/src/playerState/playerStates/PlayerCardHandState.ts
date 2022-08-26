@@ -5,4 +5,5 @@ import { PlayerState } from "../PlayerState";
 
 export class PlayerCardHandState extends PlayerState {
     cardIds: number[] = [];
+    dealing: boolean = false;
 }

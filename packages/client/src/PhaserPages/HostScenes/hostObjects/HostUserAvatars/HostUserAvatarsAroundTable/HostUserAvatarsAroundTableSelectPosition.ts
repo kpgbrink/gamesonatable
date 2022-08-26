@@ -1,7 +1,14 @@
+import { User } from "api";
 import UserAvatarContainer from "../../../../objects/UserAvatarContainer";
 import { HostUserAvatarsAroundTable } from "../HostUserAvatarsAroundTable";
 
-export class HostUserAvatarsAroundTableSelectPosition extends HostUserAvatarsAroundTable {
+export class HostUserAvatarsAroundTableSelectPosition extends HostUserAvatarsAroundTable<UserAvatarContainer> {
+
+    override createUserAvatarContainer(x: number, y: number, user: User): UserAvatarContainer {
+        const userAvatarContainer = new UserAvatarContainer(this.scene, x, y, user);
+        return userAvatarContainer;
+    }
+
     moveToEdgeOfTableSpeed: number = 5;
 
     override afterUserAvatarCreated(userAvatarContainer: UserAvatarContainer): void {

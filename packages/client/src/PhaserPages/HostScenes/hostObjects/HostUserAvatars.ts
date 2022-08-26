@@ -3,12 +3,12 @@ import { persistentData } from "../../objects/PersistantData";
 import { getScreenCenter } from "../../objects/Tools";
 import UserAvatarContainer from "../../objects/UserAvatarContainer";
 
-export class HostUserAvatars {
+export abstract class HostUserAvatars<UserAvatarContainerType extends UserAvatarContainer>{
     scene: Phaser.Scene;
-    userAvatarContainers: UserAvatarContainer[] = [];
+    userAvatarContainers: UserAvatarContainerType[] = [];
     onlyThoseInGame = false;
 
-    onSizeChange: (userAvatarContainer: UserAvatarContainer) => void = () => { };
+    onSizeChange: (userAvatarContainer: UserAvatarContainerType) => void = () => { };
 
     constructor(
         scene: Phaser.Scene,
@@ -23,10 +23,12 @@ export class HostUserAvatars {
         });
     }
 
-    createUserAvatarContainer(x: number, y: number, user: User) {
-        const userAvatarContainer = new UserAvatarContainer(this.scene, x, y, user);
-        return userAvatarContainer;
-    }
+    // createUserAvatarContainer(x: number, y: number, user: User) {
+    //     const userAvatarContainer = new UserAvatarContainer(this.scene, x, y, user);
+    //     return userAvatarContainer;
+    // }
+
+    abstract createUserAvatarContainer(x: number, y: number, user: User): UserAvatarContainerType;
 
     createUsers(roomData: RoomData | null) {
         if (roomData === null) return;

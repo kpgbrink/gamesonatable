@@ -1,7 +1,10 @@
+import { PlayerState } from "api/src/playerState/PlayerState";
+import socket from "../../../SocketConnection";
 import { persistentData } from "../../objects/PersistantData";
 import { HostGameState } from "./hostGame/states/HostGameState";
 
-export class HostGame {
+export abstract class HostGame<PlayerStatypeType extends PlayerState> {
+    abstract sendUserStateString: string;
     scene: Phaser.Scene;
     currentState: HostGameState | null = null;
 
@@ -13,6 +16,26 @@ export class HostGame {
     }
 
     create() {
+
+    }
+
+    abstract createGameState(): HostGameState;
+
+    // override this
+    // this sends the user whole state so that if a user refreshes the page they can continue the game
+    // switch from send state to update state override things
+    sendUserState(userId: string) {
+        socket.emit(this.sendUserStateString, userId, this.userState(userId));
+    }
+
+    abstract userState(userId: string): Partial<PlayerStatypeType> | undefined;
+
+    abstract getUserState(): void;
+
+    socketListenForUserState() {
+        socket.on("getPlayerState", (userId: string) => {
+            this.sendUserState(userId);
+        });
     }
 
     update(time: number, delta: number) {

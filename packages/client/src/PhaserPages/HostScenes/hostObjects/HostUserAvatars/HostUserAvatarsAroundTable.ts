@@ -5,7 +5,7 @@ import { HostUserAvatars } from "../HostUserAvatars";
 
 
 
-export class HostUserAvatarsAroundTable extends HostUserAvatars {
+export abstract class HostUserAvatarsAroundTable<UserAvatarContainerType extends UserAvatarContainer> extends HostUserAvatars<UserAvatarContainerType> {
     moveToEdgeOfTableSpeed: number = 8;
 
     moveToEdgeOfTable() {
