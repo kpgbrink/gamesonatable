@@ -1,18 +1,21 @@
+import { PlayerCardHandState } from "api/src/playerState/playerStates/PlayerCardHandState";
 import socket from "../../../../SocketConnection";
 import { Cards } from "../../../objects/Cards";
 import CardContainer from "../../../objects/items/CardContainer";
 import { checkTransformsAlmostEqual, getScreenCenter, Transform, transformFromObject, transformRelativeToObject } from "../../../objects/Tools";
-import UserAvatarContainer from "../../../objects/UserAvatarContainer";
+import { CardGameUserAvatarContainer } from "../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
 import { ValueWithDefault } from "../../../objects/ValueWithDefault";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { Shuffling } from "./states/hostCardGame/Shuffling";
-import { HostGameState } from "./states/HostGameState";
 
-export abstract class HostCardGame extends HostGame {
+export abstract class HostCardGame<
+    PlayerStateType extends PlayerCardHandState,
+    UserAvatarsType extends HostUserAvatarsAroundTableGame<UserAvatarType>,
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerStateType>> extends HostGame<PlayerStateType> {
     scene: Phaser.Scene;
     cards: Cards;
-    hostUserAvatars: HostUserAvatarsAroundTableGame<UserAvatarContainer> | null = null;
+    hostUserAvatars: UserAvatarsType | null = null;
     dealAmount: number = 10;
     currentDealerId: string | null = null;
     currentPlayerTurnId: string | null = null;
@@ -22,7 +25,15 @@ export abstract class HostCardGame extends HostGame {
 
     minDistanceBetweenCards: ValueWithDefault<number> = new ValueWithDefault(200);
 
-    abstract createGameState(): HostGameState;
+    override userState(userId: string) {
+        // get the user state for the user on just the card stuff
+        const user = this.getUser(userId);
+        if (!user) return;
+        // TODO WORKING ON THIS RIGHT NOW
+        const playerCardHandState = user.playerCardHandState;
+        if (!playerCardHandState) return;
+        return playerCardHandState;
+    }
 
     constructor(scene: Phaser.Scene) {
         super(scene);
@@ -34,16 +45,8 @@ export abstract class HostCardGame extends HostGame {
         super.preload();
     }
 
-    // override this maybe
-    createHostUserAvatarsAroundTableGame() {
-        this.hostUserAvatars = new HostUserAvatarsAroundTableGame(this.scene);
-        this.hostUserAvatars.createOnRoomData();
-        this.hostUserAvatars.moveToEdgeOfTable();
-    }
-
     create() {
         super.create();
-        this.createHostUserAvatarsAroundTableGame();
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, screenCenter.y);
         this.changeState(new Shuffling(this));
@@ -62,10 +65,6 @@ export abstract class HostCardGame extends HostGame {
             const card = this.cards.getCard(cardId);
             if (!card) return;
             this.onCardMoveToTable(userId, card);
-        });
-        socket.on('get player state', (userId: string) => {
-            console.log('send get player card hand state');
-            this.sendUserState(userId);
         });
     }
 
@@ -112,6 +111,7 @@ export abstract class HostCardGame extends HostGame {
         this.startMovingCardInHandToPrefferedPosition();
     }
 
+    // make this able to return the higher type
     getUser(userId: string) {
         return this.hostUserAvatars?.getUserById(userId);
     }
@@ -164,10 +164,6 @@ export abstract class HostCardGame extends HostGame {
             });
         });
     }
-
-    // override this
-    // this sends the user whole state so that if a user refreshes the page they can continue the game
-    abstract sendUserState(userId: string): void;
 
     setDealButtonOnUser() {
         // set that the next dealer can deal with the deal button
