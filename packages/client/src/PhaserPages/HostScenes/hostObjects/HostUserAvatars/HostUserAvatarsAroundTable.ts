@@ -35,7 +35,6 @@ export abstract class HostUserAvatarsAroundTable<UserAvatarContainerType extends
         });
     }
 
-
     override afterUserAvatarCreated(userAvatarContainer: UserAvatarContainer): void {
         super.afterUserAvatarCreated(userAvatarContainer);
         const user = userAvatarContainer.user;

@@ -32,6 +32,10 @@ export abstract class HostCardGame<
         // TODO WORKING ON THIS RIGHT NOW
         const playerCardHandState = user.playerCardHandState;
         if (!playerCardHandState) return;
+
+        const cardsInHand = this.getPlayerCards(userId);
+        playerCardHandState.cardIds = cardsInHand.map(card => card.id);
+
         return playerCardHandState;
     }
 
@@ -45,8 +49,11 @@ export abstract class HostCardGame<
         super.preload();
     }
 
+    abstract createHostUserAvatarsAroundTableGame(): void;
+
     create() {
         super.create();
+        this.createHostUserAvatarsAroundTableGame();
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, screenCenter.y);
         this.changeState(new Shuffling(this));

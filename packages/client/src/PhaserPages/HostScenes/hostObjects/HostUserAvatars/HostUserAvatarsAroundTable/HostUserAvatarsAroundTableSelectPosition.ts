@@ -5,6 +5,7 @@ import { HostUserAvatarsAroundTable } from "../HostUserAvatarsAroundTable";
 export class HostUserAvatarsAroundTableSelectPosition extends HostUserAvatarsAroundTable<UserAvatarContainer> {
 
     override createUserAvatarContainer(x: number, y: number, user: User): UserAvatarContainer {
+        console.log('createUserAvatarContainer ran');
         const userAvatarContainer = new UserAvatarContainer(this.scene, x, y, user);
         return userAvatarContainer;
     }

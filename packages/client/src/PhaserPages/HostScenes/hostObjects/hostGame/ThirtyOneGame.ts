@@ -28,12 +28,13 @@ export class ThirtyOneGame
         // TODO make the update thing happen to the thingy
     }
 
-    // override userState(userId: string) {
-    //     const user = this.getUser(userId);
-    //     if (!user) return;
-    //     const playerCardHandState = super.userState(userId);
-    //     return
-    // }
+    override userState(userId: string) {
+        const user = this.getUser(userId);
+        if (!user) return;
+        const playerCardHandState = super.userState(userId);
+        // add the thirty one specific stuff too
+        return playerCardHandState;
+    }
 
     preload() {
         super.preload();
@@ -41,17 +42,18 @@ export class ThirtyOneGame
     }
 
     // override this maybe
-    createHostUserAvatarsAroundTableGame() {
+    override createHostUserAvatarsAroundTableGame() {
         this.hostUserAvatars = new ThirtyOneHostUserAvatarsAroundTableGame(this.scene);
         this.hostUserAvatars.createOnRoomData();
         this.hostUserAvatars.moveToEdgeOfTable();
+        this.hostUserAvatars.userAvatarContainers.forEach(player => {
+            player.create();
+        });
     }
 
     create() {
         super.create();
-        this.hostUserAvatars?.userAvatarContainers.forEach(player => {
-            player.create();
-        });
+
         this.deckTransform = (() => {
             const transform = { x: -330, y: 0, rotation: 0, scale: 4 };
             return transformRelativeToScreenCenter(this.scene, transform);

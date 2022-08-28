@@ -22,7 +22,9 @@ export class BringCardsToDealer<
     }
 
     enter() {
+        console.log('enter has run');
         this.hostGame.setNextDealer();
+        console.log('dealer set', this.hostGame.currentDealerId);
         // set the current user turn to null
         this.hostGame.currentPlayerTurnId = null;
         // start moving cards to random dealer

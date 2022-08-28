@@ -34,6 +34,7 @@ export abstract class HostGame<PlayerStateType extends PlayerState> {
 
     socketListenForUserState() {
         socket.on("getPlayerState", (userId: string) => {
+            console.log("player asking for their state");
             this.sendUserState(userId);
         });
     }
@@ -52,7 +53,6 @@ export abstract class HostGame<PlayerStateType extends PlayerState> {
     }
 
     // maybe this https://stackoverflow.com/a/68835401/2948122
-
     setUrlToHomeScreen() {
         // set the url to the home screen
         // change the url using react router

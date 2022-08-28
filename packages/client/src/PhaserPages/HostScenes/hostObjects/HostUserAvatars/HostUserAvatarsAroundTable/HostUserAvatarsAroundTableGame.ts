@@ -2,7 +2,8 @@ import { DegreesToRadians } from "../../../../objects/Tools";
 import UserAvatarContainer from "../../../../objects/UserAvatarContainer";
 import { HostUserAvatarsAroundTable } from "../HostUserAvatarsAroundTable";
 
-export abstract class HostUserAvatarsAroundTableGame<UserAvatarContainerType extends UserAvatarContainer> extends HostUserAvatarsAroundTable<UserAvatarContainerType> {
+export abstract class HostUserAvatarsAroundTableGame<UserAvatarContainerType extends UserAvatarContainer>
+    extends HostUserAvatarsAroundTable<UserAvatarContainerType> {
 
     userAvatarContainers: UserAvatarContainerType[] = [];
     moveToEdgeOfTableSpeed: number = 10;

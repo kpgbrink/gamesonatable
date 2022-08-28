@@ -1,6 +1,6 @@
 import { RoomData, User } from "api";
 import { persistentData } from "../../objects/PersistantData";
-import { getScreenCenter } from "../../objects/Tools";
+import { getScreenCenter, randomNumberBetween } from "../../objects/Tools";
 import UserAvatarContainer from "../../objects/UserAvatarContainer";
 
 export abstract class HostUserAvatars<UserAvatarContainerType extends UserAvatarContainer>{
@@ -73,7 +73,7 @@ export abstract class HostUserAvatars<UserAvatarContainerType extends UserAvatar
     }
 
     getRandomUserIdInGame() {
-        return this.getUsersInGame()[Math.floor(Math.random() * this.getUsersInGame().length)]?.user.id;
+        return this.getUsersInGame()[randomNumberBetween(0, this.getUsersInGame().length - 1)]?.user.id;
     }
 
     getNextUserIdFromRotationInGame(userId: string) {
