@@ -33,6 +33,7 @@ export class ThirtyOneGame
         if (!user) return;
         const playerCardHandState = super.userState(userId);
         // add the thirty one specific stuff too
+        console.log("userState", user);
         return playerCardHandState;
     }
 
@@ -108,20 +109,6 @@ export class ThirtyOneGame
     update(time: number, delta: number) {
         super.update(time, delta);
         this.hostUserAvatars?.update(time, delta);
-    }
-
-    // instead of send user state being overrided why not have the updateUserState or whatever be overrided first and the
-    // send user state will run the updates on it.  
-    override sendUserState(userId: string): void {
-        // also send the stuff if it's the user turn
-        // this.sendPlayerPickUpCards();
-
-        // send the ThirtyOnePlayerState
-        if (!this.hostUserAvatars) return;
-        const userAvatarContainer = this.hostUserAvatars.getUserAvatarContainer(userId);
-        if (!userAvatarContainer) return;
-        const thirtyOnePlayerCardHandState = userAvatarContainer.playerCardHandState;
-        socket.emit("thirtyOnePlayerStateToUser", userId, thirtyOnePlayerCardHandState);
     }
 
     override getUserState() {

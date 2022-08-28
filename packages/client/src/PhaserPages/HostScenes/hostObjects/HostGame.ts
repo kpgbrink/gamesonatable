@@ -21,10 +21,8 @@ export abstract class HostGame<PlayerStateType extends PlayerState> {
 
     abstract createGameState(): HostGameState<PlayerStateType>;
 
-    // override this
-    // this sends the user whole state so that if a user refreshes the page they can continue the game
-    // switch from send state to update state override things
     sendUserState(userId: string) {
+        console.log('user state being sent', this.userState(userId));
         socket.emit(this.sendUserStateString, userId, this.userState(userId));
     }
 
