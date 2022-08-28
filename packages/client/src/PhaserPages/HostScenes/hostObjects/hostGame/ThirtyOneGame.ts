@@ -12,7 +12,7 @@ import { HostGameState } from "./states/HostGameState";
 
 
 export class ThirtyOneGame
-    extends HostCardGame<ThirtyOneHostUserAvatarsAroundTableGame, ThirtyOneUserAvatarContainer> {
+    extends HostCardGame<ThirtyOnePlayerCardHandState, ThirtyOneHostUserAvatarsAroundTableGame, ThirtyOneUserAvatarContainer> {
     sendUserStateString: string = "thirtyOnePlayerStateToUser";
     dealAmount: number = 3;
 
@@ -28,12 +28,12 @@ export class ThirtyOneGame
         // TODO make the update thing happen to the thingy
     }
 
-    override userState(userId: string) {
-        const user = this.getUser(userId);
-        if (!user) return;
-        const playerCardHandState = super.userState(userId);
-        return
-    }
+    // override userState(userId: string) {
+    //     const user = this.getUser(userId);
+    //     if (!user) return;
+    //     const playerCardHandState = super.userState(userId);
+    //     return
+    // }
 
     preload() {
         super.preload();
@@ -99,7 +99,7 @@ export class ThirtyOneGame
         this.currentState?.onItemMoveToTable();
     }
 
-    createGameState(): HostGameState {
+    createGameState(): HostGameState<ThirtyOnePlayerCardHandState> {
         return new ThirtyOneGameStart(this);
     }
 

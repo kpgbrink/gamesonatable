@@ -8,13 +8,14 @@ import { HostGameState } from "../HostGameState";
 import { Shuffling } from "./Shuffling";
 
 export class StartGettingReadyToShuffle<
+    PlayerStateType extends PlayerCardHandState,
     UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerCardHandState>> extends HostGameState {
-    hostGame: HostCardGame<UserAvatars, UserAvatarType>;
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerStateType>> extends HostGameState<PlayerStateType> {
+    hostGame: HostCardGame<PlayerStateType, UserAvatars, UserAvatarType>;
     // store the countdown timer for the movement of the card and the card that is moving
     sendingOutCardTime: number = .7;
 
-    constructor(hostGame: HostCardGame<UserAvatars, UserAvatarType>) {
+    constructor(hostGame: HostCardGame<PlayerStateType, UserAvatars, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }
@@ -41,7 +42,7 @@ export class StartGettingReadyToShuffle<
         socket.emit('starting to shuffle');
     }
 
-    update(time: number, delta: number): HostGameState | null {
+    update(time: number, delta: number): HostGameState<PlayerStateType> | null {
         this.hostGame.cards.update(time, delta);
         // once all cards are done moving, start the next round
         if (this.hostGame.cards.cardContainers.every(cardContainer => cardContainer.moveOnDuration === null)) {

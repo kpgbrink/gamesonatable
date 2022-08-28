@@ -10,16 +10,17 @@ import { BringCardsToDealer } from "./BringCardsToDealer";
 
 
 export class Shuffling<
+    PlayerStateType extends PlayerCardHandState,
     UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerCardHandState>> extends HostGameState {
-    hostGame: HostCardGame<UserAvatars, UserAvatarType>;
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerStateType>> extends HostGameState<PlayerStateType> {
+    hostGame: HostCardGame<PlayerStateType, UserAvatars, UserAvatarType>;
     randomStartingOffset: number = 500;
     randomStartingMovementSpeed: number = 15 * 60;
     randomStartingRotationalVelocity: number = DegreesToRadians(360);
     massCenter = 50 * 60 * 60 * 4;
     shufflingTimer: CountdownTimer = new CountdownTimer(1);
 
-    constructor(hostGame: HostCardGame<UserAvatars, UserAvatarType>) {
+    constructor(hostGame: HostCardGame<PlayerStateType, UserAvatars, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }
@@ -83,7 +84,7 @@ export class Shuffling<
         });
     }
 
-    update(time: number, delta: number): HostGameState | null {
+    update(time: number, delta: number): HostGameState<PlayerStateType> | null {
         // shuffle then switch to deal state
         this.hostGame.cards.update(time, delta);
         this.addGravityToCardMovement(delta);

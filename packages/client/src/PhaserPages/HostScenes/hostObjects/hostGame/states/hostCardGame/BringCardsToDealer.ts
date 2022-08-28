@@ -9,14 +9,14 @@ import { Dealing } from "./Dealing";
 
 // Bring cards to the random dealer and have the cards start going out to people.
 export class BringCardsToDealer<
+    PlayerStateType extends PlayerCardHandState,
     UserAvatarsType extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerCardHandState>
-    > extends HostGameState {
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerStateType>> extends HostGameState<PlayerStateType> {
 
-    hostGame: HostCardGame<UserAvatarsType, UserAvatarType>;
+    hostGame: HostCardGame<PlayerStateType, UserAvatarsType, UserAvatarType>;
     getReadyToDealTime: number = .2;
 
-    constructor(hostGame: HostCardGame<UserAvatarsType, UserAvatarType>) {
+    constructor(hostGame: HostCardGame<PlayerStateType, UserAvatarsType, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }
@@ -37,7 +37,7 @@ export class BringCardsToDealer<
         });
     }
 
-    update(time: number, delta: number): HostGameState | null {
+    update(time: number, delta: number): HostGameState<PlayerStateType> | null {
         this.hostGame.cards.update(time, delta);
         // check if all cards are in the dealer
         if (this.hostGame.cards.cardContainers.every(cardContainer =>

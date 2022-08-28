@@ -3,10 +3,10 @@ import socket from "../../../SocketConnection";
 import { persistentData } from "../../objects/PersistantData";
 import { HostGameState } from "./hostGame/states/HostGameState";
 
-export abstract class HostGame<PlayerStatypeType extends PlayerState> {
+export abstract class HostGame<PlayerStateType extends PlayerState> {
     abstract sendUserStateString: string;
     scene: Phaser.Scene;
-    currentState: HostGameState | null = null;
+    currentState: HostGameState<PlayerStateType> | null = null;
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
@@ -19,7 +19,7 @@ export abstract class HostGame<PlayerStatypeType extends PlayerState> {
 
     }
 
-    abstract createGameState(): HostGameState;
+    abstract createGameState(): HostGameState<PlayerStateType>;
 
     // override this
     // this sends the user whole state so that if a user refreshes the page they can continue the game
@@ -28,7 +28,7 @@ export abstract class HostGame<PlayerStatypeType extends PlayerState> {
         socket.emit(this.sendUserStateString, userId, this.userState(userId));
     }
 
-    abstract userState(userId: string): Partial<PlayerStatypeType> | undefined;
+    abstract userState(userId: string): Partial<PlayerStateType> | undefined;
 
     abstract getUserState(): void;
 
@@ -44,7 +44,7 @@ export abstract class HostGame<PlayerStatypeType extends PlayerState> {
     }
 
     // the only way I should change the states is by calling this method
-    changeState(newState: HostGameState | null) {
+    changeState(newState: HostGameState<PlayerStateType> | null) {
         if (!newState) return;
         this.currentState?.exit();
         this.currentState = newState;

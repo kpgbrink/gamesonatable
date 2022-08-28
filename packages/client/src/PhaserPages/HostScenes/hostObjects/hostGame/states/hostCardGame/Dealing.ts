@@ -6,17 +6,18 @@ import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 
 export class Dealing<
+    PlayerStateType extends PlayerCardHandState,
     UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerCardHandState>> extends HostGameState {
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerStateType>> extends HostGameState<PlayerStateType> {
 
-    hostGame: HostCardGame<UserAvatars, UserAvatarType>;
+    hostGame: HostCardGame<PlayerStateType, UserAvatars, UserAvatarType>;
     // store the countdown timer for the movement of the card and the card that is moving
     nextCardTimer: CountdownTimer = new CountdownTimer(.1);
     sendingOutCardTime: number = .7;
 
     currentPlayerGettingCard: string | null = null;
 
-    constructor(hostGame: HostCardGame<UserAvatars, UserAvatarType>) {
+    constructor(hostGame: HostCardGame<PlayerStateType, UserAvatars, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }
@@ -72,7 +73,7 @@ export class Dealing<
         }
     }
 
-    update(time: number, delta: number): HostGameState | null {
+    update(time: number, delta: number): HostGameState<PlayerStateType> | null {
         this.getNextCardDeal(delta);
         this.hostGame.cards.update(time, delta);
 
