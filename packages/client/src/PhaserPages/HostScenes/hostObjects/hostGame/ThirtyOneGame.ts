@@ -13,7 +13,7 @@ import { HostGameState } from "./states/HostGameState";
 
 export class ThirtyOneGame
     extends HostCardGame<ThirtyOnePlayerCardHandState, ThirtyOneHostUserAvatarsAroundTableGame, ThirtyOneUserAvatarContainer> {
-    sendUserStateString: string = "thirtyOnePlayerStateToUser";
+    sendUserStateString: string = "playerStateToUser";
     dealAmount: number = 3;
 
     hostUserAvatars: ThirtyOneHostUserAvatarsAroundTableGame | null = null;
@@ -69,16 +69,6 @@ export class ThirtyOneGame
             // set next player turn
             this.changeState(new ThirtyOneGamePlayerTurn(this));
         });
-
-        socket.on('thirty one round end', (userId: string, cardId: number) => {
-            const user = this.getUser(userId);
-            if (!user) return;
-            const card = this.cards.getCard(cardId);
-            if (!card) return;
-            this.thirtyOnePlayerId = userId;
-            this.onCardMoveToTable(userId, card);
-            this.changeState(new ThirtyOneRoundEnd(this));
-        });
     }
 
     onCardMoveToTable(userId: string, card: CardContainer): void {
@@ -100,6 +90,12 @@ export class ThirtyOneGame
         const topFaceUpCard = this.cards.getTopFaceUpCard();
         card.depth = topFaceUpCard ? topFaceUpCard.depth + 1 : 0;
         this.currentState?.onItemMoveToTable();
+        // also check if the player has 31 and if so, end the round
+        const scoresAndCardsThatMatter = ThirtyOneRoundEnd.calculateScoreAndCardsThatMatter(this.cards.getPlayerCards(userId));
+        if (scoresAndCardsThatMatter.score === 31) {
+            this.thirtyOnePlayerId = userId;
+            this.changeState(new ThirtyOneRoundEnd(this));
+        }
     }
 
     createGameState(): HostGameState<ThirtyOnePlayerCardHandState> {
@@ -112,7 +108,7 @@ export class ThirtyOneGame
     }
 
     override getUserState() {
-        socket.on("thirtyOnePlayerStateToHost", (userId: string, playerState: ThirtyOnePlayerCardHandState) => {
+        socket.on("playerStateToHost", (userId: string, playerState: ThirtyOnePlayerCardHandState) => {
             const user = this.getUser(userId);
             if (!user) return;
 

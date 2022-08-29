@@ -1,5 +1,5 @@
 
 
-export class PlayerState {
+export abstract class PlayerState {
 
 }

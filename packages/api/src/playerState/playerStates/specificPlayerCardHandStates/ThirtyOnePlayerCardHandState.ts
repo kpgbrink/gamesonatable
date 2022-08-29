@@ -1,7 +1,9 @@
 import { PlayerCardHandState } from "../PlayerCardHandState";
 
 export class ThirtyOnePlayerCardHandState extends PlayerCardHandState {
-    canTonk: boolean = false;
+    canKnock: boolean = false;
+
     canTakeCard: boolean = false;
+
     canReturnCard: boolean = false;
 }

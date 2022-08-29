@@ -1,6 +1,5 @@
 import { ThirtyOnePlayerCardHandState } from "api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOnePlayerCardHandState";
 import socket from "../../../../SocketConnection";
-import { ThirtyOneRoundEnd } from "../../../HostScenes/hostObjects/hostGame/states/hostCardGame/thirtyOneStates/ThirtyOneRoundEnd";
 import CardContainer from "../../../objects/items/CardContainer";
 import MenuButton from "../../../objects/MenuButton";
 import { persistentData } from "../../../objects/PersistantData";
@@ -9,7 +8,7 @@ import { PlayerCardHand } from "../PlayerCardHand";
 
 
 export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandState> {
-    listenForState: string = "thirtyOnePlayerStateToUser";
+    listenForState: string = "playerStateToUser";
 
     knockButton: MenuButton | null = null;
     knockPlayerId: string | null = null;
@@ -73,16 +72,11 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandSta
             throw new Error('cards in hand is not 3');
 
         }
-        const scoresAndCardsThatMatter = ThirtyOneRoundEnd.calculateScoreAndCardsThatMatter(cardsInHand)
-        if (scoresAndCardsThatMatter.score === 31) {
-            socket.emit('thirty one round end', card.cardContent);
-            return;
-        }
         socket.emit('moveCardToTable', card.id);
     }
 
     onUpdateCardHandState(thirtyOneCardHandState: ThirtyOnePlayerCardHandState) {
         super.onUpdateCardHandState(thirtyOneCardHandState);
-        this.knockButton?.setVisible(thirtyOneCardHandState.canTonk && this.knockPlayerId === null);
+        this.knockButton?.setVisible(thirtyOneCardHandState.canKnock && this.knockPlayerId === null);
     }
 }

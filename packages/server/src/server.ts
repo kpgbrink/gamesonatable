@@ -1,5 +1,6 @@
 import { Game, NewRoomId, StoredBrowserIds, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
-import { ThirtyOnePlayerCardHandState } from 'api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOnePlayerCardHandState';
+import { GameState } from 'api/src/gameState/GameState';
+import { PlayerState } from 'api/src/playerState/PlayerState';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -251,65 +252,73 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('room data', room);
     });
 
-
-    // TODO use this eventually
-    socket.on('thirtyOnePlayerStateToHost', (playerCardHandState: ThirtyOnePlayerCardHandState) => {
+    // TODO use this eventually actually juse the same text
+    socket.on('playerStateToHost', (playerCardHandState: Partial<PlayerState>) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('thirtyOnePlayerStateToHost', playerCardHandState);
+        io.to(hostUser.socketId).emit('playerStateToHost', playerCardHandState);
     });
 
-    socket.on('thirtyOnePlayerStateToUser', (userId: string, playerCardHandState: ThirtyOnePlayerCardHandState) => {
+    socket.on('playerStateToUser', (userId: string, playerCardHandState: Partial<PlayerState>) => {
         const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userTo?.socketId) return;
-        io.to(userTo.socketId).emit('thirtyOnePlayerStateToUser', playerCardHandState);
+        io.to(userTo.socketId).emit('playerStateToUser', playerCardHandState);
     });
 
-    socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
-        const userTurn = getRoom(user.room)?.users.find(u => u.id === currentPlayerTurnId);
-        if (!userTurn?.socketId) return;
-        io.to(userTurn.socketId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn, knockPlayerId);
-    });
-
-    socket.on('moveCardToHand', (cardId: number) => {
+    socket.on('gameStateToHost', (gameState: Partial<GameState>) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('moveCardToHand', user.id, cardId);
+        io.to(hostUser.socketId).emit('gameStateToHost', gameState);
     });
 
-    socket.on('moveCardToTable', (cardId: number) => {
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('moveCardToTable', user.id, cardId);
+    socket.on('gameStateToUser', (userId: string, gameState: Partial<GameState>) => {
+        const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
+        if (!userTo?.socketId) return;
+        io.to(userTo.socketId).emit('gameStateToUser', gameState);
     });
 
-    socket.on('thirty one knock', () => {
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('thirty one knock', user.id);
-    });
 
-    socket.on('can deal', (userId: string) => {
-        const userDeal = getRoom(user.room)?.users.find(u => u.id === userId);
-        if (!userDeal?.socketId) return;
-        io.to(userDeal.socketId).emit('can deal', user.id);
-    });
+    // Work on removing the commented out code below
 
-    socket.on('deal', (userId: string) => {
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('deal', userId);
-    });
+    // socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
+    //     const userTurn = getRoom(user.room)?.users.find(u => u.id === currentPlayerTurnId);
+    //     if (!userTurn?.socketId) return;
+    //     io.to(userTurn.socketId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn, knockPlayerId);
+    // });
 
-    socket.on('starting to shuffle', () => {
-        io.to(user.room).emit('starting to shuffle', user.id);
-    });
+    // socket.on('moveCardToHand', (cardId: number) => {
+    //     const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+    //     if (!hostUser?.socketId) return;
+    //     io.to(hostUser.socketId).emit('moveCardToHand', user.id, cardId);
+    // });
 
-    socket.on('thirty one round end', (cardId: number) => {
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('thirty one round end', user.id, cardId);
-    });
+    // socket.on('moveCardToTable', (cardId: number) => {
+    //     const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+    //     if (!hostUser?.socketId) return;
+    //     io.to(hostUser.socketId).emit('moveCardToTable', user.id, cardId);
+    // });
+
+    // socket.on('thirty one knock', () => {
+    //     const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+    //     if (!hostUser?.socketId) return;
+    //     io.to(hostUser.socketId).emit('thirty one knock', user.id);
+    // });
+
+    // socket.on('can deal', (userId: string) => {
+    //     const userDeal = getRoom(user.room)?.users.find(u => u.id === userId);
+    //     if (!userDeal?.socketId) return;
+    //     io.to(userDeal.socketId).emit('can deal', user.id);
+    // });
+
+    // socket.on('deal', (userId: string) => {
+    //     const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+    //     if (!hostUser?.socketId) return;
+    //     io.to(hostUser.socketId).emit('deal', userId);
+    // });
+
+    // socket.on('starting to shuffle', () => {
+    //     io.to(user.room).emit('starting to shuffle', user.id);
+    // });
 
     socket.on('getPlayerState', (userId: string) => {
         console.log('getPlayerState requested');
