@@ -1,6 +1,6 @@
 import { Game, NewRoomId, StoredBrowserIds, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
 import { GameState } from 'api/src/gameState/GameState';
-import { PlayerState } from 'api/src/playerState/PlayerState';
+import { PlayerData } from 'api/src/playerData/PlayerData';
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -253,16 +253,16 @@ io.on('connection', (socket) => {
     });
 
     // TODO use this eventually actually juse the same text
-    socket.on('playerStateToHost', (playerCardHandState: Partial<PlayerState>) => {
+    socket.on('playerDataToHost', (playerCardHandState: Partial<PlayerData>) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('playerStateToHost', playerCardHandState);
+        io.to(hostUser.socketId).emit('playerDataToHost', playerCardHandState);
     });
 
-    socket.on('playerStateToUser', (userId: string, playerCardHandState: Partial<PlayerState>) => {
+    socket.on('playerDataToUser', (userId: string, playerCardHandState: Partial<PlayerData>) => {
         const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userTo?.socketId) return;
-        io.to(userTo.socketId).emit('playerStateToUser', playerCardHandState);
+        io.to(userTo.socketId).emit('playerDataToUser', playerCardHandState);
     });
 
     socket.on('gameStateToHost', (gameState: Partial<GameState>) => {
@@ -320,12 +320,12 @@ io.on('connection', (socket) => {
     //     io.to(user.room).emit('starting to shuffle', user.id);
     // });
 
-    socket.on('getPlayerState', (userId: string) => {
-        console.log('getPlayerState requested');
+    socket.on('getPlayerData', (userId: string) => {
+        console.log('getPlayerData requested');
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        console.log('sendPlayerState')
-        io.to(hostUser.socketId).emit('getPlayerState', userId);
+        console.log('sendPlayerData')
+        io.to(hostUser.socketId).emit('getPlayerData', userId);
     });
 
 });

@@ -1,9 +1,8 @@
 // This is what is sent to the client/ server when a player is dealt a card
 
-import { PlayerState } from "../PlayerState";
+import { PlayerData } from "../PlayerData";
 
-
-export class PlayerCardHandState extends PlayerState {
+export class PlayerCardHandData extends PlayerData {
     cardIds: number[] = [];
     dealing: boolean = false;
 }

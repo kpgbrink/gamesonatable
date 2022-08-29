@@ -1,4 +1,4 @@
-import { ThirtyOnePlayerCardHandState } from "api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOnePlayerCardHandState";
+import { ThirtyOnePlayerCardHandData } from "api/src/playerData/playerDatas/specificPlayerCardHandDatas/ThirtyOnePlayerCardHandData";
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/items/CardContainer";
 import MenuButton from "../../../objects/MenuButton";
@@ -7,8 +7,8 @@ import { getScreenDimensions } from "../../../objects/Tools";
 import { PlayerCardHand } from "../PlayerCardHand";
 
 
-export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandState> {
-    listenForState: string = "playerStateToUser";
+export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandData> {
+    listenForState: string = "playerDataToUser";
 
     knockButton: MenuButton | null = null;
     knockPlayerId: string | null = null;
@@ -42,7 +42,7 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandSta
         this.scene.add.existing(this.knockButton);
     }
 
-    override updatePlayerState(playerState: ThirtyOnePlayerCardHandState): void {
+    override updatePlayerData(playerData: ThirtyOnePlayerCardHandData): void {
 
     }
 
@@ -75,7 +75,7 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandSta
         socket.emit('moveCardToTable', card.id);
     }
 
-    onUpdateCardHandState(thirtyOneCardHandState: ThirtyOnePlayerCardHandState) {
+    onUpdateCardHandState(thirtyOneCardHandState: ThirtyOnePlayerCardHandData) {
         super.onUpdateCardHandState(thirtyOneCardHandState);
         this.knockButton?.setVisible(thirtyOneCardHandState.canKnock && this.knockPlayerId === null);
     }

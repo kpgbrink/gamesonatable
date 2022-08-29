@@ -1,4 +1,4 @@
-import { PlayerCardHandState } from "api/src/playerState/playerStates/PlayerCardHandState";
+import { PlayerCardHandData } from "api/src/playerData/playerDatas/PlayerCardHandData";
 import { CountdownTimer } from "../../../../../objects/CountdownTimer";
 import { CardGameUserAvatarContainer } from "../../../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
 import { HostUserAvatarsAroundTableGame } from "../../../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
@@ -6,18 +6,18 @@ import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 
 export class Dealing<
-    PlayerStateType extends PlayerCardHandState,
+    PlayerDataType extends PlayerCardHandData,
     UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerStateType>> extends HostGameState<PlayerStateType> {
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGameState<PlayerDataType> {
 
-    hostGame: HostCardGame<PlayerStateType, UserAvatars, UserAvatarType>;
+    hostGame: HostCardGame<PlayerDataType, UserAvatars, UserAvatarType>;
     // store the countdown timer for the movement of the card and the card that is moving
     nextCardTimer: CountdownTimer = new CountdownTimer(.1);
     sendingOutCardTime: number = .7;
 
     currentPlayerGettingCard: string | null = null;
 
-    constructor(hostGame: HostCardGame<PlayerStateType, UserAvatars, UserAvatarType>) {
+    constructor(hostGame: HostCardGame<PlayerDataType, UserAvatars, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }
@@ -73,7 +73,7 @@ export class Dealing<
         }
     }
 
-    update(time: number, delta: number): HostGameState<PlayerStateType> | null {
+    update(time: number, delta: number): HostGameState<PlayerDataType> | null {
         this.getNextCardDeal(delta);
         this.hostGame.cards.update(time, delta);
 

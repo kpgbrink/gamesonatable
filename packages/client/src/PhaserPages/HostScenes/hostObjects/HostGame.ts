@@ -1,12 +1,11 @@
-import { PlayerState } from "api/src/playerState/PlayerState";
+import { PlayerData } from "api/src/playerData/PlayerData";
 import socket from "../../../SocketConnection";
 import { persistentData } from "../../objects/PersistantData";
 import { HostGameState } from "./hostGame/states/HostGameState";
 
-export abstract class HostGame<PlayerStateType extends PlayerState> {
-    abstract sendUserStateString: string;
+export abstract class HostGame<PlayerDataType extends PlayerData> {
     scene: Phaser.Scene;
-    currentState: HostGameState<PlayerStateType> | null = null;
+    currentState: HostGameState<PlayerDataType> | null = null;
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
@@ -19,19 +18,19 @@ export abstract class HostGame<PlayerStateType extends PlayerState> {
 
     }
 
-    abstract createGameState(): HostGameState<PlayerStateType>;
+    abstract createGameState(): HostGameState<PlayerDataType>;
 
     sendUserState(userId: string) {
         console.log('user state being sent', this.userState(userId));
-        socket.emit(this.sendUserStateString, userId, this.userState(userId));
+        socket.emit("playerDataToUser", userId, this.userState(userId));
     }
 
-    abstract userState(userId: string): Partial<PlayerStateType> | undefined;
+    abstract userState(userId: string): Partial<PlayerDataType> | undefined;
 
     abstract getUserState(): void;
 
     socketListenForUserState() {
-        socket.on("getPlayerState", (userId: string) => {
+        socket.on("getPlayerData", (userId: string) => {
             console.log("player asking for their state");
             this.sendUserState(userId);
         });
@@ -43,7 +42,7 @@ export abstract class HostGame<PlayerStateType extends PlayerState> {
     }
 
     // the only way I should change the states is by calling this method
-    changeState(newState: HostGameState<PlayerStateType> | null) {
+    changeState(newState: HostGameState<PlayerDataType> | null) {
         if (!newState) return;
         this.currentState?.exit();
         this.currentState = newState;

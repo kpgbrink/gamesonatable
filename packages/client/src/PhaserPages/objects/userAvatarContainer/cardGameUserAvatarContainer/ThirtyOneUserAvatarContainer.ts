@@ -1,19 +1,19 @@
-import { ThirtyOnePlayerCardHandState } from "api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOnePlayerCardHandState";
+import { ThirtyOnePlayerCardHandData } from "api/src/playerData/playerDatas/specificPlayerCardHandDatas/ThirtyOnePlayerCardHandData";
 import PokerChip from "../../items/PokerChip";
 import { DegreesToRadians, getScreenCenter, randomizeTransform, transformFromObject, TransformRandomizer } from "../../Tools";
 import { CardGameUserAvatarContainer } from "../CardGameUserAvatarContainer";
 
-export class ThirtyOneUserAvatarContainer extends CardGameUserAvatarContainer<ThirtyOnePlayerCardHandState> {
+export class ThirtyOneUserAvatarContainer extends CardGameUserAvatarContainer<ThirtyOnePlayerCardHandData> {
     lives: number = 3;
     pokerChipsDistance: number = 160;
     bluePokerChips: PokerChip[] = [];
     removingPokerChips: PokerChip[] = [];
     roundScore: number = 0;
 
-    playerCardHandState: ThirtyOnePlayerCardHandState = new ThirtyOnePlayerCardHandState();
+    playerCardHandState: ThirtyOnePlayerCardHandData = new ThirtyOnePlayerCardHandData();
 
-    createPlayerCardHandState(): ThirtyOnePlayerCardHandState {
-        return new ThirtyOnePlayerCardHandState();
+    createPlayerCardHandData(): ThirtyOnePlayerCardHandData {
+        return new ThirtyOnePlayerCardHandData();
     }
 
     create() {

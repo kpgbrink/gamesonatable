@@ -1,4 +1,4 @@
-import { ThirtyOnePlayerCardHandState } from "api/src/playerState/playerStates/specificPlayerCardHandStates/ThirtyOnePlayerCardHandState";
+import { ThirtyOnePlayerCardHandData } from "api/src/playerData/playerDatas/specificPlayerCardHandDatas/ThirtyOnePlayerCardHandData";
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/items/CardContainer";
 import { loadIfImageNotLoaded, Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
@@ -12,8 +12,7 @@ import { HostGameState } from "./states/HostGameState";
 
 
 export class ThirtyOneGame
-    extends HostCardGame<ThirtyOnePlayerCardHandState, ThirtyOneHostUserAvatarsAroundTableGame, ThirtyOneUserAvatarContainer> {
-    sendUserStateString: string = "playerStateToUser";
+    extends HostCardGame<ThirtyOnePlayerCardHandData, ThirtyOneHostUserAvatarsAroundTableGame, ThirtyOneUserAvatarContainer> {
     dealAmount: number = 3;
 
     hostUserAvatars: ThirtyOneHostUserAvatarsAroundTableGame | null = null;
@@ -98,7 +97,7 @@ export class ThirtyOneGame
         }
     }
 
-    createGameState(): HostGameState<ThirtyOnePlayerCardHandState> {
+    createGameState(): HostGameState<ThirtyOnePlayerCardHandData> {
         return new ThirtyOneGameStart(this);
     }
 
@@ -108,7 +107,7 @@ export class ThirtyOneGame
     }
 
     override getUserState() {
-        socket.on("playerStateToHost", (userId: string, playerState: ThirtyOnePlayerCardHandState) => {
+        socket.on("playerDataToHost", (userId: string, playerData: ThirtyOnePlayerCardHandData) => {
             const user = this.getUser(userId);
             if (!user) return;
 

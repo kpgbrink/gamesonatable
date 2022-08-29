@@ -1,4 +1,4 @@
-import { PlayerCardHandState } from "api/src/playerState/playerStates/PlayerCardHandState";
+import { PlayerCardHandData } from "api/src/playerData/playerDatas/PlayerCardHandData";
 import socket from "../../../../SocketConnection";
 import { Cards } from "../../../objects/Cards";
 import CardContainer from "../../../objects/items/CardContainer";
@@ -10,9 +10,9 @@ import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvata
 import { Shuffling } from "./states/hostCardGame/Shuffling";
 
 export abstract class HostCardGame<
-    PlayerStateType extends PlayerCardHandState,
+    PlayerDataType extends PlayerCardHandData,
     UserAvatarsType extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerStateType>> extends HostGame<PlayerStateType> {
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGame<PlayerDataType> {
     scene: Phaser.Scene;
     cards: Cards;
     hostUserAvatars: UserAvatarsType | null = null;

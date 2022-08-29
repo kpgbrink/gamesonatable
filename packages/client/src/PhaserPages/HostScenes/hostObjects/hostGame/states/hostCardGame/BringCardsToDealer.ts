@@ -1,4 +1,4 @@
-import { PlayerCardHandState } from "api/src/playerState/playerStates/PlayerCardHandState";
+import { PlayerCardHandData } from "api/src/playerData/playerDatas/PlayerCardHandData";
 import { transformFromObject } from "../../../../../objects/Tools";
 import { CardGameUserAvatarContainer } from "../../../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
 import { HostUserAvatarsAroundTableGame } from "../../../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
@@ -9,14 +9,14 @@ import { Dealing } from "./Dealing";
 
 // Bring cards to the random dealer and have the cards start going out to people.
 export class BringCardsToDealer<
-    PlayerStateType extends PlayerCardHandState,
+    PlayerDataType extends PlayerCardHandData,
     UserAvatarsType extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerStateType>> extends HostGameState<PlayerStateType> {
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGameState<PlayerDataType> {
 
-    hostGame: HostCardGame<PlayerStateType, UserAvatarsType, UserAvatarType>;
+    hostGame: HostCardGame<PlayerDataType, UserAvatarsType, UserAvatarType>;
     getReadyToDealTime: number = .2;
 
-    constructor(hostGame: HostCardGame<PlayerStateType, UserAvatarsType, UserAvatarType>) {
+    constructor(hostGame: HostCardGame<PlayerDataType, UserAvatarsType, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }
@@ -39,7 +39,7 @@ export class BringCardsToDealer<
         });
     }
 
-    update(time: number, delta: number): HostGameState<PlayerStateType> | null {
+    update(time: number, delta: number): HostGameState<PlayerDataType> | null {
         this.hostGame.cards.update(time, delta);
         // check if all cards are in the dealer
         if (this.hostGame.cards.cardContainers.every(cardContainer =>

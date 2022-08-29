@@ -1,4 +1,4 @@
-import { PlayerCardHandState } from "api/src/playerState/playerStates/PlayerCardHandState";
+import { PlayerCardHandData } from "api/src/playerData/playerDatas/PlayerCardHandData";
 import socket from "../../../SocketConnection";
 import { Cards } from "../../objects/Cards";
 import CardContainer from "../../objects/items/CardContainer";
@@ -7,7 +7,7 @@ import { persistentData } from "../../objects/PersistantData";
 import { checkTransformsAlmostEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
 import PlayerScene from "./PlayerScene";
 
-export abstract class PlayerCardHand<T extends PlayerCardHandState> {
+export abstract class PlayerCardHand<T extends PlayerCardHandData> {
     abstract listenForState: string;
     dealButton: MenuButton | null = null;
     hideShowCardButton: MenuButton | null = null;
@@ -26,7 +26,7 @@ export abstract class PlayerCardHand<T extends PlayerCardHandState> {
 
     cardBasePositions: Transform[] = [];
 
-    playerCardHandState: PlayerCardHandState = new PlayerCardHandState();
+    playerCardHandState: PlayerCardHandData = new PlayerCardHandData();
 
     constructor(scene: PlayerScene) {
         this.scene = scene;
@@ -58,7 +58,7 @@ export abstract class PlayerCardHand<T extends PlayerCardHandState> {
 
     create() {
         // ask for my current state
-        socket.emit('getPlayerState', persistentData.myUserId);
+        socket.emit('getPlayerData', persistentData.myUserId);
 
         this.cards.create(0, 0);
         this.cards.cardContainers.forEach(card => {
@@ -132,15 +132,15 @@ export abstract class PlayerCardHand<T extends PlayerCardHandState> {
     }
 
     listenForStateChange() {
-        socket.on(this.listenForState, (playerState: T) => {
-            this.updatePlayerPlayerCardHandState(playerState);
-            this.updatePlayerState(playerState);
+        socket.on(this.listenForState, (playerData: T) => {
+            this.updatePlayerPlayerCardHandData(playerData);
+            this.updatePlayerData(playerData);
         });
     }
 
-    abstract updatePlayerState(playerState: T): void;
+    abstract updatePlayerData(playerData: T): void;
 
-    updatePlayerPlayerCardHandState(cardHandState: PlayerCardHandState) {
+    updatePlayerPlayerCardHandData(cardHandState: PlayerCardHandData) {
         this.playerCardHandState = cardHandState;
         // move the cards to the hand
         // TODO change the Date.now() to the time given to the user
@@ -324,7 +324,7 @@ export abstract class PlayerCardHand<T extends PlayerCardHandState> {
         this.startMovingCardsBackToTable();
     }
 
-    onUpdateCardHandState(playerCardHandState: PlayerCardHandState) {
+    onUpdateCardHandState(playerCardHandState: PlayerCardHandData) {
         // update the cards in the hand 
         const myUserId = persistentData.myUserId;
 
