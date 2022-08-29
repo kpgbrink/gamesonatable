@@ -1,3 +1,4 @@
+import { CardGameData } from "api/src/gameData/gameDatas/CardGameData";
 import { PlayerCardHandData } from "api/src/playerData/playerDatas/PlayerCardHandData";
 import socket from "../../../../../../SocketConnection";
 import { getScreenCenter } from "../../../../../objects/Tools";
@@ -8,14 +9,15 @@ import { HostGameState } from "../HostGameState";
 import { Shuffling } from "./Shuffling";
 
 export class StartGettingReadyToShuffle<
+    GameDataType extends CardGameData,
     PlayerDataType extends PlayerCardHandData,
     UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGameState<PlayerDataType> {
-    hostGame: HostCardGame<PlayerDataType, UserAvatars, UserAvatarType>;
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGameState<PlayerDataType, GameDataType> {
+    hostGame: HostCardGame<GameDataType, PlayerDataType, UserAvatars, UserAvatarType>;
     // store the countdown timer for the movement of the card and the card that is moving
     sendingOutCardTime: number = .7;
 
-    constructor(hostGame: HostCardGame<PlayerDataType, UserAvatars, UserAvatarType>) {
+    constructor(hostGame: HostCardGame<GameDataType, PlayerDataType, UserAvatars, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }
@@ -42,7 +44,7 @@ export class StartGettingReadyToShuffle<
         socket.emit('starting to shuffle');
     }
 
-    update(time: number, delta: number): HostGameState<PlayerDataType> | null {
+    update(time: number, delta: number): HostGameState<PlayerDataType, GameDataType> | null {
         this.hostGame.cards.update(time, delta);
         // once all cards are done moving, start the next round
         if (this.hostGame.cards.cardContainers.every(cardContainer => cardContainer.moveOnDuration === null)) {

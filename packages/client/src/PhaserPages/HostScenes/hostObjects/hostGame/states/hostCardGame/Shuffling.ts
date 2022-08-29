@@ -1,3 +1,4 @@
+import { CardGameData } from "api/src/gameData/gameDatas/CardGameData";
 import { PlayerCardHandData } from "api/src/playerData/playerDatas/PlayerCardHandData";
 import { CountdownTimer } from "../../../../../objects/CountdownTimer";
 import { angleFromPositionToPosition, DegreesToRadians, distanceBetweenTwoPoints, getNormalVector, getScreenCenter, millisecondToSecond, randomFloatBetween, vectorFromAngleAndLength } from "../../../../../objects/Tools";
@@ -10,17 +11,18 @@ import { BringCardsToDealer } from "./BringCardsToDealer";
 
 
 export class Shuffling<
+    GameDataType extends CardGameData,
     PlayerDataType extends PlayerCardHandData,
     UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGameState<PlayerDataType> {
-    hostGame: HostCardGame<PlayerDataType, UserAvatars, UserAvatarType>;
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGameState<PlayerDataType, GameDataType> {
+    hostGame: HostCardGame<GameDataType, PlayerDataType, UserAvatars, UserAvatarType>;
     randomStartingOffset: number = 500;
     randomStartingMovementSpeed: number = 15 * 60;
     randomStartingRotationalVelocity: number = DegreesToRadians(360);
     massCenter = 50 * 60 * 60 * 4;
     shufflingTimer: CountdownTimer = new CountdownTimer(1);
 
-    constructor(hostGame: HostCardGame<PlayerDataType, UserAvatars, UserAvatarType>) {
+    constructor(hostGame: HostCardGame<GameDataType, PlayerDataType, UserAvatars, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }
@@ -84,7 +86,7 @@ export class Shuffling<
         });
     }
 
-    update(time: number, delta: number): HostGameState<PlayerDataType> | null {
+    update(time: number, delta: number): HostGameState<PlayerDataType, GameDataType> | null {
         // shuffle then switch to deal state
         this.hostGame.cards.update(time, delta);
         this.addGravityToCardMovement(delta);

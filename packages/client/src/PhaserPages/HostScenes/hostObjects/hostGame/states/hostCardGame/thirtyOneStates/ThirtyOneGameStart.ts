@@ -1,10 +1,11 @@
+import { ThirtyOneCardGameData } from "api/src/gameData/gameDatas/specificCardGameDatas/ThirtyOneCardGame";
 import { ThirtyOnePlayerCardHandData } from "api/src/playerData/playerDatas/specificPlayerCardHandDatas/ThirtyOnePlayerCardHandData";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
 import { HostGameState } from "../../HostGameState";
 import { ThirtyOneGameTurnOverCard } from "./ThirtyOneTurnOverCard";
 
 // Bring cards to the random dealer and have the cards start going out to people.
-export class ThirtyOneGameStart extends HostGameState<ThirtyOnePlayerCardHandData> {
+export class ThirtyOneGameStart extends HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> {
     hostGame: ThirtyOneGame;
     bringToCenterTime: number = 1;
 
@@ -29,7 +30,7 @@ export class ThirtyOneGameStart extends HostGameState<ThirtyOnePlayerCardHandDat
         });
     }
 
-    update(time: number, delta: number): HostGameState<ThirtyOnePlayerCardHandData> | null {
+    update(time: number, delta: number): HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> | null {
         this.hostGame.cards.update(time, delta);
         // check if all cards are in the dealer
         if (this.hostGame.cards.cardContainers.every(cardContainer =>

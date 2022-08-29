@@ -1,38 +1,61 @@
+import { GameData } from "api/src/gameData/GameData";
 import { PlayerData } from "api/src/playerData/PlayerData";
 import socket from "../../../SocketConnection";
 import { persistentData } from "../../objects/PersistantData";
 import { HostGameState } from "./hostGame/states/HostGameState";
 
-export abstract class HostGame<PlayerDataType extends PlayerData> {
+export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType extends GameData> {
     scene: Phaser.Scene;
-    currentState: HostGameState<PlayerDataType> | null = null;
+    currentState: HostGameState<PlayerDataType, GameDataType> | null = null;
+    gameData: GameDataType;
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Phaser.Scene, gameData: GameDataType) {
         this.scene = scene;
+        this.gameData = gameData;
     }
 
     preload() {
     }
 
     create() {
-
+        this.socketListenForGetUserStateRequest();
+        this.socketListenForGetGameStateRequest();
     }
 
-    abstract createGameState(): HostGameState<PlayerDataType>;
+    abstract createGameState(): HostGameState<PlayerDataType, GameDataType>;
 
-    sendUserState(userId: string) {
-        console.log('user state being sent', this.userState(userId));
-        socket.emit("playerDataToUser", userId, this.userState(userId));
+
+    // PlayerData
+    sendPlayerData(userId: string) {
+        console.log('user state being sent', this.getPlayerData(userId));
+        socket.emit("playerDataToUser", userId, this.getPlayerData(userId));
     }
 
-    abstract userState(userId: string): Partial<PlayerDataType> | undefined;
+    abstract getPlayerData(userId: string): Partial<PlayerDataType> | undefined;
 
-    abstract getUserState(): void;
+    abstract listenForPlayerData(): void;
 
-    socketListenForUserState() {
+    socketListenForGetUserStateRequest() {
         socket.on("getPlayerData", (userId: string) => {
             console.log("player asking for their state");
-            this.sendUserState(userId);
+            this.sendPlayerData(userId);
+        });
+    }
+
+    // GameData
+    sendGameData() {
+        console.log('game state being sent', this.getGameData());
+        socket.emit("gameDataToAll", this.getGameData());
+    }
+
+    abstract getGameData(): Partial<GameDataType> | undefined;
+
+    abstract listenForGameData(): void;
+
+    socketListenForGetGameStateRequest() {
+        socket.on("getGameData", () => {
+            console.log("player asking for game state");
+            this.sendGameData();
         });
     }
 
@@ -42,7 +65,7 @@ export abstract class HostGame<PlayerDataType extends PlayerData> {
     }
 
     // the only way I should change the states is by calling this method
-    changeState(newState: HostGameState<PlayerDataType> | null) {
+    changeState(newState: HostGameState<PlayerDataType, GameDataType> | null) {
         if (!newState) return;
         this.currentState?.exit();
         this.currentState = newState;

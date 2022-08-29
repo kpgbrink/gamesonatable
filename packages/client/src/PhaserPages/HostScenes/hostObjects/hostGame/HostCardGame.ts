@@ -1,3 +1,4 @@
+import { CardGameData } from "api/src/gameData/gameDatas/CardGameData";
 import { PlayerCardHandData } from "api/src/playerData/playerDatas/PlayerCardHandData";
 import socket from "../../../../SocketConnection";
 import { Cards } from "../../../objects/Cards";
@@ -10,9 +11,10 @@ import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvata
 import { Shuffling } from "./states/hostCardGame/Shuffling";
 
 export abstract class HostCardGame<
+    GameDataType extends CardGameData,
     PlayerDataType extends PlayerCardHandData,
     UserAvatarsType extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGame<PlayerDataType> {
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGame<PlayerDataType, GameDataType> {
     scene: Phaser.Scene;
     cards: Cards;
     hostUserAvatars: UserAvatarsType | null = null;
@@ -25,7 +27,7 @@ export abstract class HostCardGame<
 
     minDistanceBetweenCards: ValueWithDefault<number> = new ValueWithDefault(200);
 
-    override userState(userId: string) {
+    override getPlayerData(userId: string) {
         // get the user state for the user on just the card stuff
         const user = this.getUser(userId);
         if (!user) return;
@@ -39,8 +41,12 @@ export abstract class HostCardGame<
         return playerCardHandState;
     }
 
-    constructor(scene: Phaser.Scene) {
-        super(scene);
+    override getGameData() {
+        return this.gameData;
+    }
+
+    constructor(scene: Phaser.Scene, gameData: GameDataType) {
+        super(scene, gameData);
         this.scene = scene;
         this.cards = new Cards(scene);
     }

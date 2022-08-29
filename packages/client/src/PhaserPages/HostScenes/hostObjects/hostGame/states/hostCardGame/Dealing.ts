@@ -1,3 +1,4 @@
+import { CardGameData } from "api/src/gameData/gameDatas/CardGameData";
 import { PlayerCardHandData } from "api/src/playerData/playerDatas/PlayerCardHandData";
 import { CountdownTimer } from "../../../../../objects/CountdownTimer";
 import { CardGameUserAvatarContainer } from "../../../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
@@ -6,18 +7,19 @@ import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
 
 export class Dealing<
+    GameDataType extends CardGameData,
     PlayerDataType extends PlayerCardHandData,
     UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
-    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGameState<PlayerDataType> {
+    UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGameState<PlayerDataType, GameDataType> {
 
-    hostGame: HostCardGame<PlayerDataType, UserAvatars, UserAvatarType>;
+    hostGame: HostCardGame<GameDataType, PlayerDataType, UserAvatars, UserAvatarType>;
     // store the countdown timer for the movement of the card and the card that is moving
     nextCardTimer: CountdownTimer = new CountdownTimer(.1);
     sendingOutCardTime: number = .7;
 
     currentPlayerGettingCard: string | null = null;
 
-    constructor(hostGame: HostCardGame<PlayerDataType, UserAvatars, UserAvatarType>) {
+    constructor(hostGame: HostCardGame<GameDataType, PlayerDataType, UserAvatars, UserAvatarType>) {
         super(hostGame);
         this.hostGame = hostGame;
     }
@@ -63,7 +65,7 @@ export class Dealing<
             throw new Error('user is null');
         }
 
-        this.hostGame.sendUserState(this.currentPlayerGettingCard);
+        this.hostGame.sendPlayerData(this.currentPlayerGettingCard);
         // });
         // check if every player in game has the amount of cards they need
         if (this.hostGame.hostUserAvatars?.getUsersInGame().every(userAvatar => {
@@ -73,7 +75,7 @@ export class Dealing<
         }
     }
 
-    update(time: number, delta: number): HostGameState<PlayerDataType> | null {
+    update(time: number, delta: number): HostGameState<PlayerDataType, GameDataType> | null {
         this.getNextCardDeal(delta);
         this.hostGame.cards.update(time, delta);
 

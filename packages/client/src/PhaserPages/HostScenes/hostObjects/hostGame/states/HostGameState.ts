@@ -1,10 +1,11 @@
+import { GameData } from "api/src/gameData/GameData";
 import { PlayerData } from "api/src/playerData/PlayerData";
 import { HostGame } from "../../HostGame";
 
-export abstract class HostGameState<PlayerDataType extends PlayerData> {
-    hostGame: HostGame<PlayerDataType>;
+export abstract class HostGameState<PlayerDataType extends PlayerData, GameDataType extends GameData> {
+    hostGame: HostGame<PlayerDataType, GameDataType>;
 
-    constructor(hostGame: HostGame<PlayerDataType>) {
+    constructor(hostGame: HostGame<PlayerDataType, GameDataType>) {
         this.hostGame = hostGame;
     }
 

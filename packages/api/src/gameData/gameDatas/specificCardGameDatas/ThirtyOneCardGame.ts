@@ -1,6 +1,6 @@
-import { CardGameData } from "../CardGame";
+import { CardGameData } from "../CardGameData";
 
-export class ThirtyOneCardGameState extends CardGameData {
+export class ThirtyOneCardGameData extends CardGameData {
     knockPlayerId: string | null = null;
 
 }

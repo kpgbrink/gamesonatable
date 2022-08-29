@@ -1,10 +1,11 @@
+import { ThirtyOneCardGameData } from "api/src/gameData/gameDatas/specificCardGameDatas/ThirtyOneCardGame";
 import { ThirtyOnePlayerCardHandData } from "api/src/playerData/playerDatas/specificPlayerCardHandDatas/ThirtyOnePlayerCardHandData";
 import { CountdownTimer } from "../../../../../../objects/CountdownTimer";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
 import { HostGameState } from "../../HostGameState";
 
 // Bring cards to the random dealer and have the cards start going out to people.
-export class ThirtyOneGameEnd extends HostGameState<ThirtyOnePlayerCardHandData> {
+export class ThirtyOneGameEnd extends HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> {
     hostGame: ThirtyOneGame;
     bringShownCardToPositionTime: number = 1;
 
@@ -21,7 +22,7 @@ export class ThirtyOneGameEnd extends HostGameState<ThirtyOnePlayerCardHandData>
 
     }
 
-    update(time: number, delta: number): HostGameState<ThirtyOnePlayerCardHandData> | null {
+    update(time: number, delta: number): HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> | null {
         this.hostGame.cards.update(time, delta);
         this.timerBackToGameChooseScreen.update(delta);
         if (this.timerBackToGameChooseScreen.isDone()) {

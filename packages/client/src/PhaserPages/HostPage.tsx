@@ -1,4 +1,4 @@
-import { Game, GameData } from "api";
+import { Game, GameStoredInfo } from "api";
 import Phaser from "phaser";
 import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,7 +10,7 @@ import ThirtyOneHostScene from "./HostScenes/ThirtyOneHostScene";
 import PhaserWrapper from "./PhaserWrapper";
 
 // Dictionary of game names to game scenes
-const gameScenes: Map<string, GameData> = new Map([
+const gameScenes: Map<string, GameStoredInfo> = new Map([
   [
     "Omaha",
     {
