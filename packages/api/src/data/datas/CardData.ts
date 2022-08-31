@@ -1,4 +1,4 @@
-import { Data, GameData, PlayerData } from "../Data";
+import { GameData, PlayerData } from "../Data";
 
 export class PlayerCardHandData extends PlayerData {
     cardIds: number[] = [];
@@ -7,9 +7,4 @@ export class PlayerCardHandData extends PlayerData {
 
 export class CardGameData extends GameData {
 
-}
-
-export class CardHandData extends Data {
-    playerData = new PlayerCardHandData();
-    gameData = new CardGameData();
 }
