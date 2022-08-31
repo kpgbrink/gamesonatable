@@ -1,5 +1,4 @@
-import { GameData } from "api/src/gameData/GameData";
-import { PlayerData } from "api/src/playerData/PlayerData";
+import { GameData, PlayerData } from "api/src/data/Data";
 import { HostGame } from "../../HostGame";
 
 export abstract class HostGameState<PlayerDataType extends PlayerData, GameDataType extends GameData> {

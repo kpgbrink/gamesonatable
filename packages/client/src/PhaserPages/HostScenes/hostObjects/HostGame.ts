@@ -1,5 +1,4 @@
-import { GameData } from "api/src/gameData/GameData";
-import { PlayerData } from "api/src/playerData/PlayerData";
+import { GameData, PlayerData } from "api/src/data/Data";
 import socket from "../../../SocketConnection";
 import { persistentData } from "../../objects/PersistantData";
 import { HostGameState } from "./hostGame/states/HostGameState";
@@ -43,9 +42,9 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     }
 
     // GameData
-    sendGameData() {
+    sendGameData(userId: string | null = null) {
         console.log('game state being sent', this.getGameData());
-        socket.emit("gameDataToAll", this.getGameData());
+        socket.emit("gameDataToAll", userId, this.getGameData());
     }
 
     abstract getGameData(): Partial<GameDataType> | undefined;
@@ -53,9 +52,17 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     abstract listenForGameData(): void;
 
     socketListenForGetGameStateRequest() {
-        socket.on("getGameData", () => {
+        socket.on("getGameData", (userId: string) => {
             console.log("player asking for game state");
-            this.sendGameData();
+            this.sendGameData(userId);
+        });
+    }
+
+    // gets both of the data and sends it to the server
+    socketListenForGetDataRequest() {
+        socket.on("getData", (userId: string) => {
+            console.log("player asking for data");
+            socket.emit("data", userId, this.getGameData(), this.getPlayerData(userId));
         });
     }
 

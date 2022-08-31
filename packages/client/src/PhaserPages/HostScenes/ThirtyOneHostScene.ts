@@ -1,4 +1,4 @@
-import { ThirtyOneCardGameData } from "api/src/gameData/gameDatas/specificCardGameDatas/ThirtyOneCardGame";
+import { ThirtyOneCardGameData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
 import { Cards } from "../objects/Cards";
 import GameTable from "../objects/GameTable";
 import { getScreenCenter, loadIfImageNotLoaded } from "../objects/Tools";

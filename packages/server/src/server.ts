@@ -1,6 +1,5 @@
 import { Game, NewRoomId, StoredBrowserIds, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
-import { GameState } from 'api/src/gameState/GameState';
-import { PlayerData } from 'api/src/playerData/PlayerData';
+import { GameData, PlayerData } from "api/src/data/Data";
 import config from 'config';
 import cors from 'cors';
 import express from 'express';
@@ -253,30 +252,60 @@ io.on('connection', (socket) => {
     });
 
     // TODO use this eventually actually juse the same text
-    socket.on('playerDataToHost', (playerCardHandState: Partial<PlayerData>) => {
+    socket.on('playerDataToHost', (playerData: Partial<PlayerData>) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('playerDataToHost', playerCardHandState);
+        io.to(hostUser.socketId).emit('playerDataToHost', playerData);
     });
 
-    socket.on('playerDataToUser', (userId: string, playerCardHandState: Partial<PlayerData>) => {
+    socket.on('playerDataToUser', (userId: string, playerData: Partial<PlayerData>) => {
         const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userTo?.socketId) return;
-        io.to(userTo.socketId).emit('playerDataToUser', playerCardHandState);
+        io.to(userTo.socketId).emit('playerDataToUser', playerData);
     });
 
-    socket.on('gameStateToHost', (gameState: Partial<GameState>) => {
+    socket.on('gameDataToHost', (gameData: Partial<GameData>) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('gameStateToHost', gameState);
+        io.to(hostUser.socketId).emit('gameDataToHost', gameData);
     });
 
-    socket.on('gameStateToUser', (userId: string, gameState: Partial<GameState>) => {
+    socket.on('gameDataToUser', (userId: string, gameData: Partial<GameData>) => {
         const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userTo?.socketId) return;
-        io.to(userTo.socketId).emit('gameStateToUser', gameState);
+        io.to(userTo.socketId).emit('gameDataToUser', gameData);
     });
 
+    socket.on('dataToHost', (userId: string, gameData, playerData) => {
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser?.socketId) return;
+        io.to(hostUser.socketId).emit('dataToHost', userId, gameData, playerData);
+    });
+
+    // ------------------- Request data from Host -------------------
+    // Request data from Host by user
+    socket.on("getGameData", (userId: string) => {
+        const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
+        if (!userTo?.socketId) return;
+        io.to(userTo.socketId).emit('getGameData', userId);
+    });
+
+    socket.on('getPlayerData', (userId: string) => {
+        console.log('getPlayerData requested');
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser?.socketId) return;
+        console.log('sendPlayerData')
+        io.to(hostUser.socketId).emit('getPlayerData', userId);
+    });
+
+    socket.on('getData', (userId: string) => {
+        console.log('getData requested');
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser?.socketId) return;
+        console.log('sendData')
+        io.to(hostUser.socketId).emit('getData', userId);
+    });
+    // ------------------------------
 
     // Work on removing the commented out code below
 
@@ -320,12 +349,5 @@ io.on('connection', (socket) => {
     //     io.to(user.room).emit('starting to shuffle', user.id);
     // });
 
-    socket.on('getPlayerData', (userId: string) => {
-        console.log('getPlayerData requested');
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-        if (!hostUser?.socketId) return;
-        console.log('sendPlayerData')
-        io.to(hostUser.socketId).emit('getPlayerData', userId);
-    });
 
 });

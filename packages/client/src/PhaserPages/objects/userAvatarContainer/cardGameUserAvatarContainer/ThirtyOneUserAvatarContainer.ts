@@ -1,4 +1,4 @@
-import { ThirtyOnePlayerCardHandData } from "api/src/playerData/playerDatas/specificPlayerCardHandDatas/ThirtyOnePlayerCardHandData";
+import { ThirtyOnePlayerCardHandData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
 import PokerChip from "../../items/PokerChip";
 import { DegreesToRadians, getScreenCenter, randomizeTransform, transformFromObject, TransformRandomizer } from "../../Tools";
 import { CardGameUserAvatarContainer } from "../CardGameUserAvatarContainer";

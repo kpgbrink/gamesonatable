@@ -1,4 +1,4 @@
-import { ThirtyOnePlayerCardHandData } from "api/src/playerData/playerDatas/specificPlayerCardHandDatas/ThirtyOnePlayerCardHandData";
+import { ThirtyOnePlayerCardHandData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/items/CardContainer";
 import MenuButton from "../../../objects/MenuButton";

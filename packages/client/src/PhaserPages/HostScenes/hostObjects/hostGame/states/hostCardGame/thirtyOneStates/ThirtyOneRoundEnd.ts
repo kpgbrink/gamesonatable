@@ -1,5 +1,4 @@
-import { ThirtyOneCardGameData } from "api/src/gameData/gameDatas/specificCardGameDatas/ThirtyOneCardGame";
-import { ThirtyOnePlayerCardHandData } from "api/src/playerData/playerDatas/specificPlayerCardHandDatas/ThirtyOnePlayerCardHandData";
+import { ThirtyOneCardGameData, ThirtyOnePlayerCardHandData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
 import socket from "../../../../../../../SocketConnection";
 import { CountdownTimer } from "../../../../../../objects/CountdownTimer";
 import CardContainer from "../../../../../../objects/items/CardContainer";

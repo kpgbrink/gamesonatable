@@ -1,5 +1,4 @@
-import { CardGameData } from "api/src/gameData/gameDatas/CardGameData";
-import { PlayerCardHandData } from "api/src/playerData/playerDatas/PlayerCardHandData";
+import { CardGameData, PlayerCardHandData } from "api/src/data/datas/CardData";
 import { CountdownTimer } from "../../../../../objects/CountdownTimer";
 import { angleFromPositionToPosition, DegreesToRadians, distanceBetweenTwoPoints, getNormalVector, getScreenCenter, millisecondToSecond, randomFloatBetween, vectorFromAngleAndLength } from "../../../../../objects/Tools";
 import { CardGameUserAvatarContainer } from "../../../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
