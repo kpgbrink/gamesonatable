@@ -28,27 +28,6 @@ export class ThirtyOneGame
         // TODO make the update thing happen to the thingy
     }
 
-    override getPlayerData(userId: string) {
-        const user = this.getUser(userId);
-        if (!user) return;
-        const playerCardHandState = super.getPlayerData(userId);
-        // add the thirty one specific stuff too
-        console.log("userState", user);
-        return playerCardHandState;
-    }
-
-    override getGameData() {
-        return this.gameData;
-    }
-
-    override listenForGameData(): void {
-        socket.on("playerDataToHost", (userId: string, playerData: ThirtyOnePlayerCardHandData) => {
-            const user = this.getUser(userId);
-            if (!user) return;
-
-        });
-    }
-
     preload() {
         super.preload();
         loadIfImageNotLoaded(this.scene, 'bluePokerChip', 'assets/pokerChips/bluePokerChip.png');
@@ -119,12 +98,30 @@ export class ThirtyOneGame
         this.hostUserAvatars?.update(time, delta);
     }
 
-    override listenForPlayerData() {
-        socket.on("playerDataToHost", (userId: string, playerData: ThirtyOnePlayerCardHandData) => {
-            const user = this.getUser(userId);
-            if (!user) return;
+    override getPlayerData(userId: string) {
+        const user = this.getUser(userId);
+        if (!user) return;
+        const playerCardHandState = super.getPlayerData(userId);
+        // add the thirty one specific stuff too
+        console.log("userState", user);
+        return playerCardHandState;
+    }
 
-        });
+    override onPlayerDataToHost(playerData: Partial<ThirtyOnePlayerCardHandData>): void {
+        super.onPlayerDataToHost(playerData);
+        // TODO update the player avatar
+
+    }
+
+    override getGameData() {
+        const gameData = super.getGameData();
+        // add the thirty one specific stuff too
+        return gameData;
+    }
+
+    override onGameDataToHost(gameData: Partial<ThirtyOneCardGameData>): void {
+        super.onGameDataToHost(gameData);
+        // TODO update the game avatar
     }
 
     // TODO remove this

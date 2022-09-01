@@ -26,24 +26,6 @@ export abstract class HostCardGame<
 
     minDistanceBetweenCards: ValueWithDefault<number> = new ValueWithDefault(200);
 
-    override getPlayerData(userId: string) {
-        // get the user state for the user on just the card stuff
-        const user = this.getUser(userId);
-        if (!user) return;
-        // TODO WORKING ON THIS RIGHT NOW
-        const playerCardHandState = user.playerCardHandState;
-        if (!playerCardHandState) return;
-
-        const cardsInHand = this.getPlayerCards(userId);
-        playerCardHandState.cardIds = cardsInHand.map(card => card.id);
-
-        return playerCardHandState;
-    }
-
-    override getGameData() {
-        return this.gameData;
-    }
-
     constructor(scene: Phaser.Scene, gameData: GameDataType) {
         super(scene, gameData);
         this.scene = scene;
@@ -78,6 +60,34 @@ export abstract class HostCardGame<
             if (!card) return;
             this.onCardMoveToTable(userId, card);
         });
+    }
+
+    override getPlayerData(userId: string) {
+        // get the user state for the user on just the card stuff
+        const user = this.getUser(userId);
+        if (!user) return;
+        // TODO WORKING ON THIS RIGHT NOW
+        const playerCardHandState = user.playerCardHandState;
+        if (!playerCardHandState) return;
+
+        const cardsInHand = this.getPlayerCards(userId);
+        playerCardHandState.cardIds = cardsInHand.map(card => card.id);
+
+        return playerCardHandState;
+    }
+
+    override onPlayerDataToHost(playerData: Partial<PlayerDataType>): void {
+        // TODO update the player avatar
+
+    }
+
+    override getGameData() {
+        return this.gameData;
+    }
+
+    override onGameDataToHost(gameData: Partial<GameDataType>): void {
+        // TODO update the game data
+
     }
 
     getDealer() {
