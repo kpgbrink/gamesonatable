@@ -1,5 +1,5 @@
 import { Cards } from "../objects/Cards";
-import { ThirtyOneCardHand } from "./playerObjects/gameSpecificHands/ThirtyOneCardHand";
+import { ThirtyOneCardHand } from "./playerObjects/playerCardHands/ThirtyOneCardHand";
 import PlayerScene from "./playerObjects/PlayerScene";
 
 
