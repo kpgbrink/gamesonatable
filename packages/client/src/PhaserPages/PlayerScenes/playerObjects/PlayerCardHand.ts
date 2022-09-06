@@ -13,7 +13,6 @@ export abstract class PlayerCardHand
         CardGameDataType extends CardGameData>
     extends PlayerDataHandler<PlayerCardHandDataType, CardGameDataType>
 {
-    abstract listenForState: string;
     dealButton: MenuButton | null = null;
     hideShowCardButton: MenuButton | null = null;
     cards: Cards;
@@ -30,8 +29,6 @@ export abstract class PlayerCardHand
     showCardsInHand = true;
 
     cardBasePositions: Transform[] = [];
-
-    playerCardHandState: PlayerCardHandData = new PlayerCardHandData();
 
     constructor(scene: PlayerScene) {
         super();
@@ -58,18 +55,29 @@ export abstract class PlayerCardHand
 
     // ------------------------------------ Data ------------------------------------
     override getPlayerData(): Partial<PlayerCardHandDataType> | undefined {
-        throw new Error("Method not implemented.");
+        return this.playerData;
     }
 
     override onPlayerDataToUser(playerData: Partial<PlayerCardHandDataType>): void {
-        throw new Error("Method not implemented.");
+        console.log('player data to user');
+        if (!playerData) return;
+        if (playerData === undefined) return;
+
+        // move the cards to the hand
+        // TODO change the Date.now() to the time given to the user
+        if (playerData.cardIds !== undefined) {
+            this.updateCards(playerData.cardIds, Date.now());
+        }
+        if (playerData.dealing !== undefined) {
+            this.updateDealing(playerData.dealing);
+        }
     }
 
     override getGameData(): Partial<CardGameDataType> | undefined {
-        throw new Error("Method not implemented.");
+        return this.gameData;
     }
     override onGameDataToUser(gameData: Partial<CardGameDataType>): void {
-        throw new Error("Method not implemented.");
+
     }
     // ------------------------------------ Data End ------------------------------------
 
@@ -80,9 +88,9 @@ export abstract class PlayerCardHand
     }
 
     create() {
+        super.create();
         // ask for my current state
-        socket.emit('getPlayerData', persistentData.myUserId);
-
+        socket.emit('getData');
         this.cards.create(0, 0);
         this.cards.cardContainers.forEach(card => {
             card.setTransform(this.tablePosition);
@@ -151,24 +159,6 @@ export abstract class PlayerCardHand
             });
         });
         this.scene.add.existing(this.hideShowCardButton);
-        this.listenForStateChange();
-    }
-
-    listenForStateChange() {
-        socket.on(this.listenForState, (playerData: PlayerCardHandDataType) => {
-            this.updatePlayerPlayerCardHandData(playerData);
-            this.updatePlayerData(playerData);
-        });
-    }
-
-    abstract updatePlayerData(playerData: PlayerCardHandDataType): void;
-
-    updatePlayerPlayerCardHandData(cardHandState: PlayerCardHandData) {
-        this.playerCardHandState = cardHandState;
-        // move the cards to the hand
-        // TODO change the Date.now() to the time given to the user
-        this.updateCards(cardHandState.cardIds, Date.now());
-        this.updateDealing(cardHandState.dealing);
     }
 
     updateCards(cardIds: number[], timeGivenToUser: number) {

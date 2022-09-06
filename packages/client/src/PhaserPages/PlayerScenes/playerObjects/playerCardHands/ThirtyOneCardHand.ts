@@ -21,18 +21,22 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
     // ------------------------------------ Data ------------------------------------
     override getPlayerData(): Partial<ThirtyOnePlayerCardHandData> | undefined {
         super.getPlayerData();
-        throw new Error("Method not implemented.");
+        return this.playerData;
     }
 
     override onPlayerDataToUser(playerData: Partial<ThirtyOnePlayerCardHandData>): void {
-        throw new Error("Method not implemented.");
+        super.onPlayerDataToUser(playerData);
     }
 
     override getGameData(): Partial<ThirtyOneCardGameData> | undefined {
-        throw new Error("Method not implemented.");
+        const gameData = super.getGameData();
+        return gameData;
     }
     override onGameDataToUser(gameData: Partial<ThirtyOneCardGameData>): void {
-        throw new Error("Method not implemented.");
+        super.onGameDataToUser(gameData);
+        if (gameData.knockPlayerId) {
+            this.knockPlayerId = gameData.knockPlayerId;
+        }
     }
     // ------------------------------------ Data End ------------------------------------
 
@@ -68,10 +72,6 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
         });
         this.knockButton.setVisible(false);
         this.scene.add.existing(this.knockButton);
-    }
-
-    override updatePlayerData(playerData: ThirtyOnePlayerCardHandData): void {
-
     }
 
     setAllowedPickUpCardAmount(amount: number): void {

@@ -9,6 +9,12 @@ export abstract class
     abstract playerData: PlayerDataType;
     abstract gameData: GameDataType;
 
+    create() {
+        this.listenForGameData();
+        this.listenForPlayerData();
+        this.listenForData();
+    }
+
     // PlayerData --------------------
     abstract getPlayerData(): Partial<PlayerDataType> | undefined;
 
