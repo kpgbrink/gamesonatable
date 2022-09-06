@@ -264,10 +264,10 @@ io.on('connection', (socket) => {
         io.to(userTo.socketId).emit('playerDataToUser', playerData);
     });
 
-    socket.on('gameDataToHost', (userId: string, gameData: Partial<GameData>) => {
+    socket.on('gameDataToHost', (gameData: Partial<GameData>) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('gameDataToHost', userId, gameData);
+        io.to(hostUser.socketId).emit('gameDataToHost', user.id, gameData);
     });
 
     socket.on('gameDataToUser', (userId: string, gameData: Partial<GameData>) => {
@@ -276,10 +276,10 @@ io.on('connection', (socket) => {
         io.to(userTo.socketId).emit('gameDataToUser', gameData);
     });
 
-    socket.on('dataToHost', (userId: string, gameData: Partial<GameData>, playerData: Partial<PlayerData>) => {
+    socket.on('dataToHost', (gameData: Partial<GameData>, playerData: Partial<PlayerData>) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('dataToHost', userId, gameData, playerData);
+        io.to(hostUser.socketId).emit('dataToHost', user.id, gameData, playerData);
     });
 
     socket.on('dataToUser', (userId: string, gameData: Partial<GameData>, playerData: Partial<PlayerData>) => {
@@ -290,24 +290,24 @@ io.on('connection', (socket) => {
 
     // ------------------- Request data from Host -------------------
     // Request data from Host by user
-    socket.on("getGameData", (userId: string) => {
-        const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
-        if (!userTo?.socketId) return;
-        io.to(userTo.socketId).emit('getGameData', userId);
+    socket.on("getGameData", () => {
+        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        if (!hostUser?.socketId) return;
+        io.to(hostUser.socketId).emit('getGameData', user.id);
     });
 
-    socket.on('getPlayerData', (userId: string) => {
+    socket.on('getPlayerData', () => {
         console.log('getPlayerData requested');
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('getPlayerData', userId);
+        io.to(hostUser.socketId).emit('getPlayerData', user.id);
     });
 
-    socket.on('getData', (userId: string) => {
+    socket.on('getData', () => {
         console.log('getData requested');
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('getData', userId);
+        io.to(hostUser.socketId).emit('getData', user.id);
     });
     // ------------------------------
 

@@ -62,18 +62,19 @@ export abstract class HostCardGame<
         });
     }
 
+    // ------------------------------------ Data ------------------------------------
     override getPlayerData(userId: string) {
         // get the user state for the user on just the card stuff
         const user = this.getUser(userId);
         if (!user) return;
         // TODO WORKING ON THIS RIGHT NOW
-        const playerCardHandState = user.playerCardHandState;
-        if (!playerCardHandState) return;
+        const playerCardHandData = user.playerCardHandData;
+        if (!playerCardHandData) return;
 
         const cardsInHand = this.getPlayerCards(userId);
-        playerCardHandState.cardIds = cardsInHand.map(card => card.id);
+        playerCardHandData.cardIds = cardsInHand.map(card => card.id);
 
-        return playerCardHandState;
+        return playerCardHandData;
     }
 
     override onPlayerDataToHost(playerData: Partial<PlayerDataType>): void {
@@ -89,6 +90,7 @@ export abstract class HostCardGame<
         // TODO update the game data
 
     }
+    // ------------------------------------ Data End ------------------------------------
 
     getDealer() {
         if (!this.currentDealerId) throw new Error('No dealer set');

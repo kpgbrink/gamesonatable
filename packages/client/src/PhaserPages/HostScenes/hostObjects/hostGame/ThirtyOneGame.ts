@@ -98,6 +98,8 @@ export class ThirtyOneGame
         this.hostUserAvatars?.update(time, delta);
     }
 
+
+    // ------------------------------------ Data ------------------------------------
     override getPlayerData(userId: string) {
         const user = this.getUser(userId);
         if (!user) return;
@@ -123,6 +125,7 @@ export class ThirtyOneGame
         super.onGameDataToHost(gameData);
         // TODO update the game avatar
     }
+    // ------------------------------------ Data End ------------------------------------
 
     // TODO remove this
     sendPlayerPickUpCards() {

@@ -1,13 +1,41 @@
-import { ThirtyOnePlayerCardHandData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
+import { ThirtyOneCardGameData, ThirtyOnePlayerCardHandData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
 import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/items/CardContainer";
 import MenuButton from "../../../objects/MenuButton";
 import { persistentData } from "../../../objects/PersistantData";
 import { getScreenDimensions } from "../../../objects/Tools";
 import { PlayerCardHand } from "../PlayerCardHand";
+import PlayerScene from "../PlayerScene";
 
 
-export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandData> {
+export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> {
+    playerData: ThirtyOnePlayerCardHandData;
+    gameData: ThirtyOneCardGameData;
+
+    constructor(scene: PlayerScene) {
+        super(scene);
+        this.playerData = new ThirtyOnePlayerCardHandData();
+        this.gameData = new ThirtyOneCardGameData();
+    }
+
+    // ------------------------------------ Data ------------------------------------
+    override getPlayerData(): Partial<ThirtyOnePlayerCardHandData> | undefined {
+        super.getPlayerData();
+        throw new Error("Method not implemented.");
+    }
+
+    override onPlayerDataToUser(playerData: Partial<ThirtyOnePlayerCardHandData>): void {
+        throw new Error("Method not implemented.");
+    }
+
+    override getGameData(): Partial<ThirtyOneCardGameData> | undefined {
+        throw new Error("Method not implemented.");
+    }
+    override onGameDataToUser(gameData: Partial<ThirtyOneCardGameData>): void {
+        throw new Error("Method not implemented.");
+    }
+    // ------------------------------------ Data End ------------------------------------
+
     listenForState: string = "playerDataToUser";
 
     knockButton: MenuButton | null = null;

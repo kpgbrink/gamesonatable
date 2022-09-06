@@ -92,8 +92,8 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
         console.log('data being sent', this.getData(userId));
         socket.emit("dataToUser", userId, this.getGameData(), this.getPlayerData(userId));
     }
-    // --- end data ---
 
+    // --- end data ---
     update(time: number, delta: number) {
         var newState = this.currentState?.update(time, delta) || null;
         this.changeState(newState);

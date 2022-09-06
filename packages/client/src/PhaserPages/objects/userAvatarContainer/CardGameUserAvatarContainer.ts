@@ -2,14 +2,14 @@ import { User } from 'api';
 import { PlayerCardHandData } from 'api/src/data/datas/CardData';
 import UserAvatarContainer from "../UserAvatarContainer";
 
-export abstract class CardGameUserAvatarContainer<T extends PlayerCardHandData> extends UserAvatarContainer {
-    playerCardHandState: T;
+export abstract class CardGameUserAvatarContainer<PlayerCardHandDataType extends PlayerCardHandData> extends UserAvatarContainer {
+    playerCardHandData: PlayerCardHandDataType;
 
     constructor(scene: Phaser.Scene, x: number, y: number, user: User) {
         super(scene, x, y, user);
-        this.playerCardHandState = this.createPlayerCardHandData();
+        this.playerCardHandData = this.createPlayerCardHandData();
     }
 
-    abstract createPlayerCardHandData(): T;
+    abstract createPlayerCardHandData(): PlayerCardHandDataType;
 
 }

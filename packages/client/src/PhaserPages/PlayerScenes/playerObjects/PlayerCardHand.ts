@@ -1,13 +1,18 @@
-import { PlayerCardHandData } from "api/src/data/datas/CardData";
+import { CardGameData, PlayerCardHandData } from "api/src/data/datas/CardData";
 import socket from "../../../SocketConnection";
 import { Cards } from "../../objects/Cards";
 import CardContainer from "../../objects/items/CardContainer";
 import MenuButton from "../../objects/MenuButton";
 import { persistentData } from "../../objects/PersistantData";
 import { checkTransformsAlmostEqual, DegreesToRadians, getScreenCenter, getScreenDimensions, Transform } from "../../objects/Tools";
+import { PlayerDataHandler } from "./PlayerDataHandler";
 import PlayerScene from "./PlayerScene";
 
-export abstract class PlayerCardHand<T extends PlayerCardHandData> {
+export abstract class PlayerCardHand
+    <PlayerCardHandDataType extends PlayerCardHandData,
+        CardGameDataType extends CardGameData>
+    extends PlayerDataHandler<PlayerCardHandDataType, CardGameDataType>
+{
     abstract listenForState: string;
     dealButton: MenuButton | null = null;
     hideShowCardButton: MenuButton | null = null;
@@ -29,6 +34,7 @@ export abstract class PlayerCardHand<T extends PlayerCardHandData> {
     playerCardHandState: PlayerCardHandData = new PlayerCardHandData();
 
     constructor(scene: PlayerScene) {
+        super();
         this.scene = scene;
         this.cards = new Cards(scene);
         const screenCenter = getScreenCenter(scene);
@@ -49,6 +55,23 @@ export abstract class PlayerCardHand<T extends PlayerCardHandData> {
         this.cardBasePositions.push(this.handBasePosition);
         this.cardBasePositions.push(this.pickUpAndPlaceBasePosition);
     }
+
+    // ------------------------------------ Data ------------------------------------
+    override getPlayerData(): Partial<PlayerCardHandDataType> | undefined {
+        throw new Error("Method not implemented.");
+    }
+
+    override onPlayerDataToUser(playerData: Partial<PlayerCardHandDataType>): void {
+        throw new Error("Method not implemented.");
+    }
+
+    override getGameData(): Partial<CardGameDataType> | undefined {
+        throw new Error("Method not implemented.");
+    }
+    override onGameDataToUser(gameData: Partial<CardGameDataType>): void {
+        throw new Error("Method not implemented.");
+    }
+    // ------------------------------------ Data End ------------------------------------
 
     cardsInHand() {
         const userId = persistentData.myUserId;
@@ -132,13 +155,13 @@ export abstract class PlayerCardHand<T extends PlayerCardHandData> {
     }
 
     listenForStateChange() {
-        socket.on(this.listenForState, (playerData: T) => {
+        socket.on(this.listenForState, (playerData: PlayerCardHandDataType) => {
             this.updatePlayerPlayerCardHandData(playerData);
             this.updatePlayerData(playerData);
         });
     }
 
-    abstract updatePlayerData(playerData: T): void;
+    abstract updatePlayerData(playerData: PlayerCardHandDataType): void;
 
     updatePlayerPlayerCardHandData(cardHandState: PlayerCardHandData) {
         this.playerCardHandState = cardHandState;
