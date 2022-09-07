@@ -6,5 +6,5 @@ export class PlayerCardHandData extends PlayerData {
 }
 
 export class CardGameData extends GameData {
-
+    playerTurnId: string | null = null;
 }

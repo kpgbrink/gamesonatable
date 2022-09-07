@@ -105,7 +105,6 @@ export class ThirtyOneGame
         if (!user) return;
         const playerCardHandState = super.getPlayerData(userId);
         // add the thirty one specific stuff too
-        console.log("userState", user);
         return playerCardHandState;
     }
 
