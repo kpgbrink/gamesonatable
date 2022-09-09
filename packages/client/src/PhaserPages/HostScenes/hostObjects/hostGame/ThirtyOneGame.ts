@@ -13,6 +13,7 @@ import { HostGameState } from "./states/HostGameState";
 
 export class ThirtyOneGame
     extends HostCardGame<ThirtyOneCardGameData, ThirtyOnePlayerCardHandData, ThirtyOneHostUserAvatarsAroundTableGame, ThirtyOneUserAvatarContainer> {
+    gameData: ThirtyOneCardGameData;
 
     dealAmount: number = 3;
 
@@ -23,6 +24,12 @@ export class ThirtyOneGame
 
     knockPlayerId: string | null = null;
     thirtyOnePlayerId: string | null = null;
+
+    constructor(scene: Phaser.Scene) {
+        super(scene);
+        this.scene = scene;
+        this.gameData = new ThirtyOneCardGameData();
+    }
 
     updateUserAvatar(userId: string) {
         // TODO make the update thing happen to the thingy
@@ -98,14 +105,28 @@ export class ThirtyOneGame
         this.hostUserAvatars?.update(time, delta);
     }
 
-
     // ------------------------------------ Data ------------------------------------
     override getPlayerData(userId: string) {
         const user = this.getUser(userId);
         if (!user) return;
-        const playerCardHandState = super.getPlayerData(userId);
+        const playerCardHandData = super.getPlayerData(userId);
+        if (!playerCardHandData) return;
+
+        // check if it is the user's turn
+        const isUserTurn = this.gameData.playerTurnId === userId;
+        if (isUserTurn) {
+            // send the cards the user can pick up 
+            const topFaceUpCard = this.cards.getTopFaceUpCard();
+            const getTopFaceDownCard = this.cards.getTopFaceDownCard();
+            if (topFaceUpCard && getTopFaceDownCard) {
+                playerCardHandData?.pickUpFaceUpCardIds.push(topFaceUpCard.id);
+                playerCardHandData?.pickUpFaceDownCardIds.push(getTopFaceDownCard.id);
+            }
+            playerCardHandData.pickUpTo = 4;
+        }
+
         // add the thirty one specific stuff too
-        return playerCardHandState;
+        return playerCardHandData;
     }
 
     override onPlayerDataToHost(playerData: Partial<ThirtyOnePlayerCardHandData>): void {
@@ -141,11 +162,14 @@ export class ThirtyOneGame
         }
 
         // check if the turn has gone back to the player who knocked. Then need to go to end round state.
-        if (this.knockPlayerId === this.currentPlayerTurnId) {
+        if (this.knockPlayerId === this.gameData.playerTurnId) {
             this.changeState(new ThirtyOneRoundEnd(this));
             return;
         }
-        socket.emit("thirty one player turn", this.currentPlayerTurnId, shownCard.id, hiddenCard.id, this.turn, this.knockPlayerId);
+        if (this.gameData.playerTurnId === null) throw new Error("No current player turn id");
+
+        this.sendData(this.gameData.playerTurnId);
+        socket.emit("thirty one player turn", this.gameData.playerTurnId, shownCard.id, hiddenCard.id, this.turn, this.knockPlayerId);
     }
 
 } 

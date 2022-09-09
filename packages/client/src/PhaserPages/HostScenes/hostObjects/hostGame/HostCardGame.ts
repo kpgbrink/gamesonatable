@@ -17,17 +17,16 @@ export abstract class HostCardGame<
     scene: Phaser.Scene;
     cards: Cards;
     hostUserAvatars: UserAvatarsType | null = null;
+
     dealAmount: number = 10;
-    currentDealerId: string | null = null;
-    currentPlayerTurnId: string | null = null;
     turn: number = 0;
 
     cardInHandTransform: ValueWithDefault<Transform> = new ValueWithDefault({ x: 0, y: 0, rotation: 0, scale: 0.5 });
 
     minDistanceBetweenCards: ValueWithDefault<number> = new ValueWithDefault(200);
 
-    constructor(scene: Phaser.Scene, gameData: GameDataType) {
-        super(scene, gameData);
+    constructor(scene: Phaser.Scene) {
+        super(scene);
         this.scene = scene;
         this.cards = new Cards(scene);
     }
@@ -69,7 +68,6 @@ export abstract class HostCardGame<
         if (!user) return;
         // TODO WORKING ON THIS RIGHT NOW
         const playerCardHandData = user.playerCardHandData;
-        if (!playerCardHandData) return;
 
         const cardsInHand = this.getPlayerCards(userId);
         playerCardHandData.cardIds = cardsInHand.map(card => card.id);
@@ -93,32 +91,32 @@ export abstract class HostCardGame<
     // ------------------------------------ Data End ------------------------------------
 
     getDealer() {
-        if (!this.currentDealerId) throw new Error('No dealer set');
-        const dealer = this.hostUserAvatars?.getUserById(this.currentDealerId);
+        if (!this.gameData.playerDealerId) throw new Error('No dealer set');
+        const dealer = this.hostUserAvatars?.getUserById(this.gameData.playerDealerId);
         if (!dealer) throw new Error('No dealer found');
         return dealer;
     }
 
     randomizeDealer() {
         // choose a random dealer
-        this.currentDealerId = this.hostUserAvatars?.getRandomUserIdInGame() || null;
+        this.gameData.playerDealerId = this.hostUserAvatars?.getRandomUserIdInGame() || null;
     }
 
     setNextDealer() {
-        if (!this.currentDealerId) {
+        if (!this.gameData.playerDealerId) {
             this.randomizeDealer();
             return;
         }
-        this.currentDealerId = this.getNextPlayerId(this.currentDealerId);
+        this.gameData.playerDealerId = this.getNextPlayerId(this.gameData.playerDealerId);
     }
 
     setNextPlayerTurn() {
         this.turn++;
-        if (this.currentPlayerTurnId === null) {
-            this.currentPlayerTurnId = this.getNextPlayerId(this.getDealer().user.id);
+        if (this.gameData.playerTurnId === null) {
+            this.gameData.playerTurnId = this.getNextPlayerId(this.getDealer().user.id);
             return;
         }
-        this.currentPlayerTurnId = this.getNextPlayerId(this.currentPlayerTurnId);
+        this.gameData.playerTurnId = this.getNextPlayerId(this.gameData.playerTurnId);
     }
 
     getNextPlayerId(playerId: string) {
@@ -192,14 +190,14 @@ export abstract class HostCardGame<
     setDealButtonOnUser() {
         // set that the next dealer can deal with the deal button
         // get the next player after the dealer
-        if (!this.currentDealerId) {
+        if (!this.gameData.playerDealerId) {
             throw new Error('No dealer set');
         }
-        const nextDealerId = this.getNextPlayerId(this.currentDealerId);
+        const nextDealerId = this.getNextPlayerId(this.gameData.playerDealerId);
         socket.emit('can deal', nextDealerId);
     }
 
     isUserTurn(userId: string) {
-        return this.currentPlayerTurnId === userId;
+        return this.gameData.playerTurnId === userId;
     }
 }

@@ -6,11 +6,10 @@ import { HostGameState } from "./hostGame/states/HostGameState";
 export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType extends GameData> {
     scene: Phaser.Scene;
     currentState: HostGameState<PlayerDataType, GameDataType> | null = null;
-    gameData: GameDataType;
+    abstract gameData: GameDataType;
 
-    constructor(scene: Phaser.Scene, gameData: GameDataType) {
+    constructor(scene: Phaser.Scene) {
         this.scene = scene;
-        this.gameData = gameData;
     }
 
     preload() {

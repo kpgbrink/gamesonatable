@@ -1,4 +1,3 @@
-import { ThirtyOneCardGameData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
 import { Cards } from "../objects/Cards";
 import GameTable from "../objects/GameTable";
 import { getScreenCenter, loadIfImageNotLoaded } from "../objects/Tools";
@@ -11,7 +10,7 @@ export default class ThirtyOneHostScene extends HostScene {
 
     constructor() {
         super({ key: 'ThirtyOne' });
-        this.thirtyOneGame = new ThirtyOneGame(this, new ThirtyOneCardGameData());
+        this.thirtyOneGame = new ThirtyOneGame(this);
     }
 
     preload() {

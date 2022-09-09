@@ -313,10 +313,10 @@ io.on('connection', (socket) => {
 
     // Work on removing the commented out code below
 
-    // socket.on('thirty one player turn', (currentPlayerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
-    //     const userTurn = getRoom(user.room)?.users.find(u => u.id === currentPlayerTurnId);
+    // socket.on('thirty one player turn', (gameData.playerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
+    //     const userTurn = getRoom(user.room)?.users.find(u => u.id === gameData.playerTurnId);
     //     if (!userTurn?.socketId) return;
-    //     io.to(userTurn.socketId).emit('thirty one player turn', currentPlayerTurnId, shownCard, hiddenCard, turn, knockPlayerId);
+    //     io.to(userTurn.socketId).emit('thirty one player turn', gameData.playerTurnId, shownCard, hiddenCard, turn, knockPlayerId);
     // });
 
     // socket.on('moveCardToHand', (cardId: number) => {

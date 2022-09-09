@@ -40,10 +40,10 @@ export class Dealing<
 
     sendOutCard() {
         // get the player that the card is going to
-        if (this.hostGame.currentDealerId === null) {
-            throw new Error('currentDealerId is null');
+        if (this.hostGame.gameData.playerDealerId === null) {
+            throw new Error('gameData.playerDealerId is null');
         }
-        this.currentPlayerGettingCard ??= this.hostGame.currentDealerId;
+        this.currentPlayerGettingCard ??= this.hostGame.gameData.playerDealerId;
         this.currentPlayerGettingCard = this.hostGame.getNextPlayerId(this.currentPlayerGettingCard);
 
         // check count of cards dealt to player.

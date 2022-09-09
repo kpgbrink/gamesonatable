@@ -71,6 +71,23 @@ export abstract class PlayerCardHand
         if (playerData.dealing !== undefined) {
             this.updateDealing(playerData.dealing);
         }
+        this.updatePickUpFaceDownCards(playerData);
+        this.updatePickUpFaceUpCards(playerData);
+    }
+    updatePickUpFaceDownCards(playerData: Partial<PlayerCardHandDataType>) {
+        if (playerData.pickUpFaceDownCardIds === undefined) return;
+        if (playerData.pickUpTo === undefined) throw new Error('pickUpTo is undefined');
+        if (this.cardsInHand().length < playerData.pickUpTo) {
+            this.setCardsToPickUp(playerData.pickUpFaceDownCardIds, false, 0);
+        }
+    }
+
+    updatePickUpFaceUpCards(playerData: Partial<PlayerCardHandDataType>) {
+        if (playerData.pickUpFaceUpCardIds === undefined) return;
+        if (playerData.pickUpTo === undefined) throw new Error('pickUpTo is undefined');
+        if (this.cardsInHand().length < playerData.pickUpTo) {
+            this.setCardsToPickUp(playerData.pickUpFaceUpCardIds, true, 1000);
+        }
     }
 
     override getGameData(): Partial<CardGameDataType> | undefined {
@@ -184,15 +201,17 @@ export abstract class PlayerCardHand
         this.dealButton?.setVisible(dealing);
     }
 
-    setCardToPickUp(card: number, faceUp: boolean, order: number) {
-        const cardContainer = this.cards.getCard(card);
-        if (!cardContainer) throw new Error('card not found');
-        cardContainer.order = order;
-        cardContainer.setFaceUp(faceUp);
-        cardContainer.canTakeFromTable = true;
-        cardContainer.userHandId = null;
-        cardContainer.inUserHand = false;
-        cardContainer.cardBackOnTable = false;
+    setCardsToPickUp(cardIds: number[], faceUp: boolean, order: number) {
+        cardIds.forEach((cardId, i) => {
+            const card = this.cards.getCard(cardId);
+            if (!card) throw new Error('card not found');
+            card.order = order + i;
+            card.setFaceUp(faceUp);
+            card.canTakeFromTable = true;
+            card.userHandId = null;
+            card.inUserHand = false;
+            card.cardBackOnTable = false;
+        });
     }
 
     moveCardToPlayerHand(card: CardContainer) {
