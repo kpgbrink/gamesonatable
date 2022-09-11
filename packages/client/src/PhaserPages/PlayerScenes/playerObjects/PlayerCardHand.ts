@@ -55,6 +55,12 @@ export abstract class PlayerCardHand
 
     // ------------------------------------ Data ------------------------------------
     override getPlayerData(): Partial<PlayerCardHandDataType> | undefined {
+        // Add the data that needs to be sent over.
+        const playerData = this.playerData;
+        if (persistentData.myUserId === null) return;
+        playerData.userId = persistentData.myUserId;
+        playerData.cardIds = this.cards.getPlayerCardsIds(playerData.userId)
+
         return this.playerData;
     }
 
@@ -65,15 +71,48 @@ export abstract class PlayerCardHand
 
         // move the cards to the hand
         // TODO change the Date.now() to the time given to the user
-        if (playerData.cardIds !== undefined) {
-            this.updateCards(playerData.cardIds, Date.now());
-        }
-        if (playerData.dealing !== undefined) {
-            this.updateDealing(playerData.dealing);
-        }
+        this.updateCardsInHand(playerData);
+        this.updateDealing(playerData);
         this.updatePickUpFaceDownCards(playerData);
         this.updatePickUpFaceUpCards(playerData);
+        this.updatePickUpCardAmount(playerData);
     }
+
+
+    updateCardsInHand(playerData: Partial<PlayerCardHandDataType>) {
+        if (playerData.cardIds === undefined) return;
+        const cardIds = playerData.cardIds;
+        console.log('cardIds', cardIds);
+        const myUserId = persistentData.myUserId;
+        cardIds.forEach(cardId => {
+            const card = this.cards.getCard(cardId);
+            if (!card) throw new Error('card not found');
+            card.setUserHand(myUserId, Date.now());
+            // move the card to the player hand
+            // this.moveCardToPlayerHand(card);
+            card.setFaceUp(this.showCardsInHand);
+        });
+        // for each card in hand that is not in the cardIds array, set it to not in hand
+        this.cards.cardContainers.forEach(card => {
+            if (!cardIds.includes(card.id) && card.userHandId === myUserId) {
+                this.putCardBackOnTable(card);
+            }
+        });
+    }
+
+    updateDealing(playerData: Partial<PlayerCardHandDataType>) {
+        if (playerData.dealing === undefined) return;
+        this.dealButton?.setVisible(playerData.dealing);
+    }
+
+    updatePickUpCardAmount(playerData: Partial<PlayerCardHandDataType>) {
+        if (playerData.pickUpTo === undefined) return;
+        const cardsInHand = this.cardsInHand();
+        if (cardsInHand.length < playerData.pickUpTo) {
+            this.allowedPickUpCardAmount = playerData.pickUpTo - cardsInHand.length;
+        }
+    }
+
     updatePickUpFaceDownCards(playerData: Partial<PlayerCardHandDataType>) {
         if (playerData.pickUpFaceDownCardIds === undefined) return;
         if (playerData.pickUpTo === undefined) throw new Error('pickUpTo is undefined');
@@ -178,29 +217,6 @@ export abstract class PlayerCardHand
         this.scene.add.existing(this.hideShowCardButton);
     }
 
-    updateCards(cardIds: number[], timeGivenToUser: number) {
-        console.log('cardIds', cardIds);
-        const myUserId = persistentData.myUserId;
-        cardIds.forEach(cardId => {
-            const card = this.cards.getCard(cardId);
-            if (!card) throw new Error('card not found');
-            card.setUserHand(myUserId, timeGivenToUser);
-            // move the card to the player hand
-            // this.moveCardToPlayerHand(card);
-            card.setFaceUp(this.showCardsInHand);
-        });
-        // for each card in hand that is not in the cardIds array, set it to not in hand
-        this.cards.cardContainers.forEach(card => {
-            if (!cardIds.includes(card.id) && card.userHandId === myUserId) {
-                this.putCardBackOnTable(card);
-            }
-        });
-    }
-
-    updateDealing(dealing: boolean) {
-        this.dealButton?.setVisible(dealing);
-    }
-
     setCardsToPickUp(cardIds: number[], faceUp: boolean, order: number) {
         cardIds.forEach((cardId, i) => {
             const card = this.cards.getCard(cardId);
@@ -301,11 +317,11 @@ export abstract class PlayerCardHand
         if (!draggedCard.canTakeFromTable) return;
         if (draggedCard.beforeDraggedTransform === null) return;
         if (draggedCard.y < draggedCard.beforeDraggedTransform.y) return;
-        socket.emit('moveCardToHand', draggedCard.id);
         draggedCard.setFaceUp(this.showCardsInHand);
         draggedCard.userHandId = persistentData.myUserId;
         draggedCard.canTakeFromTable = false;
         this.setAllowedPickUpCardAmount(this.allowedPickUpCardAmount - 1);
+        this.sendData();
     }
 
     setAllowedPickUpCardAmount(amount: number) {
@@ -337,7 +353,6 @@ export abstract class PlayerCardHand
         if (!card.userHandId) return;
         if (this.allowedDropCardAmount <= 0) return;
         // tell host to move the card to the table
-        socket.emit('moveCardToTable', card.id);
         this.allowedDropCardAmount -= 1;
         this.putCardBackOnTable(card);
     }
@@ -347,6 +362,8 @@ export abstract class PlayerCardHand
         card.userHandId = null;
         card.canTakeFromTable = false;
         card.cardBackOnTable = true;
+        console.log('set card back on table', card);
+        this.sendData();
     }
 
     update(time: number, delta: number) {

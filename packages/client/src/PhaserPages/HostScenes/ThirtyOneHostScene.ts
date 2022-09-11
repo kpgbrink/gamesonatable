@@ -6,11 +6,10 @@ import HostScene from "./hostObjects/HostScene";
 
 export default class ThirtyOneHostScene extends HostScene {
     gameTable: GameTable | null = null;
-    thirtyOneGame: ThirtyOneGame;
+    thirtyOneGame: ThirtyOneGame = new ThirtyOneGame(this);
 
     constructor() {
         super({ key: 'ThirtyOne' });
-        this.thirtyOneGame = new ThirtyOneGame(this);
     }
 
     preload() {

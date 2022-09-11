@@ -48,6 +48,10 @@ export class Cards {
         return this.cardContainers.filter(cardContainer => cardContainer.userHandId === playerId);
     }
 
+    getPlayerCardsIds(playerId: string | null) {
+        return this.getPlayerCards(playerId).map(cardContainer => cardContainer.id);
+    }
+
     getCard(cardId: number) {
         return this.cardContainers.find(cardContainer => {
             return cardContainer.id === cardId;

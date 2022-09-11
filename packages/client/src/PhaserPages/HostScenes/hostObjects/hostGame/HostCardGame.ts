@@ -77,7 +77,39 @@ export abstract class HostCardGame<
 
     override onPlayerDataToHost(playerData: Partial<PlayerDataType>): void {
         // TODO update the player avatar
+        this.updateCardsInHand(playerData);
+    }
 
+    updateCardsInHand(playerData: Partial<PlayerDataType>) {
+        console.log('update cards in hand');
+        console.log('playerData', playerData);
+        if (!playerData.cardIds) return;
+        if (!playerData.userId) return;
+        const user = this.getUser(playerData.userId);
+        if (!user) return;
+        // TODO update the cards in hand
+        const newCardsInHand = playerData.cardIds;
+        const oldCardsInHand = user.playerCardHandData.cardIds;
+        const cardsToRemove = oldCardsInHand.filter(cardId => !newCardsInHand.includes(cardId));
+        const cardsToAdd = newCardsInHand.filter(cardId => !oldCardsInHand.includes(cardId));
+        console.log('cardsToRemove', cardsToRemove);
+        console.log('cardsToAdd', cardsToAdd);
+        cardsToRemove.forEach(cardId => {
+            const card = this.cards.getCard(cardId);
+            if (!card) return;
+            this.onCardMoveToTable(user.user.id, card);
+        });
+        cardsToAdd.forEach(cardId => {
+            const card = this.cards.getCard(cardId);
+            if (!card) return;
+            card.setFaceUp(false);
+            card.userHandId = user.user.id;
+        });
+
+        const playerCardHandData = user.playerCardHandData;
+        if (!playerCardHandData) return;
+        const cardsInHand = this.getPlayerCards(playerData.userId);
+        playerCardHandData.cardIds = cardsInHand.map(card => card.id);
     }
 
     override getGameData() {
