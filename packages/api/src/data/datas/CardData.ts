@@ -1,7 +1,8 @@
 import { GameData, PlayerData } from "../Data";
 
 export class PlayerCardHandData extends PlayerData {
-    pickUpTo: number = 0;
+    pickUpTo: number | null = null;
+    dropTo: number | null = null;
     pickUpFaceDownCardIds: number[] = [];
     pickUpFaceUpCardIds: number[] = [];
     cardIds: number[] = [];

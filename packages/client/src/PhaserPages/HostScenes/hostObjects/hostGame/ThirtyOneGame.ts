@@ -117,12 +117,18 @@ export class ThirtyOneGame
         if (isUserTurn) {
             // send the cards the user can pick up 
             const topFaceUpCard = this.cards.getTopFaceUpCard();
-            const getTopFaceDownCard = this.cards.getTopFaceDownCard();
-            if (topFaceUpCard && getTopFaceDownCard) {
-                playerCardHandData?.pickUpFaceUpCardIds.push(topFaceUpCard.id);
-                playerCardHandData?.pickUpFaceDownCardIds.push(getTopFaceDownCard.id);
+            const topFaceDownCard = this.cards.getTopFaceDownCard();
+            if (topFaceUpCard && topFaceDownCard) {
+                playerCardHandData.pickUpFaceUpCardIds = [topFaceUpCard.id];
+                playerCardHandData.pickUpFaceDownCardIds = [topFaceDownCard.id];
             }
             playerCardHandData.pickUpTo = 4;
+            playerCardHandData.dropTo = 3;
+        } else {
+            playerCardHandData.pickUpFaceUpCardIds = [];
+            playerCardHandData.pickUpFaceDownCardIds = [];
+            playerCardHandData.pickUpTo = null;
+            playerCardHandData.dropTo = null;
         }
 
         // add the thirty one specific stuff too

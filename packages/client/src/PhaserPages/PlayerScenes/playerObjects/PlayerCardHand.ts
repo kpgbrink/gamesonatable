@@ -76,8 +76,16 @@ export abstract class PlayerCardHand
         this.updatePickUpFaceDownCards(playerData);
         this.updatePickUpFaceUpCards(playerData);
         this.updatePickUpCardAmount(playerData);
+        this.updateDropCardAmount(playerData);
     }
 
+    updateDropCardAmount(playerData: Partial<PlayerCardHandDataType>) {
+        // check if dropTo is a number
+        if (typeof playerData.dropTo !== 'number') return;
+        if (this.cardsInHand().length > playerData.dropTo) {
+            this.allowedDropCardAmount = this.cardsInHand().length - playerData.dropTo;
+        }
+    }
 
     updateCardsInHand(playerData: Partial<PlayerCardHandDataType>) {
         if (playerData.cardIds === undefined) return;
@@ -106,7 +114,9 @@ export abstract class PlayerCardHand
     }
 
     updatePickUpCardAmount(playerData: Partial<PlayerCardHandDataType>) {
-        if (playerData.pickUpTo === undefined) return;
+        // Check if pickUpTo is a number
+        if (typeof playerData.pickUpTo !== 'number') return;
+        if (playerData.pickUpTo === undefined || playerData.pickUpTo === null) return;
         const cardsInHand = this.cardsInHand();
         if (cardsInHand.length < playerData.pickUpTo) {
             this.allowedPickUpCardAmount = playerData.pickUpTo - cardsInHand.length;
@@ -115,7 +125,9 @@ export abstract class PlayerCardHand
 
     updatePickUpFaceDownCards(playerData: Partial<PlayerCardHandDataType>) {
         if (playerData.pickUpFaceDownCardIds === undefined) return;
-        if (playerData.pickUpTo === undefined) throw new Error('pickUpTo is undefined');
+        // Check if pickUpTo is a number
+        if (typeof playerData.pickUpTo !== 'number') return;
+        console.log('updatePickUpFaceDownCards', playerData.pickUpFaceDownCardIds);
         if (this.cardsInHand().length < playerData.pickUpTo) {
             this.setCardsToPickUp(playerData.pickUpFaceDownCardIds, false, 0);
         }
@@ -123,7 +135,9 @@ export abstract class PlayerCardHand
 
     updatePickUpFaceUpCards(playerData: Partial<PlayerCardHandDataType>) {
         if (playerData.pickUpFaceUpCardIds === undefined) return;
-        if (playerData.pickUpTo === undefined) throw new Error('pickUpTo is undefined');
+        // Check if pickUpTo is a number
+        if (typeof playerData.pickUpTo !== 'number') return;
+        console.log('updatePickUpFaceUpCards', playerData.pickUpFaceUpCardIds);
         if (this.cardsInHand().length < playerData.pickUpTo) {
             this.setCardsToPickUp(playerData.pickUpFaceUpCardIds, true, 1000);
         }
@@ -263,10 +277,17 @@ export abstract class PlayerCardHand
         const cardPositions = this.calculateCardPrefferedPositions(cards, this.handBasePosition);
         cards.sort((a, b) => {
             // if not in userHand yet then move to bottom
-            if (!a.inUserHand && b.inUserHand) return 1;
-            if (a.inUserHand && !b.inUserHand) return -1;
+            if (!a.inUserHand && b.inUserHand) {
+                console.log('a not in user hand');
+                return 1;
+            }
+            if (a.inUserHand && !b.inUserHand) {
+                console.log('b not in user hand');
+                return -1;
+            }
             if (!a.inUserHand && !b.inUserHand) {
                 // if not moving yet then move to bottom
+                console.log('time given order', a.order, b.order);
                 return a.timeGivenToUser - b.timeGivenToUser;
             }
             return a.x - b.x;
