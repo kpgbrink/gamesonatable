@@ -73,17 +73,76 @@ export abstract class PlayerCardHand
         // TODO change the Date.now() to the time given to the user
         this.updateCardsInHand(playerData);
         this.updateDealing(playerData);
+
         this.updatePickUpFaceDownCards(playerData);
         this.updatePickUpFaceUpCards(playerData);
-        this.updatePickUpCardAmount(playerData);
-        this.updateDropCardAmount(playerData);
+
+        this.updatePickUpCards(playerData);
     }
 
-    updateDropCardAmount(playerData: Partial<PlayerCardHandDataType>) {
+    updatePickUpCards(playerData: Partial<PlayerCardHandDataType>) {
+        if (playerData.pickUpFaceUpCardIds === undefined) {
+            // remove all pickUpFaceUpCards
+            this.cards.cardContainers.forEach(card => {
+                if (card.isPickUpFaceUpCard()) {
+                    this.putCardBackOnTable(card);
+                }
+            });
+        }
+        if (playerData.pickUpFaceDownCardIds === undefined) {
+            // remove all pickUpFaceDownCards
+            this.cards.cardContainers.forEach(card => {
+                if (card.isPickUpFaceDownCard()) {
+                    this.putCardBackOnTable(card);
+                }
+            });
+        }
+        // return if both undefined
+        if (playerData.pickUpFaceUpCardIds === undefined && playerData.pickUpFaceDownCardIds === undefined) return;
+        // Check if pickUpTo is a number
+        if (typeof playerData.pickUpTo !== 'number') return;
+        if (this.cardsInHand().length < playerData.pickUpTo) {
+            this.allowedPickUpCardAmount = playerData.pickUpTo - this.cardsInHand().length;
+        }
         // check if dropTo is a number
-        if (typeof playerData.dropTo !== 'number') return;
-        if (this.cardsInHand().length > playerData.dropTo) {
-            this.allowedDropCardAmount = this.cardsInHand().length - playerData.dropTo;
+        this.updateAllowedDropCardAmount(playerData);
+
+        // update pick up face down cards
+        (() => {
+            if (playerData.pickUpFaceDownCardIds === undefined) return;
+            // remove cards that are not in the list
+            this.cards.cardContainers.forEach(card => {
+                if (card.isPickUpFaceDownCard() && !playerData.pickUpFaceDownCardIds?.includes(card.id)) {
+                    this.putCardBackOnTable(card);
+                }
+            });
+            if (this.cardsInHand().length < playerData.pickUpTo) {
+                this.setCardsToPickUp(playerData.pickUpFaceDownCardIds, false, 0);
+            }
+        })();
+
+        // update pick up face up cards
+        (() => {
+            if (playerData.pickUpFaceUpCardIds === undefined) return;
+            // remove cards that are not in the list
+            this.cards.cardContainers.forEach(card => {
+                if (card.isPickUpFaceUpCard() && !playerData.pickUpFaceUpCardIds?.includes(card.id)) {
+                    this.putCardBackOnTable(card);
+                }
+            });
+            if (this.cardsInHand().length < playerData.pickUpTo) {
+                this.setCardsToPickUp(playerData.pickUpFaceUpCardIds, true, 1000);
+            }
+        })();
+
+    }
+
+    updateAllowedDropCardAmount(playerData: Partial<PlayerCardHandDataType>) {
+        const dropTo = playerData.dropTo;
+        // check if dropTo is a number
+        if (typeof dropTo !== 'number') return;
+        if (this.cardsInHand().length > dropTo) {
+            this.allowedDropCardAmount = this.cardsInHand().length - dropTo;
         }
     }
 
@@ -120,15 +179,6 @@ export abstract class PlayerCardHand
         this.dealButton?.setVisible(playerData.dealing);
     }
 
-    updatePickUpCardAmount(playerData: Partial<PlayerCardHandDataType>) {
-        // Check if pickUpTo is a number
-        if (typeof playerData.pickUpTo !== 'number') return;
-        if (playerData.pickUpTo === undefined || playerData.pickUpTo === null) return;
-        const cardsInHand = this.cardsInHand();
-        if (cardsInHand.length < playerData.pickUpTo) {
-            this.allowedPickUpCardAmount = playerData.pickUpTo - cardsInHand.length;
-        }
-    }
 
     updatePickUpFaceDownCards(playerData: Partial<PlayerCardHandDataType>) {
         if (playerData.pickUpFaceDownCardIds === undefined) return;
@@ -239,6 +289,7 @@ export abstract class PlayerCardHand
     }
 
     setCardsToPickUp(cardIds: number[], faceUp: boolean, order: number) {
+        // set cards that can be taken from table and match the faceup to be set back to table
         cardIds.forEach((cardId, i) => {
             const card = this.cards.getCard(cardId);
             if (!card) throw new Error('card not found');

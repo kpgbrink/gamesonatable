@@ -15,6 +15,13 @@ export default class CardContainer extends ItemContainer {
 
     cardInHandOffsetTransform: ValueWithDefault<Transform> = new ValueWithDefault({ x: 0, y: 0, rotation: 0, scale: 1 });
 
+    isPickUpFaceUpCard() {
+        return this.canTakeFromTable && this.getFaceUp();
+    }
+    isPickUpFaceDownCard() {
+        return this.canTakeFromTable && !this.getFaceUp();
+    }
+
     constructor(scene: Phaser.Scene, x: number, y: number, cardId: number, suit: string, rank: string, joker: boolean = false) {
         super(scene, x, y);
         this.id = cardId;

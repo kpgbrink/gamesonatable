@@ -26,6 +26,7 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
 
     override onPlayerDataToUser(playerData: Partial<ThirtyOnePlayerCardHandData>): void {
         super.onPlayerDataToUser(playerData);
+        this.playerData = { ...this.playerData, ...playerData };
     }
 
     override getGameData(): Partial<ThirtyOneCardGameData> | undefined {
@@ -47,19 +48,6 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
 
     create() {
         super.create();
-        // socket.on('thirty one player turn', (gameData.playerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
-        //     console.log('thirty on player turn socket on');
-        //     // set the cards to show the player to choose it's cards
-        //     this.knockPlayerId = knockPlayerId;
-        //     // if I only have 3 cards in my hand
-        //     if (this.cardsInHand().length === 3) {
-        //         this.setCardToPickUp(shownCard, true, 2);
-        //         this.setCardToPickUp(hiddenCard, false, 1);
-        //         this.setAllowedPickUpCardAmount(1);
-        //     } else {
-        //         this.onAllCardsPickedUp();
-        //     }
-        // });
 
         const screenDimensions = getScreenDimensions(this.scene);
         this.knockButton = new MenuButton(screenDimensions.width - 200, screenDimensions.height - 80, this.scene);
@@ -82,7 +70,7 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
     onAllCardsPickedUp(): void {
         // set 1 card to be able to put down.
         if (this.knockPlayerId === persistentData.myUserId) return; // prevent picking up if you knocked.
-        this.allowedDropCardAmount = 1;
+        this.updateAllowedDropCardAmount(this.playerData);
     }
 
     checkIfMoveCardToTable(card: CardContainer) {
