@@ -21,8 +21,10 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     public setUserHand(userHandId: string | null, timeGivenToUser: number | null = null) {
         if (this.userHandId === userHandId) return; // already in user hand
         this.userHandId = userHandId;
-        const currentTime = Date.now();
-        this.timeGivenToUser = timeGivenToUser ?? currentTime;
+        // if timeGivenToUser is null then don't change the time given to user
+        if (timeGivenToUser !== null) {
+            this.timeGivenToUser = timeGivenToUser;
+        }
         this.canTakeFromTable = false;
         this.cardBackOnTable = false;
     }

@@ -92,12 +92,19 @@ export abstract class PlayerCardHand
         const cardIds = playerData.cardIds;
         console.log('cardIds', cardIds);
         const myUserId = persistentData.myUserId;
-        cardIds.forEach(cardId => {
+        // get all cards that need to be put in the hand
+        const cardsInHand = this.cardsInHand();
+        const cardsInHandIds = cardsInHand.map(card => card.id);
+        const cardsToMoveToHand = cardIds.filter(cardId => !cardsInHandIds.includes(cardId));
+        const currentTime = Date.now();
+        cardsToMoveToHand.forEach((cardId, index) => {
             const card = this.cards.getCard(cardId);
             if (!card) throw new Error('card not found');
-            card.setUserHand(myUserId, Date.now());
+            // set the x position of the card + index
+            card.x = card.x + index * 50;
+
+            card.setUserHand(myUserId, currentTime);
             // move the card to the player hand
-            // this.moveCardToPlayerHand(card);
             card.setFaceUp(this.showCardsInHand);
         });
         // for each card in hand that is not in the cardIds array, set it to not in hand
@@ -244,19 +251,6 @@ export abstract class PlayerCardHand
         });
     }
 
-    moveCardToPlayerHand(card: CardContainer) {
-        // screen center
-        const screenCenter = getScreenCenter(this.scene);
-        // start moving this card
-        card.startMovingOverTimeTo({
-            x: screenCenter.x,
-            y: screenCenter.y,
-            rotation: 0,
-            scale: 1
-        }, 1);
-        card.setFaceUp(this.showCardsInHand);
-    }
-
     calculateCardPrefferedPositions(cards: CardContainer[], transform: Transform) {
         if (cards.length === 0) return [];
         const cardWidth = cards[0].width * cards[0].scaleX;
@@ -276,18 +270,17 @@ export abstract class PlayerCardHand
         const cards = this.cardsInHand();
         const cardPositions = this.calculateCardPrefferedPositions(cards, this.handBasePosition);
         cards.sort((a, b) => {
-            // if not in userHand yet then move to bottom
-            if (!a.inUserHand && b.inUserHand) {
-                console.log('a not in user hand');
-                return 1;
-            }
-            if (a.inUserHand && !b.inUserHand) {
-                console.log('b not in user hand');
-                return -1;
+            if (a.timeGivenToUser !== b.timeGivenToUser) {
+                // if not in userHand yet then move to bottom
+                if (!a.inUserHand && b.inUserHand) {
+                    return 1;
+                }
+                if (a.inUserHand && !b.inUserHand) {
+                    return -1;
+                }
             }
             if (!a.inUserHand && !b.inUserHand) {
                 // if not moving yet then move to bottom
-                console.log('time given order', a.order, b.order);
                 return a.timeGivenToUser - b.timeGivenToUser;
             }
             return a.x - b.x;
@@ -296,17 +289,24 @@ export abstract class PlayerCardHand
             if (card.moveOnDuration?.endTransform && checkTransformsAlmostEqual(card.moveOnDuration.endTransform, cardPositions[index])) return;
             // do not start moving if the card is already in the right position
             if (checkTransformsAlmostEqual(card, cardPositions[index])) {
-                card.inUserHand = true;
+                this.setCardInHand(card);
                 return;
             }
             // do not start moving the card if it is being dragged
             if (card.isDragging) return;
 
             card.startMovingOverTimeTo(cardPositions[index], this.moveToHandTime, () => {
-                card.inUserHand = true;
+                this.setCardInHand(card);
             });
             card.depth = index / cards.length;
         });
+    }
+
+    setCardInHand(card: CardContainer) {
+        if (!card.inUserHand) {
+            card.timeInHand = Date.now();
+            card.inUserHand = true;
+        }
     }
 
     startMovingCardsToPickUpToPrefferedPosition() {
@@ -341,6 +341,7 @@ export abstract class PlayerCardHand
         draggedCard.setFaceUp(this.showCardsInHand);
         draggedCard.userHandId = persistentData.myUserId;
         draggedCard.canTakeFromTable = false;
+        draggedCard.timeGivenToUser = Date.now();
         this.setAllowedPickUpCardAmount(this.allowedPickUpCardAmount - 1);
         this.sendData();
     }
@@ -394,27 +395,6 @@ export abstract class PlayerCardHand
         this.startMovingCardsBackToTable();
     }
 
-    onUpdateCardHandState(playerCardHandState: PlayerCardHandData) {
-        // update the cards in the hand 
-        const myUserId = persistentData.myUserId;
-
-        // update the cards in the hand
-        const cardIds = playerCardHandState.cardIds;
-        cardIds.forEach(cardId => {
-            const card = this.cards.getCard(cardId);
-            if (!card) throw new Error('card not found');
-            card.setUserHand(myUserId);
-            // move the card to the player hand
-            // this.moveCardToPlayerHand(card);
-            card.setFaceUp(this.showCardsInHand);
-        });
-        // for each card in hand that is not in the cardIds array, set it to not in hand
-        this.cards.cardContainers.forEach(card => {
-            if (!cardIds.includes(card.id) && card.userHandId === myUserId) {
-                this.putCardBackOnTable(card);
-            }
-        });
-    }
 
     abstract onAllCardsPickedUp(): void
 }

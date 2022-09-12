@@ -103,8 +103,8 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
         socket.emit('moveCardToTable', card.id);
     }
 
-    onUpdateCardHandState(thirtyOneCardHandState: ThirtyOnePlayerCardHandData) {
-        super.onUpdateCardHandState(thirtyOneCardHandState);
-        this.knockButton?.setVisible(thirtyOneCardHandState.canKnock && this.knockPlayerId === null);
-    }
+    // onUpdateCardHandState(thirtyOneCardHandState: ThirtyOnePlayerCardHandData) {
+    //     super.onUpdateCardHandState(thirtyOneCardHandState);
+    //     this.knockButton?.setVisible(thirtyOneCardHandState.canKnock && this.knockPlayerId === null);
+    // }
 }

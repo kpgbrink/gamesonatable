@@ -5,6 +5,7 @@ import ItemContainer from "./ItemContainer";
 
 export default class CardContainer extends ItemContainer {
     cardContent: CardContent;
+    timeInHand: number = 0;
 
     backImage: Phaser.GameObjects.Image | null = null;
     frontImage: Phaser.GameObjects.Image | null = null;
