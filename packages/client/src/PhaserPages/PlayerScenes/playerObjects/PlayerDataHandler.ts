@@ -18,11 +18,11 @@ export abstract class
     // PlayerData --------------------
     abstract getPlayerData(): Partial<PlayerDataType> | undefined;
 
-    abstract onPlayerDataToUser(playerData: Partial<PlayerDataType>): void;
+    abstract onPlayerDataToUser(playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null): void;
 
     listenForPlayerData() {
         socket.on("playerDataToUser", (playerData: Partial<PlayerDataType>) => {
-            this.onPlayerDataToUser(playerData);
+            this.onPlayerDataToUser(playerData, null);
         });
     }
 
@@ -38,11 +38,11 @@ export abstract class
     // GameData --------------------
     abstract getGameData(): Partial<GameDataType> | undefined;
 
-    abstract onGameDataToUser(gameData: Partial<GameDataType>): void;
+    abstract onGameDataToUser(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null): void;
 
     listenForGameData() {
         socket.on("gameDataToUser", (gameData: Partial<GameDataType>) => {
-            this.onGameDataToUser(gameData);
+            this.onGameDataToUser(gameData, null);
         });
     }
 
@@ -61,8 +61,8 @@ export abstract class
 
     listenForData() {
         socket.on("dataToUser", (gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType>) => {
-            this.onGameDataToUser(gameData);
-            this.onPlayerDataToUser(playerData);
+            this.onGameDataToUser(gameData, playerData);
+            this.onPlayerDataToUser(playerData, gameData);
         });
     }
 

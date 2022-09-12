@@ -87,12 +87,12 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
             if (lowestScoreUsers.length === 1) {
                 const lowestScoreUser = lowestScoreUsers[0];
                 lowestScoreUser.lives -= 1;
-                if (lowestScoreUser.user.id === this.hostGame.knockPlayerId) { lowestScoreUser.lives -= 1; }
+                if (lowestScoreUser.user.id === this.hostGame.gameData.knockPlayerId) { lowestScoreUser.lives -= 1; }
                 return;
             }
             lowestScoreUsers.forEach(lowestScoreUser => {
                 lowestScoreUser.lives -= 1;
-                if (lowestScoreUser.user.id === this.hostGame.knockPlayerId) lowestScoreUser.lives += 1;
+                if (lowestScoreUser.user.id === this.hostGame.gameData.knockPlayerId) lowestScoreUser.lives += 1;
             });
         })();
 
@@ -162,7 +162,7 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
     exit() {
         // remove deal listener
         socket.off('deal');
-        this.hostGame.knockPlayerId = null;
+        this.hostGame.gameData.knockPlayerId = null;
         this.hostGame.thirtyOnePlayerId = null;
     }
 }

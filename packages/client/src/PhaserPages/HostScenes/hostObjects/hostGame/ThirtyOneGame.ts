@@ -1,5 +1,4 @@
 import { ThirtyOneCardGameData, ThirtyOnePlayerCardHandData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
-import socket from "../../../../SocketConnection";
 import CardContainer from "../../../objects/items/CardContainer";
 import { loadIfImageNotLoaded, Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
 import { ThirtyOneUserAvatarContainer } from "../../../objects/userAvatarContainer/cardGameUserAvatarContainer/ThirtyOneUserAvatarContainer";
@@ -22,7 +21,6 @@ export class ThirtyOneGame
     deckTransform: Transform = { x: 0, y: 0, rotation: 0, scale: 1 };
     cardPlaceTransform: Transform = { x: 0, y: 0, rotation: 0, scale: 1 };
 
-    knockPlayerId: string | null = null;
     thirtyOnePlayerId: string | null = null;
 
     constructor(scene: Phaser.Scene) {
@@ -61,12 +59,6 @@ export class ThirtyOneGame
             const transform = { x: 330, y: 0, rotation: 0, scale: 4 };
             return transformRelativeToScreenCenter(this.scene, transform);
         })();
-
-        socket.on('thirty one knock', (userId: string) => {
-            this.knockPlayerId = userId;
-            // set next player turn
-            this.changeState(new ThirtyOneGamePlayerTurn(this));
-        });
     }
 
     onCardMoveToTable(userId: string, card: CardContainer): void {
@@ -135,8 +127,8 @@ export class ThirtyOneGame
         return playerCardHandData;
     }
 
-    override onPlayerDataToHost(playerData: Partial<ThirtyOnePlayerCardHandData>): void {
-        super.onPlayerDataToHost(playerData);
+    override onPlayerDataToHost(playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null): void {
+        super.onPlayerDataToHost(playerData, gameData);
         // TODO update the player avatar
 
     }
@@ -147,9 +139,13 @@ export class ThirtyOneGame
         return gameData;
     }
 
-    override onGameDataToHost(gameData: Partial<ThirtyOneCardGameData>): void {
-        super.onGameDataToHost(gameData);
-        // TODO update the game avatar
+    override onGameDataToHost(gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null): void {
+        super.onGameDataToHost(gameData, playerData);
+        if (gameData.knockPlayerId && !this.gameData.knockPlayerId) {
+            this.gameData.knockPlayerId = gameData.knockPlayerId;
+            this.changeState(new ThirtyOneGamePlayerTurn(this));
+        }
+
     }
     // ------------------------------------ Data End ------------------------------------
 
@@ -168,14 +164,13 @@ export class ThirtyOneGame
         }
 
         // check if the turn has gone back to the player who knocked. Then need to go to end round state.
-        if (this.knockPlayerId === this.gameData.playerTurnId) {
+        if (this.gameData.knockPlayerId === this.gameData.playerTurnId) {
             this.changeState(new ThirtyOneRoundEnd(this));
             return;
         }
         if (this.gameData.playerTurnId === null) throw new Error("No current player turn id");
 
         this.sendData(this.gameData.playerTurnId);
-        socket.emit("thirty one player turn", this.gameData.playerTurnId, shownCard.id, hiddenCard.id, this.turn, this.knockPlayerId);
     }
 
 } 

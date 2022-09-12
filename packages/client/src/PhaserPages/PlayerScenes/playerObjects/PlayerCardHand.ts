@@ -64,7 +64,7 @@ export abstract class PlayerCardHand
         return this.playerData;
     }
 
-    override onPlayerDataToUser(playerData: Partial<PlayerCardHandDataType>): void {
+    override onPlayerDataToUser(playerData: Partial<PlayerCardHandDataType>, gameData: Partial<CardGameDataType> | null): void {
         console.log('player data to user');
         if (!playerData) return;
         if (playerData === undefined) return;
@@ -203,7 +203,11 @@ export abstract class PlayerCardHand
     override getGameData(): Partial<CardGameDataType> | undefined {
         return this.gameData;
     }
+
     override onGameDataToUser(gameData: Partial<CardGameDataType>): void {
+        if (gameData.playerDealerId === persistentData.myUserId) {
+            this.dealButton?.setVisible(true);
+        }
 
     }
     // ------------------------------------ Data End ------------------------------------
@@ -250,10 +254,6 @@ export abstract class PlayerCardHand
             });
         });
 
-        socket.on('starting to shuffle', () => {
-            this.dealButton?.setVisible(false);
-        });
-
         // create deal button
         const screenDimensions = getScreenDimensions(this.scene);
         this.dealButton = new MenuButton(screenDimensions.width / 2, 100, this.scene);
@@ -265,10 +265,6 @@ export abstract class PlayerCardHand
         });
         this.dealButton.setVisible(false);
         this.scene.add.existing(this.dealButton);
-
-        socket.on('can deal', () => {
-            this.dealButton?.setVisible(true);
-        });
 
         // create hide card/ show card button
         this.hideShowCardButton = new MenuButton(200, screenDimensions.height - 200, this.scene);
@@ -403,9 +399,7 @@ export abstract class PlayerCardHand
         if (amount === 0) {
             // put all the pickupable cards back to the table
             this.cardToPickUp().forEach(card => {
-                card.canTakeFromTable = false;
-                // move the card back to the table
-                card.cardBackOnTable = true;
+                this.putCardBackOnTable(card);
             });
             this.onAllCardsPickedUp();
         }

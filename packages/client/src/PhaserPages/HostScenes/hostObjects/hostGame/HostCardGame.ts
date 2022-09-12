@@ -1,5 +1,4 @@
 import { CardGameData, PlayerCardHandData } from "api/src/data/datas/CardData";
-import socket from "../../../../SocketConnection";
 import { Cards } from "../../../objects/Cards";
 import CardContainer from "../../../objects/items/CardContainer";
 import { checkTransformsAlmostEqual, getScreenCenter, Transform, transformFromObject, transformRelativeToObject } from "../../../objects/Tools";
@@ -43,22 +42,6 @@ export abstract class HostCardGame<
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, screenCenter.y);
         this.changeState(new Shuffling(this));
-
-        socket.on('moveCardToHand', (userId: string, cardId: number) => {
-            const user = this.getUser(userId);
-            if (!user) return;
-            const card = this.cards.getCard(cardId);
-            if (!card) return;
-            card.setFaceUp(false);
-            card.userHandId = user.user.id;
-        });
-        socket.on('moveCardToTable', (userId: string, cardId: number) => {
-            const user = this.getUser(userId);
-            if (!user) return;
-            const card = this.cards.getCard(cardId);
-            if (!card) return;
-            this.onCardMoveToTable(userId, card);
-        });
     }
 
     // ------------------------------------ Data ------------------------------------
@@ -75,7 +58,7 @@ export abstract class HostCardGame<
         return playerCardHandData;
     }
 
-    override onPlayerDataToHost(playerData: Partial<PlayerDataType>): void {
+    override onPlayerDataToHost(playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null): void {
         // TODO update the player avatar
         this.updateCardsInHand(playerData);
     }
@@ -116,9 +99,9 @@ export abstract class HostCardGame<
         return this.gameData;
     }
 
-    override onGameDataToHost(gameData: Partial<GameDataType>): void {
+    // TODO update the game data
+    override onGameDataToHost(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null): void {
         // TODO update the game data
-
     }
     // ------------------------------------ Data End ------------------------------------
 
@@ -226,7 +209,8 @@ export abstract class HostCardGame<
             throw new Error('No dealer set');
         }
         const nextDealerId = this.getNextPlayerId(this.gameData.playerDealerId);
-        socket.emit('can deal', nextDealerId);
+        this.gameData.playerDealerId = nextDealerId;
+        this.sendGameData();
     }
 
     isUserTurn(userId: string) {

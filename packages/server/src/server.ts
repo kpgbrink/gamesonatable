@@ -271,6 +271,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('gameDataToUser', (userId: string, gameData: Partial<GameData>) => {
+        // if userId is null then send to all users
+        if (userId === null) {
+            io.to(user.room).emit('gameDataToUser', gameData);
+            return;
+        }
         const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
         if (!userTo?.socketId) return;
         io.to(userTo.socketId).emit('gameDataToUser', gameData);
@@ -310,48 +315,4 @@ io.on('connection', (socket) => {
         io.to(hostUser.socketId).emit('getData', user.id);
     });
     // ------------------------------
-
-    // Work on removing the commented out code below
-
-    // socket.on('thirty one player turn', (gameData.playerTurnId: string, shownCard: number, hiddenCard: number, turn: number, knockPlayerId: string | null) => {
-    //     const userTurn = getRoom(user.room)?.users.find(u => u.id === gameData.playerTurnId);
-    //     if (!userTurn?.socketId) return;
-    //     io.to(userTurn.socketId).emit('thirty one player turn', gameData.playerTurnId, shownCard, hiddenCard, turn, knockPlayerId);
-    // });
-
-    // socket.on('moveCardToHand', (cardId: number) => {
-    //     const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-    //     if (!hostUser?.socketId) return;
-    //     io.to(hostUser.socketId).emit('moveCardToHand', user.id, cardId);
-    // });
-
-    // socket.on('moveCardToTable', (cardId: number) => {
-    //     const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-    //     if (!hostUser?.socketId) return;
-    //     io.to(hostUser.socketId).emit('moveCardToTable', user.id, cardId);
-    // });
-
-    // socket.on('thirty one knock', () => {
-    //     const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-    //     if (!hostUser?.socketId) return;
-    //     io.to(hostUser.socketId).emit('thirty one knock', user.id);
-    // });
-
-    // socket.on('can deal', (userId: string) => {
-    //     const userDeal = getRoom(user.room)?.users.find(u => u.id === userId);
-    //     if (!userDeal?.socketId) return;
-    //     io.to(userDeal.socketId).emit('can deal', user.id);
-    // });
-
-    // socket.on('deal', (userId: string) => {
-    //     const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
-    //     if (!hostUser?.socketId) return;
-    //     io.to(hostUser.socketId).emit('deal', userId);
-    // });
-
-    // socket.on('starting to shuffle', () => {
-    //     io.to(user.room).emit('starting to shuffle', user.id);
-    // });
-
-
 });

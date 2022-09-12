@@ -24,8 +24,14 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
         return this.playerData;
     }
 
-    override onPlayerDataToUser(playerData: Partial<ThirtyOnePlayerCardHandData>): void {
-        super.onPlayerDataToUser(playerData);
+    override onPlayerDataToUser(playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null): void {
+        super.onPlayerDataToUser(playerData, gameData);
+        // check if can knock
+        if (this.gameData?.knockPlayerId === null && this.playerData.cardIds.length === 3) {
+            this.knockButton?.setVisible(true);
+        } else {
+            this.knockButton?.setVisible(false);
+        }
         this.playerData = { ...this.playerData, ...playerData };
     }
 
@@ -35,16 +41,13 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
     }
     override onGameDataToUser(gameData: Partial<ThirtyOneCardGameData>): void {
         super.onGameDataToUser(gameData);
-        if (gameData.knockPlayerId) {
-            this.knockPlayerId = gameData.knockPlayerId;
-        }
+        this.gameData = { ...this.gameData, ...gameData };
     }
     // ------------------------------------ Data End ------------------------------------
 
     listenForState: string = "playerDataToUser";
 
     knockButton: MenuButton | null = null;
-    knockPlayerId: string | null = null;
 
     create() {
         super.create();
@@ -54,9 +57,10 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
         this.knockButton.setInteractive();
         this.knockButton.setText('Knock');
         this.knockButton.on('pointerdown', () => {
-            this.knockPlayerId = persistentData.myUserId;
+            this.gameData.knockPlayerId = persistentData.myUserId;
             socket.emit('thirty one knock');
             this.setAllowedPickUpCardAmount(0);
+            this.sendData();
         });
         this.knockButton.setVisible(false);
         this.scene.add.existing(this.knockButton);
@@ -64,12 +68,12 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
 
     setAllowedPickUpCardAmount(amount: number): void {
         super.setAllowedPickUpCardAmount(amount);
-        this.knockButton?.setVisible(amount !== 0 && this.knockPlayerId === null);
+        this.knockButton?.setVisible(amount !== 0 && this.gameData.knockPlayerId === null);
     }
 
     onAllCardsPickedUp(): void {
         // set 1 card to be able to put down.
-        if (this.knockPlayerId === persistentData.myUserId) return; // prevent picking up if you knocked.
+        if (this.gameData.knockPlayerId === persistentData.myUserId) return; // prevent picking up if you knocked.
         this.updateAllowedDropCardAmount(this.playerData);
     }
 
@@ -90,9 +94,4 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
         }
         socket.emit('moveCardToTable', card.id);
     }
-
-    // onUpdateCardHandState(thirtyOneCardHandState: ThirtyOnePlayerCardHandData) {
-    //     super.onUpdateCardHandState(thirtyOneCardHandState);
-    //     this.knockButton?.setVisible(thirtyOneCardHandState.canKnock && this.knockPlayerId === null);
-    // }
 }
