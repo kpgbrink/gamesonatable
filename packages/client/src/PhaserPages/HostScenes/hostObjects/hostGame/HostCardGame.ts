@@ -100,7 +100,7 @@ export abstract class HostCardGame<
     }
 
     // TODO update the game data
-    override onGameDataToHost(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null): void {
+    override onGameDataToHost(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean): void {
         // TODO update the game data
     }
     // ------------------------------------ Data End ------------------------------------

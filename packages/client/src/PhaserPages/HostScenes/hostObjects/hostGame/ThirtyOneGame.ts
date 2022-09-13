@@ -139,8 +139,9 @@ export class ThirtyOneGame
         return gameData;
     }
 
-    override onGameDataToHost(gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null): void {
-        super.onGameDataToHost(gameData, playerData);
+    override onGameDataToHost(gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
+        super.onGameDataToHost(gameData, playerData, updateGameData);
+        if (!updateGameData) return;
         if (gameData.knockPlayerId && !this.gameData.knockPlayerId) {
             this.gameData.knockPlayerId = gameData.knockPlayerId;
             this.changeState(new ThirtyOneGamePlayerTurn(this));

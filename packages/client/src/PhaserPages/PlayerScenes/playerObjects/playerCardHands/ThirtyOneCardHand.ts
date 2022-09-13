@@ -60,7 +60,7 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
             this.gameData.knockPlayerId = persistentData.myUserId;
             socket.emit('thirty one knock');
             this.setAllowedPickUpCardAmount(0);
-            this.sendData();
+            this.sendData(true);
         });
         this.knockButton.setVisible(false);
         this.scene.add.existing(this.knockButton);

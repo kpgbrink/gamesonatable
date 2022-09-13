@@ -52,11 +52,11 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     // GameData --------------------
     abstract getGameData(): Partial<GameDataType> | undefined;
 
-    abstract onGameDataToHost(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null): void;
+    abstract onGameDataToHost(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean): void;
 
     listenForGameData() {
-        socket.on("gameDataToHost", (gameData: Partial<GameDataType>) => {
-            this.onGameDataToHost(gameData, null);
+        socket.on("gameDataToHost", (gameData: Partial<GameDataType>, updateGameData: boolean) => {
+            this.onGameDataToHost(gameData, null, updateGameData);
         });
     }
 
@@ -77,8 +77,8 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     }
 
     listenForData() {
-        socket.on("dataToHost", (gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType>) => {
-            this.onGameDataToHost(gameData, playerData);
+        socket.on("dataToHost", (gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType>, updateGameData: boolean) => {
+            this.onGameDataToHost(gameData, playerData, updateGameData);
             this.onPlayerDataToHost(playerData, gameData);
         });
     }

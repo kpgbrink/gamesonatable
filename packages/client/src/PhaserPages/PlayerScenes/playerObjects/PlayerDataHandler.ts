@@ -46,9 +46,9 @@ export abstract class
         });
     }
 
-    sendGameData() {
+    sendGameData(updateGameData: boolean = false) {
         console.log('game data being sent', this.getGameData());
-        socket.emit("gameDataToHost", this.getGameData());
+        socket.emit("gameDataToHost", this.getGameData(), updateGameData);
     }
 
     requestGameData() {
@@ -66,10 +66,10 @@ export abstract class
         });
     }
 
-    sendData() {
+    sendData(updateGameData: boolean = false) {
         // my user id  
         console.log('data being sent', this.getData());
-        socket.emit("dataToHost", this.getGameData(), this.getPlayerData());
+        socket.emit("dataToHost", this.getGameData(), this.getPlayerData(), updateGameData);
     }
 
     requestData() {
