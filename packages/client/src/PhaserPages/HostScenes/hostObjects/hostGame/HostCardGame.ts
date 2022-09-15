@@ -45,7 +45,7 @@ export abstract class HostCardGame<
     }
 
     // ------------------------------------ Data ------------------------------------
-    override getPlayerData(userId: string) {
+    override getPlayerDataToSend(userId: string) {
         // get the user state for the user on just the card stuff
         const user = this.getUser(userId);
         if (!user) return;
@@ -58,7 +58,7 @@ export abstract class HostCardGame<
         return playerCardHandData;
     }
 
-    override onPlayerDataToHost(playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null): void {
+    override onPlayerDataReceived(playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null): void {
         // TODO update the player avatar
         this.updateCardsInHand(playerData);
     }
@@ -95,12 +95,12 @@ export abstract class HostCardGame<
         playerCardHandData.cardIds = cardsInHand.map(card => card.id);
     }
 
-    override getGameData() {
+    override getGameDataToSend() {
         return this.gameData;
     }
 
     // TODO update the game data
-    override onGameDataToHost(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean): void {
+    override onGameDataReceived(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean): void {
         // TODO update the game data
     }
     // ------------------------------------ Data End ------------------------------------

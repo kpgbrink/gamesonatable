@@ -27,13 +27,13 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     abstract createGameState(): HostGameState<PlayerDataType, GameDataType>;
 
     // PlayerData --------------------
-    abstract getPlayerData(userId: string): Partial<PlayerDataType> | undefined;
+    abstract getPlayerDataToSend(userId: string): Partial<PlayerDataType> | undefined;
 
-    abstract onPlayerDataToHost(playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null): void;
+    abstract onPlayerDataReceived(playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null): void;
 
     listenForPlayerData() {
         socket.on("playerDataToHost", (playerData: Partial<PlayerDataType>) => {
-            this.onPlayerDataToHost(playerData, null);
+            this.onPlayerDataReceived(playerData, null);
         });
     }
 
@@ -45,18 +45,20 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     }
 
     sendPlayerData(userId: string) {
-        console.log('user data being sent', this.getPlayerData(userId));
-        socket.emit("playerDataToUser", userId, this.getPlayerData(userId));
+        console.log('user data being sent', this.getPlayerDataToSend(userId));
+        socket.emit("playerDataToUser", userId, this.getPlayerDataToSend(userId));
     }
 
     // GameData --------------------
-    abstract getGameData(): Partial<GameDataType> | undefined;
 
-    abstract onGameDataToHost(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean): void;
+    // Override this   
+    abstract getGameDataToSend(): Partial<GameDataType> | undefined;
+
+    abstract onGameDataReceived(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean): void;
 
     listenForGameData() {
         socket.on("gameDataToHost", (gameData: Partial<GameDataType>, updateGameData: boolean) => {
-            this.onGameDataToHost(gameData, null, updateGameData);
+            this.onGameDataReceived(gameData, null, updateGameData);
         });
     }
 
@@ -68,18 +70,18 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     }
 
     sendGameData(userId: string | null = null) {
-        console.log('game data being sent', this.getGameData());
-        socket.emit("gameDataToUser", userId, this.getGameData());
+        console.log('game data being sent', this.getGameDataToSend());
+        socket.emit("gameDataToUser", userId, this.getGameDataToSend());
     }
     // Data --------------------
     getData(userId: string): [Partial<GameDataType> | undefined, Partial<PlayerDataType> | undefined] {
-        return [this.getGameData(), this.getPlayerData(userId)];
+        return [this.getGameDataToSend(), this.getPlayerDataToSend(userId)];
     }
 
     listenForData() {
         socket.on("dataToHost", (gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType>, updateGameData: boolean) => {
-            this.onGameDataToHost(gameData, playerData, updateGameData);
-            this.onPlayerDataToHost(playerData, gameData);
+            this.onGameDataReceived(gameData, playerData, updateGameData);
+            this.onPlayerDataReceived(playerData, gameData);
         });
     }
 
@@ -92,7 +94,7 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
 
     sendData(userId: string) {
         console.log('data being sent', this.getData(userId));
-        socket.emit("dataToUser", userId, this.getGameData(), this.getPlayerData(userId));
+        socket.emit("dataToUser", userId, this.getGameDataToSend(), this.getPlayerDataToSend(userId));
     }
 
     // --- end data ---

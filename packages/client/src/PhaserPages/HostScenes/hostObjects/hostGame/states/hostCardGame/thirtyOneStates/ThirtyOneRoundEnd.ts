@@ -113,6 +113,7 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
             return;
         }
 
+        // TODO make this possible to be using new system
         // tell dealer they can deal
         this.hostGame.setDealButtonOnUser();
 

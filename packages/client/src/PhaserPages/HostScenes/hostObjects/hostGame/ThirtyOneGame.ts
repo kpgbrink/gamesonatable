@@ -98,10 +98,10 @@ export class ThirtyOneGame
     }
 
     // ------------------------------------ Data ------------------------------------
-    override getPlayerData(userId: string) {
+    override getPlayerDataToSend(userId: string) {
         const user = this.getUser(userId);
         if (!user) return;
-        const playerCardHandData = super.getPlayerData(userId);
+        const playerCardHandData = super.getPlayerDataToSend(userId);
         if (!playerCardHandData) return;
 
         // check if it is the user's turn
@@ -127,20 +127,20 @@ export class ThirtyOneGame
         return playerCardHandData;
     }
 
-    override onPlayerDataToHost(playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null): void {
-        super.onPlayerDataToHost(playerData, gameData);
+    override onPlayerDataReceived(playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null): void {
+        super.onPlayerDataReceived(playerData, gameData);
         // TODO update the player avatar
 
     }
 
-    override getGameData() {
-        const gameData = super.getGameData();
+    override getGameDataToSend() {
+        const gameData = super.getGameDataToSend();
         // add the thirty one specific stuff too
         return gameData;
     }
 
-    override onGameDataToHost(gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
-        super.onGameDataToHost(gameData, playerData, updateGameData);
+    override onGameDataReceived(gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
+        super.onGameDataReceived(gameData, playerData, updateGameData);
         if (!updateGameData) return;
         if (gameData.knockPlayerId && !this.gameData.knockPlayerId) {
             this.gameData.knockPlayerId = gameData.knockPlayerId;

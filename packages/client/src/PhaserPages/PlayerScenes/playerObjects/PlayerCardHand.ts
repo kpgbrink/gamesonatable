@@ -54,7 +54,7 @@ export abstract class PlayerCardHand
     }
 
     // ------------------------------------ Data ------------------------------------
-    override getPlayerData(): Partial<PlayerCardHandDataType> | undefined {
+    override getPlayerDataToSend(): Partial<PlayerCardHandDataType> | undefined {
         // Add the data that needs to be sent over.
         const playerData = this.playerData;
         if (persistentData.myUserId === null) return;
@@ -64,7 +64,7 @@ export abstract class PlayerCardHand
         return this.playerData;
     }
 
-    override onPlayerDataToUser(playerData: Partial<PlayerCardHandDataType>, gameData: Partial<CardGameDataType> | null): void {
+    override onPlayerDataReceived(playerData: Partial<PlayerCardHandDataType>, gameData: Partial<CardGameDataType> | null): void {
         console.log('player data to user');
         if (!playerData) return;
         if (playerData === undefined) return;
@@ -200,11 +200,11 @@ export abstract class PlayerCardHand
         }
     }
 
-    override getGameData(): Partial<CardGameDataType> | undefined {
+    override getGameDataToSend(): Partial<CardGameDataType> | undefined {
         return this.gameData;
     }
 
-    override onGameDataToUser(gameData: Partial<CardGameDataType>): void {
+    override onGameDataReceived(gameData: Partial<CardGameDataType>): void {
         if (gameData.playerDealerId === persistentData.myUserId) {
             this.dealButton?.setVisible(true);
         }
