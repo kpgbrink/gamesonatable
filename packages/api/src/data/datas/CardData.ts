@@ -13,5 +13,5 @@ export class CardGameData extends GameData {
     playerDealerId: string | null = null;
     playerTurnId: string | null = null;
     turn: number = 0;
-    shuffling: boolean = false;
+    startDealing: boolean = false;
 }

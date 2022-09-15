@@ -1,5 +1,4 @@
 import { ThirtyOneCardGameData, ThirtyOnePlayerCardHandData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
-import socket from "../../../../../../../SocketConnection";
 import { CountdownTimer } from "../../../../../../objects/CountdownTimer";
 import CardContainer from "../../../../../../objects/items/CardContainer";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
@@ -116,12 +115,6 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
         // TODO make this possible to be using new system
         // tell dealer they can deal
         this.hostGame.setDealButtonOnUser();
-
-        // listen to the user clicking the deal button
-        socket.on('deal', () => {
-            // set timeer to 0 and go to the next round
-            this.timerNextRound.currentTime = 0;
-        });
     }
 
     static calculateScoreAndCardsThatMatter(cardContainers: CardContainer[]) {
@@ -160,9 +153,18 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
         return { score: highestScore, cardsThatMatter: cardsInSuit };
     }
 
+    override onGameDataReceived(userId: string, gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
+        if (!updateGameData) return;
+        console.log('update the game to dealing', gameData);
+        // check if dealing
+        if (gameData.startDealing) {
+            console.log('starting the deal now');
+            // deal the cards
+            this.timerNextRound.currentTime = 0;
+        }
+    }
+
     exit() {
-        // remove deal listener
-        socket.off('deal');
         this.hostGame.gameData.knockPlayerId = null;
         this.hostGame.thirtyOnePlayerId = null;
     }

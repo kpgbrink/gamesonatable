@@ -8,9 +8,15 @@ export abstract class HostGameState<PlayerDataType extends PlayerData, GameDataT
         this.hostGame = hostGame;
     }
 
+    // this is weird to have on the super base class...
+    // but it's the only way to get the game to start
     onItemMoveToTable() {
 
     }
+
+    onPlayerDataReceived(playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null) { }
+
+    onGameDataReceived(userId: string, gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean) { }
 
     abstract enter(): void;
 

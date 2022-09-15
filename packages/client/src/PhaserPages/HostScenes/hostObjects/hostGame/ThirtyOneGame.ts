@@ -127,8 +127,8 @@ export class ThirtyOneGame
         return playerCardHandData;
     }
 
-    override onPlayerDataReceived(playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null): void {
-        super.onPlayerDataReceived(playerData, gameData);
+    override onPlayerDataReceived(userId: string, playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null): void {
+        super.onPlayerDataReceived(userId, playerData, gameData);
         // TODO update the player avatar
 
     }
@@ -139,8 +139,8 @@ export class ThirtyOneGame
         return gameData;
     }
 
-    override onGameDataReceived(gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
-        super.onGameDataReceived(gameData, playerData, updateGameData);
+    override onGameDataReceived(userId: string, gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
+        super.onGameDataReceived(userId, gameData, playerData, updateGameData);
         if (!updateGameData) return;
         if (gameData.knockPlayerId && !this.gameData.knockPlayerId) {
             this.gameData.knockPlayerId = gameData.knockPlayerId;

@@ -255,7 +255,7 @@ io.on('connection', (socket) => {
     socket.on('playerDataToHost', (playerData: Partial<PlayerData>) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('playerDataToHost', playerData);
+        io.to(hostUser.socketId).emit('playerDataToHost', user.id, playerData);
     });
 
     socket.on('playerDataToUser', (userId: string, playerData: Partial<PlayerData>) => {
@@ -284,7 +284,7 @@ io.on('connection', (socket) => {
     socket.on('dataToHost', (gameData: Partial<GameData>, playerData: Partial<PlayerData>, updateGameData: boolean) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
-        io.to(hostUser.socketId).emit('dataToHost', gameData, playerData, updateGameData);
+        io.to(hostUser.socketId).emit('dataToHost', user.id, gameData, playerData, updateGameData);
     });
 
     socket.on('dataToUser', (userId: string, gameData: Partial<GameData>, playerData: Partial<PlayerData>) => {

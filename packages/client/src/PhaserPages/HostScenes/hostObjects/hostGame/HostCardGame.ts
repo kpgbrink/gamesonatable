@@ -58,9 +58,10 @@ export abstract class HostCardGame<
         return playerCardHandData;
     }
 
-    override onPlayerDataReceived(playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null): void {
+    override onPlayerDataReceived(userId: string, playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null): void {
         // TODO update the player avatar
         this.updateCardsInHand(playerData);
+        super.onPlayerDataReceived(userId, playerData, gameData);
     }
 
     updateCardsInHand(playerData: Partial<PlayerDataType>) {
@@ -100,8 +101,9 @@ export abstract class HostCardGame<
     }
 
     // TODO update the game data
-    override onGameDataReceived(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean): void {
+    override onGameDataReceived(userId: string, gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean): void {
         // TODO update the game data
+        super.onGameDataReceived(userId, gameData, playerData, updateGameData);
     }
     // ------------------------------------ Data End ------------------------------------
 

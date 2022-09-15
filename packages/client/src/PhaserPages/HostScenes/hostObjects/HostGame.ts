@@ -29,11 +29,14 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     // PlayerData --------------------
     abstract getPlayerDataToSend(userId: string): Partial<PlayerDataType> | undefined;
 
-    abstract onPlayerDataReceived(playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null): void;
+    // override this
+    onPlayerDataReceived(userId: string, playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null) {
+        this.currentState?.onPlayerDataReceived(playerData, gameData);
+    }
 
     listenForPlayerData() {
-        socket.on("playerDataToHost", (playerData: Partial<PlayerDataType>) => {
-            this.onPlayerDataReceived(playerData, null);
+        socket.on("playerDataToHost", (userId, playerData: Partial<PlayerDataType>) => {
+            this.onPlayerDataReceived(userId, playerData, null);
         });
     }
 
@@ -51,14 +54,16 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
 
     // GameData --------------------
 
-    // Override this   
     abstract getGameDataToSend(): Partial<GameDataType> | undefined;
 
-    abstract onGameDataReceived(gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean): void;
+    // Override this
+    onGameDataReceived(userId: string, gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean) {
+        this.currentState?.onGameDataReceived(userId, gameData, playerData, updateGameData);
+    }
 
     listenForGameData() {
-        socket.on("gameDataToHost", (gameData: Partial<GameDataType>, updateGameData: boolean) => {
-            this.onGameDataReceived(gameData, null, updateGameData);
+        socket.on("gameDataToHost", (userId: string, gameData: Partial<GameDataType>, updateGameData: boolean) => {
+            this.onGameDataReceived(userId, gameData, null, updateGameData);
         });
     }
 
@@ -79,9 +84,9 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     }
 
     listenForData() {
-        socket.on("dataToHost", (gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType>, updateGameData: boolean) => {
-            this.onGameDataReceived(gameData, playerData, updateGameData);
-            this.onPlayerDataReceived(playerData, gameData);
+        socket.on("dataToHost", (userId: string, gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType>, updateGameData: boolean) => {
+            this.onGameDataReceived(userId, gameData, playerData, updateGameData);
+            this.onPlayerDataReceived(userId, playerData, gameData);
         });
     }
 

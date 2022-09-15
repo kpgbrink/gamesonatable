@@ -1,5 +1,4 @@
 import { CardGameData, PlayerCardHandData } from "api/src/data/datas/CardData";
-import socket from "../../../SocketConnection";
 import { Cards } from "../../objects/Cards";
 import CardContainer from "../../objects/items/CardContainer";
 import MenuButton from "../../objects/MenuButton";
@@ -261,7 +260,8 @@ export abstract class PlayerCardHand
         this.dealButton.setText('DEAL');
         this.dealButton.on('pointerdown', () => {
             this.dealButton?.setVisible(false);
-            socket.emit('deal');
+            this.gameData.startDealing = true;
+            this.sendGameData(true);
         });
         this.dealButton.setVisible(false);
         this.scene.add.existing(this.dealButton);
