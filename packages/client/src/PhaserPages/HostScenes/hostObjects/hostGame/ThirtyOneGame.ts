@@ -146,7 +146,6 @@ export class ThirtyOneGame
             this.gameData.knockPlayerId = gameData.knockPlayerId;
             this.changeState(new ThirtyOneGamePlayerTurn(this));
         }
-
     }
     // ------------------------------------ Data End ------------------------------------
 
