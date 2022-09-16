@@ -27,7 +27,9 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     abstract createGameState(): HostGameState<PlayerDataType, GameDataType>;
 
     // PlayerData --------------------
-    abstract getPlayerDataToSend(userId: string): Partial<PlayerDataType> | undefined;
+    getPlayerDataToSend(userId: string): Partial<PlayerDataType> | undefined {
+        return this.currentState?.getPlayerDataToSend(userId);
+    }
 
     // override this
     onPlayerDataReceived(userId: string, playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null) {
@@ -54,7 +56,9 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
 
     // GameData --------------------
 
-    abstract getGameDataToSend(): Partial<GameDataType> | undefined;
+    getGameDataToSend(): Partial<GameDataType> | undefined {
+        return this.currentState?.getGameDataToSend();
+    }
 
     // Override this
     onGameDataReceived(userId: string, gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean) {

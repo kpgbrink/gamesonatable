@@ -46,11 +46,12 @@ export abstract class HostCardGame<
 
     // ------------------------------------ Data ------------------------------------
     override getPlayerDataToSend(userId: string) {
-        // get the user state for the user on just the card stuff
         const user = this.getUser(userId);
-        if (!user) return;
+        if (!user) throw new Error("User not found");
+        const playerCardHandDataEmpty: Partial<PlayerDataType> = {};
+        const playerCardHandData: Partial<PlayerDataType> = { ...playerCardHandDataEmpty, ...user.playerCardHandData, ...super.getPlayerDataToSend(userId) };
+        // get the user state for the user on just the card stuff
         // TODO WORKING ON THIS RIGHT NOW
-        const playerCardHandData = user.playerCardHandData;
 
         const cardsInHand = this.getPlayerCards(userId);
         playerCardHandData.cardIds = cardsInHand.map(card => card.id);

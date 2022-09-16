@@ -100,31 +100,13 @@ export class ThirtyOneGame
     // ------------------------------------ Data ------------------------------------
     override getPlayerDataToSend(userId: string) {
         const user = this.getUser(userId);
-        if (!user) return;
+        if (!user) throw new Error('user not found');
         const playerCardHandData = super.getPlayerDataToSend(userId);
-        if (!playerCardHandData) return;
-
-        // check if it is the user's turn
-        const isUserTurn = this.gameData.playerTurnId === userId;
-        if (isUserTurn) {
-            // send the cards the user can pick up 
-            const topFaceUpCard = this.cards.getTopFaceUpCard();
-            const topFaceDownCard = this.cards.getTopFaceDownCard();
-            if (topFaceUpCard && topFaceDownCard) {
-                playerCardHandData.pickUpFaceUpCardIds = [topFaceUpCard.id];
-                playerCardHandData.pickUpFaceDownCardIds = [topFaceDownCard.id];
-            }
-            playerCardHandData.pickUpTo = 4;
-            playerCardHandData.dropTo = 3;
-        } else {
-            playerCardHandData.pickUpFaceUpCardIds = [];
-            playerCardHandData.pickUpFaceDownCardIds = [];
-            playerCardHandData.pickUpTo = null;
-            playerCardHandData.dropTo = null;
-        }
+        const playerCardHandDataEmpty: Partial<ThirtyOnePlayerCardHandData> = {};
+        const thirtyOnePlayerCardHandData: Partial<ThirtyOnePlayerCardHandData> = { ...playerCardHandDataEmpty, ...playerCardHandData };
 
         // add the thirty one specific stuff too
-        return playerCardHandData;
+        return thirtyOnePlayerCardHandData;
     }
 
     override onPlayerDataReceived(userId: string, playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null): void {

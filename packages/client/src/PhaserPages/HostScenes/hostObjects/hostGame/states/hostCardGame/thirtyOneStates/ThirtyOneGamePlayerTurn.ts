@@ -12,6 +12,32 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
         this.hostGame = hostGame;
     }
 
+    override getPlayerDataToSend(userId: string): Partial<ThirtyOnePlayerCardHandData> | undefined {
+        const thirtyOnePlayerCardHandData: Partial<ThirtyOnePlayerCardHandData> = {};
+
+        // check if it is the user's turn
+        const isUserTurn = this.hostGame.gameData.playerTurnId === userId;
+        if (isUserTurn) {
+            // send the cards the user can pick up 
+            const topFaceUpCard = this.hostGame.cards.getTopFaceUpCard();
+            const topFaceDownCard = this.hostGame.cards.getTopFaceDownCard();
+            if (topFaceUpCard && topFaceDownCard) {
+                thirtyOnePlayerCardHandData.pickUpFaceUpCardIds = [topFaceUpCard.id];
+                thirtyOnePlayerCardHandData.pickUpFaceDownCardIds = [topFaceDownCard.id];
+            }
+            thirtyOnePlayerCardHandData.pickUpTo = 4;
+            thirtyOnePlayerCardHandData.dropTo = 3;
+        } else {
+            thirtyOnePlayerCardHandData.pickUpFaceUpCardIds = [];
+            thirtyOnePlayerCardHandData.pickUpFaceDownCardIds = [];
+            thirtyOnePlayerCardHandData.pickUpTo = null;
+            thirtyOnePlayerCardHandData.dropTo = null;
+        }
+
+
+        return thirtyOnePlayerCardHandData;
+    }
+
     enter() {
         // make the player to left of dealer start their turn
         this.hostGame.setNextPlayerTurn();

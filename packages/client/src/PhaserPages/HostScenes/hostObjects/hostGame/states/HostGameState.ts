@@ -14,9 +14,20 @@ export abstract class HostGameState<PlayerDataType extends PlayerData, GameDataT
 
     }
 
+    // PlayerData --------------------
+    getPlayerDataToSend(userId: string): Partial<PlayerDataType> | undefined {
+        return;
+    }
+
     onPlayerDataReceived(playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null) { }
 
+    // GameData --------------------
+    getGameDataToSend(): Partial<GameDataType> | undefined {
+        return;
+    }
+
     onGameDataReceived(userId: string, gameData: Partial<GameDataType>, playerData: Partial<PlayerDataType> | null, updateGameData: boolean) { }
+    // --------------------
 
     abstract enter(): void;
 
