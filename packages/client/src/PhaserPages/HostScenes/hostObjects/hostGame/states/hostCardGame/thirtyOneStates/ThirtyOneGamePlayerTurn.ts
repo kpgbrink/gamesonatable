@@ -38,6 +38,36 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
         return thirtyOnePlayerCardHandData;
     }
 
+    override onPlayerDataReceived(userId: string, playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null) {
+        // check if the user is the player who's turn it is
+        if (this.hostGame.gameData.playerTurnId !== userId) return;
+        // check how many cards the user has
+        // allowed cards to pick up
+        const topFaceUpCard = this.hostGame.cards.getTopFaceUpCard();
+        const topFaceDownCard = this.hostGame.cards.getTopFaceDownCard();
+        const allowedPickUpCardIds: number[] = [];
+        allowedPickUpCardIds.push(topFaceUpCard?.id ?? -1);
+        allowedPickUpCardIds.push(topFaceDownCard?.id ?? -1);
+
+        const playerCards = this.hostGame.cards.getPlayerCards(userId);
+        const playerCardHandCount = playerCards.length;
+        const allowedPickUpCardAmount = (() => {
+            if (playerCardHandCount === 3) {
+                return 4;
+            }
+            return null;
+        })();
+        const allowedDropCardAmount = (() => {
+            if (playerCardHandCount === 4) {
+                return 3;
+            }
+            return null;
+        })();
+        console.log('update cards in hand');
+
+        this.hostGame.updateCardsInHand(userId, playerData, allowedPickUpCardIds, allowedPickUpCardAmount, allowedDropCardAmount);
+    }
+
     enter() {
         // make the player to left of dealer start their turn
         this.hostGame.setNextPlayerTurn();

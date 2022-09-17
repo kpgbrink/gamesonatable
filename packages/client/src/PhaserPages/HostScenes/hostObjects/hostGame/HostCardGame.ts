@@ -60,41 +60,61 @@ export abstract class HostCardGame<
     }
 
     override onPlayerDataReceived(userId: string, playerData: Partial<PlayerDataType>, gameData: Partial<GameDataType> | null): void {
-        // TODO update the player avatar
-        this.updateCardsInHand(playerData);
         super.onPlayerDataReceived(userId, playerData, gameData);
     }
 
-    updateCardsInHand(playerData: Partial<PlayerDataType>) {
+    updateCardsInHand(userId: string, playerData: Partial<PlayerDataType>, allowedCardsToPickUp: number[], allowPickUpCardTo: number | null, allowDropCardTo: number | null) {
         console.log('update cards in hand');
         console.log('playerData', playerData);
         if (!playerData.cardIds) return;
-        if (!playerData.userId) return;
-        const user = this.getUser(playerData.userId);
+        const user = this.getUser(userId);
         if (!user) return;
         // TODO update the cards in hand
         const newCardsInHand = playerData.cardIds;
-        const oldCardsInHand = user.playerCardHandData.cardIds;
+        const oldCardsInHand = this.cards.getPlayerCardsIds(userId);
         const cardsToRemove = oldCardsInHand.filter(cardId => !newCardsInHand.includes(cardId));
         const cardsToAdd = newCardsInHand.filter(cardId => !oldCardsInHand.includes(cardId));
         console.log('cardsToRemove', cardsToRemove);
         console.log('cardsToAdd', cardsToAdd);
-        cardsToRemove.forEach(cardId => {
-            const card = this.cards.getCard(cardId);
-            if (!card) return;
-            this.onCardMoveToTable(user.user.id, card);
-        });
-        cardsToAdd.forEach(cardId => {
-            const card = this.cards.getCard(cardId);
-            if (!card) return;
-            card.setFaceUp(false);
-            card.userHandId = user.user.id;
-        });
+        console.log('allowed pick up cards', allowedCardsToPickUp);
 
-        const playerCardHandData = user.playerCardHandData;
-        if (!playerCardHandData) return;
-        const cardsInHand = this.getPlayerCards(playerData.userId);
-        playerCardHandData.cardIds = cardsInHand.map(card => card.id);
+        // number of cards left in hand after cards are dropped
+        const cardsLeftInHand = oldCardsInHand.length - cardsToRemove.length + cardsToAdd.length;
+        const checkIfAllowedToDropCards = allowDropCardTo !== null && allowDropCardTo <= cardsLeftInHand;
+        // check if allowed to drop the cards
+        if (checkIfAllowedToDropCards) {
+            console.log('allowed to drop cards');
+            // put back on table
+            cardsToRemove.forEach(cardId => {
+                const card = this.cards.getCard(cardId);
+                if (!card) return;
+                this.onCardMoveToTable(user.user.id, card);
+            });
+        }
+        // check if all cards to add are in the allowed to pick up cards
+        const cardIdsToPickUpAllowed = allowPickUpCardTo !== null && cardsToAdd.every(cardId => allowedCardsToPickUp.includes(cardId));
+        const checkIfAllowedToPickUpCards = allowPickUpCardTo !== null && allowPickUpCardTo >= cardsLeftInHand && cardIdsToPickUpAllowed;
+        // check if allowed to pick up the cards
+        if (checkIfAllowedToPickUpCards) {
+            // put in hand
+            console.log('allowed to pick up cards');
+            cardsToAdd.forEach(cardId => {
+                const card = this.cards.getCard(cardId);
+                if (!card) return;
+                card.setFaceUp(false);
+                card.userHandId = user.user.id;
+            });
+        }
+        const cardsInHand = this.getPlayerCards(userId);
+        // if either cards are not allowed to be picked up or dropped but there are cards to be added or removed
+        // then send the player data back to the user
+
+        if ((cardsToAdd.length > 0 && !checkIfAllowedToPickUpCards) || (cardsToRemove.length > 0 && !checkIfAllowedToDropCards)) {
+            const playerDataToSend: Partial<PlayerDataType> = {};
+            playerDataToSend.cardIds = cardsInHand.map(card => card.id);
+            console.log('Player has wrong data fix it');
+            this.sendPlayerData(userId, playerDataToSend);
+        }
     }
 
     override getGameDataToSend() {
