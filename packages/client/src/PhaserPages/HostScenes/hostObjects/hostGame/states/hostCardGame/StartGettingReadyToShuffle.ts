@@ -26,7 +26,8 @@ export class StartGettingReadyToShuffle<
 
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
             // remove all cards from the player hand
-            cardContainer.userHandId = null;
+            cardContainer.removeFromHand();
+
             // set all cards face down
             cardContainer.setFaceUp(false);
             // remove tint from all cards
@@ -46,6 +47,7 @@ export class StartGettingReadyToShuffle<
         this.hostGame.cards.update(time, delta);
         // once all cards are done moving, start the next round
         if (this.hostGame.cards.cardContainers.every(cardContainer => cardContainer.moveOnDuration === null)) {
+            console.log('all cards are done START SHUFFLING');
             this.hostGame.changeState(new Shuffling(this.hostGame));
         }
         return null;

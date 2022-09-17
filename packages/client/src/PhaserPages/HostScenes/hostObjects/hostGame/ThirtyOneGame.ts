@@ -64,8 +64,7 @@ export class ThirtyOneGame
     onCardMoveToTable(userId: string, card: CardContainer): void {
         if (!card) return;
         card.setFaceUp(true);
-        card.userHandId = null;
-        card.inUserHand = false;
+        card.removeFromHand();
         // get count of face up cards
         const faceUpCards = this.cards.getTableCards().filter(card => card.getFaceUp());
         const faceUpCardsCount = faceUpCards.length;

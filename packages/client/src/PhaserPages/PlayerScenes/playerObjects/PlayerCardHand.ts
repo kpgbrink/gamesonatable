@@ -292,8 +292,7 @@ export abstract class PlayerCardHand
             card.order = order + i;
             card.setFaceUp(faceUp);
             card.canTakeFromTable = true;
-            card.userHandId = null;
-            card.inUserHand = false;
+            card.removeFromHand();
             card.cardBackOnTable = false;
         });
     }
@@ -425,8 +424,7 @@ export abstract class PlayerCardHand
     }
 
     putCardBackOnTable(card: CardContainer) {
-        card.inUserHand = false;
-        card.userHandId = null;
+        card.removeFromHand();
         card.canTakeFromTable = false;
         card.cardBackOnTable = true;
         console.log('set card back on table', card);

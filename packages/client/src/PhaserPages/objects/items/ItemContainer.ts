@@ -18,6 +18,11 @@ export default class ItemContainer extends Phaser.GameObjects.Container implemen
     isDragging: boolean = false;
     order: number = 0;
 
+    public removeFromHand() {
+        this.userHandId = null;
+        this.inUserHand = false;
+    }
+
     public setUserHand(userHandId: string | null, timeGivenToUser: number | null = null) {
         if (this.userHandId === userHandId) return; // already in user hand
         this.userHandId = userHandId;
