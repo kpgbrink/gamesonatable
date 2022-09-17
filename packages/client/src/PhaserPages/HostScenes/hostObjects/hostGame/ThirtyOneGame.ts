@@ -99,7 +99,7 @@ export class ThirtyOneGame
     // ------------------------------------ Data ------------------------------------
     override getPlayerDataToSend(userId: string) {
         const user = this.getUser(userId);
-        if (!user) throw new Error('user not found');
+        if (!user) return {};
         const playerCardHandData = super.getPlayerDataToSend(userId);
         const playerCardHandDataEmpty: Partial<ThirtyOnePlayerCardHandData> = {};
         const thirtyOnePlayerCardHandData: Partial<ThirtyOnePlayerCardHandData> = { ...playerCardHandDataEmpty, ...playerCardHandData };
