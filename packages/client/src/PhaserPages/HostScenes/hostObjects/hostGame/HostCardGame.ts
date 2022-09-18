@@ -88,6 +88,7 @@ export abstract class HostCardGame<
             cardsToRemove.forEach(cardId => {
                 const card = this.cards.getCard(cardId);
                 if (!card) return;
+                card.setDepth(999);
                 this.onCardMoveToTable(user.user.id, card);
             });
         }
@@ -210,7 +211,16 @@ export abstract class HostCardGame<
                 // do not start moving if the card is already in the right position
                 if (checkTransformsAlmostEqual(card, positionRotation)) return;
                 if (card.moveOnDuration) return;
-                card.startMovingOverTimeTo(positionRotation, 2.5, () => {
+                const moveTime = (() => {
+                    if (card.inUserHand) {
+                        return 0.1;
+                    }
+                    if (card.getFaceUp()) {
+                        return 2.5;
+                    }
+                    return 1.2;
+                })();
+                card.startMovingOverTimeTo(positionRotation, moveTime, () => {
                     card.inUserHand = true;
                     card.setFaceUp(false);
                 });

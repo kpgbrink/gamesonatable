@@ -76,6 +76,7 @@ export class ThirtyOneGame
         card.startMovingOverTimeTo(transform, 1.5, () => {
 
         });
+        // Fix this
         const topFaceUpCard = this.cards.getTopFaceUpCard();
         card.depth = topFaceUpCard ? topFaceUpCard.depth + 1 : 0;
         this.currentState?.onItemMoveToTable();
