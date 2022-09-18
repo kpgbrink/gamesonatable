@@ -20,7 +20,6 @@ export default class ThirtyOneHostScene extends HostScene {
     }
 
     create() {
-        console.log('thirty one host scene create ran');
         super.create();
         const screenCenter = getScreenCenter(this);
         this.gameTable = new GameTable(this, screenCenter.x, screenCenter.y);

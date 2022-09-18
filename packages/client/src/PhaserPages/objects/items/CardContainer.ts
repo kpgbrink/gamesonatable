@@ -13,6 +13,8 @@ export default class CardContainer extends ItemContainer {
     mass: number = 1;
     id: number;
 
+    inHandFaceUp: boolean = false;
+
     cardInHandOffsetTransform: ValueWithDefault<Transform> = new ValueWithDefault({ x: 0, y: 0, rotation: 0, scale: 1 });
 
     isPickUpFaceUpCard() {

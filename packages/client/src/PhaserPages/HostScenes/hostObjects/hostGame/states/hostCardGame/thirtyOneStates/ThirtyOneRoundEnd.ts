@@ -28,6 +28,7 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
             this.hostGame.minDistanceBetweenCards.value = 500;
             this.hostGame.cardInHandTransform.value = { ...this.hostGame.cardInHandTransform.value, scale: 1.5 };
             cardContainer.frontImage?.setTint(0x555555);
+            cardContainer.inHandFaceUp = true;
             cardContainer.setFaceUp(true);
         });
         this.calculateScores();
@@ -54,6 +55,7 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
             cardsThatMatter.forEach(cardContainer => {
                 cardContainer.frontImage?.setTint(0xffffff);
                 cardContainer.cardInHandOffsetTransform.value = { ...cardContainer.cardInHandOffsetTransform.value, y: 200, scale: 2 / 1.5 };
+                // set the cards to be face up
             });
             userAvatar.roundScore = score;
             return { score, cardsThatMatter };

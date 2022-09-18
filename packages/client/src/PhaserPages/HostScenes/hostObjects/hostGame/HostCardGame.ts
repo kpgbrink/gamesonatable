@@ -63,7 +63,7 @@ export abstract class HostCardGame<
         super.onPlayerDataReceived(userId, playerData, gameData);
     }
 
-    updateCardsInHand(userId: string, playerData: Partial<PlayerDataType>, allowedCardsToPickUp: number[], allowPickUpCardTo: number | null, allowDropCardTo: number | null) {
+    updateCardsInHand(userId: string, playerData: Partial<PlayerDataType>, allowedCardsToPickUp: number[], allowPickUpCardTo: number | null, allowDropCardTo: number | null, pickUpCardFaceUp: boolean) {
         console.log('update cards in hand');
         console.log('playerData', playerData);
         if (!playerData.cardIds) return;
@@ -74,9 +74,6 @@ export abstract class HostCardGame<
         const oldCardsInHand = this.cards.getPlayerCardsIds(userId);
         const cardsToRemove = oldCardsInHand.filter(cardId => !newCardsInHand.includes(cardId));
         const cardsToAdd = newCardsInHand.filter(cardId => !oldCardsInHand.includes(cardId));
-        console.log('cardsToRemove', cardsToRemove);
-        console.log('cardsToAdd', cardsToAdd);
-        console.log('allowed pick up cards', allowedCardsToPickUp);
 
         // number of cards left in hand after cards are dropped
         const cardsLeftInHand = oldCardsInHand.length - cardsToRemove.length + cardsToAdd.length;
@@ -102,6 +99,7 @@ export abstract class HostCardGame<
             cardsToAdd.forEach(cardId => {
                 const card = this.cards.getCard(cardId);
                 if (!card) return;
+                card.inHandFaceUp = pickUpCardFaceUp;
                 card.depth = 999999;
                 card.userHandId = user.user.id;
             });
@@ -222,7 +220,7 @@ export abstract class HostCardGame<
                 })();
                 card.startMovingOverTimeTo(positionRotation, moveTime, () => {
                     card.inUserHand = true;
-                    card.setFaceUp(false);
+                    card.setFaceUp(card.inHandFaceUp); // TODO fix this so that it does not make the cards not visible when they need to be shown.
                 });
             });
             // set the depth of the cards based on x position relative to user avatar

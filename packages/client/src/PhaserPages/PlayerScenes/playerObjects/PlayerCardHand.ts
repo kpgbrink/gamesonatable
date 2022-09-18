@@ -379,7 +379,6 @@ export abstract class PlayerCardHand
     // move dragged card to player hand if being dragged down
     checkIfMoveCardToHand(draggedCard: CardContainer) {
         // check if the card is lower than the starting drag position
-        console.log('allowed pick up card amount', this.allowedPickUpCardAmount);
         if (this.allowedPickUpCardAmount <= 0) return;
         if (!draggedCard.canTakeFromTable) return;
         if (draggedCard.beforeDraggedTransform === null) return;
@@ -393,7 +392,6 @@ export abstract class PlayerCardHand
     }
 
     setAllowedPickUpCardAmount(amount: number) {
-        console.log('set allowed pick up card amount', amount);
         this.allowedPickUpCardAmount = amount;
         if (amount === 0) {
             // put all the pickupable cards back to the table

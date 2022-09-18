@@ -65,7 +65,7 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
         })();
         console.log('update cards in hand');
 
-        this.hostGame.updateCardsInHand(userId, playerData, allowedPickUpCardIds, allowedPickUpCardAmount, allowedDropCardAmount);
+        this.hostGame.updateCardsInHand(userId, playerData, allowedPickUpCardIds, allowedPickUpCardAmount, allowedDropCardAmount, false);
     }
 
     enter() {
