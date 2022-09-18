@@ -73,7 +73,7 @@ export class ThirtyOneGame
             x: this.cardPlaceTransform.x + (faceUpCardsCount * 2),
             y: this.cardPlaceTransform.y + (faceUpCardsCount * 2),
         };
-        card.startMovingOverTimeTo(transform, .8, () => {
+        card.startMovingOverTimeTo(transform, 1.5, () => {
 
         });
         const topFaceUpCard = this.cards.getTopFaceUpCard();

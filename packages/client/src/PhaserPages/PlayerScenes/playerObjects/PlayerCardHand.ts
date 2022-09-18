@@ -57,8 +57,8 @@ export abstract class PlayerCardHand
         // Add the data that needs to be sent over.
         const playerData = this.playerData;
         if (persistentData.myUserId === null) return;
-        playerData.userId = persistentData.myUserId;
-        playerData.cardIds = this.cards.getPlayerCardsIds(playerData.userId)
+        const userId = persistentData.myUserId;
+        playerData.cardIds = this.cards.getPlayerCardsIds(userId)
 
         return this.playerData;
     }

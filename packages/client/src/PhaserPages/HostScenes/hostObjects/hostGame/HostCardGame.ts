@@ -101,7 +101,7 @@ export abstract class HostCardGame<
             cardsToAdd.forEach(cardId => {
                 const card = this.cards.getCard(cardId);
                 if (!card) return;
-                card.setFaceUp(false);
+                card.depth = 999999;
                 card.userHandId = user.user.id;
             });
         }
@@ -210,8 +210,9 @@ export abstract class HostCardGame<
                 // do not start moving if the card is already in the right position
                 if (checkTransformsAlmostEqual(card, positionRotation)) return;
                 if (card.moveOnDuration) return;
-                card.startMovingOverTimeTo(positionRotation, .4, () => {
+                card.startMovingOverTimeTo(positionRotation, 2.5, () => {
                     card.inUserHand = true;
+                    card.setFaceUp(false);
                 });
             });
             // set the depth of the cards based on x position relative to user avatar
@@ -220,7 +221,9 @@ export abstract class HostCardGame<
                 const bR = transformRelativeToObject(userAvatarContainer, b);
                 return aR.x - bR.x;
             }).forEach((card, index) => {
-                card.depth = index;
+                if (card.inUserHand) {
+                    card.depth = index;
+                }
             });
         });
     }
