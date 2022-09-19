@@ -11,7 +11,7 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
     hostGame: ThirtyOneGame;
     bringShownCardToPositionTime: number = 1;
 
-    timeToNextRound: number = 10;
+    timeToNextRound: number = 60 * 2;
     // timer for starting the next round
     timerNextRound: CountdownTimer = new CountdownTimer(this.timeToNextRound);
 
@@ -49,8 +49,6 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
         this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
             const cardContainers = this.hostGame.cards.cardContainers.filter(c => c.userHandId === userAvatar.user.id);
             const { score, cardsThatMatter } = ThirtyOneRoundEnd.calculateScoreAndCardsThatMatter(cardContainers);
-            // console.log('score', score);
-            // console.log('cardsThatMatter', cardsThatMatter);
             // show the cards that matter differently
             cardsThatMatter.forEach(cardContainer => {
                 cardContainer.frontImage?.setTint(0xffffff);

@@ -74,17 +74,19 @@ export class ThirtyOneGame
         card.startMovingOverTimeTo(transform, 1.5, () => {
 
         });
-        // Fix this
-        const topFaceUpCard = this.cards.getTopFaceUpCard();
-        card.depth = topFaceUpCard ? topFaceUpCard.depth + 1 : 0;
-        this.currentState?.onItemMoveToTable();
 
+        // maybe move this to differnet area.
         // also check if the player has 31 and if so, end the round
         const scoresAndCardsThatMatter = ThirtyOneRoundEnd.calculateScoreAndCardsThatMatter(this.cards.getPlayerCards(userId));
         if (scoresAndCardsThatMatter.score === 31 && this.gameData.knockPlayerId === null) {
             this.gameData.thirtyOnePlayerId = userId;
             this.changeState(new ThirtyOneRoundEnd(this));
         }
+
+        // Fix this
+        const topFaceUpCard = this.cards.getTopFaceUpCard();
+        card.depth = topFaceUpCard ? topFaceUpCard.depth + 1 : 0;
+        this.currentState?.onItemMoveToTable();
     }
 
     createGameState(): HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> {
