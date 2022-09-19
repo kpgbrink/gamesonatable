@@ -21,8 +21,6 @@ export class ThirtyOneGame
     deckTransform: Transform = { x: 0, y: 0, rotation: 0, scale: 1 };
     cardPlaceTransform: Transform = { x: 0, y: 0, rotation: 0, scale: 1 };
 
-    thirtyOnePlayerId: string | null = null;
-
     constructor(scene: Phaser.Scene) {
         super(scene);
         this.scene = scene;
@@ -80,10 +78,11 @@ export class ThirtyOneGame
         const topFaceUpCard = this.cards.getTopFaceUpCard();
         card.depth = topFaceUpCard ? topFaceUpCard.depth + 1 : 0;
         this.currentState?.onItemMoveToTable();
+
         // also check if the player has 31 and if so, end the round
         const scoresAndCardsThatMatter = ThirtyOneRoundEnd.calculateScoreAndCardsThatMatter(this.cards.getPlayerCards(userId));
-        if (scoresAndCardsThatMatter.score === 31) {
-            this.thirtyOnePlayerId = userId;
+        if (scoresAndCardsThatMatter.score === 31 && this.gameData.knockPlayerId === null) {
+            this.gameData.thirtyOnePlayerId = userId;
             this.changeState(new ThirtyOneRoundEnd(this));
         }
     }
@@ -129,30 +128,5 @@ export class ThirtyOneGame
             this.changeState(new ThirtyOneGamePlayerTurn(this));
         }
     }
-    // ------------------------------------ Data End ------------------------------------
-
-    // TODO remove this
-    sendPlayerPickUpCards() {
-        // tell the player that it is their turn
-        const hiddenCard = this.cards.getTopFaceDownCard();
-        const shownCard = this.cards.getTopFaceUpCard();
-        if (!shownCard) {
-            console.log("No shown card found");
-            return;
-        }
-        if (!hiddenCard) {
-            this.changeState(new ThirtyOneRoundEnd(this));
-            return;
-        }
-
-        // check if the turn has gone back to the player who knocked. Then need to go to end round state.
-        if (this.gameData.knockPlayerId === this.gameData.playerTurnId) {
-            this.changeState(new ThirtyOneRoundEnd(this));
-            return;
-        }
-        if (this.gameData.playerTurnId === null) throw new Error("No current player turn id");
-
-        this.sendData(this.gameData.playerTurnId);
-    }
-
+    // ------------------------------------ Data End ------------------------------------  // TODO remove this
 } 

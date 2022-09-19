@@ -1,6 +1,7 @@
 import { ThirtyOneCardGameData, ThirtyOnePlayerCardHandData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
 import { ThirtyOneGame } from "../../../ThirtyOneGame";
 import { HostGameState } from "../../HostGameState";
+import { ThirtyOneRoundEnd } from "./ThirtyOneRoundEnd";
 
 // Bring cards to the random dealer and have the cards start going out to people.
 export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> {
@@ -16,8 +17,9 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
         const thirtyOnePlayerCardHandData: Partial<ThirtyOnePlayerCardHandData> = {};
 
         // check if it is the user's turn
-        const isUserTurn = this.hostGame.gameData.playerTurnId === userId;
-        if (isUserTurn) {
+        const isUserTurnPickUpPickUp = this.hostGame.gameData.playerTurnId === userId && this.hostGame.gameData.thirtyOnePlayerId === null;
+        if (isUserTurnPickUpPickUp) {
+            console.log('isUserTurnPickUpPickUp', isUserTurnPickUpPickUp, this.hostGame.gameData.thirtyOnePlayerId, userId);
             // send the cards the user can pick up 
             const topFaceUpCard = this.hostGame.cards.getTopFaceUpCard();
             const topFaceDownCard = this.hostGame.cards.getTopFaceDownCard();
@@ -33,7 +35,6 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
             thirtyOnePlayerCardHandData.pickUpTo = null;
             thirtyOnePlayerCardHandData.dropTo = null;
         }
-
 
         return thirtyOnePlayerCardHandData;
     }
@@ -71,7 +72,7 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
     enter() {
         // make the player to left of dealer start their turn
         this.hostGame.setNextPlayerTurn();
-        this.hostGame.sendPlayerPickUpCards();
+        this.sendPlayerPickUpCards();
     }
 
     update(time: number, delta: number): HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> | null {
@@ -85,5 +86,29 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
     }
 
     exit() {
+    }
+
+    // TODO remove this
+    sendPlayerPickUpCards() {
+        // tell the player that it is their turn
+        const hiddenCard = this.hostGame.cards.getTopFaceDownCard();
+        const shownCard = this.hostGame.cards.getTopFaceUpCard();
+        if (!shownCard) {
+            console.log("No shown card found");
+            return;
+        }
+        if (!hiddenCard) {
+            this.hostGame.changeState(new ThirtyOneRoundEnd(this.hostGame));
+            return;
+        }
+
+        // check if the turn has gone back to the player who knocked. Then need to go to end round state.
+        if (this.hostGame.gameData.knockPlayerId === this.hostGame.gameData.playerTurnId) {
+            this.hostGame.changeState(new ThirtyOneRoundEnd(this.hostGame));
+            return;
+        }
+        if (this.hostGame.gameData.playerTurnId === null) throw new Error("No current player turn id");
+
+        this.hostGame.sendData(this.hostGame.gameData.playerTurnId);
     }
 }

@@ -69,31 +69,28 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
         // if a player got 31 then everyone else loses a life
         // check if there is a 31 score
         (() => {
-            // const thirtyOneScoreUsers = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.roundScore === 31);
-            // if (thirtyOneScoreUsers.length > 0) {
-            //     const nonThirtyOneScoreUsers = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.roundScore !== 31);
-            //     nonThirtyOneScoreUsers.forEach(userAvatar => {
-            //         userAvatar.lives -= 1;
-            //     });
-            //     return;
-            // }
-            if (this.hostGame.thirtyOnePlayerId) {
+            if (this.hostGame.gameData.thirtyOnePlayerId) {
                 // make every other user lose 1 life
                 this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
-                    if (userAvatar.user.id !== this.hostGame.thirtyOnePlayerId) {
+                    if (userAvatar.user.id !== this.hostGame.gameData.thirtyOnePlayerId) {
                         userAvatar.lives -= 1;
                     }
                 });
+                return;
             }
             if (lowestScoreUsers.length === 1) {
                 const lowestScoreUser = lowestScoreUsers[0];
                 lowestScoreUser.lives -= 1;
-                if (lowestScoreUser.user.id === this.hostGame.gameData.knockPlayerId) { lowestScoreUser.lives -= 1; }
+                if (lowestScoreUser.user.id === this.hostGame.gameData.knockPlayerId) {
+                    lowestScoreUser.lives -= 1;
+                }
                 return;
             }
             lowestScoreUsers.forEach(lowestScoreUser => {
                 lowestScoreUser.lives -= 1;
-                if (lowestScoreUser.user.id === this.hostGame.gameData.knockPlayerId) lowestScoreUser.lives += 1;
+                if (lowestScoreUser.user.id === this.hostGame.gameData.knockPlayerId) {
+                    lowestScoreUser.lives += 1;
+                }
             });
         })();
 
@@ -168,6 +165,6 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
 
     exit() {
         this.hostGame.gameData.knockPlayerId = null;
-        this.hostGame.thirtyOnePlayerId = null;
+        this.hostGame.gameData.thirtyOnePlayerId = null;
     }
 }

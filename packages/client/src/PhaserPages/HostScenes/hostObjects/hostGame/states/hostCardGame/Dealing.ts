@@ -56,6 +56,7 @@ export class Dealing<
         if (!cardContainer) {
             throw new Error('no card container');
         }
+        cardContainer.inHandFaceUp = false;
         cardContainer.setUserHand(this.currentPlayerGettingCard, this.hostGame.scene.time.now);
 
         // get the player that the card is going to

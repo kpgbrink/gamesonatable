@@ -105,9 +105,9 @@ export abstract class HostCardGame<
             });
         }
         const cardsInHand = this.getPlayerCards(userId);
+
         // if either cards are not allowed to be picked up or dropped but there are cards to be added or removed
         // then send the player data back to the user
-
         if ((cardsToAdd.length > 0 && !checkIfAllowedToPickUpCards) || (cardsToRemove.length > 0 && !checkIfAllowedToDropCards)) {
             const playerDataToSend: Partial<PlayerDataType> = {};
             playerDataToSend.cardIds = cardsInHand.map(card => card.id);
