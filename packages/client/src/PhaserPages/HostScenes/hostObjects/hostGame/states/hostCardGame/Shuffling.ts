@@ -15,9 +15,8 @@ export class Shuffling<
     UserAvatars extends HostUserAvatarsAroundTableGame<UserAvatarType>,
     UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGameState<PlayerDataType, GameDataType> {
     hostGame: HostCardGame<GameDataType, PlayerDataType, UserAvatars, UserAvatarType>;
-    randomStartingOffset: number = 500;
-    randomStartingMovementSpeed: number = 15 * 60;
-    randomStartingRotationalVelocity: number = DegreesToRadians(360);
+    randomStartingMovementSpeed: number = 10;
+    randomStartingRotationalVelocity: number = DegreesToRadians(180);
     massCenter = 50 * 60 * 60 * 4;
     shufflingTimer: CountdownTimer = new CountdownTimer(1);
 
@@ -52,13 +51,13 @@ export class Shuffling<
             })();
             const distance = Math.sqrt(distanceToScreenCenter.x ** 2 + distanceToScreenCenter.y ** 2);
             // calculate gravity force
-            const gravityForce = this.massCenter * cardContainer.mass / distance * 2;
+            const gravityForce = this.massCenter * cardContainer.mass / (distance * 2);
             // add gravity force to velocity towards screen center
             // get normal vector to screen center from card location
             const normalVecotr = getNormalVector(-distanceToScreenCenter.x, -distanceToScreenCenter.y);
             // add normal vector to velocity
-            cardContainer.velocity.x += normalVecotr.x * gravityForce * millisecondToSecond(deltaTime);
-            cardContainer.velocity.y += normalVecotr.y * gravityForce * millisecondToSecond(deltaTime);
+            cardContainer.velocity.x += normalVecotr.x * gravityForce * millisecondToSecond(deltaTime) / 5;
+            cardContainer.velocity.y += normalVecotr.y * gravityForce * millisecondToSecond(deltaTime) / 5;
 
         });
     }

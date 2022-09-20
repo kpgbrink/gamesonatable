@@ -36,7 +36,7 @@ export class MoveCardsToShufflingPosition<
             // set random card offset
             const x = screenCenter.x + randomFloatBetween(-this.randomStartingOffset, this.randomStartingOffset);
             const y = screenCenter.y + randomFloatBetween(-this.randomStartingOffset, this.randomStartingOffset);
-            cardContainer.startMovingOverTimeTo({ x, y, rotation: 0, scale: 1 }, .5);
+            cardContainer.startMovingOverTimeTo({ x, y, rotation: 0, scale: 1 }, 1);
         });
     }
 

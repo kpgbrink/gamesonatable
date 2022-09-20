@@ -6,7 +6,7 @@ import { CardGameUserAvatarContainer } from "../../../objects/userAvatarContaine
 import { ValueWithDefault } from "../../../objects/ValueWithDefault";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
-import { StartGettingReadyToShuffle } from "./states/hostCardGame/StartGettingReadyToShuffle";
+import { MoveCardsToShufflingPosition } from "./states/hostCardGame/MoveCardsToShufflingPosition";
 
 export abstract class HostCardGame<
     GameDataType extends CardGameData,
@@ -41,7 +41,7 @@ export abstract class HostCardGame<
         this.createHostUserAvatarsAroundTableGame();
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, screenCenter.y);
-        this.changeState(new StartGettingReadyToShuffle(this));
+        this.changeState(new MoveCardsToShufflingPosition(this));
     }
 
     // ------------------------------------ Data ------------------------------------
