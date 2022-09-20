@@ -27,17 +27,8 @@ export class Shuffling<
     }
 
     enter() {
-        // set the card movement to randomness
-        const screenCenter = getScreenCenter(this.hostGame.scene);
-
-        // shuffle the cards
-        this.hostGame.cards.shuffle();
-
         // set random card movement
         this.hostGame.cards.cardContainers.forEach(cardContainer => {
-            // set random card offset
-            cardContainer.x = screenCenter.x + randomFloatBetween(-this.randomStartingOffset, this.randomStartingOffset);
-            cardContainer.y = screenCenter.y + randomFloatBetween(-this.randomStartingOffset, this.randomStartingOffset);
 
             // set random velocity
             const x = randomFloatBetween(-this.randomStartingMovementSpeed, this.randomStartingMovementSpeed);
