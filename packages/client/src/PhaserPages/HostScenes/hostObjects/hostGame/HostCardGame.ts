@@ -6,7 +6,7 @@ import { CardGameUserAvatarContainer } from "../../../objects/userAvatarContaine
 import { ValueWithDefault } from "../../../objects/ValueWithDefault";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
-import { MoveCardsToShufflingPosition } from "./states/hostCardGame/MoveCardsToShufflingPosition";
+import { Shuffling } from "./states/hostCardGame/Shuffling";
 
 export abstract class HostCardGame<
     GameDataType extends CardGameData,
@@ -16,6 +16,8 @@ export abstract class HostCardGame<
     scene: Phaser.Scene;
     cards: Cards;
     hostUserAvatars: UserAvatarsType | null = null;
+
+    shufflingAmount: ValueWithDefault<number> = new ValueWithDefault(4);
 
     dealAmount: number = 10;
     turn: number = 0;
@@ -41,7 +43,7 @@ export abstract class HostCardGame<
         this.createHostUserAvatarsAroundTableGame();
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, screenCenter.y);
-        this.changeState(new MoveCardsToShufflingPosition(this));
+        this.changeState(new Shuffling(this));
     }
 
     // ------------------------------------ Data ------------------------------------

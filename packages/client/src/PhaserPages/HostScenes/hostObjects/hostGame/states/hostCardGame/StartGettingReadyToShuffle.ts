@@ -4,7 +4,7 @@ import { CardGameUserAvatarContainer } from "../../../../../objects/userAvatarCo
 import { HostUserAvatarsAroundTableGame } from "../../../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { HostCardGame } from "../../HostCardGame";
 import { HostGameState } from "../HostGameState";
-import { MoveCardsToShufflingPosition } from "./MoveCardsToShufflingPosition";
+import { Shuffling } from "./Shuffling";
 
 export class StartGettingReadyToShuffle<
     GameDataType extends CardGameData,
@@ -48,7 +48,8 @@ export class StartGettingReadyToShuffle<
         // once all cards are done moving, start the next round
         if (this.hostGame.cards.cardContainers.every(cardContainer => cardContainer.moveOnDuration === null)) {
             console.log('all cards are done START SHUFFLING');
-            this.hostGame.changeState(new MoveCardsToShufflingPosition(this.hostGame));
+            this.hostGame.shufflingAmount.setToDefault();
+            this.hostGame.changeState(new Shuffling(this.hostGame));
         }
         return null;
     }
