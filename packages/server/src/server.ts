@@ -78,7 +78,9 @@ io.on('connection', (socket) => {
         socket.join(user.room);
         // find any users that need to be replaced
         const roomData = getRoom(room);
+        console.log('roomData', roomData);
         if (!roomData) {
+            console.log('emit room does not exist');
             socket.emit('room does not exist', room);
             return;
         }

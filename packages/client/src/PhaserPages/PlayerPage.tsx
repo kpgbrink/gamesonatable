@@ -1,5 +1,6 @@
+import { LinearProgress } from "@mui/material";
 import Phaser from "phaser";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
 import { persistentData } from "./objects/PersistantData";
@@ -18,11 +19,16 @@ export default function PlayerPage() {
   const { roomId, userId } = useParams();
   const navigate = useNavigate();
 
+  // add state to keep track if the room exists
+  const [roomExists, setRoomExists] = useState(false);
+
   useEffect(() => {
     if (!userId) {
       throw new Error("userId is not defined");
     }
     const userIdListener = (existingUserId: string) => {
+      setRoomExists(true);
+      console.log("userid listener", existingUserId);
       if (existingUserId !== userId) {
         persistentData.myUserId = existingUserId;
         storeIds(socket.id, existingUserId);
@@ -43,40 +49,43 @@ export default function PlayerPage() {
   console.log("userId", userId, "myPersistentuserId", persistentData.myUserId);
   return (
     <>
-      <PhaserWrapper
-        config={{
-          loader: {
-            baseURL: "/",
-          },
-          dom: {
-            createContainer: true,
-          },
-          type: Phaser.AUTO,
-          scene: [
-            PlayerStartingScene,
-            PlayerBeforeGameStart,
-            Omaha,
-            Texas,
-            ThirtyOne,
-          ],
-          physics: {
-            default: "arcade",
-            arcade: {
-              gravity: { y: 300 },
-              debug: true,
+      {!roomExists && <LinearProgress />}
+      {roomExists && (
+        <PhaserWrapper
+          config={{
+            loader: {
+              baseURL: "/",
             },
-          },
-          pixelArt: true,
-          scale: {
-            mode: Phaser.Scale.FIT,
-            autoCenter: Phaser.Scale.CENTER_BOTH,
-            width: 1920,
-            height: 1080,
-            fullscreenTarget: "game",
-          },
-        }}
-        gameName="Client"
-      />
+            dom: {
+              createContainer: true,
+            },
+            type: Phaser.AUTO,
+            scene: [
+              PlayerStartingScene,
+              PlayerBeforeGameStart,
+              Omaha,
+              Texas,
+              ThirtyOne,
+            ],
+            physics: {
+              default: "arcade",
+              arcade: {
+                gravity: { y: 300 },
+                debug: true,
+              },
+            },
+            pixelArt: true,
+            scale: {
+              mode: Phaser.Scale.FIT,
+              autoCenter: Phaser.Scale.CENTER_BOTH,
+              width: 1920,
+              height: 1080,
+              fullscreenTarget: "game",
+            },
+          }}
+          gameName="Client"
+        />
+      )}
       <ShowRoomNotExist />
       <ShowUserReplaceOptions />
     </>
