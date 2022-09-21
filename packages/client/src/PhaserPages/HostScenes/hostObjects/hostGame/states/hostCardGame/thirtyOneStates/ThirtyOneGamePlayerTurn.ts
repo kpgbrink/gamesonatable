@@ -69,6 +69,26 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
         this.hostGame.updateCardsInHand(userId, playerData, allowedPickUpCardIds, allowedPickUpCardAmount, allowedDropCardAmount, false);
     }
 
+    override onGameDataReceived(userId: string, gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
+        this.updateKnocking(userId, gameData, playerData, updateGameData);
+    }
+
+    updateKnocking(userId: string, gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
+        if (!updateGameData) return;
+        // if it's not the player turn they cannot knock
+        if (this.hostGame.gameData.playerTurnId !== userId || gameData.knockPlayerId === undefined) {
+            // update user that the knocking is not allowed
+            this.hostGame.sendGameData(userId);
+            return;
+        }
+        if (gameData.knockPlayerId && !this.hostGame.gameData.knockPlayerId) {
+            this.hostGame.gameData.knockPlayerId = gameData.knockPlayerId;
+            console.log('update knocking');
+            this.hostGame.changeState(new ThirtyOneGamePlayerTurn(this.hostGame));
+        }
+
+    }
+
     enter() {
         // make the player to left of dealer start their turn
         this.hostGame.setNextPlayerTurn();

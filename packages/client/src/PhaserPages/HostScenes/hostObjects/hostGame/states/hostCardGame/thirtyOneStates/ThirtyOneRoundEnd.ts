@@ -36,7 +36,6 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
 
     update(time: number, delta: number): HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> | null {
         this.hostGame.cards.update(time, delta);
-        console.log('update')
         this.timerNextRound.update(delta);
         if (this.timerNextRound.isDone()) {
             this.hostGame.changeState(new StartGettingReadyToShuffle(this.hostGame));
