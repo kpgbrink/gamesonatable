@@ -36,6 +36,7 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
 
     update(time: number, delta: number): HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> | null {
         this.hostGame.cards.update(time, delta);
+        console.log('update')
         this.timerNextRound.update(delta);
         if (this.timerNextRound.isDone()) {
             this.hostGame.changeState(new StartGettingReadyToShuffle(this.hostGame));
@@ -151,11 +152,19 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
     }
 
     override onGameDataReceived(userId: string, gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
+        this.updateDealing(gameData, playerData, updateGameData);
+    }
+
+    override getGameDataToSend(): Partial<ThirtyOneCardGameData> | undefined {
+        const gameData: Partial<ThirtyOneCardGameData> = {};
+        gameData.waitingForDeal = true;
+        gameData.roundOver = true;
+        return gameData;
+    }
+
+    updateDealing(gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
         if (!updateGameData) return;
-        console.log('update the game to dealing', gameData);
-        // check if dealing
         if (gameData.startDealing) {
-            console.log('starting the deal now');
             // deal the cards
             this.timerNextRound.currentTime = 0;
         }

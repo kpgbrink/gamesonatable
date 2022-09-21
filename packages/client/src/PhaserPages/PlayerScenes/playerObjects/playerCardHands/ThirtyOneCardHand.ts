@@ -24,20 +24,24 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
         return this.playerData;
     }
 
-    override onPlayerDataReceived(playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null): void {
+    override onPlayerDataReceived(playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null) {
         super.onPlayerDataReceived(playerData, gameData);
         if (playerData === undefined) return;
         if (gameData === undefined) return;
         // check if can knock
-        const userId = persistentData.myUserId;
-        if (gameData?.knockPlayerId === null
-            && playerData?.cardIds?.length === 3
-            && gameData?.playerTurnId === userId) {
-            this.knockButton?.setVisible(true);
-        } else {
-            this.knockButton?.setVisible(false);
-        }
+        this.updateKnockButton(playerData, gameData);
         this.playerData = { ...this.playerData, ...playerData };
+    }
+
+    updateKnockButton(playerData: Partial<ThirtyOnePlayerCardHandData>, gameData: Partial<ThirtyOneCardGameData> | null) {
+        const userId = persistentData.myUserId;
+        const canKnock = gameData?.knockPlayerId === null
+            && playerData?.cardIds?.length === 3
+            && gameData?.playerTurnId === userId
+            && gameData?.gameOver === false
+            && gameData?.roundOver === false;
+        console.log('gameData.roundOVer', gameData?.roundOver);
+        this.knockButton?.setVisible(canKnock);
     }
 
     override getGameDataToSend(): Partial<ThirtyOneCardGameData> | undefined {

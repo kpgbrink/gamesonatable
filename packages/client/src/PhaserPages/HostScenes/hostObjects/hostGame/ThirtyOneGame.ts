@@ -124,11 +124,23 @@ export class ThirtyOneGame
 
     override onGameDataReceived(userId: string, gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
         super.onGameDataReceived(userId, gameData, playerData, updateGameData);
+        this.updateKnocking(userId, gameData, playerData, updateGameData);
+    }
+
+    updateKnocking(userId: string, gameData: Partial<ThirtyOneCardGameData>, playerData: Partial<ThirtyOnePlayerCardHandData> | null, updateGameData: boolean): void {
         if (!updateGameData) return;
+        // if it's not the player turn they cannot knock
+        if (this.gameData.playerTurnId !== userId || gameData.knockPlayerId === undefined) {
+            // update user that the knocking is not allowed
+            this.sendGameData(userId);
+            return;
+        }
         if (gameData.knockPlayerId && !this.gameData.knockPlayerId) {
             this.gameData.knockPlayerId = gameData.knockPlayerId;
+            console.log('update knocking');
             this.changeState(new ThirtyOneGamePlayerTurn(this));
         }
+
     }
     // ------------------------------------ Data End ------------------------------------  // TODO remove this
 } 

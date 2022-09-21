@@ -21,6 +21,7 @@ export class StartGettingReadyToShuffle<
     }
 
     enter() {
+        console.log('START GETTING REAADY TO SHUFFLE');
         const screenCenter = getScreenCenter(this.hostGame.scene);
         this.hostGame.cardInHandTransform.setToDefault();
 

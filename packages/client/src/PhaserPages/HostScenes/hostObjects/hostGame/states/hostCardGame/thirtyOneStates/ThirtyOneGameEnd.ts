@@ -18,7 +18,12 @@ export class ThirtyOneGameEnd extends HostGameState<ThirtyOnePlayerCardHandData,
     }
 
     enter() {
+    }
 
+    override getGameDataToSend(): Partial<ThirtyOneCardGameData> | undefined {
+        const gameData: Partial<ThirtyOneCardGameData> = {};
+        gameData.gameOver = true;
+        return gameData;
     }
 
     update(time: number, delta: number): HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> | null {

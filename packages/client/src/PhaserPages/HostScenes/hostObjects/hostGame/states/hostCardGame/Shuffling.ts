@@ -16,7 +16,7 @@ export class Shuffling<
     randomStartingOffset: number = 500;
     randomStartingRotationalVelocity: number = DegreesToRadians(360);
     massCenter = 50 * 60 * 60 * 4;
-    shufflingTime: number = 1;
+    shufflingTime: number = .5;
 
     constructor(hostGame: HostCardGame<GameDataType, PlayerDataType, UserAvatars, UserAvatarType>) {
         super(hostGame);

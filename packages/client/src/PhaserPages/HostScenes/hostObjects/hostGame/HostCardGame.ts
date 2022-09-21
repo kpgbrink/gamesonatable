@@ -119,7 +119,11 @@ export abstract class HostCardGame<
     }
 
     override getGameDataToSend() {
-        return this.gameData;
+        const parentGameData = super.getGameDataToSend();
+        this.gameData.gameOver = false;
+        this.gameData.roundOver = false;
+        const gameDataToSend = { ...this.gameData, ...parentGameData };
+        return gameDataToSend;
     }
 
     // TODO update the game data

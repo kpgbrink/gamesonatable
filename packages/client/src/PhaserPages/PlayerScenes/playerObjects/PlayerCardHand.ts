@@ -71,7 +71,6 @@ export abstract class PlayerCardHand
         // move the cards to the hand
         // TODO change the Date.now() to the time given to the user
         this.updateCardsInHand(playerData);
-        this.updateDealing(playerData);
 
         this.updatePickUpFaceDownCards(playerData);
         this.updatePickUpFaceUpCards(playerData);
@@ -173,12 +172,6 @@ export abstract class PlayerCardHand
         });
     }
 
-    updateDealing(playerData: Partial<PlayerCardHandDataType>) {
-        if (playerData.dealing === undefined) return;
-        this.dealButton?.setVisible(playerData.dealing);
-    }
-
-
     updatePickUpFaceDownCards(playerData: Partial<PlayerCardHandDataType>) {
         if (playerData.pickUpFaceDownCardIds === undefined) return;
         // Check if pickUpTo is a number
@@ -204,10 +197,19 @@ export abstract class PlayerCardHand
     }
 
     override onGameDataReceived(gameData: Partial<CardGameDataType>): void {
-        if (gameData.playerDealerId === persistentData.myUserId) {
-            this.dealButton?.setVisible(true);
-        }
+        this.updateDealing(gameData);
+    }
 
+    updateDealing(gameData: Partial<CardGameDataType>) {
+        if (gameData.playerDealerId === undefined) return
+        if (gameData.waitingForDeal === undefined) return
+        console.log('waiting for deal');
+        console.log('gameData', gameData);
+        console.log('gameData.playerDealerId', gameData.playerDealerId);
+        console.log('gameData.waitingForDeal', gameData.waitingForDeal);
+        console.log('persistentData.myUserId', persistentData.myUserId);
+        const meDealing = gameData.playerDealerId === persistentData.myUserId && gameData.waitingForDeal;
+        this.dealButton?.setVisible(meDealing);
     }
     // ------------------------------------ Data End ------------------------------------
 
