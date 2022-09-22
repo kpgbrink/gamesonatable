@@ -23,11 +23,6 @@ export abstract class HostUserAvatars<UserAvatarContainerType extends UserAvatar
         });
     }
 
-    // createUserAvatarContainer(x: number, y: number, user: User) {
-    //     const userAvatarContainer = new UserAvatarContainer(this.scene, x, y, user);
-    //     return userAvatarContainer;
-    // }
-
     abstract createUserAvatarContainer(x: number, y: number, user: User): UserAvatarContainerType;
 
     createUsers(roomData: RoomData | null) {
@@ -86,6 +81,7 @@ export abstract class HostUserAvatars<UserAvatarContainerType extends UserAvatar
             usersInGame.push(currentUser);
         }
         const users = usersInGame.sort((a, b) => a.rotation - b.rotation);
+        console.log('sorted users', users);
         // find the next user from the current dealer`
         const currentUserIndex = users.findIndex(u => u.user.id === userId);
         if (currentUserIndex === -1) {

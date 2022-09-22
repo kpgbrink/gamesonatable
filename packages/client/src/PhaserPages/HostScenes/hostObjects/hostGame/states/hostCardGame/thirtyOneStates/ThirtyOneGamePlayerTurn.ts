@@ -19,7 +19,6 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
         // check if it is the user's turn
         const isUserTurnPickUpPickUp = this.hostGame.gameData.playerTurnId === userId && this.hostGame.gameData.thirtyOnePlayerId === null;
         if (isUserTurnPickUpPickUp) {
-            console.log('isUserTurnPickUpPickUp', isUserTurnPickUpPickUp, this.hostGame.gameData.thirtyOnePlayerId, userId);
             // send the cards the user can pick up 
             const topFaceUpCard = this.hostGame.cards.getTopFaceUpCard();
             const topFaceDownCard = this.hostGame.cards.getTopFaceDownCard();
@@ -64,7 +63,6 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
             }
             return null;
         })();
-        console.log('update cards in hand');
 
         this.hostGame.updateCardsInHand(userId, playerData, allowedPickUpCardIds, allowedPickUpCardAmount, allowedDropCardAmount, false);
     }
@@ -83,7 +81,6 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
         }
         if (gameData.knockPlayerId && !this.hostGame.gameData.knockPlayerId) {
             this.hostGame.gameData.knockPlayerId = gameData.knockPlayerId;
-            console.log('update knocking');
             this.hostGame.changeState(new ThirtyOneGamePlayerTurn(this.hostGame));
         }
 

@@ -66,8 +66,6 @@ export abstract class HostCardGame<
     }
 
     updateCardsInHand(userId: string, playerData: Partial<PlayerDataType>, allowedCardsToPickUp: number[], allowPickUpCardTo: number | null, allowDropCardTo: number | null, pickUpCardFaceUp: boolean) {
-        console.log('update cards in hand');
-        console.log('playerData', playerData);
         if (!playerData.cardIds) return;
         const user = this.getUser(userId);
         if (!user) return;
@@ -97,7 +95,6 @@ export abstract class HostCardGame<
         // check if allowed to pick up the cards
         if (checkIfAllowedToPickUpCards) {
             // put in hand
-            console.log('allowed to pick up cards');
             cardsToAdd.forEach(cardId => {
                 const card = this.cards.getCard(cardId);
                 if (!card) return;
@@ -140,16 +137,18 @@ export abstract class HostCardGame<
         return dealer;
     }
 
-    randomizeDealer() {
-        // choose a random dealer
-        this.gameData.playerDealerId = this.hostUserAvatars?.getRandomUserIdInGame() || null;
+    randomizeDealerIfNotSet() {
+        if (!this.gameData.playerDealerId) {
+            console.log('random dealer');
+            // choose a random dealer
+            this.gameData.playerDealerId = this.hostUserAvatars?.getRandomUserIdInGame() || null;
+            return;
+        }
     }
 
     setNextDealer() {
-        if (!this.gameData.playerDealerId) {
-            this.randomizeDealer();
-            return;
-        }
+        if (!this.gameData.playerDealerId) throw new Error('No dealer set');
+        console.log('playerDealerId', this.gameData.playerDealerId);
         this.gameData.playerDealerId = this.getNextPlayerId(this.gameData.playerDealerId);
     }
 
@@ -248,8 +247,7 @@ export abstract class HostCardGame<
         if (!this.gameData.playerDealerId) {
             throw new Error('No dealer set');
         }
-        const nextDealerId = this.getNextPlayerId(this.gameData.playerDealerId);
-        this.gameData.playerDealerId = nextDealerId;
+        this.setNextDealer();
         this.sendGameData();
     }
 

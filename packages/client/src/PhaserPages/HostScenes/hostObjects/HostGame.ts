@@ -50,7 +50,7 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     }
 
     sendPlayerData(userId: string, playerData: Partial<PlayerDataType> | undefined = undefined) {
-        console.log('user data being sent', this.getPlayerDataToSend(userId));
+        // console.log('user data being sent', this.getPlayerDataToSend(userId));
         const playerDataToSend = playerData || this.getPlayerDataToSend(userId);
         socket.emit("playerDataToUser", userId, playerDataToSend);
     }
@@ -74,7 +74,7 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
 
     socketListenForGetGameStateRequest() {
         socket.on("getGameData", (userId: string) => {
-            console.log("player asking for game data");
+            // console.log("player asking for game data");
             this.sendGameData(userId);
         });
     }

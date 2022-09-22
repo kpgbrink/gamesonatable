@@ -50,7 +50,6 @@ export class Shuffling<
         this.hostGame.cards.update(time, delta);
         // once all cards are done moving, start the next round
         if (this.hostGame.cards.cardContainers.every(cardContainer => cardContainer.moveOnDuration === null)) {
-            console.log('all cards are done START SHUFFLING');
             this.hostGame.shufflingAmount.value--;
             if (this.hostGame.shufflingAmount.value > 0) {
                 this.hostGame.changeState(new Shuffling(this.hostGame));
