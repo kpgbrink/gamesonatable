@@ -64,7 +64,6 @@ export abstract class PlayerCardHand
     }
 
     override onPlayerDataReceived(playerData: Partial<PlayerCardHandDataType>, gameData: Partial<CardGameDataType> | null): void {
-        console.log('player data to user');
         if (!playerData) return;
         if (playerData === undefined) return;
 
@@ -147,7 +146,6 @@ export abstract class PlayerCardHand
     updateCardsInHand(playerData: Partial<PlayerCardHandDataType>) {
         if (playerData.cardIds === undefined) return;
         const cardIds = playerData.cardIds;
-        console.log('cardIds', cardIds);
         const myUserId = persistentData.myUserId;
         // get all cards that need to be put in the hand
         const cardsInHand = this.cardsInHand();
@@ -176,7 +174,6 @@ export abstract class PlayerCardHand
         if (playerData.pickUpFaceDownCardIds === undefined) return;
         // Check if pickUpTo is a number
         if (typeof playerData.pickUpTo !== 'number') return;
-        console.log('updatePickUpFaceDownCards', playerData.pickUpFaceDownCardIds);
         if (this.cardsInHand().length < playerData.pickUpTo) {
             this.setCardsToPickUp(playerData.pickUpFaceDownCardIds, false, 0);
         }
@@ -186,7 +183,6 @@ export abstract class PlayerCardHand
         if (playerData.pickUpFaceUpCardIds === undefined) return;
         // Check if pickUpTo is a number
         if (typeof playerData.pickUpTo !== 'number') return;
-        console.log('updatePickUpFaceUpCards', playerData.pickUpFaceUpCardIds);
         if (this.cardsInHand().length < playerData.pickUpTo) {
             this.setCardsToPickUp(playerData.pickUpFaceUpCardIds, true, 1000);
         }
@@ -385,10 +381,14 @@ export abstract class PlayerCardHand
         if (!draggedCard.canTakeFromTable) return;
         if (draggedCard.beforeDraggedTransform === null) return;
         if (draggedCard.y < draggedCard.beforeDraggedTransform.y) return;
+        console.log('move card to hand');
         draggedCard.setFaceUp(this.showCardsInHand);
         draggedCard.userHandId = persistentData.myUserId;
         draggedCard.canTakeFromTable = false;
         draggedCard.timeGivenToUser = Date.now();
+        draggedCard.timeInHand = Date.now();
+        console.log('current time', draggedCard.timeGivenToUser);
+        console.log('time in hand aaaaaaaaaaaaaaaaaaaaaa:', draggedCard.timeInHand, Date.now() - draggedCard.timeInHand);
         this.setAllowedPickUpCardAmount(this.allowedPickUpCardAmount - 1);
         this.sendData();
     }
@@ -418,6 +418,10 @@ export abstract class PlayerCardHand
         if (card.cardBackOnTable) return;
         if (!card.userHandId) return;
         if (this.allowedDropCardAmount <= 0) return;
+        // check if the card was not just put in hand
+        if (card.timeInHand && Date.now() - card.timeInHand < 100) return;
+        console.log('time in hand dddddddddddddddddddddddd:', card.timeInHand, Date.now() - card.timeInHand);
+
         // tell host to move the card to the table
         this.allowedDropCardAmount -= 1;
         this.putCardBackOnTable(card);
@@ -427,7 +431,6 @@ export abstract class PlayerCardHand
         card.removeFromHand();
         card.canTakeFromTable = false;
         card.cardBackOnTable = true;
-        console.log('set card back on table', card);
         this.sendData();
     }
 

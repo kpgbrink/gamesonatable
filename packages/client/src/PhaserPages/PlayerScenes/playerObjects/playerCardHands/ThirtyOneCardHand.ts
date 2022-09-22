@@ -1,6 +1,5 @@
 import { ThirtyOneCardGameData, ThirtyOnePlayerCardHandData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
 import socket from "../../../../SocketConnection";
-import CardContainer from "../../../objects/items/CardContainer";
 import MenuButton from "../../../objects/MenuButton";
 import { persistentData } from "../../../objects/PersistantData";
 import { getScreenDimensions } from "../../../objects/Tools";
@@ -84,23 +83,5 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
         // set 1 card to be able to put down.
         if (this.gameData.knockPlayerId === persistentData.myUserId) return; // prevent picking up if you knocked.
         this.updateAllowedDropCardAmount(this.playerData);
-    }
-
-    checkIfMoveCardToTable(card: CardContainer) {
-        if (card.beforeDraggedTransform === null) return;
-        if (card.y > card.beforeDraggedTransform?.y) return;
-        if (card.cardBackOnTable) return;
-        if (!card.userHandId) return;
-        if (this.allowedDropCardAmount <= 0) return;
-        // tell host to move the card to the table
-        this.allowedDropCardAmount -= 1;
-        this.putCardBackOnTable(card);
-        // check if you have 31 now and there if there is no tonk player then you do 31 and round ends.
-        const cardsInHand = this.cardsInHand();
-        if (cardsInHand.length !== 3) {
-            throw new Error('cards in hand is not 3');
-
-        }
-        socket.emit('moveCardToTable', card.id);
     }
 }
