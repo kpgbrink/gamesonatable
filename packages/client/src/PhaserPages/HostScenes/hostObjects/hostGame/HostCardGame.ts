@@ -1,7 +1,7 @@
 import { CardGameData, PlayerCardHandData } from "api/src/data/datas/CardData";
 import { Cards } from "../../../objects/Cards";
 import CardContainer from "../../../objects/items/CardContainer";
-import GenericItemContainer from "../../../objects/items/GenericItemContainer";
+import PlayerTurnIndicator from "../../../objects/items/PlayerTurnIndicator";
 import { checkTransformsAlmostEqual, getScreenCenter, loadIfImageNotLoaded, Transform, transformFromObject, transformRelativeToObject } from "../../../objects/Tools";
 import { CardGameUserAvatarContainer } from "../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
 import { ValueWithDefault } from "../../../objects/ValueWithDefault";
@@ -27,7 +27,7 @@ export abstract class HostCardGame<
 
     minDistanceBetweenCards: ValueWithDefault<number> = new ValueWithDefault(200);
 
-    playerTurnIndicator: GenericItemContainer | null = null;
+    playerTurnIndicator: PlayerTurnIndicator | null = null;
 
     constructor(scene: Phaser.Scene) {
         super(scene);
@@ -51,7 +51,7 @@ export abstract class HostCardGame<
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, screenCenter.y);
 
-        this.playerTurnIndicator = new GenericItemContainer(this.scene, screenCenter.x, screenCenter.y, "playerTurnIndicator");
+        this.playerTurnIndicator = new PlayerTurnIndicator(this.scene, screenCenter.x, screenCenter.y, "playerTurnIndicator");
         this.playerTurnIndicator.scale = 0.01;
         this.scene.add.existing(this.playerTurnIndicator);
 
