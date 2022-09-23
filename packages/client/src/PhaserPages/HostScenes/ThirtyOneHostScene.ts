@@ -1,4 +1,3 @@
-import { Cards } from "../objects/Cards";
 import GameTable from "../objects/GameTable";
 import { getScreenCenter, loadIfImageNotLoaded } from "../objects/Tools";
 import { ThirtyOneGame } from "./hostObjects/hostGame/ThirtyOneGame";
@@ -14,7 +13,6 @@ export default class ThirtyOneHostScene extends HostScene {
 
     preload() {
         loadIfImageNotLoaded(this, 'table', 'assets/images/table.png');
-        Cards.preload(this);
         GameTable.preload(this);
         this.thirtyOneGame?.preload();
     }

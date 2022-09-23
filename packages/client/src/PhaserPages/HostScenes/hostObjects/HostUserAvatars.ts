@@ -81,7 +81,6 @@ export abstract class HostUserAvatars<UserAvatarContainerType extends UserAvatar
             usersInGame.push(currentUser);
         }
         const users = usersInGame.sort((a, b) => a.rotation - b.rotation);
-        console.log('sorted users', users);
         // find the next user from the current dealer`
         const currentUserIndex = users.findIndex(u => u.user.id === userId);
         if (currentUserIndex === -1) {

@@ -1,13 +1,13 @@
 import { ThirtyOnePlayerCardHandData } from "api/src/data/datas/cardHandDatas/ThirtyOneCardHandData";
-import PokerChip from "../../items/PokerChip";
+import GenericItemContainer from "../../items/GenericItemContainer";
 import { DegreesToRadians, getScreenCenter, randomizeTransform, transformFromObject, TransformRandomizer } from "../../Tools";
 import { CardGameUserAvatarContainer } from "../CardGameUserAvatarContainer";
 
 export class ThirtyOneUserAvatarContainer extends CardGameUserAvatarContainer<ThirtyOnePlayerCardHandData> {
     lives: number = 3;
     pokerChipsDistance: number = 160;
-    bluePokerChips: PokerChip[] = [];
-    removingPokerChips: PokerChip[] = [];
+    bluePokerChips: GenericItemContainer[] = [];
+    removingPokerChips: GenericItemContainer[] = [];
     roundScore: number = 0;
 
     playerCardHandState: ThirtyOnePlayerCardHandData = new ThirtyOnePlayerCardHandData();
@@ -24,7 +24,7 @@ export class ThirtyOneUserAvatarContainer extends CardGameUserAvatarContainer<Th
         const screenCenter = getScreenCenter(this.scene);
         // put as many poker chips as lives in front of the user avatar
         for (let i = 0; i < this.lives; i++) {
-            const pokerChip = new PokerChip(this.scene, screenCenter.x, screenCenter.y, 'bluePokerChip');
+            const pokerChip = new GenericItemContainer(this.scene, screenCenter.x, screenCenter.y, 'bluePokerChip');
             this.scene.add.existing(pokerChip);
             const x = i * this.pokerChipsDistance - this.pokerChipsDistance * (this.lives - 1) / 2;
 
@@ -51,7 +51,7 @@ export class ThirtyOneUserAvatarContainer extends CardGameUserAvatarContainer<Th
         }
     }
 
-    movePokerChipOffTableCooly(pokerChip: PokerChip) {
+    movePokerChipOffTableCooly(pokerChip: GenericItemContainer) {
         const transformAboveHead = transformFromObject(this, { x: 0, y: -300, rotation: 0, scale: .8 });
         const transformHitPlayer = transformFromObject(this, { x: 0, y: 50, rotation: 0, scale: .2 });
         const transformOffTable = transformFromObject(this, { x: 0, y: 10000, rotation: 0, scale: .4 });

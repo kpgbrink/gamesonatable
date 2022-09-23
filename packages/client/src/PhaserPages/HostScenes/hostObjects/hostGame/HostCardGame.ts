@@ -1,7 +1,8 @@
 import { CardGameData, PlayerCardHandData } from "api/src/data/datas/CardData";
 import { Cards } from "../../../objects/Cards";
 import CardContainer from "../../../objects/items/CardContainer";
-import { checkTransformsAlmostEqual, getScreenCenter, Transform, transformFromObject, transformRelativeToObject } from "../../../objects/Tools";
+import GenericItemContainer from "../../../objects/items/GenericItemContainer";
+import { checkTransformsAlmostEqual, getScreenCenter, loadIfImageNotLoaded, Transform, transformFromObject, transformRelativeToObject } from "../../../objects/Tools";
 import { CardGameUserAvatarContainer } from "../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
 import { ValueWithDefault } from "../../../objects/ValueWithDefault";
 import { HostGame } from "../HostGame";
@@ -26,6 +27,8 @@ export abstract class HostCardGame<
 
     minDistanceBetweenCards: ValueWithDefault<number> = new ValueWithDefault(200);
 
+    playerTurnIndicator: GenericItemContainer | null = null;
+
     constructor(scene: Phaser.Scene) {
         super(scene);
         this.scene = scene;
@@ -34,6 +37,10 @@ export abstract class HostCardGame<
 
     preload() {
         super.preload();
+        Cards.preload(this.scene);
+
+        // load player turn image
+        loadIfImageNotLoaded(this.scene, "playerTurnIndicator", "assets/playerTurnIndicator.png");
     }
 
     abstract createHostUserAvatarsAroundTableGame(): void;
@@ -43,7 +50,32 @@ export abstract class HostCardGame<
         this.createHostUserAvatarsAroundTableGame();
         const screenCenter = getScreenCenter(this.scene);
         this.cards.create(screenCenter.x, screenCenter.y);
+
+        this.playerTurnIndicator = new GenericItemContainer(this.scene, screenCenter.x, screenCenter.y, "playerTurnIndicator");
+        this.playerTurnIndicator.scale = 0.01;
+        this.scene.add.existing(this.playerTurnIndicator);
+
         this.changeState(new Shuffling(this));
+    }
+
+    movePlayerTurnIndicatorToPlayer() {
+        console.log('game player turn id', this.gameData.playerTurnId);
+        // check if we have a user that is their turn
+        if (!this.gameData.playerTurnId) return;
+        const playerTurn = this.hostUserAvatars?.getUserById(this.gameData.playerTurnId);
+        console.log('player turn', playerTurn);
+        if (!playerTurn) return;
+        this.movePlayerTurnIndicatorToUserAvatar(playerTurn);
+    }
+
+    movePlayerTurnIndicatorToUserAvatar(userAvatar: CardGameUserAvatarContainer<PlayerDataType>) {
+        console.log('this.playerTurnIndicator', this.playerTurnIndicator);
+        if (!this.playerTurnIndicator) return;
+        const positionRotation = { x: userAvatar.x, y: userAvatar.y, rotation: userAvatar.scale, scale: userAvatar.scale * userAvatar.imageMultiplier };
+        console.log('new position rotation', positionRotation);
+        this.playerTurnIndicator.startMovingOverTimeTo(positionRotation, .4, () => {
+
+        });
     }
 
     // ------------------------------------ Data ------------------------------------
@@ -173,6 +205,7 @@ export abstract class HostCardGame<
     update(time: number, delta: number) {
         super.update(time, delta);
         this.startMovingCardInHandToPrefferedPosition();
+        this.playerTurnIndicator?.update(time, delta);
     }
 
     // make this able to return the higher type
@@ -235,7 +268,7 @@ export abstract class HostCardGame<
                 return aR.x - bR.x;
             }).forEach((card, index) => {
                 if (card.inUserHand) {
-                    card.depth = index;
+                    card.depth = index + 101;
                 }
             });
         });
