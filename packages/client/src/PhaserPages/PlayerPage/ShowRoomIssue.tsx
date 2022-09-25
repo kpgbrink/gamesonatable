@@ -33,7 +33,7 @@ export default function ShowRoomIssue() {
     return () => {
       socket.off("room issue", listener);
     };
-  }, []);
+  }, [setOpen, setDialogTitle, setDialogContent, roomId, userId]);
 
   return (
     <>
