@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
 import { persistentData } from "./objects/PersistantData";
 import PhaserWrapper from "./PhaserWrapper";
-import ShowRoomNotExist from "./PlayerPage/ShowRoomNotExist";
+import ShowRoomIssue from "./PlayerPage/ShowRoomIssue";
 import ShowUserReplaceOptions from "./PlayerPage/ShowUserReplaceOptions";
 import { getStoredIds, storeIds } from "./PlayerPage/StoredBrowserIds";
 import Omaha from "./PlayerScenes/Omaha";
@@ -86,7 +86,7 @@ export default function PlayerPage() {
           gameName="Client"
         />
       )}
-      <ShowRoomNotExist />
+      {!roomExists && <ShowRoomIssue />}
       <ShowUserReplaceOptions />
     </>
   );

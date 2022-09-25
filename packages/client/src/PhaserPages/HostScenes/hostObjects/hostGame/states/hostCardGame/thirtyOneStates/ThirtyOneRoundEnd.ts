@@ -71,21 +71,21 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
                 // make every other user lose 1 life
                 this.hostGame.hostUserAvatars?.userAvatarContainers.forEach(userAvatar => {
                     if (userAvatar.user.id !== this.hostGame.gameData.thirtyOnePlayerId) {
-                        userAvatar.lives += 1;
+                        userAvatar.lives -= 1;
                     }
                 });
                 return;
             }
             if (lowestScoreUsers.length === 1) {
                 const lowestScoreUser = lowestScoreUsers[0];
-                lowestScoreUser.lives += 1;
+                lowestScoreUser.lives -= 1;
                 if (lowestScoreUser.user.id === this.hostGame.gameData.knockPlayerId) {
-                    lowestScoreUser.lives += 1;
+                    lowestScoreUser.lives -= 1;
                 }
                 return;
             }
             lowestScoreUsers.forEach(lowestScoreUser => {
-                lowestScoreUser.lives += 1;
+                lowestScoreUser.lives -= 1;
                 if (lowestScoreUser.user.id === this.hostGame.gameData.knockPlayerId) {
                     lowestScoreUser.lives += 1;
                 }

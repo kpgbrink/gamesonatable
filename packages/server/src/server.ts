@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
         socket.join(user.room);
     });
 
-    socket.on('join room', (room: string, userId: string, storedIds: StoredBrowserIds) => {
+    socket.on('join room', (room: string, userId: string | undefined, storedIds: StoredBrowserIds) => {
         if (room === null) return;
         console.log('---------------');
         const storedUserId = storedIds.sessionStorage.userId ?? storedIds.localStorage.userId;
@@ -81,7 +81,17 @@ io.on('connection', (socket) => {
         console.log('roomData', roomData);
         if (!roomData) {
             console.log('emit room does not exist');
-            socket.emit('room does not exist', room);
+            socket.emit(
+                'room issue',
+                'Room does not exist',
+                'The room you are trying to join does not exist. Maybe try again with a different link from the host.'
+            );
+            return;
+        }
+        // If there is no Host user in the room, then send the user that there is no host
+        if (!roomData.users.find(u => u.isHost)) {
+            console.log('emit no host');
+            socket.emit('room issue', 'No Host', 'The room you are trying to join does not have a host.');
             return;
         }
         const users = roomData.users;
