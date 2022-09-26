@@ -145,7 +145,7 @@ export default function PlayerJoin() {
                     margin: ".2%",
                     borderRadius: "5px",
                     width: "47%",
-                    height: "15%",
+                    lineHeight: "auto",
                   }}
                 >
                   {/* Add user avatar image here */}
@@ -154,9 +154,8 @@ export default function PlayerJoin() {
                   )}
                   <Textfit
                     style={{
-                      paddingLeft: "5%",
+                      paddingLeft: "9%",
                       width: "100%",
-                      height: "100%",
                     }}
                   >
                     {user.name}
