@@ -142,28 +142,14 @@ export default function PlayerJoin() {
                   key={index}
                   style={{
                     backgroundColor: "white",
-                    margin: "1%",
+                    margin: ".2%",
                     borderRadius: "5px",
                     width: "47%",
-                    height: "9%",
+                    height: "15%",
                   }}
                 >
                   {/* Add user avatar image here */}
                   {user.userAvatar && (
-                    // <img
-                    //   src={`${process.env.PUBLIC_URL}/assets/player/base/${
-                    //     avatarImages.base[user.userAvatar.base]
-                    //   }`}
-                    //   alt="user avatar"
-                    //   style={{
-                    //     top: "-5%",
-                    //     left: "-4%",
-                    //     position: "absolute",
-                    //     height: "100%",
-                    //     width: "auto",
-                    //     borderRadius: "5px",
-                    //   }}
-                    // />
                     <UserAvatarImages userAvatar={user.userAvatar} />
                   )}
                   <Textfit
@@ -223,10 +209,10 @@ function UserAvatarImage({
       src={`${process.env.PUBLIC_URL}/assets/player/${type}/${avatarImageName}`}
       alt={`user avatar ${type}`}
       style={{
-        top: "-5%",
-        left: "-4%",
+        top: "-6%",
+        left: "-5%",
         position: "absolute",
-        height: "100%",
+        height: "125%",
         width: "auto",
         borderRadius: "5px",
       }}
