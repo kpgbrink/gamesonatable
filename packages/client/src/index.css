@@ -9,31 +9,36 @@ body,
 #root,
 .App,
 .App>div {
-    min-height: 100vh;
-    background-color: antiquewhite;
-}
-
-.App>div {
-    display: flex;
-    flex-direction: column;
-}
-
-body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    background-color: #010101;
 }
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-.page {
-    padding: max(4vw, 4px);
+#game {
+    height: 100%;
+    background-color: #010101;
+}
+
+#homePageContainer {
     height: 100%;
 }
 
-#game {
-    background-color: #010101;
+#homePage {
+    position: relative;
+    top: 50%;
+    /* // shifts or translate the center point (X, Y) by (X - 50% of outerWidth, Y - 50% of outerHeight) */
+    transform: translate(0, -50%);
+    background-color: antiquewhite;
+    aspect-ratio: 16/9;
+    max-width: 100vw;
+    max-height: 100vh;
+    /*center myself*/
+    margin: auto;
+}
+
+#creatingRoom {
+    color: #ffffff;
 }

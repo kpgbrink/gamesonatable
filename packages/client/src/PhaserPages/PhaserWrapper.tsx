@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 type PhaserWrapperProps = {
   config: Phaser.Types.Core.GameConfig;
@@ -27,5 +27,5 @@ export default function PhaserWrapper({ config }: PhaserWrapperProps) {
     };
   }, [config, domId]);
 
-  return <div id={domId} style={{ maxHeight: 100 }}></div>;
+  return <div id={domId}></div>;
 }

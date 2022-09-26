@@ -3,9 +3,6 @@ import { NewRoomId } from "api";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../AppContext";
-import Footer from "../Footer";
-import Navbar from "../Navbar";
-import "./HomePage.css";
 
 export default function HomePageCreatingRoomId() {
   const navigate = useNavigate();
@@ -33,11 +30,12 @@ export default function HomePageCreatingRoomId() {
 
   return (
     <div>
-      <Navbar />
-      <div className="page">
+      <div>
         <LinearProgress />
       </div>
-      <Footer />
+      <div>
+        <h1 id="creatingRoom">Creating Room...</h1>
+      </div>
     </div>
   );
 }

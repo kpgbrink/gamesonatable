@@ -39,6 +39,8 @@ export default function HostPage() {
   const { roomId, game } = useParams();
   const navigate = useNavigate();
 
+  document.documentElement.style.cursor = "none";
+
   useEffect(() => {
     socket.emit("host room", roomId);
     // Get Game Data for the game

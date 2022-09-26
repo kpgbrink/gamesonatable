@@ -1,18 +1,16 @@
 import { useContext } from "react";
 import { AppContext } from "../../AppContext";
-import Footer from "../Footer";
-import Navbar from "../Navbar";
-import "./HomePage.css";
 import GameLink from "./HomePage/GameLink";
 import PlayerJoin from "./HomePage/PlayerJoin";
 
 export default function HomePage() {
   const { roomCreated } = useContext(AppContext);
 
+  document.documentElement.style.cursor = "auto";
+
   return (
-    <div>
-      <Navbar />
-      <div className="page">
+    <div id="homePageContainer">
+      <div id="homePage">
         <PlayerJoin />
         <ul className="games">
           <li>
@@ -38,7 +36,6 @@ export default function HomePage() {
           </li>
         </ul>
       </div>
-      <Footer />
     </div>
   );
 }
