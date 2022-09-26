@@ -2,8 +2,8 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { Game, RoomData } from "api";
-import QRCode from "qrcode.react";
 import { useContext, useEffect } from "react";
+import QRCode from "react-qr-code";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../../../AppContext";
 import { persistentData } from "../../../PhaserPages/objects/PersistantData";
@@ -49,29 +49,41 @@ export default function PlayerJoin() {
   const joinURL = `${window.location.origin}/room/${roomCreated}/player`;
 
   return (
-    <div className="playerJoin">
-      <div>
-        <div>
-          <a href={joinURL} target="_blank" rel="noreferrer">
-            {joinURL}
-          </a>
-          <div>
-            <QRCode value={joinURL} />
-            <div className="playerList">
-              <List>
-                {userList
-                  .filter((user) => !user.isHost)
-                  .map((user, index) => {
-                    return (
-                      <ListItem key={index}>
-                        <ListItemText>{user.name}</ListItemText>
-                      </ListItem>
-                    );
-                  })}
-              </List>
-            </div>
-          </div>
-        </div>
+    <div id="playerJoin">
+      <a href={joinURL} target="_blank" rel="noreferrer">
+        {joinURL}
+      </a>
+      <div
+        style={{
+          position: "absolute",
+          top: "20%",
+          left: "2%",
+          height: "65%",
+        }}
+      >
+        <QRCode
+          // size={256}
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "grey",
+          }}
+          value={joinURL}
+          viewBox={`0 0 256 256`}
+        />
+      </div>
+      <div className="playerList">
+        <List>
+          {userList
+            .filter((user) => !user.isHost)
+            .map((user, index) => {
+              return (
+                <ListItem key={index}>
+                  <ListItemText>{user.name}</ListItemText>
+                </ListItem>
+              );
+            })}
+        </List>
       </div>
     </div>
   );
