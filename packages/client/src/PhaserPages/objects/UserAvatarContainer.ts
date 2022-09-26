@@ -5,7 +5,7 @@ import { avatarImages } from "./avatarImages.generated";
 import { persistentData } from "./PersistantData";
 import { loadIfImageNotLoadedAndUserAvatarHasIt, randomIndex } from "./Tools";
 
-const playerFolder = 'assets/player/';
+export const playerFolder = 'assets/player/';
 
 // Random change of returning a -1 
 const randomNegativeOne = (negative1Chance: number) => {
