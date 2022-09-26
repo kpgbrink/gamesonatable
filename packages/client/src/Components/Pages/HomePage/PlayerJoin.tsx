@@ -50,28 +50,40 @@ export default function PlayerJoin() {
 
   return (
     <div id="playerJoin">
-      <a href={joinURL} target="_blank" rel="noreferrer">
+      {/* <a href={joinURL} target="_blank" rel="noreferrer">
         {joinURL}
-      </a>
-      <div
+      </a> */}
+      <h1
         style={{
           position: "absolute",
-          top: "20%",
-          left: "2%",
-          height: "65%",
+          top: "4%",
+          width: "100%",
+          textAlign: "center",
         }}
       >
-        <QRCode
-          // size={256}
+        Phone Party
+      </h1>
+      <a href={joinURL} target="_blank" rel="noreferrer">
+        <div
           style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: "grey",
+            position: "absolute",
+            top: "20%",
+            left: "2%",
+            height: "65%",
           }}
-          value={joinURL}
-          viewBox={`0 0 256 256`}
-        />
-      </div>
+        >
+          <QRCode
+            // size={256}
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: "grey",
+            }}
+            value={joinURL}
+            viewBox={`0 0 256 256`}
+          />
+        </div>
+      </a>
       <div className="playerList">
         <List>
           {userList
