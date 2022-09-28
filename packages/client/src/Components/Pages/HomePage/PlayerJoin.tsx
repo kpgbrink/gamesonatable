@@ -51,7 +51,7 @@ export default function PlayerJoin() {
 
   const userListNoHosts = userList.filter((user) => !user.isHost);
   // add dummy users for testing
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 0; i++) {
     userListNoHosts.push({
       id: "dummy" + i,
       socketId: "dummy" + i,
@@ -166,6 +166,21 @@ export default function PlayerJoin() {
           </List>
         )}
       </div>
+      {userListNoHosts.length > 0 && (
+        <Textfit
+          style={{
+            position: "absolute",
+            top: "87%",
+            width: "100%",
+            height: "9%",
+            textAlign: "center",
+            color: "green",
+            fontWeight: "bold",
+          }}
+        >
+          Press Select Game to start!
+        </Textfit>
+      )}
     </div>
   );
 }
