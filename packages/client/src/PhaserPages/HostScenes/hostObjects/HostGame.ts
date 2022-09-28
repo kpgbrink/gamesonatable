@@ -18,12 +18,7 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     }
 
     create() {
-        this.listenForGameData();
-        this.listenForPlayerData();
-        this.listenForData();
-        this.socketListenForGetUserStateRequest();
-        this.socketListenForGetGameStateRequest();
-        this.socketListenForGetDataRequest();
+        super.create();
     }
 
     abstract createGameState(): HostGameState<PlayerDataType, GameDataType>;
