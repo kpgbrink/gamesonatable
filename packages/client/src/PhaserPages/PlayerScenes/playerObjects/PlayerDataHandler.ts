@@ -1,5 +1,5 @@
 import { GameData, PlayerData } from "api/src/data/Data";
-import { PlayerDataHandlerBase } from "./PlayerDataHandlerBase1";
+import { PlayerDataHandlerBase } from "./PlayerDataHandlerBase";
 
 export abstract class
     PlayerDataHandler
