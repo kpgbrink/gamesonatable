@@ -168,6 +168,7 @@ export default function PlayerJoin() {
       </div>
       {userListNoHosts.length > 0 && (
         <Textfit
+          id="playerSelectGameText"
           style={{
             position: "absolute",
             top: "87%",
@@ -184,6 +185,9 @@ export default function PlayerJoin() {
     </div>
   );
 }
+
+// Avatar Images
+// -----------------------------------
 
 function UserAvatarImages({ userAvatar }: { userAvatar: UserAvatar }) {
   return (
