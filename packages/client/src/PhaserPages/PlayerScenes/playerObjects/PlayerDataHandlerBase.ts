@@ -12,6 +12,12 @@ export abstract class
         this.listenForData();
     }
 
+    destroy() {
+        socket.off("playerDataToUser");
+        socket.off("gameDataToUser");
+        socket.off("dataToUser");
+    }
+
     // PlayerData --------------------
     abstract getPlayerDataToSend(): Partial<PlayerDataType> | undefined;
 

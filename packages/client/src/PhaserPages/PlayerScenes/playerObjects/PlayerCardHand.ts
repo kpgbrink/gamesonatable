@@ -60,7 +60,7 @@ export abstract class PlayerCardHand
         const userId = persistentData.myUserId;
         playerData.cardIds = this.cards.getPlayerCardsIds(userId)
 
-        return this.playerData;
+        return playerData;
     }
 
     override onPlayerDataReceived(playerData: Partial<PlayerCardHandDataType>, gameData: Partial<CardGameDataType> | null): void {

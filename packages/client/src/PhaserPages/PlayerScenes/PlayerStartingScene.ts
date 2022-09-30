@@ -3,12 +3,15 @@ import socket from "../../SocketConnection";
 import { persistentData } from "../objects/PersistantData";
 import { findMyUser, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../objects/Tools";
 import { generateRandomUserAvatar, loadUserAvatarSprites } from "../objects/UserAvatarContainer";
+import PlayerMenu from "./playerObjects/PlayerMenu";
 import PlayerScene from "./playerObjects/PlayerScene";
 
 export default class PlayerStartingScene extends PlayerScene {
   returnKey: Phaser.Input.Keyboard.Key | null;
   rotateDeviceText: Phaser.GameObjects.Text | null;
   enterFullScreen: Phaser.GameObjects.Text | null;
+
+  playerMenu: PlayerMenu | null;
 
 
   constructor() {
@@ -17,6 +20,7 @@ export default class PlayerStartingScene extends PlayerScene {
     this.returnKey = null;
     this.rotateDeviceText = null;
     this.enterFullScreen = null;
+    this.playerMenu = null;
   }
 
   preload() {
@@ -34,6 +38,8 @@ export default class PlayerStartingScene extends PlayerScene {
     this.setUpNameDisplayAndInput();
     this.setUpRotateDeviceText();
     this.setUpFullScreenDeviceText();
+    this.playerMenu = new PlayerMenu(this);
+    this.playerMenu.create();
   }
 
   setUpNameDisplayAndInput() {
@@ -131,7 +137,7 @@ export default class PlayerStartingScene extends PlayerScene {
     this.userAvatarContainer.setUserName(generatedName);
   }
 
-  update() {
-
+  update(time: number, delta: number) {
+    this.playerMenu?.update(time, delta);
   }
 }
