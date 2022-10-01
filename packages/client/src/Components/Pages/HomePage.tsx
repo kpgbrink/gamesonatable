@@ -2,13 +2,16 @@ import {
   MainMenuGameData,
   PlayerMainMenuData,
 } from "api/src/data/datas/MainMenuData";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../AppContext";
 import { HostDataHandler } from "../../PhaserPages/HostScenes/hostObjects/HostDataHandler";
+import PlayerChooseGame from "./HomePage/PlayerChooseGame";
 import PlayerJoin from "./HomePage/PlayerJoin";
 
 export default function HomePage() {
   // const { roomCreated } = useContext(AppContext);
   document.documentElement.style.cursor = "auto";
+  const { userList } = useContext(AppContext);
 
   // add game data to state
   const [mainMenuData, setMainMenuData] = useState<MainMenuGameData>(
@@ -28,11 +31,21 @@ export default function HomePage() {
     };
   });
 
+  // If Main menu position is 1 and there are no players, then switch back to 0
+  useEffect(() => {
+    const userListNoHosts = userList.filter((user) => !user.isHost);
+    if (mainMenuData.mainMenuPosition === 1 && userListNoHosts.length === 0) {
+      console.log("set back to 0!!");
+      setMainMenuData({ ...mainMenuData, mainMenuPosition: 0 });
+    }
+  }, [mainMenuData, userList]);
+
+  console.log("main menu position", mainMenuData.mainMenuPosition);
   return (
     <div id="homePageContainer">
       <div id="homePage">
         {mainMenuData.mainMenuPosition === 0 && <PlayerJoin />}
-        {mainMenuData.mainMenuPosition === 1 && <div> Choose the game</div>}
+        {mainMenuData.mainMenuPosition === 1 && <PlayerChooseGame />}
 
         {/* <ul className="games">
           <li>
