@@ -55,7 +55,7 @@ export default function PlayerChooseGame() {
   const userListNoHosts = userList.filter((user) => !user.isHost);
   console.log("player choose game user list", userListNoHosts);
   // add dummy users for testing
-  for (let i = 0; i < 0; i++) {
+  for (let i = 0; i < 4; i++) {
     userListNoHosts.push({
       id: "dummy" + i,
       socketId: "dummy" + i,
@@ -121,7 +121,18 @@ export default function PlayerChooseGame() {
           borderRadius: "10px",
         }}
       >
-        {userListNoHosts.length > 0 && (
+        <Textfit
+          style={{
+            position: "absolute",
+            top: "-4%",
+            width: "100%",
+            height: "30%",
+            textAlign: "center",
+          }}
+        >
+          Player Count: {userListNoHosts.length}
+        </Textfit>
+        {userListNoHosts.length > 0 && userListNoHosts.length < 21 && (
           <List
             style={{
               display: "flex",
