@@ -82,17 +82,10 @@ class HostMainMenuDataHandler extends HostDataHandler<
   create() {
     super.create();
     this.sendGameData();
-    // every 2 seconds send the game data
-    this.interval = setInterval(() => {
-      this.sendGameData();
-    }, 2000);
   }
 
   destroy() {
     super.destroy();
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
   }
 
   override getPlayerDataToSend(
