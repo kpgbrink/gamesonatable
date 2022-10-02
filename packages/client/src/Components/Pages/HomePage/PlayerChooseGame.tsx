@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { Textfit } from "react-textfit";
 import { AppContext } from "../../../AppContext";
 import { avatarImages } from "../../../PhaserPages/objects/avatarImages.generated";
+import { gamesList } from "../../../PhaserPages/objects/gamesList";
 import { persistentData } from "../../../PhaserPages/objects/PersistantData";
 
 // add setMainMenuData to props
@@ -78,15 +79,14 @@ export default function PlayerChooseGame() {
       <Textfit
         style={{
           position: "absolute",
-          top: "4%",
+          top: "2%",
           width: "100%",
-          height: "15%",
+          height: "10%",
           textAlign: "center",
         }}
       >
         Phone Party
       </Textfit>
-
       <a href={joinURL} target="_blank" rel="noreferrer">
         <div
           style={{
@@ -108,6 +108,47 @@ export default function PlayerChooseGame() {
           />
         </div>
       </a>
+
+      <List
+        style={{
+          position: "absolute",
+          top: "12%",
+          left: "50%",
+          width: "50%",
+          height: "60%",
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          overflow: "auto",
+          justifyContent: "around",
+          backgroundColor: "grey",
+        }}
+      >
+        {gamesList.map((game) => (
+          <ListItem
+            key={game.name}
+            style={{
+              width: "23%",
+              height: "50",
+              maxHeight: "50%",
+              backgroundColor: "white",
+              borderRadius: "10px",
+              margin: "1%",
+            }}
+          >
+            <Textfit
+              style={{
+                width: "100%",
+                height: "100%",
+                textAlign: "center",
+                backgroundColor: "white",
+              }}
+            >
+              {game.displayName}
+            </Textfit>
+          </ListItem>
+        ))}
+      </List>
       <div
         id="playerList"
         style={{
@@ -132,6 +173,7 @@ export default function PlayerChooseGame() {
         >
           Player Count: {userListNoHosts.length}
         </Textfit>
+
         {userListNoHosts.length > 0 && userListNoHosts.length < 21 && (
           <List
             style={{
