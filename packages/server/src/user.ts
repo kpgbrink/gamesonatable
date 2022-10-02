@@ -17,7 +17,8 @@ export const addUserToRoom = (upsertingUser: User) => {
             })();
             const newName = nameByRace(allRacesList[Math.floor(Math.random() * allRacesList.length)], { gender: gender, allowMultipleNames: false });
             if (typeof newName !== 'string') throw newName;
-            return newName
+            // replace spaces with underscores
+            return newName.replace(/ /g, '_');
         })();
     };
 

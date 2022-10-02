@@ -12,7 +12,7 @@ export default class PlayerStartingScene extends PlayerScene {
   enterFullScreen: Phaser.GameObjects.Text | null;
 
   playerMenu: PlayerMenu | null;
-
+  nameFormElement: Phaser.GameObjects.DOMElement | null;
 
   constructor() {
     super({ key: 'PlayerStartingScene' });
@@ -21,6 +21,7 @@ export default class PlayerStartingScene extends PlayerScene {
     this.rotateDeviceText = null;
     this.enterFullScreen = null;
     this.playerMenu = null;
+    this.nameFormElement = null;
   }
 
   preload() {
@@ -44,34 +45,38 @@ export default class PlayerStartingScene extends PlayerScene {
 
   setUpNameDisplayAndInput() {
     var screenDimensions = getScreenDimensions(this);
-    var text = this.add.text(screenDimensions.width / 2, 10, 'Please enter your name', { color: 'white', fontSize: '20px ' }).setOrigin(0.5);
-    var element = this.add.dom(screenDimensions.width / 2, 150).createFromCache('nameform').setOrigin(0.5);
+    this.nameFormElement = this.add.dom(screenDimensions.width / 2, 150).createFromCache('nameform').setOrigin(0.5);
+    if (!this.nameFormElement) return;
     const nameSend = () => {
-      var inputText = element.getChildByName('nameField') as HTMLInputElement;
+      if (!this.nameFormElement) return;
+      var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
       if (inputText.value === '') return;
       //  Have they entered anything?
-      element.removeListener('click');
+      this.nameFormElement.removeListener('click');
       //  Hide the login element
-      element.setVisible(false);
+      this.nameFormElement.setVisible(false);
       //  Populate the text with whatever they typed in
-      text.setText('Welcome ' + inputText.value);
       socket.emit('set player name', inputText.value);
     };
-    element.addListener('click');
-    element.on('click', function (this: any, event: any) {
+    this.nameFormElement.addListener('click');
+    this.nameFormElement.on('click', function (this: any, event: any) {
       if (event.target.name !== 'playButton') return;
       nameSend();
     });
+
+    // move element to bottom
+    this.nameFormElement.y = screenDimensions.height - 150;
+
     this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
     this.returnKey.on('down', function (this: any) {
       nameSend();
     });
     (() => {
       const roomData = persistentData.roomData;
-      this.setUserNames(roomData, text);
+      this.setUserNames(roomData);
     })();
     socket.on('room data', (roomData: RoomData) => {
-      this.setUserNames(roomData, text);
+      this.setUserNames(roomData);
     });
   }
 
@@ -86,8 +91,8 @@ export default class PlayerStartingScene extends PlayerScene {
 
   setUpFullScreenDeviceText() {
     var screenDimensions = getScreenDimensions(this);
-    this.enterFullScreen = this.add.text(screenDimensions.width / 2, screenDimensions.height - 200, 'Press icon on top right to enter full screen',
-      { color: 'white', fontSize: '50px' }).setOrigin(0.5);
+    this.enterFullScreen = this.add.text(screenDimensions.width / 2, screenDimensions.height - 50, 'Press icon on top right to enter full screen',
+      { color: 'grey', fontSize: '50px' }).setOrigin(0.5);
     this.enterFullScreen.setVisible(false);
     this.toggleFullScreenVisible();
     this.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => {
@@ -101,8 +106,8 @@ export default class PlayerStartingScene extends PlayerScene {
 
   setUpRotateDeviceText() {
     var screenDimensions = getScreenDimensions(this);
-    this.rotateDeviceText = this.add.text(screenDimensions.width / 2, screenDimensions.height - 200, 'Please rotate your device',
-      { color: 'white', fontSize: '80px' }).setOrigin(0.5);
+    this.rotateDeviceText = this.add.text(screenDimensions.width / 2, screenDimensions.height - 50, 'Please rotate your device',
+      { color: 'grey', fontSize: '80px' }).setOrigin(0.5);
     this.toggleSuggestionsShown();
     const onWindowChange = () => {
       this.toggleSuggestionsShown();
@@ -126,13 +131,12 @@ export default class PlayerStartingScene extends PlayerScene {
     }
   }
 
-  setUserNames(roomData: RoomData | null, text: Phaser.GameObjects.Text) {
+  setUserNames(roomData: RoomData | null) {
     if (!roomData) return;
     const myUser = findMyUser(roomData);
     if (!myUser) return;
     const generatedName = myUser.name;
     if (!generatedName) return;
-    text.setText('Welcome ' + generatedName);
     if (!this.userAvatarContainer) return;
     this.userAvatarContainer.setUserName(generatedName);
   }

@@ -55,7 +55,7 @@ export default function PlayerChooseGame() {
   const userListNoHosts = userList.filter((user) => !user.isHost);
   console.log("player choose game user list", userListNoHosts);
   // add dummy users for testing
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 0; i++) {
     userListNoHosts.push({
       id: "dummy" + i,
       socketId: "dummy" + i,
@@ -146,9 +146,10 @@ export default function PlayerChooseGame() {
                   key={index}
                   style={{
                     // tranparent background
-                    // backgroundColor: "rgba(0,0,0,0)",
                     borderRadius: "5px",
                     width: "10%",
+                    height: "5%",
+                    maxHeight: "5%",
                     minWidth: 0,
                   }}
                 >
@@ -160,9 +161,11 @@ export default function PlayerChooseGame() {
                       textAlign: "center",
                       fontWeight: "bold",
                     }}
-                    mode="single"
                   >
-                    {user.name}
+                    {
+                      // remove whitespace from name
+                      user.name.replace(/\s/g, "")
+                    }
                   </Textfit>
                   {user.userAvatar && (
                     <UserAvatarImages userAvatar={user.userAvatar} />

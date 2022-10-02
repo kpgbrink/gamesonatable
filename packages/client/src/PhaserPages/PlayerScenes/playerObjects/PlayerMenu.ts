@@ -2,19 +2,21 @@ import { MainMenuGameData, PlayerMainMenuData } from "api/src/data/datas/MainMen
 import MenuButton from "../../objects/MenuButton";
 import { persistentData } from "../../objects/PersistantData";
 import { getScreenDimensions } from "../../objects/Tools";
+import PlayerStartingScene from "../PlayerStartingScene";
 import { PlayerDataHandler } from "./PlayerDataHandler";
-import PlayerScene from "./PlayerScene";
 
 
 export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, MainMenuGameData> {
     selectGameButton: MenuButton | null = null;
 
+    backButton: MenuButton | null = null;
+
     playerData: PlayerMainMenuData;
     gameData: MainMenuGameData;
-    scene: PlayerScene;
+    scene: PlayerStartingScene;
 
 
-    constructor(scene: PlayerScene) {
+    constructor(scene: PlayerStartingScene) {
         super();
         this.scene = scene;
         this.playerData = new PlayerMainMenuData();
@@ -24,6 +26,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
     create() {
         super.create();
         this.addSelectGameButton();
+        this.addBackButton();
 
         // request data from host
         this.requestData();
@@ -40,6 +43,18 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
             this.sendData();
         });
         this.scene.add.existing(this.selectGameButton);
+    }
+
+    addBackButton() {
+        this.backButton = new MenuButton(150, 100, this.scene);
+        this.backButton.setText("Back");
+        this.backButton?.setVisible(false);
+        this.backButton.on('pointerdown', () => {
+            this.gameData.mainMenuPosition = 0;
+            this.backButton?.setVisible(false);
+            this.sendData();
+        });
+        this.scene.add.existing(this.backButton);
     }
 
     override getPlayerDataToSend() {
@@ -98,9 +113,32 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         if (gameData.mainMenuPosition === null) return;
         // if the main menu position is 0, show the select game button.
         console.log('main menu position', gameData.mainMenuPosition);
-        this.selectGameButton?.setVisible(gameData.mainMenuPosition === 0);
+        const mainMenuPosition0 = gameData.mainMenuPosition === 0;
+        this.selectGameButton?.setVisible(mainMenuPosition0);
+        if (mainMenuPosition0) {
+            this.scene.userAvatarContainer?.setPosition(getScreenDimensions(this.scene).width / 2, getScreenDimensions(this.scene).height / 2);
+            this.scene.userAvatarContainer?.setScale(1);
+            (() => {
+                if (this.scene.nameFormElement === null) return;
+                this.scene.nameFormElement.x = getScreenDimensions(this.scene).width / 2;
+                this.scene.nameFormElement.y = 150;
+                this.scene.nameFormElement.setScale(1);
+            })()
+        }
 
         // if the main menu position is 1, show the choose game button.
+        const mainMenuPosition1 = gameData.mainMenuPosition === 1;
+        this.backButton?.setVisible(mainMenuPosition1);
+        if (mainMenuPosition1) {
+            this.scene.userAvatarContainer?.setPosition(150, 500);
+            this.scene.userAvatarContainer?.setScale(.6);
+            (() => {
+                if (this.scene.nameFormElement === null) return;
+                this.scene.nameFormElement.x = 150;
+                this.scene.nameFormElement.y = 250;
+                this.scene.nameFormElement.setScale(.5);
+            })()
+        }
 
     }
 

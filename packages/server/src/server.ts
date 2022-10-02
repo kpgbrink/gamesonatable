@@ -215,6 +215,7 @@ io.on('connection', (socket) => {
     socket.on('set player name', (name: string) => {
         // Keep name if ''
         if (name === '') return;
+        name = name.trim().replace(/ /g, '_');
         updateUser({ name: name, hasSetName: true }, user);
         // TODO
         io.to(user.room).emit('room data', getRoom(user.room));
