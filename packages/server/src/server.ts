@@ -216,6 +216,8 @@ io.on('connection', (socket) => {
         // Keep name if ''
         if (name === '') return;
         name = name.trim().replace(/ /g, '_');
+        // make sure text is only 10 characters
+        name = name.substring(0, 10);
         updateUser({ name: name, hasSetName: true }, user);
         // TODO
         io.to(user.room).emit('room data', getRoom(user.room));

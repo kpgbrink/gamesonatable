@@ -67,6 +67,21 @@ export default class PlayerStartingScene extends PlayerScene {
     // move element to bottom
     this.nameFormElement.y = screenDimensions.height - 150;
 
+    // switch spaces with understore on typing
+    this.input.keyboard.on('keydown', (event: any) => {
+      if (!this.nameFormElement) return;
+      var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
+      if (event.keyCode === 32) {
+        // remove space
+        event.preventDefault();
+        inputText.value += '_';
+      }
+      // if larger than 10 characters, remove last character
+      if (inputText.value.length > 10) {
+        inputText.value = inputText.value.substring(0, 10);
+      }
+    });
+
     this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
     this.returnKey.on('down', function (this: any) {
       nameSend();
