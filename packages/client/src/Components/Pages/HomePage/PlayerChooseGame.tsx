@@ -1,6 +1,7 @@
 import { List, ListItem } from "@mui/material";
 import { Game, RoomData, UserAvatar } from "api";
-import { useContext, useEffect } from "react";
+import { MainMenuGameData } from "api/src/data/datas/MainMenuData";
+import { useContext, useEffect, useRef } from "react";
 import QRCode from "react-qr-code";
 import { useParams } from "react-router-dom";
 import { Textfit } from "react-textfit";
@@ -9,11 +10,24 @@ import { avatarImages } from "../../../PhaserPages/objects/avatarImages.generate
 import { gamesList } from "../../../PhaserPages/objects/gamesList";
 import { persistentData } from "../../../PhaserPages/objects/PersistantData";
 
+type Props = {
+  mainMenuData: MainMenuGameData;
+};
+
 // add setMainMenuData to props
-export default function PlayerChooseGame() {
+export default function PlayerChooseGame({ mainMenuData }: Props) {
   const { roomId } = useParams();
   const { setRoomCreated, roomCreated, userList, setUserList, socket } =
     useContext(AppContext);
+
+  const scrollToRef = useRef<null | HTMLLIElement>(null);
+
+  const executeToScroll = () => {
+    if (scrollToRef.current === null) return;
+    scrollToRef?.current?.scrollIntoView();
+  };
+
+  executeToScroll();
 
   // Get room data
   useEffect(() => {
@@ -93,7 +107,7 @@ export default function PlayerChooseGame() {
             position: "absolute",
             top: "2%",
             left: "1%",
-            height: "20%",
+            height: "24%",
           }}
         >
           <QRCode
@@ -108,11 +122,30 @@ export default function PlayerChooseGame() {
           />
         </div>
       </a>
-
+      {(() => {
+        const gameSelecting = gamesList[mainMenuData.gameSelectingIndex];
+        return (
+          <div
+            style={{
+              position: "absolute",
+              top: "15%",
+              left: "15%",
+              height: "60%",
+              width: "30%",
+              backgroundColor: "#33ccff",
+              borderRadius: "10px",
+              padding: "10px",
+            }}
+          >
+            <div>{gameSelecting.displayName}</div>
+            <div>{gameSelecting.description}</div>
+          </div>
+        );
+      })()}
       <List
         style={{
           position: "absolute",
-          top: "12%",
+          top: "15%",
           left: "50%",
           width: "50%",
           height: "60%",
@@ -122,32 +155,63 @@ export default function PlayerChooseGame() {
           overflow: "auto",
           justifyContent: "around",
           backgroundColor: "grey",
+          borderRadius: "10px",
         }}
       >
-        {gamesList.map((game) => (
-          <ListItem
-            key={game.name}
-            style={{
-              width: "23%",
-              height: "50",
-              maxHeight: "50%",
-              backgroundColor: "white",
-              borderRadius: "10px",
-              margin: "1%",
-            }}
-          >
-            <Textfit
+        {gamesList.map((game, i) => {
+          // if index is the same as the game index, then it is selected
+          if (i === mainMenuData.gameSelectingIndex) {
+            return (
+              <ListItem
+                ref={scrollToRef}
+                key={game.name}
+                style={{
+                  width: "23%",
+                  height: "50",
+                  maxHeight: "50%",
+                  backgroundColor: "green",
+                  borderRadius: "10px",
+                  margin: "1%",
+                }}
+              >
+                <Textfit
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    textAlign: "center",
+                    backgroundColor: "white",
+                  }}
+                >
+                  {game.displayName}
+                </Textfit>
+              </ListItem>
+            );
+          }
+          return (
+            <ListItem
+              key={game.name}
               style={{
-                width: "100%",
-                height: "100%",
-                textAlign: "center",
+                width: "23%",
+                height: "50",
+                maxHeight: "50%",
                 backgroundColor: "white",
+                borderRadius: "10px",
+                margin: "1%",
               }}
             >
-              {game.displayName}
-            </Textfit>
-          </ListItem>
-        ))}
+              <Textfit
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  textAlign: "center",
+                  backgroundColor: "white",
+                }}
+              >
+                {game.displayName}
+              </Textfit>
+            </ListItem>
+          );
+        })}
       </List>
       <div
         id="playerList"

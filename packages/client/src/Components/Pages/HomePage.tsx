@@ -45,7 +45,9 @@ export default function HomePage() {
     <div id="homePageContainer">
       <div id="homePage">
         {mainMenuData.mainMenuPosition === 0 && <PlayerJoin />}
-        {mainMenuData.mainMenuPosition === 1 && <PlayerChooseGame />}
+        {mainMenuData.mainMenuPosition === 1 && (
+          <PlayerChooseGame mainMenuData={mainMenuData} />
+        )}
 
         {/* <ul className="games">
           <li>
@@ -75,7 +77,7 @@ export default function HomePage() {
   );
 }
 
-class HostMainMenuDataHandler extends HostDataHandler<
+export class HostMainMenuDataHandler extends HostDataHandler<
   PlayerMainMenuData,
   MainMenuGameData
 > {
