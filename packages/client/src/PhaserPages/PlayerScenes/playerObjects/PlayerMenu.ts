@@ -100,8 +100,6 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
     }
     updatePlayerList(gameData: Partial<MainMenuGameData>) {
         // update the player list
-        if (gameData.playerList === undefined) return;
-        if (gameData.playerList === null) return;
         // check if the first player in the list is me.
         // if it is make my controls the first player controls.
 
