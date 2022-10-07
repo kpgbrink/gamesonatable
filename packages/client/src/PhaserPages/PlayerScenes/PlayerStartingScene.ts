@@ -8,8 +8,6 @@ import PlayerScene from "./playerObjects/PlayerScene";
 
 export default class PlayerStartingScene extends PlayerScene {
   returnKey: Phaser.Input.Keyboard.Key | null;
-  rotateDeviceText: Phaser.GameObjects.Text | null;
-  enterFullScreen: Phaser.GameObjects.Text | null;
 
   playerMenu: PlayerMenu | null;
   nameFormElement: Phaser.GameObjects.DOMElement | null;
@@ -18,13 +16,12 @@ export default class PlayerStartingScene extends PlayerScene {
     super({ key: 'PlayerStartingScene' });
     this.userAvatarContainer = null;
     this.returnKey = null;
-    this.rotateDeviceText = null;
-    this.enterFullScreen = null;
     this.playerMenu = null;
     this.nameFormElement = null;
   }
 
   preload() {
+    super.preload();
     this.load.html('nameform', 'assets/text/nameform.html');
     loadIfSpriteSheetNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png', { frameWidth: 64, frameHeight: 64 });
     loadIfSpriteSheetNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
@@ -37,8 +34,6 @@ export default class PlayerStartingScene extends PlayerScene {
     loadUserAvatarSprites(this);
     makeMyUserAvatarInCenterOfPlayerScreen(this);
     this.setUpNameDisplayAndInput();
-    this.setUpRotateDeviceText();
-    this.setUpFullScreenDeviceText();
     this.playerMenu = new PlayerMenu(this);
     this.playerMenu.create();
   }
@@ -93,57 +88,6 @@ export default class PlayerStartingScene extends PlayerScene {
     socket.on('room data', (roomData: RoomData) => {
       this.setUserNames(roomData);
     });
-  }
-
-  toggleFullScreenVisible() {
-    if (!this.enterFullScreen) return;
-    if (this.rotateDeviceText?.visible || this.scale.isFullscreen) {
-      this.enterFullScreen.visible = false;
-    } else {
-      this.enterFullScreen.visible = true;
-    }
-  }
-
-  setUpFullScreenDeviceText() {
-    var screenDimensions = getScreenDimensions(this);
-    this.enterFullScreen = this.add.text(screenDimensions.width / 2, screenDimensions.height - 50, 'Press icon on top right to enter full screen',
-      { color: 'grey', fontSize: '50px' }).setOrigin(0.5);
-    this.enterFullScreen.setVisible(false);
-    this.toggleFullScreenVisible();
-    this.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => {
-      this.toggleFullScreenVisible();
-    });
-
-    this.scale.on(Phaser.Scale.Events.LEAVE_FULLSCREEN, () => {
-      this.toggleFullScreenVisible();
-    });
-  }
-
-  setUpRotateDeviceText() {
-    var screenDimensions = getScreenDimensions(this);
-    this.rotateDeviceText = this.add.text(screenDimensions.width / 2, screenDimensions.height - 50, 'Please rotate your device',
-      { color: 'grey', fontSize: '80px' }).setOrigin(0.5);
-    this.toggleSuggestionsShown();
-    const onWindowChange = () => {
-      this.toggleSuggestionsShown();
-    };
-    window.addEventListener('resize', onWindowChange);
-    this.events.on('shutdown', () => {
-      window.removeEventListener('resize', onWindowChange);
-    });
-  }
-
-  toggleSuggestionsShown() {
-    var newWidth = window.innerWidth;
-    var newHeight = window.innerHeight;
-    if (!this) return;
-    if (newHeight > newWidth) {
-      this.rotateDeviceText?.setVisible(true);
-      this.toggleFullScreenVisible();
-    } else {
-      this.rotateDeviceText?.setVisible(false);
-      this.toggleFullScreenVisible();
-    }
   }
 
   setUserNames(roomData: RoomData | null) {

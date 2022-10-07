@@ -21,6 +21,7 @@ const io = new Server(httpServer, {
 app.use(cors({ origin: config.get('cors.origin'), credentials: config.get('cors.credentials') }));
 
 app.get('/getNewRoomId', (req, res) => {
+    console.log('getNewRoomId----------------');
     const newRoomId: NewRoomId = { roomId: uniqid() + randomPin() };
     res.send(newRoomId);
 });
@@ -49,12 +50,19 @@ io.on('connection', (socket) => {
         hasSetName: false,
     };
 
+    // Handle error event
+    socket.on('window error', (error) => {
+        console.log('-------------------------------------------------------------------------');
+        console.log('Error', error);
+    });
+
     // The current room I am in
     socket.on('host room', (room: string) => {
         console.log('start hosting room', room);
         socketLeavePreviousRoom(socket, user);
         // ensure there is only one host
         const previousHost = getRoomHostSocketId(room);
+        // check if previous host is same as current host
         if (previousHost) {
             console.log('remove previous host');
             removeUser(previousHost, room);

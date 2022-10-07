@@ -98,6 +98,7 @@ export const addFullScreenButton = (scene: Phaser.Scene) => {
         button.setVisible(true);
     });
 
+    // on window full screen exit show button again
     button.on('pointerup', function () {
         scene.scale.startFullscreen();
     }, this);

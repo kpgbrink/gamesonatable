@@ -1,5 +1,7 @@
 import { LinearProgress } from "@mui/material";
 import Phaser from "phaser";
+import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js";
+
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
@@ -46,13 +48,33 @@ export default function PlayerPage() {
     };
   }, [roomId, socket, userId, navigate]);
 
-  console.log("userId", userId, "myPersistentuserId", persistentData.myUserId);
+  // on window error post error to server
+  useEffect(() => {
+    const windowErrorListener = (event: ErrorEvent) => {
+      socket.emit("window error", event.message);
+    };
+    window.addEventListener("error", windowErrorListener);
+    socket.emit("window error", "window error test");
+    return () => {
+      window.removeEventListener("error", windowErrorListener);
+    };
+  }, [socket]);
+
   return (
     <>
       {!roomExists && <LinearProgress />}
       {roomExists && (
         <PhaserWrapper
           config={{
+            plugins: {
+              scene: [
+                {
+                  key: "rexUI",
+                  plugin: RexUIPlugin,
+                  mapping: "rexUI",
+                },
+              ],
+            },
             loader: {
               baseURL: "/",
             },
@@ -78,8 +100,8 @@ export default function PlayerPage() {
             scale: {
               mode: Phaser.Scale.FIT,
               autoCenter: Phaser.Scale.CENTER_BOTH,
-              width: 1920,
-              height: 1080,
+              width: 1080,
+              height: 1920,
               fullscreenTarget: "game",
             },
           }}

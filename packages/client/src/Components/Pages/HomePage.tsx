@@ -11,7 +11,7 @@ import PlayerJoin from "./HomePage/PlayerJoin";
 export default function HomePage() {
   // const { roomCreated } = useContext(AppContext);
   document.documentElement.style.cursor = "auto";
-  const { userList } = useContext(AppContext);
+  const { userList, roomCreated } = useContext(AppContext);
 
   // add game data to state
   const [mainMenuData, setMainMenuData] = useState<MainMenuGameData>(
@@ -48,30 +48,28 @@ export default function HomePage() {
         {mainMenuData.mainMenuPosition === 1 && (
           <PlayerChooseGame mainMenuData={mainMenuData} />
         )}
-
-        {/* <ul className="games">
-          <li>
-            <GameLink
-              url={`/host/${roomCreated}/Omaha`}
-              text="Omaha"
-              image="https://lh3.googleusercontent.com/ej5rMzqw1W_s5Zz5SrAGR_4iBB62hHwxWsNl9IbcLSBcbUp-bQz2MTwXinSkoqYw_hI8aBAZOXIdAUYL_0rM2raz5Z-gtI2BK1j6wMHCHZegZdCruJ4X_fc2M1oe8CXV2q9wGxbCfkg=w2400"
-            />
-          </li>
-          <li>
-            <GameLink
-              url={`/host/${roomCreated}/Texas`}
-              text="Texas"
-              image="https://lh3.googleusercontent.com/Gv5VoOo9teJl7b66BC5r67pdaHJmOufAhZUofR4SqCihvV72IKGatTwpf1GyyYzYHjEyoEFId60eGxLztcdo1PesdwQoRN-lu73U7nEr9noBxbIEEC0sgFu5OXHyhb7_42Kj_auZMgs=w2400"
-            />
-          </li>
-          <li>
-            <GameLink
-              url={`/host/${roomCreated}/ThirtyOne`}
-              text="31"
-              image="https://lh3.googleusercontent.com/ej5rMzqw1W_s5Zz5SrAGR_4iBB62hHwxWsNl9IbcLSBcbUp-bQz2MTwXinSkoqYw_hI8aBAZOXIdAUYL_0rM2raz5Z-gtI2BK1j6wMHCHZegZdCruJ4X_fc2M1oe8CXV2q9wGxbCfkg=w2400"
-            />
-          </li>
-        </ul> */}
+        {/* <li>
+          <GameLink
+            url={`/host/${roomCreated}/ThirtyOne`}
+            text="31"
+            image="https://lh3.googleusercontent.com/ej5rMzqw1W_s5Zz5SrAGR_4iBB62hHwxWsNl9IbcLSBcbUp-bQz2MTwXinSkoqYw_hI8aBAZOXIdAUYL_0rM2raz5Z-gtI2BK1j6wMHCHZegZdCruJ4X_fc2M1oe8CXV2q9wGxbCfkg=w2400"
+          />
+        </li> */}
+        {/* <li>
+          <GameLink
+            url={`/host/${roomCreated}/Omaha`}
+            text="Omaha"
+            image="https://lh3.googleusercontent.com/ej5rMzqw1W_s5Zz5SrAGR_4iBB62hHwxWsNl9IbcLSBcbUp-bQz2MTwXinSkoqYw_hI8aBAZOXIdAUYL_0rM2raz5Z-gtI2BK1j6wMHCHZegZdCruJ4X_fc2M1oe8CXV2q9wGxbCfkg=w2400"
+          />
+        </li>
+        <li>
+          <GameLink
+            url={`/host/${roomCreated}/Texas`}
+            text="Texas"
+            image="https://lh3.googleusercontent.com/Gv5VoOo9teJl7b66BC5r67pdaHJmOufAhZUofR4SqCihvV72IKGatTwpf1GyyYzYHjEyoEFId60eGxLztcdo1PesdwQoRN-lu73U7nEr9noBxbIEEC0sgFu5OXHyhb7_42Kj_auZMgs=w2400"
+          />
+        </li>
+      */}
       </div>
     </div>
   );
