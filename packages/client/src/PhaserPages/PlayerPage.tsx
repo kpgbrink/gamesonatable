@@ -1,6 +1,5 @@
 import { LinearProgress } from "@mui/material";
 import Phaser from "phaser";
-import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js";
 
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -66,15 +65,6 @@ export default function PlayerPage() {
       {roomExists && (
         <PhaserWrapper
           config={{
-            plugins: {
-              scene: [
-                {
-                  key: "rexUI",
-                  plugin: RexUIPlugin,
-                  mapping: "rexUI",
-                },
-              ],
-            },
             loader: {
               baseURL: "/",
             },

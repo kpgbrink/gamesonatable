@@ -20,7 +20,7 @@ export default class PlayerScene extends Phaser.Scene {
         console.log('load rexUI');
         this.load.scenePlugin({
             key: 'rexuiplugin',
-            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            url: 'assets/ui/rexUI.min.js',
             sceneKey: 'rexUI'
         });
     }
