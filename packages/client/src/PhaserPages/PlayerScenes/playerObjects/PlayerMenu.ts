@@ -2,6 +2,7 @@ import { MainMenuGameData, PlayerMainMenuData } from "api/src/data/datas/MainMen
 import RoundRectangle from "phaser3-rex-plugins/plugins/roundrectangle";
 import ScrollablePanel from "phaser3-rex-plugins/templates/ui/scrollablepanel/ScrollablePanel";
 import TextArea from "phaser3-rex-plugins/templates/ui/textarea/TextArea";
+import { gamesList } from "../../objects/gamesList";
 import MenuButton from "../../objects/MenuButton";
 import { persistentData } from "../../objects/PersistantData";
 import { getScreenDimensions } from "../../objects/Tools";
@@ -166,6 +167,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         // if the first player is takeable, show the button to take it.
 
     }
+
     updatePlayerList(gameData: Partial<MainMenuGameData>) {
         // update the player list
         // check if the first player in the list is me.
@@ -212,11 +214,13 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         if (this.scene.rexUI === undefined) {
             throw new Error('rexUI is undefined');
         }
+        const screenDimensions = getScreenDimensions(this.scene);
+        const scrollablePanelHeight = 1200;
         var scrollablePanel = this.scene.rexUI.add.scrollablePanel({
-            x: 1080 / 2,
-            y: 1920 / 2,
-            width: 500,
-            height: 1000,
+            x: screenDimensions.width / 2,
+            y: screenDimensions.height - scrollablePanelHeight / 2,
+            width: screenDimensions.width,
+            height: scrollablePanelHeight,
 
             scrollMode: 0,
 
@@ -240,28 +244,11 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
                 speed: 0.1
             },
 
-            header: this.scene.rexUI?.add.label({
-                height: 30,
-
-                orientation: 0,
-                background: this.scene.rexUI?.add.roundRectangle(0, 0, 20, 20, 0, COLOR_DARK),
-                text: this.scene.add.text(0, 0, 'Header'),
-            }),
-
-            footer: this.scene.rexUI?.add.label({
-                height: 30,
-
-                orientation: 0,
-                background: this.scene.rexUI?.add.roundRectangle(0, 0, 20, 20, 0, COLOR_DARK),
-                text: this.scene.add.text(0, 0, 'Footer'),
-            }),
-
             space: {
                 left: 10,
                 right: 10,
                 top: 10,
                 bottom: 10,
-
                 panel: 10,
                 header: 10,
                 footer: 10,
@@ -269,16 +256,47 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         })
             .layout()
 
-        var print = this.scene.add.text(0, 0, 'Ahhhh ha');
+
+        // create thing showing currently selected game and a button to start the game
+        // add a panel for the game currently selected
+        const panelHeight = 340;
+        this.scene.rexUI?.add.roundRectangle(screenDimensions.width / 2, screenDimensions.height - scrollablePanelHeight - panelHeight / 2 - 5, screenDimensions.width, panelHeight, 20, COLOR_PRIMARY);
+        const panelText = this.scene.add.text(screenDimensions.width / 2, screenDimensions.height - scrollablePanelHeight - panelHeight / 1.1, 'Selected Game Text');
+        panelText.setOrigin(.5, .5);
+        panelText.setAlign('center');
+        panelText.setFontSize(50);
+        panelText.setWordWrapWidth(screenDimensions.width - 20);
+        // add description text
+        const descriptionText = this.scene.add.text(screenDimensions.width / 2, screenDimensions.height - scrollablePanelHeight - panelHeight / 1.1 + 50, 'Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ');
+        descriptionText.setOrigin(.5, 0);
+        descriptionText.setFontSize(30);
+        descriptionText.setWordWrapWidth(screenDimensions.width - 20);
+        // add start game button
+        const startGameButton = new MenuButton(screenDimensions.width / 1.2, screenDimensions.height - scrollablePanelHeight - panelHeight / 6, this.scene);
+        startGameButton.setInteractive();
+        startGameButton.setText('Start Game');
+        startGameButton.setStyle({
+            fontSize: '30px',
+            strockeThickness: 2,
+        });
+        this.scene.add.existing(startGameButton);
+        // startGameButton.setDepth(1111);
+        startGameButton.on('pointerdown', () => {
+            // try to start the game 
+            console.log('try to start the game');
+        });
 
         scrollablePanel
             .setChildrenInteractive({
             })
             .on('child.click', function (child: any, pointer: any, event: any) {
-                print.text += `Click ${child.text}\n`;
-            })
-            .on('child.pressstart', function (child: any, pointer: any, event: any) {
-                print.text += `Press ${child.text}\n`;
+                // find the game in games list that matches the text
+                const game = gamesList.find(game => game.displayName === child.text);
+                if (game === undefined) {
+                    throw new Error('game is undefined');
+                }
+                panelText.text = game.displayName;
+                descriptionText.text = game.description;
             })
     }
 
@@ -303,14 +321,37 @@ var createGrid = function (scene: PlayerScene) {
         },
     })
         .addBackground(scene.rexUI?.add.roundRectangle(0, 0, 20, 20, 0, COLOR_DARK))
+    gamesList.map(game => {
+        if (scene.rexUI === undefined) {
+            throw new Error('rexUI is undefined');
+        }
+        sizer.add(scene.rexUI.add.label({
+            width: 250, height: 200,
+
+            background: scene.rexUI?.add.roundRectangle(0, 0, 0, 0, 14, COLOR_LIGHT),
+            text: scene.add.text(0, 0, `${game.displayName}`, {
+                fontSize: game.playerMenuFontSize
+                // fontSize: 'fit'
+            }),
+
+            align: 'center',
+            space: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10,
+            }
+        }));
+    });
 
     for (var i = 0; i < 30; i++) {
         sizer.add(scene.rexUI.add.label({
-            width: 120, height: 120,
+            width: 250, height: 200,
 
             background: scene.rexUI?.add.roundRectangle(0, 0, 0, 0, 14, COLOR_LIGHT),
-            text: scene.add.text(0, 0, `${i}`, {
-                fontSize: '18'
+            text: scene.add.text(0, 0, `${i}hi`, {
+                fontSize: '60px'
+                // fontSize: 'fit'
             }),
 
             align: 'center',
@@ -322,6 +363,8 @@ var createGrid = function (scene: PlayerScene) {
             }
         }));
     }
+
+
 
     return sizer;
 }

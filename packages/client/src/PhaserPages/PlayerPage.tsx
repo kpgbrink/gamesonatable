@@ -86,13 +86,13 @@ export default function PlayerPage() {
                 debug: true,
               },
             },
-            pixelArt: true,
+            // pixelArt: true,
             scale: {
               mode: Phaser.Scale.FIT,
               autoCenter: Phaser.Scale.CENTER_BOTH,
               width: 1080,
               height: 1920,
-              fullscreenTarget: "game",
+              // fullscreenTarget: "game",
             },
           }}
           gameName="Client"

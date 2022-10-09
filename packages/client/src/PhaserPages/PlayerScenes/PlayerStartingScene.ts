@@ -7,7 +7,7 @@ import PlayerMenu from "./playerObjects/PlayerMenu";
 import PlayerScene from "./playerObjects/PlayerScene";
 
 export default class PlayerStartingScene extends PlayerScene {
-  returnKey: Phaser.Input.Keyboard.Key | null;
+  returnKey: Phaser.Input.Keyboard.Key | undefined;
 
   playerMenu: PlayerMenu | null;
   nameFormElement: Phaser.GameObjects.DOMElement | null;
@@ -15,7 +15,6 @@ export default class PlayerStartingScene extends PlayerScene {
   constructor() {
     super({ key: 'PlayerStartingScene' });
     this.userAvatarContainer = null;
-    this.returnKey = null;
     this.playerMenu = null;
     this.nameFormElement = null;
   }
@@ -63,7 +62,7 @@ export default class PlayerStartingScene extends PlayerScene {
     this.nameFormElement.y = screenDimensions.height - 150;
 
     // switch spaces with understore on typing
-    this.input.keyboard.on('keydown', (event: any) => {
+    this.input.keyboard?.on('keydown', (event: any) => {
       if (!this.nameFormElement) return;
       var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
       if (event.keyCode === 32) {
@@ -77,8 +76,8 @@ export default class PlayerStartingScene extends PlayerScene {
       }
     });
 
-    this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
-    this.returnKey.on('down', function (this: any) {
+    this.returnKey = this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+    this.returnKey?.on('down', function (this: any) {
       nameSend();
     });
     (() => {
