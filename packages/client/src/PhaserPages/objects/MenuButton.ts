@@ -15,6 +15,6 @@ export default class MenuButton extends Phaser.GameObjects.Text {
         this.setInteractive({ useHandCursor: true });
         this.on('pointerover', () => { this.setStyle({ fill: '#f0bc22' }); });
         this.on('pointerout', () => { this.setStyle({ fill: '#bf930f' }); });
-        this.setDepth(100);
+        // this.setDepth(100);
     }
 }
