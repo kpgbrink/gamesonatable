@@ -35,6 +35,11 @@ export default class PlayerStartingScene extends PlayerScene {
     this.setUpNameDisplayAndInput();
     this.playerMenu = new PlayerMenu(this);
     this.playerMenu.create();
+    this.scale.on('resize', this.resize, this);
+  }
+
+  resize(gameSize: any, baseSize: any, displaySize: any, resolution: any) {
+    console.log('resize', gameSize, baseSize, displaySize, resolution);
   }
 
   setUpNameDisplayAndInput() {

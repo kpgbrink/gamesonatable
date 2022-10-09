@@ -111,6 +111,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
             this.selectGameButton?.setVisible(false);
             this.sendData();
         });
+        this.selectGameButton.setDepth(1111);
         this.scene.add.existing(this.selectGameButton);
     }
 
@@ -279,6 +280,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
             fontSize: '30px',
             strockeThickness: 2,
         });
+        startGameButton.setDepth(111);
         this.scene.add.existing(startGameButton);
         // startGameButton.setDepth(1111);
         startGameButton.on('pointerdown', () => {

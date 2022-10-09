@@ -92,7 +92,9 @@ export default function PlayerPage() {
               autoCenter: Phaser.Scale.CENTER_BOTH,
               width: 1080,
               height: 1920,
-              // fullscreenTarget: "game",
+              fullscreenTarget: "game",
+              parent: "game",
+              expandParent: true,
             },
           }}
           gameName="Client"
