@@ -1,5 +1,4 @@
 import { LinearProgress } from "@mui/material";
-import Phaser from "phaser";
 
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -65,13 +64,6 @@ export default function PlayerPage() {
       {roomExists && (
         <PhaserWrapper
           config={{
-            loader: {
-              baseURL: "/",
-            },
-            dom: {
-              createContainer: true,
-            },
-            type: Phaser.AUTO,
             scene: [
               PlayerStartingScene,
               PlayerBeforeGameStart,
@@ -79,25 +71,11 @@ export default function PlayerPage() {
               Texas,
               ThirtyOne,
             ],
-            physics: {
-              default: "arcade",
-              arcade: {
-                gravity: { y: 300 },
-                debug: true,
-              },
-            },
-            // pixelArt: true,
             scale: {
-              mode: Phaser.Scale.FIT,
-              autoCenter: Phaser.Scale.CENTER_BOTH,
               width: 1080,
               height: 1920,
-              fullscreenTarget: "game",
-              parent: "game",
-              expandParent: true,
             },
           }}
-          gameName="Client"
         />
       )}
       {!roomExists && <ShowRoomIssue />}

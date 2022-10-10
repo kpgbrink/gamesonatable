@@ -1,5 +1,4 @@
 import { Game, GameStoredInfo } from "api";
-import Phaser from "phaser";
 import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
@@ -74,36 +73,17 @@ export default function HostPage() {
   return (
     <PhaserWrapper
       config={{
-        loader: {
-          baseURL: "/",
-        },
-        dom: {
-          createContainer: true,
-        },
-        type: Phaser.AUTO,
         scene: [
           HostBeforeGameStart,
           OmahaHostScene,
           TexasHostScene,
           ThirtyOneHostScene,
         ],
-        physics: {
-          default: "arcade",
-          arcade: {
-            gravity: { y: 300 },
-            debug: true,
-          },
-        },
-        // pixelArt: true,
         scale: {
-          mode: Phaser.Scale.FIT,
-          autoCenter: Phaser.Scale.CENTER_BOTH,
           width: 1920 * 2,
           height: 1080 * 2,
-          fullscreenTarget: "game",
         },
       }}
-      gameName="Host"
     />
   );
 }

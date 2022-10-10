@@ -13,6 +13,7 @@ export default class HostScene extends Phaser.Scene {
         socketOffOnSceneShutdown(this);
         loadUserAvatarSprites(this);
         addFullScreenButton(this);
+        this.scale.refresh();
     }
 
     update(time: number, delta: number) {

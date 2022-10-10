@@ -31,5 +31,6 @@ export default class PlayerScene extends Phaser.Scene {
         socketOffOnSceneShutdown(this);
         addFullScreenButton(this);
         socket.emit('get room data');
+        this.scale.refresh();
     }
 }
