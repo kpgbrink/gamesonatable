@@ -1,5 +1,5 @@
-import { IonPhaser } from "@ion-phaser/react";
 import Phaser from "phaser";
+import { useEffect } from "react";
 
 type PhaserWrapperProps = {
   config: Phaser.Types.Core.GameConfig;
@@ -25,6 +25,7 @@ export default function PhaserWrapper({ config }: PhaserWrapperProps) {
   // }, []);
 
   const configWithDom = {
+    parent: domId,
     loader: {
       baseURL: "/",
     },
@@ -52,5 +53,18 @@ export default function PhaserWrapper({ config }: PhaserWrapperProps) {
 
   console.log("configWithDom", configWithDom);
 
-  return <IonPhaser game={configWithDom} id={domId} />;
+  // create phaser game
+  useEffect(() => {
+    const game = new Phaser.Game(configWithDom);
+    return () => {
+      game.destroy(true);
+    };
+  });
+
+  // show phaser game
+  return (
+    <div>
+      <div id={domId} />;
+    </div>
+  );
 }

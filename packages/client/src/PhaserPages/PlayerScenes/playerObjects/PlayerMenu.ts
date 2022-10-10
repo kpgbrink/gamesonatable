@@ -131,7 +131,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         // Add the data that needs to be sent over.
         const playerData = this.playerData;
         if (persistentData.myUserId === null) return;
-        const userId = persistentData.myUserId;
+        // const userId = persistentData.myUserId;
 
         return playerData;
     }
@@ -323,7 +323,7 @@ var createGrid = function (scene: PlayerScene) {
         },
     })
         .addBackground(scene.rexUI?.add.roundRectangle(0, 0, 20, 20, 0, COLOR_DARK))
-    gamesList.map(game => {
+    gamesList.forEach(game => {
         if (scene.rexUI === undefined) {
             throw new Error('rexUI is undefined');
         }

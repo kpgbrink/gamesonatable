@@ -11,6 +11,8 @@ body,
 .App>div {
     height: 100%;
     background-color: #010101;
+    overflow: hidden;
+    /* Hide scrollbars */
 }
 
 code {
