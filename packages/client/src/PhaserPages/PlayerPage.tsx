@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
 import { persistentData } from "./objects/PersistantData";
 import PhaserWrapper from "./PhaserWrapper";
+import PlayerGamesListMenu from "./PlayerPage/PlayerGamesListMenu";
 import ShowRoomIssue from "./PlayerPage/ShowRoomIssue";
 import ShowUserReplaceOptions from "./PlayerPage/ShowUserReplaceOptions";
 import { getStoredIds, storeIds } from "./PlayerPage/StoredBrowserIds";
@@ -76,7 +77,9 @@ export default function PlayerPage() {
               height: 1920,
             },
           }}
-        />
+        >
+          <PlayerGamesListMenu />
+        </PhaserWrapper>
       )}
       {!roomExists && <ShowRoomIssue />}
       <ShowUserReplaceOptions />

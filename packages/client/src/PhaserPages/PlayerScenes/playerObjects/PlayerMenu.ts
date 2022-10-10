@@ -38,7 +38,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         this.addBackButton();
         this.addLevelSelecting();
 
-        this.createScrollablePanel();
+        // this.createScrollablePanel();
 
         // request data from host
         this.requestData();
@@ -103,7 +103,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
 
     addSelectGameButton() {
         const screenDimensions = getScreenDimensions(this.scene);
-        this.selectGameButton = new MenuButton(screenDimensions.width / 2, screenDimensions.height - 200, this.scene);
+        this.selectGameButton = new MenuButton(screenDimensions.width / 2, 200, this.scene);
         this.selectGameButton.setText("Select Game");
         this.selectGameButton?.setVisible(false);
         this.selectGameButton.on('pointerdown', () => {
@@ -345,28 +345,6 @@ var createGrid = function (scene: PlayerScene) {
             }
         }));
     });
-
-    for (var i = 0; i < 30; i++) {
-        sizer.add(scene.rexUI.add.label({
-            width: 250, height: 200,
-
-            background: scene.rexUI?.add.roundRectangle(0, 0, 0, 0, 14, COLOR_LIGHT),
-            text: scene.add.text(0, 0, `${i}hi`, {
-                fontSize: '60px'
-                // fontSize: 'fit'
-            }),
-
-            align: 'center',
-            space: {
-                left: 10,
-                right: 10,
-                top: 10,
-                bottom: 10,
-            }
-        }));
-    }
-
-
 
     return sizer;
 }

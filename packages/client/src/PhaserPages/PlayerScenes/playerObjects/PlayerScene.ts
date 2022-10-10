@@ -18,11 +18,6 @@ export default class PlayerScene extends Phaser.Scene {
 
     preload() {
         console.log('load rexUI');
-        this.load.scenePlugin({
-            key: 'rexuiplugin',
-            url: 'assets/ui/rexUI.min.js',
-            sceneKey: 'rexUI'
-        });
     }
 
     create() {

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 type PhaserWrapperProps = {
   config: Phaser.Types.Core.GameConfig;
+  children?: React.ReactNode;
 };
 
 // add sizeChanged and game to window interface
@@ -13,7 +14,10 @@ type PhaserWrapperProps = {
 //   }
 // }
 
-export default function PhaserWrapper({ config }: PhaserWrapperProps) {
+export default function PhaserWrapper({
+  config,
+  children,
+}: PhaserWrapperProps) {
   const domId = `game`;
 
   // trigger resize event after window is loaded
@@ -64,7 +68,7 @@ export default function PhaserWrapper({ config }: PhaserWrapperProps) {
   // show phaser game
   return (
     <div>
-      <div id={domId} />;
+      <div id={domId}>{children}</div>
     </div>
   );
 }
