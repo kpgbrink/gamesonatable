@@ -1,10 +1,30 @@
 import { List, ListItem } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Textfit } from "react-textfit";
 import { gamesList } from "../objects/gamesList";
 
 export default function PlayerGamesListMenu() {
   const { roomId, userId } = useParams();
+
+  // visible state bool
+  const [visible, setVisible] = useState(true);
+
+  // make this disapear after 10 seconds
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setVisible(false);
+      // trigger phaser window resize event
+      window.dispatchEvent(new Event("resizeSpecial"));
+    }, 10000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  });
+
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div

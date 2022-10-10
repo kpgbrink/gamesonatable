@@ -27,5 +27,18 @@ export default class PlayerScene extends Phaser.Scene {
         addFullScreenButton(this);
         socket.emit('get room data');
         this.scale.refresh();
+        // add scale refresh event listener
+        window.addEventListener('resizeSpecial', (e: any) => {
+            console.log('resizeSpecial event happened');
+            // restart phaser
+            this.scale.refresh();
+            this.scene.restart();
+        });
+    }
+
+    // remove resize event listener on shutdown
+    shutdown() {
+        console.log('scene shutdown');
+        window.removeEventListener('resizeSpecial', () => { });
     }
 }

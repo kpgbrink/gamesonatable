@@ -103,7 +103,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
 
     addSelectGameButton() {
         const screenDimensions = getScreenDimensions(this.scene);
-        this.selectGameButton = new MenuButton(screenDimensions.width / 2, 200, this.scene);
+        this.selectGameButton = new MenuButton(screenDimensions.width / 2, 300, this.scene);
         this.selectGameButton.setText("Select Game");
         this.selectGameButton?.setVisible(false);
         this.selectGameButton.on('pointerdown', () => {
@@ -156,7 +156,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
     }
 
     override onGameDataReceived(gameData: Partial<MainMenuGameData>, playerData: Partial<PlayerMainMenuData> | null): void {
-        console.log('onGameDataReceived', gameData, playerData);
+        // console.log('onGameDataReceived', gameData, playerData);
         this.updateMainMenuPosition(gameData);
         this.updatePlayerList(gameData);
         this.updateFirtPlayerTakeable(gameData);
@@ -181,7 +181,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         if (gameData.mainMenuPosition === undefined) return;
         if (gameData.mainMenuPosition === null) return;
         // if the main menu position is 0, show the select game button.
-        console.log('main menu position', gameData.mainMenuPosition);
+        // console.log('main menu position', gameData.mainMenuPosition);
         const mainMenuPosition0 = gameData.mainMenuPosition === 0;
         this.selectGameButton?.setVisible(mainMenuPosition0);
         if (mainMenuPosition0) {
