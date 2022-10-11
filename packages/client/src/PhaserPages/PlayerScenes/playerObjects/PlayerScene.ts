@@ -28,22 +28,22 @@ export default class PlayerScene extends Phaser.Scene {
         socket.emit('get room data');
         this.scale.refresh();
         // add scale refresh event listener
-        window.addEventListener('resizeSpecial', (e: any) => {
-            console.log('resizeSpecial event happened');
-            // restart phaser
-            // after half a second refresh scale
-            setTimeout(() => {
-                this.scale.refresh();
-            }, 1000);
-            // setTimeout(() => {
-            //     this.scale.refresh();
-            // }, 1000);
-        });
+        // window.addEventListener('resizeSpecial', (e: any) => {
+        //     console.log('resizeSpecial event happened');
+        //     // restart phaser
+        //     // after half a second refresh scale
+        //     setTimeout(() => {
+        //         this.scale.refresh();
+        //     }, 1000);
+        //     // setTimeout(() => {
+        //     //     this.scale.refresh();
+        //     // }, 1000);
+        // });
     }
 
     // remove resize event listener on shutdown
     shutdown() {
         console.log('scene shutdown');
-        window.removeEventListener('resizeSpecial', () => { });
+        // window.removeEventListener('resizeSpecial', () => { });
     }
 }
