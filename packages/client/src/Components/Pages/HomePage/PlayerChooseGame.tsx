@@ -29,6 +29,14 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
 
   executeToScroll();
 
+  // every second scroll to the selected game
+  useEffect(() => {
+    const interval = setInterval(() => {
+      executeToScroll();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Get room data
   useEffect(() => {
     // The socket is a module that exports the actual socket.io socket
@@ -123,7 +131,9 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
         </div>
       </a>
       {(() => {
-        const gameSelecting = gamesList[mainMenuData.gameSelectingIndex];
+        const gameSelecting =
+          gamesList.find((g) => g.name === mainMenuData.gameSelectingName) ??
+          gamesList[0];
         return (
           <div
             style={{
@@ -160,7 +170,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
       >
         {gamesList.map((game, i) => {
           // if index is the same as the game index, then it is selected
-          if (i === mainMenuData.gameSelectingIndex) {
+          if (game.name === mainMenuData.gameSelectingName) {
             return (
               <ListItem
                 ref={scrollToRef}
@@ -169,7 +179,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
                   width: "23%",
                   height: "50",
                   maxHeight: "50%",
-                  backgroundColor: "green",
+                  backgroundColor: "lightblue",
                   borderRadius: "10px",
                   margin: "1%",
                 }}
@@ -179,7 +189,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
                     width: "100%",
                     height: "100%",
                     textAlign: "center",
-                    backgroundColor: "white",
+                    backgroundColor: "lightblue",
                   }}
                 >
                   {game.displayName}

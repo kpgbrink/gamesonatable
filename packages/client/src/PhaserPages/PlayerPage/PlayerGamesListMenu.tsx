@@ -12,6 +12,21 @@ export default function PlayerGamesListMenu() {
   // visible state bool
   const [visible, setVisible] = useState(false);
 
+  const [timeOutVisible, setTimeOutVisible] = useState(false);
+
+  // selected game state that is nullable string
+  const [selectedGameNameName, setSelectedGame] = useState<string | null>(null);
+
+  // set visible to true after 1 second
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setTimeOutVisible(true);
+    }, 1000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
+
   // add event listener to detect if the window should be visible
   useEffect(() => {
     const showGamesListMenu = (e: any) => {
@@ -24,10 +39,13 @@ export default function PlayerGamesListMenu() {
     };
   }, []);
 
-  if (!visible) {
+  if (!visible || !timeOutVisible) {
     return null;
   }
 
+  const selectedGame = gamesList.find(
+    (game) => game.name === selectedGameNameName
+  );
   return (
     <div
       style={{
@@ -58,8 +76,23 @@ export default function PlayerGamesListMenu() {
         >
           Back
         </button>
-        <h1>Currently Selected Game</h1>
-        <p>Text explaining the currently selected game.</p>
+        {selectedGame ? (
+          <>
+            <h1>{selectedGame.displayName}</h1>
+            <p>{selectedGame.description}</p>
+            <button
+              onClick={() => {
+                const gameData: Partial<MainMenuGameData> = {};
+                gameData.gameChosen = selectedGameNameName;
+                socket.emit("gameDataToHost", gameData);
+              }}
+            >
+              Select Game
+            </button>
+          </>
+        ) : (
+          <h1>Select a game</h1>
+        )}
       </div>
 
       {/* Show the games that can be selected */}
@@ -80,8 +113,52 @@ export default function PlayerGamesListMenu() {
         }}
       >
         {gamesList.map((game) => {
+          if (game.name === selectedGameNameName) {
+            return (
+              <ListItem
+                onClick={(e: any) => {
+                  e.preventDefault();
+                  setSelectedGame(game.name);
+                  const gameData: Partial<MainMenuGameData> = {};
+                  gameData.gameSelectingName = game.name;
+                  socket.emit("gameDataToHost", gameData);
+                }}
+                key={game.name}
+                style={{
+                  width: "23%",
+                  height: "50",
+                  maxHeight: "50%",
+                  borderRadius: "10px",
+                  margin: "1%",
+                  // show clickable
+                  cursor: "pointer",
+                  backgroundColor: "lightblue",
+                }}
+              >
+                <Textfit
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    textAlign: "center",
+                    // make text not selectable
+                    userSelect: "none",
+                    backgroundColor: "lightblue",
+                  }}
+                >
+                  {game.displayName}
+                </Textfit>
+              </ListItem>
+            );
+          }
           return (
             <ListItem
+              onClick={(e: any) => {
+                e.preventDefault();
+                setSelectedGame(game.name);
+                const gameData: Partial<MainMenuGameData> = {};
+                gameData.gameSelectingName = game.name;
+                socket.emit("gameDataToHost", gameData);
+              }}
               key={game.name}
               style={{
                 width: "23%",
@@ -90,9 +167,8 @@ export default function PlayerGamesListMenu() {
                 backgroundColor: "white",
                 borderRadius: "10px",
                 margin: "1%",
-              }}
-              onClick={() => {
-                // set the game to the one that is clicked
+                // show clickable
+                cursor: "pointer",
               }}
             >
               <Textfit
@@ -101,6 +177,8 @@ export default function PlayerGamesListMenu() {
                   height: "100%",
                   textAlign: "center",
                   backgroundColor: "white",
+                  // make text not selectable
+                  userSelect: "none",
                 }}
               >
                 {game.displayName}

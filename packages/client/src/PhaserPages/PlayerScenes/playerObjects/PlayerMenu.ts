@@ -44,6 +44,11 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         this.requestData();
     }
 
+    // on scene shutdown
+    shutdown() {
+        console.log('scene shutdown');
+    }
+
     addLevelSelecting() {
         // add a scrollable list of games
         // var panelConfig: ScrollablePanel.IConfig = {

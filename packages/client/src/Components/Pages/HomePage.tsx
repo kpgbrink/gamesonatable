@@ -3,15 +3,16 @@ import {
   PlayerMainMenuData,
 } from "api/src/data/datas/MainMenuData";
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../AppContext";
 import { HostDataHandler } from "../../PhaserPages/HostScenes/hostObjects/HostDataHandler";
 import PlayerChooseGame from "./HomePage/PlayerChooseGame";
 import PlayerJoin from "./HomePage/PlayerJoin";
 
 export default function HomePage() {
-  // const { roomCreated } = useContext(AppContext);
   document.documentElement.style.cursor = "auto";
   const { userList, roomCreated } = useContext(AppContext);
+  const navigate = useNavigate();
 
   // add game data to state
   const [mainMenuData, setMainMenuData] = useState<MainMenuGameData>(
@@ -39,6 +40,17 @@ export default function HomePage() {
       setMainMenuData({ ...mainMenuData, mainMenuPosition: 0 });
     }
   }, [mainMenuData, userList]);
+
+  // if Main menu game chosen go to the game
+  useEffect(() => {
+    if (mainMenuData.gameChosen) {
+      console.log("game chosen");
+      // setMainMenuData({ ...mainMenuData, gameChosen: false });
+      // if game is chosen then go to the game
+      const navigateTo = `/host/${roomCreated}/${mainMenuData.gameChosen}`;
+      navigate(navigateTo);
+    }
+  }, [mainMenuData, navigate, roomCreated]);
 
   console.log("main menu position", mainMenuData.mainMenuPosition);
   return (
@@ -130,6 +142,7 @@ export class HostMainMenuDataHandler extends HostDataHandler<
     this.mainMenuGameData = { ...this.mainMenuGameData, ...gameData };
     console.log("new main menu game data", this.mainMenuGameData);
     this.setMainMenuGameData(this.mainMenuGameData);
+
     this.sendGameData();
   }
 }

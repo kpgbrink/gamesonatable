@@ -9,7 +9,7 @@ export class MainMenuGameData extends GameData {
     // 0 is the joining thing. 1 is the choosing which game to play.
     mainMenuPosition: number = 0;
 
-    gameSelectingIndex: number = 0;
+    gameSelectingName: string | null = null;
     suggestedGames: string[] = [];
     firstPlayer: string | null = null;
     firstPlayerTakeable: boolean = false;
