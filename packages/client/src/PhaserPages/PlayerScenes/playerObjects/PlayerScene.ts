@@ -31,8 +31,10 @@ export default class PlayerScene extends Phaser.Scene {
         window.addEventListener('resizeSpecial', (e: any) => {
             console.log('resizeSpecial event happened');
             // restart phaser
-            this.scale.refresh();
-            this.scene.restart();
+            // after half a second refresh scale
+            setTimeout(() => {
+                this.scale.refresh();
+            }, 500);
         });
     }
 

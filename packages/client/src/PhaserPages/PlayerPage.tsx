@@ -60,8 +60,9 @@ export default function PlayerPage() {
   }, [socket]);
 
   return (
-    <>
+    <div id="fullScreen">
       {!roomExists && <LinearProgress />}
+      <PlayerGamesListMenu />
       {roomExists && (
         <PhaserWrapper
           config={{
@@ -77,12 +78,10 @@ export default function PlayerPage() {
               height: 1920,
             },
           }}
-        >
-          <PlayerGamesListMenu />
-        </PhaserWrapper>
+        />
       )}
       {!roomExists && <ShowRoomIssue />}
       <ShowUserReplaceOptions />
-    </>
+    </div>
   );
 }

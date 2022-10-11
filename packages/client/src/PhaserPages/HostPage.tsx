@@ -71,19 +71,21 @@ export default function HostPage() {
   }, [game, roomId, socket, navigate]);
 
   return (
-    <PhaserWrapper
-      config={{
-        scene: [
-          HostBeforeGameStart,
-          OmahaHostScene,
-          TexasHostScene,
-          ThirtyOneHostScene,
-        ],
-        scale: {
-          width: 1920 * 2,
-          height: 1080 * 2,
-        },
-      }}
-    />
+    <div id="fullScreen">
+      <PhaserWrapper
+        config={{
+          scene: [
+            HostBeforeGameStart,
+            OmahaHostScene,
+            TexasHostScene,
+            ThirtyOneHostScene,
+          ],
+          scale: {
+            width: 1920 * 2,
+            height: 1080 * 2,
+          },
+        }}
+      />
+    </div>
   );
 }

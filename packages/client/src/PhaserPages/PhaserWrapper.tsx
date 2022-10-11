@@ -50,7 +50,7 @@ export default function PhaserWrapper({
       autoCenter: Phaser.Scale.CENTER_BOTH,
       width: 1920 * 2,
       height: 1080 * 2,
-      fullscreenTarget: "game",
+      fullscreenTarget: "fullScreen",
       ...config.scale,
     },
   };
@@ -66,9 +66,5 @@ export default function PhaserWrapper({
   });
 
   // show phaser game
-  return (
-    <div>
-      <div id={domId}>{children}</div>
-    </div>
-  );
+  return <div id={domId} />;
 }

@@ -8,22 +8,21 @@ export default function PlayerGamesListMenu() {
   const { roomId, userId } = useParams();
 
   // visible state bool
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   // make this disapear after 10 seconds
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setVisible(false);
-      // trigger phaser window resize event
+    // every 10 seconds alternate the visibility
+    const interval = setInterval(() => {
+      setVisible((prev) => !prev);
+      // send to resizeSpecial event to window.addEventListener
       window.dispatchEvent(new Event("resizeSpecial"));
-    }, 10000);
-    return () => {
-      clearTimeout(timeout);
-    };
-  });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   if (!visible) {
-    return null;
+    return <div></div>;
   }
 
   return (
