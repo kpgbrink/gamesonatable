@@ -1,7 +1,9 @@
 import { List, ListItem } from "@mui/material";
+import { MainMenuGameData } from "api/src/data/datas/MainMenuData";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Textfit } from "react-textfit";
+import socket from "../../SocketConnection";
 import { gamesList } from "../objects/gamesList";
 
 export default function PlayerGamesListMenu() {
@@ -10,40 +12,54 @@ export default function PlayerGamesListMenu() {
   // visible state bool
   const [visible, setVisible] = useState(false);
 
-  // make this disapear after 10 seconds
+  // add event listener to detect if the window should be visible
   useEffect(() => {
-    // every 10 seconds alternate the visibility
-    const interval = setInterval(() => {
-      setVisible((prev) => !prev);
-      // send to resizeSpecial event to window.addEventListener
-      window.dispatchEvent(new Event("resizeSpecial"));
-    }, 5000);
-    return () => clearInterval(interval);
+    const showGamesListMenu = (e: any) => {
+      console.log("this is what e is", e);
+      setVisible(e.detail.show);
+    };
+    window.addEventListener("showGamesListMenu", showGamesListMenu);
+    return () => {
+      window.removeEventListener("showGamesListMenu", showGamesListMenu);
+    };
   }, []);
 
   if (!visible) {
-    return <div></div>;
+    return null;
   }
 
   return (
     <div
       style={{
-        // position: "absolute",
-        top: "150%",
+        top: "50%",
         left: "50%",
         transform: "translate(0%, 0%)",
-        aspectRatio: 9 / (16 * 0.8),
+        aspectRatio: 9 / 16,
         maxWidth: "100vw",
-        maxHeight: "80vh",
+        maxHeight: "100vh",
         margin: "auto",
         backgroundColor: "white",
-        borderRadius: "10px",
+        borderRadius: "20px",
         zIndex: 100,
       }}
     >
       {/* Show the current game being selected */}
       <div>
-        <h1>{}</h1>
+        {/* Add back button */}
+        <button
+          onClick={() => {
+            window.dispatchEvent(
+              new CustomEvent("showGamesListMenu", { detail: { show: false } })
+            );
+            const gameData: Partial<MainMenuGameData> = {};
+            gameData.mainMenuPosition = 0;
+            socket.emit("gameDataToHost", gameData);
+          }}
+        >
+          Back
+        </button>
+        <h1>Currently Selected Game</h1>
+        <p>Text explaining the currently selected game.</p>
       </div>
 
       {/* Show the games that can be selected */}

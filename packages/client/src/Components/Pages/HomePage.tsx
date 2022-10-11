@@ -128,6 +128,7 @@ export class HostMainMenuDataHandler extends HostDataHandler<
   ): void {
     console.log("game data received", gameData);
     this.mainMenuGameData = { ...this.mainMenuGameData, ...gameData };
+    console.log("new main menu game data", this.mainMenuGameData);
     this.setMainMenuGameData(this.mainMenuGameData);
     this.sendGameData();
   }

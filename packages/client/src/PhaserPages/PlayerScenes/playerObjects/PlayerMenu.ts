@@ -185,6 +185,8 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         const mainMenuPosition0 = gameData.mainMenuPosition === 0;
         this.selectGameButton?.setVisible(mainMenuPosition0);
         if (mainMenuPosition0) {
+            window.dispatchEvent(new CustomEvent('showGamesListMenu', { detail: { show: false } }));
+
             this.scene.userAvatarContainer?.setPosition(getScreenDimensions(this.scene).width / 2, getScreenDimensions(this.scene).height / 2);
             this.scene.userAvatarContainer?.setScale(1);
             (() => {
@@ -196,17 +198,22 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         }
 
         // if the main menu position is 1, show the choose game button.
-        const mainMenuPosition1 = gameData.mainMenuPosition === 1;
-        this.backButton?.setVisible(mainMenuPosition1);
-        if (mainMenuPosition1) {
-            this.scene.userAvatarContainer?.setPosition(getScreenDimensions(this.scene).width / 2, 150);
-            this.scene.userAvatarContainer?.setScale(.4);
-            (() => {
-                if (this.scene.nameFormElement === null) return;
-                this.scene.nameFormElement.x = getScreenDimensions(this.scene).width / 2;
-                this.scene.nameFormElement.y = 20;
-                this.scene.nameFormElement.setScale(.5);
-            })()
+        // const mainMenuPosition1 = gameData.mainMenuPosition === 1;
+        // this.backButton?.setVisible(mainMenuPosition1);
+        // if (mainMenuPosition1) {
+        //     this.scene.userAvatarContainer?.setPosition(getScreenDimensions(this.scene).width / 2, 150);
+        //     this.scene.userAvatarContainer?.setScale(.4);
+        //     (() => {
+        //         if (this.scene.nameFormElement === null) return;
+        //         this.scene.nameFormElement.x = getScreenDimensions(this.scene).width / 2;
+        //         this.scene.nameFormElement.y = 20;
+        //         this.scene.nameFormElement.setScale(.5);
+        //     })()
+        // }
+        // if the main menu position is 1 then show the gamesListmenu
+        if (gameData.mainMenuPosition === 1) {
+            // make showGamesListMenu event happen
+            window.dispatchEvent(new CustomEvent('showGamesListMenu', { detail: { show: true } }));
         }
 
     }

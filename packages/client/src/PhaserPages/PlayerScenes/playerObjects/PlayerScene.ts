@@ -34,7 +34,10 @@ export default class PlayerScene extends Phaser.Scene {
             // after half a second refresh scale
             setTimeout(() => {
                 this.scale.refresh();
-            }, 500);
+            }, 1000);
+            // setTimeout(() => {
+            //     this.scale.refresh();
+            // }, 1000);
         });
     }
 
