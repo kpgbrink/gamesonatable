@@ -3,6 +3,7 @@ import { MainMenuGameData } from "api/src/data/datas/MainMenuData";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Textfit } from "react-textfit";
+import { palletColors } from "../../Palettes";
 import socket from "../../SocketConnection";
 import { gamesList } from "../objects/gamesList";
 
@@ -61,7 +62,7 @@ export default function PlayerGamesListMenu() {
         maxWidth: "100vw",
         maxHeight: "100vh",
         margin: "auto",
-        backgroundColor: "white",
+        backgroundColor: palletColors.color5,
         borderRadius: "20px",
         zIndex: 100,
       }}
@@ -83,7 +84,7 @@ export default function PlayerGamesListMenu() {
         </button>
         {selectedGame ? (
           <>
-            <h1>{selectedGame.displayName}</h1>
+            <h1 style={{}}>{selectedGame.displayName}</h1>
             <p>{selectedGame.description}</p>
             <button
               onClick={() => {
@@ -113,7 +114,7 @@ export default function PlayerGamesListMenu() {
           flexWrap: "wrap",
           overflow: "auto",
           justifyContent: "around",
-          backgroundColor: "grey",
+          backgroundColor: palletColors.color4,
           borderRadius: "10px",
         }}
       >
@@ -137,7 +138,7 @@ export default function PlayerGamesListMenu() {
                   margin: "1%",
                   // show clickable
                   cursor: "pointer",
-                  backgroundColor: "lightblue",
+                  backgroundColor: palletColors.color3,
                 }}
               >
                 <Textfit
@@ -147,7 +148,7 @@ export default function PlayerGamesListMenu() {
                     textAlign: "center",
                     // make text not selectable
                     userSelect: "none",
-                    backgroundColor: "lightblue",
+                    backgroundColor: palletColors.color3,
                   }}
                 >
                   {game.displayName}
@@ -169,7 +170,7 @@ export default function PlayerGamesListMenu() {
                 width: "23%",
                 height: "50",
                 maxHeight: "50%",
-                backgroundColor: "white",
+                backgroundColor: palletColors.color1,
                 borderRadius: "10px",
                 margin: "1%",
                 // show clickable
@@ -181,7 +182,7 @@ export default function PlayerGamesListMenu() {
                   width: "100%",
                   height: "100%",
                   textAlign: "center",
-                  backgroundColor: "white",
+                  backgroundColor: palletColors.color1,
                   // make text not selectable
                   userSelect: "none",
                 }}

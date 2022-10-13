@@ -6,6 +6,7 @@ import QRCode from "react-qr-code";
 import { useParams } from "react-router-dom";
 import { Textfit } from "react-textfit";
 import { AppContext } from "../../../AppContext";
+import { palletColors } from "../../../Palettes";
 import { avatarImages } from "../../../PhaserPages/objects/avatarImages.generated";
 import { persistentData } from "../../../PhaserPages/objects/PersistantData";
 
@@ -78,6 +79,7 @@ export default function PlayerJoin() {
           width: "100%",
           height: "15%",
           textAlign: "center",
+          color: "black",
         }}
       >
         Phone Party
@@ -112,7 +114,7 @@ export default function PlayerJoin() {
           left: "40%",
           height: "65%",
           width: "58%",
-          backgroundColor: "grey",
+          backgroundColor: palletColors.color1,
           padding: ".2%",
           borderRadius: "10px",
         }}
@@ -141,7 +143,7 @@ export default function PlayerJoin() {
                 <ListItem
                   key={index}
                   style={{
-                    backgroundColor: "white",
+                    backgroundColor: palletColors.color2,
                     margin: ".2%",
                     borderRadius: "5px",
                     width: "47%",
@@ -175,7 +177,7 @@ export default function PlayerJoin() {
             width: "100%",
             height: "9%",
             textAlign: "center",
-            color: "green",
+            color: palletColors.color4,
             fontWeight: "bold",
           }}
         >

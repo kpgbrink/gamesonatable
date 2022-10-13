@@ -6,6 +6,7 @@ import QRCode from "react-qr-code";
 import { useParams } from "react-router-dom";
 import { Textfit } from "react-textfit";
 import { AppContext } from "../../../AppContext";
+import { palletColors } from "../../../Palettes";
 import { avatarImages } from "../../../PhaserPages/objects/avatarImages.generated";
 import { gamesList } from "../../../PhaserPages/objects/gamesList";
 import { persistentData } from "../../../PhaserPages/objects/PersistantData";
@@ -105,6 +106,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
           width: "100%",
           height: "10%",
           textAlign: "center",
+          color: "black",
         }}
       >
         Phone Party
@@ -142,7 +144,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
               left: "15%",
               height: "60%",
               width: "30%",
-              backgroundColor: "#33ccff",
+              backgroundColor: palletColors.color3,
               borderRadius: "10px",
               padding: "10px",
             }}
@@ -153,6 +155,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
         );
       })()}
       <List
+        className="userList"
         style={{
           position: "absolute",
           top: "15%",
@@ -164,7 +167,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
           flexWrap: "wrap",
           overflow: "auto",
           justifyContent: "around",
-          backgroundColor: "grey",
+          backgroundColor: palletColors.color4,
           borderRadius: "10px",
         }}
       >
@@ -179,7 +182,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
                   width: "23%",
                   height: "50",
                   maxHeight: "50%",
-                  backgroundColor: "lightblue",
+                  backgroundColor: palletColors.color3,
                   borderRadius: "10px",
                   margin: "1%",
                 }}
@@ -189,7 +192,10 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
                     width: "100%",
                     height: "100%",
                     textAlign: "center",
-                    backgroundColor: "lightblue",
+                    backgroundColor: palletColors.color3,
+                    color: "black",
+                    fontWeight: "bold",
+                    // add text outline
                   }}
                 >
                   {game.displayName}
@@ -204,9 +210,12 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
                 width: "23%",
                 height: "50",
                 maxHeight: "50%",
-                backgroundColor: "white",
+                backgroundColor: palletColors.color5,
                 borderRadius: "10px",
                 margin: "1%",
+                // hide scroll bar
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
               }}
             >
               <Textfit
@@ -214,7 +223,10 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
                   width: "100%",
                   height: "100%",
                   textAlign: "center",
-                  backgroundColor: "white",
+                  backgroundColor: palletColors.color5,
+                  color: palletColors.color1,
+                  // add outline to text
+                  textShadow: `0 0 0.2px ${palletColors.color4}`,
                 }}
               >
                 {game.displayName}
@@ -243,6 +255,8 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
             width: "100%",
             height: "25%",
             textAlign: "center",
+            // add outline to text
+            fontWeight: "bold",
           }}
         >
           Player Count: {userListNoHosts.length}
