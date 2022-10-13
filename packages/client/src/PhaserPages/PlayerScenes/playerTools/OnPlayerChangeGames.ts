@@ -16,6 +16,8 @@ export const onPlayerChangeGames = (phaserScene: Phaser.Scene) => {
             if (phaserScene.scene.key === roomData.game.currentPlayerScene) {
                 return;
             }
+
+            window.dispatchEvent(new CustomEvent('showGamesListMenu', { detail: { show: false } }));
             phaserScene.scene.start(roomData.game.currentPlayerScene);
         })()
         persistentData.roomData = roomData;

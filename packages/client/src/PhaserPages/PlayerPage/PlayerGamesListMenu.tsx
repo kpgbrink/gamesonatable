@@ -1,6 +1,6 @@
 import { List, ListItem } from "@mui/material";
 import { MainMenuGameData } from "api/src/data/datas/MainMenuData";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Textfit } from "react-textfit";
 import socket from "../../SocketConnection";
@@ -30,7 +30,6 @@ export default function PlayerGamesListMenu() {
   // add event listener to detect if the window should be visible
   useEffect(() => {
     const showGamesListMenu = (e: any) => {
-      console.log("this is what e is", e);
       setVisible(e.detail.show);
     };
     window.addEventListener("showGamesListMenu", showGamesListMenu);
@@ -38,6 +37,12 @@ export default function PlayerGamesListMenu() {
       window.removeEventListener("showGamesListMenu", showGamesListMenu);
     };
   }, []);
+
+  useLayoutEffect(() => {
+    // emit resizeSpecialEvent
+    console.log("emit resize special");
+    window.dispatchEvent(new Event("resizeSpecial"));
+  }, [visible]);
 
   if (!visible || !timeOutVisible) {
     return null;

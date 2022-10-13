@@ -1,6 +1,5 @@
 import { RoomData } from "api";
 import socket from "../../SocketConnection";
-import { CountdownTimer } from "../objects/CountdownTimer";
 import { persistentData } from "../objects/PersistantData";
 import { findMyUser, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../objects/Tools";
 import { generateRandomUserAvatar, loadUserAvatarSprites } from "../objects/UserAvatarContainer";
@@ -13,7 +12,7 @@ export default class PlayerStartingScene extends PlayerScene {
   playerMenu: PlayerMenu | null;
   nameFormElement: Phaser.GameObjects.DOMElement | null;
 
-  scaleTimer: CountdownTimer = new CountdownTimer(.5);
+  // scaleTimer: CountdownTimer = new CountdownTimer(.5);
 
   constructor() {
     super({ key: 'PlayerStartingScene' });
@@ -104,13 +103,13 @@ export default class PlayerStartingScene extends PlayerScene {
 
   update(time: number, delta: number) {
     this.playerMenu?.update(time, delta);
-    // every 4 seconds refresh the scale
-    this.scaleTimer.update(delta);
-    if (this.scaleTimer.isDone()) {
-      this.scaleTimer.start();
-      console.log('rescale');
-      this.scale.refresh();
-    }
+    // // every 4 seconds refresh the scale
+    // this.scaleTimer.update(delta);
+    // if (this.scaleTimer.isDone()) {
+    //   this.scaleTimer.start();
+    //   console.log('rescale');
+    //   this.scale.refresh();
+    // }
 
   }
 }
