@@ -86,7 +86,7 @@ io.on('connection', (socket) => {
         socket.join(user.room);
         // find any users that need to be replaced
         const roomData = getRoom(room);
-        console.log('roomData', roomData);
+        // console.log('roomData', roomData);
         if (!roomData) {
             console.log('emit room does not exist');
             socket.emit(
@@ -326,14 +326,14 @@ io.on('connection', (socket) => {
     });
 
     socket.on('getPlayerData', () => {
-        console.log('getPlayerData requested');
+        // console.log('getPlayerData requested');
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('getPlayerData', user.id);
     });
 
     socket.on('getData', () => {
-        console.log('getData requested');
+        // console.log('getData requested');
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('getData', user.id);
