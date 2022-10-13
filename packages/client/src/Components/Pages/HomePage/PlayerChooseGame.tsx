@@ -1,7 +1,7 @@
 import { List, ListItem } from "@mui/material";
 import { Game, RoomData, UserAvatar } from "api";
 import { MainMenuGameData } from "api/src/data/datas/MainMenuData";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import QRCode from "react-qr-code";
 import { useParams } from "react-router-dom";
 import { Textfit } from "react-textfit";
@@ -30,13 +30,17 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
 
   executeToScroll();
 
-  // every second scroll to the selected game
-  useEffect(() => {
-    const interval = setInterval(() => {
-      executeToScroll();
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  // // every second scroll to the selected game
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     executeToScroll();
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, []);
+
+  useLayoutEffect(() => {
+    executeToScroll();
+  });
 
   // Get room data
   useEffect(() => {
