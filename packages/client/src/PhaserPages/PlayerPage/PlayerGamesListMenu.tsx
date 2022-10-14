@@ -68,7 +68,15 @@ export default function PlayerGamesListMenu() {
       }}
     >
       {/* Show the current game being selected */}
-      <div>
+      <div
+        style={{
+          position: "absolute",
+          top: "0",
+          left: "0",
+          width: "100%",
+          height: "20%",
+        }}
+      >
         {/* Add back button */}
         <button
           onClick={() => {
@@ -79,25 +87,85 @@ export default function PlayerGamesListMenu() {
             gameData.mainMenuPosition = 0;
             socket.emit("gameDataToHost", gameData);
           }}
+          style={{
+            position: "absolute",
+            top: "0px",
+            left: "0px",
+            width: "23%",
+            height: "20%",
+            backgroundColor: palletColors.color3,
+            color: palletColors.color1,
+            borderRadius: "20px",
+            fontWeight: "bold",
+            // show pointer when hovering
+            cursor: "pointer",
+          }}
         >
-          Back
+          <Textfit>Back</Textfit>
         </button>
         {selectedGame ? (
-          <>
-            <h1 style={{}}>{selectedGame.displayName}</h1>
-            <p>{selectedGame.description}</p>
+          <div>
+            <h1
+              style={{
+                position: "absolute",
+                top: "0px",
+                left: "24%",
+                width: "70%",
+                height: "20%",
+                color: palletColors.color1,
+              }}
+            >
+              {selectedGame.displayName}
+            </h1>
+            <p
+              style={{
+                position: "absolute",
+                top: "20%",
+                left: "24%",
+                width: "70%",
+                height: "80%",
+                color: palletColors.color1,
+              }}
+            >
+              {selectedGame.description}
+            </p>
             <button
               onClick={() => {
                 const gameData: Partial<MainMenuGameData> = {};
                 gameData.gameChosen = selectedGameNameName;
                 socket.emit("gameDataToHost", gameData);
               }}
+              style={{
+                position: "absolute",
+                top: "80%",
+                left: "50%",
+                width: "48%",
+                height: "20%",
+                backgroundColor: palletColors.color2,
+                padding: ".1%",
+                borderRadius: "10px",
+                color: palletColors.color4,
+                fontWeight: "bold",
+                // show pointer when hovering
+                cursor: "pointer",
+              }}
             >
-              Select Game
+              <Textfit>Play</Textfit>
             </button>
-          </>
+          </div>
         ) : (
-          <h1>Select a game</h1>
+          <div
+            style={{
+              position: "absolute",
+              top: "0px",
+              left: "30%",
+              width: "80%",
+              height: "50%",
+              color: palletColors.color1,
+            }}
+          >
+            <Textfit>Choose a game</Textfit>
+          </div>
         )}
       </div>
 

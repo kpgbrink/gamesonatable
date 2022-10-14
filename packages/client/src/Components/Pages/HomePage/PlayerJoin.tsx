@@ -143,11 +143,11 @@ export default function PlayerJoin() {
                 <ListItem
                   key={index}
                   style={{
-                    backgroundColor: palletColors.color2,
+                    backgroundColor: palletColors.color3,
                     margin: ".2%",
                     borderRadius: "5px",
                     width: "47%",
-                    lineHeight: "auto",
+                    height: "4vh",
                   }}
                 >
                   {/* Add user avatar image here */}
@@ -156,8 +156,9 @@ export default function PlayerJoin() {
                   )}
                   <Textfit
                     style={{
-                      paddingLeft: "9%",
+                      paddingLeft: "15%",
                       width: "100%",
+                      height: "90%",
                     }}
                   >
                     {user.name}
