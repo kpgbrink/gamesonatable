@@ -52,7 +52,7 @@ export default class PlayerStartingScene extends PlayerScene {
       var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
       if (inputText.value === '') return;
       // remove trim
-      inputText.value.trim();
+      inputText.value = inputText.value.trim();
       // set all spaces to -
       inputText.value = inputText.value.replace(/ /g, '-');
       // Remove all trailing spaces and _ characters
@@ -73,6 +73,7 @@ export default class PlayerStartingScene extends PlayerScene {
     this.input.keyboard?.on('keyup', (event: any) => {
       if (!this.nameFormElement) return;
       var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
+      this.setStyleForNameInputNotSent();
       // if larger than 10 characters, remove last character
       if (inputText.value.length >= 10) {
         inputText.value = inputText.value.substring(0, 10);
@@ -103,11 +104,17 @@ export default class PlayerStartingScene extends PlayerScene {
       // remove text background
       inputText.style.background = 'none';
     } else {
-      // reset the style to the normal style
-      inputText.style.color = 'black';
-      inputText.style.fontWeight = 'normal';
-      inputText.style.background = 'white';
+      this.setStyleForNameInputNotSent();
     }
+  }
+
+  setStyleForNameInputNotSent() {
+    if (!this.nameFormElement) return;
+    var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
+    if (!inputText) return;
+    inputText.style.color = 'black';
+    inputText.style.fontWeight = 'normal';
+    inputText.style.background = 'white';
   }
 
   checkIfNameInInputIsSameAsCurrentName() {
