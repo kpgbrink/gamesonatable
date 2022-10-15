@@ -1,3 +1,4 @@
+import { palletColors } from "../../Palettes";
 
 
 
@@ -5,16 +6,16 @@ export default class MenuButton extends Phaser.GameObjects.Text {
     constructor(x: number, y: number, scene: Phaser.Scene) {
         super(scene, x, y, '', {
             fontSize: '100px',
-            color: '#bf930f',
-            stroke: '#bf930f',
-            strokeThickness: 4
+            color: palletColors.color2,
+            stroke: palletColors.color2,
+            strokeThickness: 4,
+            fontFamily: 'Arial',
         });
         this.setOrigin(0.5);
         this.setPadding(20);
-        this.setStyle({ backgroundColor: '#111' });
+        this.setStyle({ backgroundColor: palletColors.color4, borderRadius: 10 });
         this.setInteractive({ useHandCursor: true });
-        this.on('pointerover', () => { this.setStyle({ fill: '#f0bc22' }); });
-        this.on('pointerout', () => { this.setStyle({ fill: '#bf930f' }); });
-        // this.setDepth(100);
+        this.on('pointerover', () => { this.setStyle({ color: palletColors.color3, stroke: palletColors.color3 }); });
+        this.on('pointerout', () => { this.setStyle({ color: palletColors.color2, stroke: palletColors.color2 }); });
     }
 }

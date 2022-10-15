@@ -37,21 +37,31 @@ export default class PlayerStartingScene extends PlayerScene {
     this.setUpNameDisplayAndInput();
     this.playerMenu = new PlayerMenu(this);
     this.playerMenu.create();
+    socket.on('room data', (gameData: any) => {
+      console.log('gameData check style change', gameData);
+      this.handleNameStyleChange();
+    });
   }
 
   setUpNameDisplayAndInput() {
     var screenDimensions = getScreenDimensions(this);
-    this.nameFormElement = this.add.dom(screenDimensions.width / 2, 150).createFromCache('nameform').setOrigin(0.5);
+    this.nameFormElement = this.add.dom(screenDimensions.width / 2, 650).createFromCache('nameform').setOrigin(0.5);
     if (!this.nameFormElement) return;
     const nameSend = () => {
       if (!this.nameFormElement) return;
       var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
       if (inputText.value === '') return;
-      //  Have they entered anything?
-      this.nameFormElement.removeListener('click');
-      //  Hide the login element
-      this.nameFormElement.setVisible(false);
-      //  Populate the text with whatever they typed in
+      // remove trim
+      inputText.value.trim();
+      // set all spaces to -
+      inputText.value = inputText.value.replace(/ /g, '-');
+      // Remove all trailing spaces and _ characters
+      inputText.value = inputText.value.replace(/-+$/, '');
+      // Replace all - a characters with a single -
+      inputText.value = inputText.value.replace(/-+/g, '-');
+      // keep text only 10 characters long
+      inputText.value = inputText.value.substring(0, 10);
+
       socket.emit('set player name', inputText.value);
     };
     this.nameFormElement.addListener('click');
@@ -60,20 +70,11 @@ export default class PlayerStartingScene extends PlayerScene {
       nameSend();
     });
 
-    // move element to bottom
-    this.nameFormElement.y = screenDimensions.height - 150;
-
-    // switch spaces with understore on typing
-    this.input.keyboard?.on('keydown', (event: any) => {
+    this.input.keyboard?.on('keyup', (event: any) => {
       if (!this.nameFormElement) return;
       var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
-      if (event.keyCode === 32) {
-        // remove space
-        event.preventDefault();
-        inputText.value += '_';
-      }
       // if larger than 10 characters, remove last character
-      if (inputText.value.length > 10) {
+      if (inputText.value.length >= 10) {
         inputText.value = inputText.value.substring(0, 10);
       }
     });
@@ -91,6 +92,35 @@ export default class PlayerStartingScene extends PlayerScene {
     });
   }
 
+  handleNameStyleChange() {
+    if (!this.nameFormElement) return;
+    var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
+    if (!inputText) return;
+    if (this.checkIfNameInInputIsSameAsCurrentName()) {
+      // show a different style to the input box
+      inputText.style.color = 'green';
+      inputText.style.fontWeight = 'bold';
+      // remove text background
+      inputText.style.background = 'none';
+    } else {
+      // reset the style to the normal style
+      inputText.style.color = 'black';
+      inputText.style.fontWeight = 'normal';
+      inputText.style.background = 'white';
+    }
+  }
+
+  checkIfNameInInputIsSameAsCurrentName() {
+    if (!this.nameFormElement) return;
+    var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
+    if (!inputText) return;
+    if (!persistentData.roomData) return;
+    const myUser = findMyUser(persistentData.roomData);
+    if (!myUser) return;
+    if (inputText.value === myUser.name) return true;
+    return false;
+  }
+
   setUserNames(roomData: RoomData | null) {
     if (!roomData) return;
     const myUser = findMyUser(roomData);
@@ -103,13 +133,5 @@ export default class PlayerStartingScene extends PlayerScene {
 
   update(time: number, delta: number) {
     this.playerMenu?.update(time, delta);
-    // // every 4 seconds refresh the scale
-    // this.scaleTimer.update(delta);
-    // if (this.scaleTimer.isDone()) {
-    //   this.scaleTimer.start();
-    //   console.log('rescale');
-    //   this.scale.refresh();
-    // }
-
   }
 }

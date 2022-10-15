@@ -223,7 +223,7 @@ io.on('connection', (socket) => {
     socket.on('set player name', (name: string) => {
         // Keep name if ''
         if (name === '') return;
-        name = name.trim().replace(/ /g, '_');
+        name = name.trim().replace(/ /g, '-');
         // make sure text is only 10 characters
         name = name.substring(0, 10);
         updateUser({ name: name, hasSetName: true }, user);
