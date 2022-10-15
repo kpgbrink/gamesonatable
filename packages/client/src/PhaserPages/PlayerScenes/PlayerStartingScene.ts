@@ -61,6 +61,8 @@ export default class PlayerStartingScene extends PlayerScene {
       inputText.value = inputText.value.replace(/-+/g, '-');
       // keep text only 10 characters long
       inputText.value = inputText.value.substring(0, 10);
+      // make name input go away
+      this.nameFormElement.setVisible(false);
 
       socket.emit('set player name', inputText.value);
     };
@@ -73,7 +75,10 @@ export default class PlayerStartingScene extends PlayerScene {
     this.input.keyboard?.on('keyup', (event: any) => {
       if (!this.nameFormElement) return;
       var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
-      this.setStyleForNameInputNotSent();
+      // only if key not enter
+      if (event.keyCode !== 13) {
+        this.setStyleForNameInputNotSent();
+      }
       // if larger than 10 characters, remove last character
       if (inputText.value.length >= 10) {
         inputText.value = inputText.value.substring(0, 10);
@@ -97,6 +102,7 @@ export default class PlayerStartingScene extends PlayerScene {
     if (!this.nameFormElement) return;
     var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
     if (!inputText) return;
+    console.log('check if name in input is same as current name', this.checkIfNameInInputIsSameAsCurrentName());
     if (this.checkIfNameInInputIsSameAsCurrentName()) {
       // show a different style to the input box
       inputText.style.color = 'green';
@@ -111,6 +117,7 @@ export default class PlayerStartingScene extends PlayerScene {
   setStyleForNameInputNotSent() {
     if (!this.nameFormElement) return;
     var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
+    this.nameFormElement.setVisible(true);
     if (!inputText) return;
     inputText.style.color = 'black';
     inputText.style.fontWeight = 'normal';
