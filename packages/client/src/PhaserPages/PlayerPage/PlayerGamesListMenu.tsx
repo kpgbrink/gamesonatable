@@ -101,11 +101,18 @@ export default function PlayerGamesListMenu() {
             cursor: "pointer",
           }}
         >
-          <Textfit>Back</Textfit>
+          <Textfit
+            style={{
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            Back
+          </Textfit>
         </button>
         {selectedGame ? (
           <div>
-            <h1
+            <div
               style={{
                 position: "absolute",
                 top: "0px",
@@ -115,20 +122,35 @@ export default function PlayerGamesListMenu() {
                 color: palletColors.color1,
               }}
             >
-              {selectedGame.displayName}
-            </h1>
-            <p
+              <Textfit
+                style={{
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                {selectedGame.displayName}
+              </Textfit>
+            </div>
+            <div
               style={{
                 position: "absolute",
                 top: "20%",
                 left: "24%",
                 width: "70%",
-                height: "80%",
+                height: "60%",
                 color: palletColors.color1,
               }}
             >
-              {selectedGame.description}
-            </p>
+              <Textfit
+                mode="multi"
+                style={{
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                {selectedGame.description}
+              </Textfit>
+            </div>
             <button
               onClick={() => {
                 const gameData: Partial<MainMenuGameData> = {};
@@ -150,7 +172,14 @@ export default function PlayerGamesListMenu() {
                 cursor: "pointer",
               }}
             >
-              <Textfit>Play</Textfit>
+              <Textfit
+                style={{
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                Play
+              </Textfit>
             </button>
           </div>
         ) : (
