@@ -184,7 +184,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
                 key={game.name}
                 style={{
                   width: "23%",
-                  height: "50",
+                  height: "80px",
                   maxHeight: "50%",
                   backgroundColor: palletColors.color3,
                   borderRadius: "10px",
@@ -212,7 +212,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
               key={game.name}
               style={{
                 width: "23%",
-                height: "50",
+                height: "80px",
                 maxHeight: "50%",
                 backgroundColor: palletColors.color5,
                 borderRadius: "10px",
