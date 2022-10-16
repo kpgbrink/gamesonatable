@@ -229,7 +229,7 @@ export default function PlayerGamesListMenu() {
                 key={game.name}
                 style={{
                   width: "23%",
-                  height: "80px",
+                  height: "15%",
                   borderRadius: "10px",
                   margin: "1%",
                   // show clickable
@@ -264,7 +264,7 @@ export default function PlayerGamesListMenu() {
               key={game.name}
               style={{
                 width: "23%",
-                height: "80px",
+                height: "15%",
                 backgroundColor: palletColors.color1,
                 borderRadius: "10px",
                 margin: "1%",
