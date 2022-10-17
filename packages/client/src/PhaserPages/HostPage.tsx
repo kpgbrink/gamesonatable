@@ -1,37 +1,13 @@
-import { Game, GameStoredInfo } from "api";
+import { Game } from "api";
 import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
-import HostBeforeGameStart from "./HostScenes/HostBeforeGameStart";
+import HostBeforeTableGameScene from "./HostScenes/HostBeforeTableGameScene";
+import HostBeginScene from "./HostScenes/HostBeginScene";
 import OmahaHostScene from "./HostScenes/OmahaHostScene";
 import TexasHostScene from "./HostScenes/TexasHostScene";
 import ThirtyOneHostScene from "./HostScenes/ThirtyOneHostScene";
 import PhaserWrapper from "./PhaserWrapper";
-
-// Dictionary of game names to game scenes
-const gameScenes: Map<string, GameStoredInfo> = new Map([
-  [
-    "Omaha",
-    {
-      leavable: false,
-      joinable: false,
-    },
-  ],
-  [
-    "Texas",
-    {
-      leavable: false,
-      joinable: false,
-    },
-  ],
-  [
-    "ThirtyOne",
-    {
-      leavable: false,
-      joinable: false,
-    },
-  ],
-]);
 
 export default function HostPage() {
   const { socket } = useContext(AppContext);
@@ -46,11 +22,9 @@ export default function HostPage() {
     if (!game) {
       throw new Error("game is not defined in the URL");
     }
-    const gameData = gameScenes.get(game);
     const updateGame: Partial<Game> = {
       // Spread gameData into updateGame
-      ...gameData,
-      selectedGame: game,
+      selectedGameName: game,
     };
     socket.emit("update game", updateGame);
     // add listener to allow phaser code to change url
@@ -75,7 +49,8 @@ export default function HostPage() {
       <PhaserWrapper
         config={{
           scene: [
-            HostBeforeGameStart,
+            HostBeginScene,
+            HostBeforeTableGameScene,
             OmahaHostScene,
             TexasHostScene,
             ThirtyOneHostScene,

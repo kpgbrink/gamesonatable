@@ -1,3 +1,4 @@
+
 export interface NewRoomId {
     roomId: string;
 };
@@ -32,16 +33,10 @@ export interface User {
     hasSetName: boolean;
 }
 
-export interface GameStoredInfo {
-    // If someone is able to leave a game in the middle of a game
-    leavable: boolean | null;
-    // If game is joinable when the game is running
-    joinable: boolean | null;
-}
-
-export interface Game extends GameStoredInfo {
+export interface Game {
     currentPlayerScene: string | null;
-    selectedGame: string | null;
+    selectedGameSceneIndex: number;
+    selectedGameName: string | null;
 }
 
 export interface RoomData {

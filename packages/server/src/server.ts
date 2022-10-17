@@ -217,6 +217,7 @@ io.on('connection', (socket) => {
         const room = getRoom(user.room);
         if (!room) return;
         room.game = { ...room.game, ...game };
+        console.log('room game', room.game);
         io.to(user.room).emit('room data', room);
     });
 

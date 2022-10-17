@@ -1,4 +1,4 @@
-import { Game, RoomData, UserBeforeGameStartDataDictionary } from "api";
+import { RoomData, UserBeforeGameStartDataDictionary } from "api";
 import socket from "../../SocketConnection";
 import GameTable from "../objects/GameTable";
 import MenuButton from "../objects/MenuButton";
@@ -7,7 +7,8 @@ import { DegreesToRadians, getScreenCenter, loadIfImageNotLoaded, loadIfSpriteSh
 import HostScene from "./hostObjects/HostScene";
 import { HostUserAvatarsAroundTableSelectPosition } from "./hostObjects/HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableSelectPosition";
 
-export default class HostBeforeGameStart extends HostScene {
+export default class HostBeforeTableGameScene extends HostScene {
+    playerSceneKey: string = "PlayerBeforeTableGameStart";
     instructionText: Phaser.GameObjects.Text | null;
     startGameButton: MenuButton | null;
     userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary;
@@ -15,7 +16,7 @@ export default class HostBeforeGameStart extends HostScene {
     hostUserAvatars: HostUserAvatarsAroundTableSelectPosition | null;
 
     constructor() {
-        super({ key: 'HostBeforeGameStart' });
+        super({ key: 'HostBeforeTableGameScene' });
         this.instructionText = null;
         this.startGameButton = null;
         this.userBeforeGameStartDictionary = {};
@@ -32,22 +33,10 @@ export default class HostBeforeGameStart extends HostScene {
     create() {
         super.create();
         this.hostUserAvatars = new HostUserAvatarsAroundTableSelectPosition(this);
-        const updateGame: Partial<Game> = {
-            currentPlayerScene: 'PlayerBeforeGameStart',
-        };
-        socket.emit('update game', updateGame);
-        this.setUpStartGameButtonAndInstructionText();
         this.hostUserAvatars.createUsers(persistentData.roomData);
-        this.onRoomDataUpdateInstructionsOrStartGameButton(persistentData.roomData);
         socket.on('room data', (roomData: RoomData) => {
             this.hostUserAvatars?.createUsers(roomData);
-            this.onRoomDataUpdateInstructionsOrStartGameButton(roomData);
             this.startGameIfAllUsersReady();
-        });
-        this.input.on('drag', (pointer: any, gameObject: any, dragX: number, dragY: number) => {
-            gameObject.x = dragX;
-            gameObject.y = dragY;
-            this.removeInstructionText();
         });
         socket.emit('get room data');
         this.setUpUserReady();
@@ -94,28 +83,6 @@ export default class HostBeforeGameStart extends HostScene {
         });
     }
 
-    setUpStartGameButtonAndInstructionText() {
-        // Create both the instruction text and the start game button
-        const screenCenter = getScreenCenter(this);
-        this.instructionText = this.add.text(screenCenter.x, screenCenter.y - 250,
-            'Drag your avatar to your starting position!',
-            {
-                fontFamily: 'Arial',
-                fontSize: '80px',
-                color: '#000',
-                align: 'center',
-                stroke: '#014714',
-                strokeThickness: 5,
-                wordWrap: { width: 1000, useAdvancedWrap: true },
-            }).setOrigin(0.5).setDepth(1);
-        this.startGameButton = new MenuButton(screenCenter.x, screenCenter.y, this);
-        this.startGameButton.on('pointerdown', () => this.startGame());
-        this.startGameButton.setText('Start game');
-        this.add.existing(this.startGameButton);
-        this.instructionText.setVisible(true);
-        this.startGameButton.setVisible(true);
-    }
-
     startGame() {
         // All users in game
         const playersInGame = playersInRoom(persistentData.roomData);
@@ -125,32 +92,7 @@ export default class HostBeforeGameStart extends HostScene {
         persistentData.roomData?.users.forEach(user => {
             user.inGame = true;
         });
-        {
-            // set the game scene
-            const updateGame: Partial<Game> = {
-                currentPlayerScene: persistentData.roomData?.game.selectedGame,
-            };
-            socket.emit('update game', updateGame);
-        }
-        if (!persistentData.roomData?.game.selectedGame) return;
-        this.scene.start(persistentData.roomData?.game.selectedGame);
-    }
-
-    onRoomDataUpdateInstructionsOrStartGameButton(roomData: RoomData | null) {
-        if (!roomData) return;
-        // Check if all of the rotations are already set. And if they are do not show the instruction text.
-        const allRotationsSet = playersInRoom(roomData).every((user) => user.rotation);
-        if (allRotationsSet) {
-            // Do not show the start game button if previously was not showing it.
-            if (!this.instructionText?.visible) {
-            }
-        } else {
-            this.removeInstructionText();
-        }
-    }
-
-    removeInstructionText() {
-        this.instructionText?.setVisible(false);
+        this.goToNextScene();
     }
 
     update() {

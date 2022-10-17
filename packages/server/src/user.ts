@@ -1,4 +1,5 @@
 import { RoomData, User } from 'api';
+import { getGameFromName } from 'api/src/gamesList';
 import { allRaces, nameByRace } from 'fantasy-name-generator';
 
 const rooms: Map<string, RoomData> = new Map();
@@ -28,9 +29,8 @@ export const addUserToRoom = (upsertingUser: User) => {
         rooms.set(user.room, {
             game: {
                 currentPlayerScene: 'PlayerStartingScene',
-                selectedGame: null,
-                leavable: null,
-                joinable: null,
+                selectedGameSceneIndex: 0,
+                selectedGameName: null,
             },
             room: user.room, users: []
         });
@@ -69,7 +69,9 @@ export const removeUser = (userSocketSocketId: string, roomId: string) => {
     }
     // If the user is in game and the game is not leavable, keep the user in the game
     const user = room.users[index];
-    if (room.game.leavable === false && user.inGame) {
+    if (room.game.selectedGameName
+        && getGameFromName(room.game.selectedGameName).leavable === false
+        && user.inGame) {
         console.log('user is in game that is not leavable so keep them in game');
         // remove the socket id from the user
         room.users[index].socketId = null;

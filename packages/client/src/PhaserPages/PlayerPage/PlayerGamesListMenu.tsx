@@ -1,11 +1,11 @@
 import { List, ListItem } from "@mui/material";
 import { MainMenuGameData } from "api/src/data/datas/MainMenuData";
+import { gamesList } from "api/src/gamesList";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Textfit } from "react-textfit";
 import { palletColors } from "../../Palettes";
 import socket from "../../SocketConnection";
-import { gamesList } from "../objects/gamesList";
 
 export default function PlayerGamesListMenu() {
   const { roomId, userId } = useParams();

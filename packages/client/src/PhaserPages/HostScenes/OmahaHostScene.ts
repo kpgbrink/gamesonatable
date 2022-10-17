@@ -2,8 +2,10 @@ import Phaser from "phaser";
 import HostScene from "./hostObjects/HostScene";
 
 export default class OmahaHostScene extends HostScene {
+    playerSceneKey: string = "TODO";
+
     constructor() {
-        super({ key: 'Omaha' });
+        super({ key: 'OmahaHostScene' });
     }
 
     create() {

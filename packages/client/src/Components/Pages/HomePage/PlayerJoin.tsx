@@ -41,9 +41,8 @@ export default function PlayerJoin() {
   useEffect(() => {
     const updateGame: Game = {
       currentPlayerScene: "PlayerStartingScene",
-      selectedGame: null,
-      joinable: null,
-      leavable: null,
+      selectedGameSceneIndex: 0,
+      selectedGameName: null,
     };
     socket.emit("update game", updateGame);
   }, [roomId, socket]);

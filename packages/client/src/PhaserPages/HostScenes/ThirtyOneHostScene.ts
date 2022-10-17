@@ -4,11 +4,12 @@ import { ThirtyOneGame } from "./hostObjects/hostGame/ThirtyOneGame";
 import HostScene from "./hostObjects/HostScene";
 
 export default class ThirtyOneHostScene extends HostScene {
+    playerSceneKey: string = "ThirtyOne";
     gameTable: GameTable | null = null;
     thirtyOneGame: ThirtyOneGame = new ThirtyOneGame(this);
 
     constructor() {
-        super({ key: 'ThirtyOne' });
+        super({ key: 'ThirtyOneHostScene' });
     }
 
     preload() {

@@ -6,12 +6,12 @@ import { addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeM
 import { loadUserAvatarSprites } from "../objects/UserAvatarContainer";
 import PlayerScene from "./playerObjects/PlayerScene";
 
-export default class PlayerBeforeGameStart extends PlayerScene {
+export default class PlayerBeforeTableGameStart extends PlayerScene {
     readyButton: MenuButton | null;
     waitingForPlayersText: Phaser.GameObjects.Text | null;
 
     constructor() {
-        super({ key: 'PlayerBeforeGameStart' });
+        super({ key: 'PlayerBeforeTableGameStart' });
         this.readyButton = null;
         this.waitingForPlayersText = null;
     }

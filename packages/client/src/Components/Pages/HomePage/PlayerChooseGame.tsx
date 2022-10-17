@@ -1,6 +1,7 @@
 import { List, ListItem } from "@mui/material";
 import { Game, RoomData, UserAvatar } from "api";
 import { MainMenuGameData } from "api/src/data/datas/MainMenuData";
+import { gamesList } from "api/src/gamesList";
 import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import QRCode from "react-qr-code";
 import { useParams } from "react-router-dom";
@@ -8,7 +9,6 @@ import { Textfit } from "react-textfit";
 import { AppContext } from "../../../AppContext";
 import { palletColors } from "../../../Palettes";
 import { avatarImages } from "../../../PhaserPages/objects/avatarImages.generated";
-import { gamesList } from "../../../PhaserPages/objects/gamesList";
 import { persistentData } from "../../../PhaserPages/objects/PersistantData";
 
 type Props = {
@@ -29,14 +29,6 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
   };
 
   executeToScroll();
-
-  // // every second scroll to the selected game
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     executeToScroll();
-  //   }, 1000);
-  //   return () => clearInterval(interval);
-  // }, []);
 
   useLayoutEffect(() => {
     executeToScroll();
@@ -68,9 +60,8 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
   useEffect(() => {
     const updateGame: Game = {
       currentPlayerScene: "PlayerStartingScene",
-      selectedGame: null,
-      joinable: null,
-      leavable: null,
+      selectedGameSceneIndex: 0,
+      selectedGameName: null,
     };
     socket.emit("update game", updateGame);
   }, [roomId, socket]);

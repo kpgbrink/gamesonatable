@@ -2,8 +2,10 @@ import Phaser from "phaser";
 import HostScene from "./hostObjects/HostScene";
 
 export default class TexasHostScene extends HostScene {
+    playerSceneKey: string = "TODO";
+
     constructor() {
-        super({ key: 'Texas' });
+        super({ key: 'TexasHostScene' });
     }
 
     preload() {

@@ -10,7 +10,7 @@ import ShowRoomIssue from "./PlayerPage/ShowRoomIssue";
 import ShowUserReplaceOptions from "./PlayerPage/ShowUserReplaceOptions";
 import { getStoredIds, storeIds } from "./PlayerPage/StoredBrowserIds";
 import Omaha from "./PlayerScenes/Omaha";
-import PlayerBeforeGameStart from "./PlayerScenes/PlayerBeforeGameStart";
+import PlayerBeforeGameStart from "./PlayerScenes/PlayerBeforeTableGameStart";
 import PlayerStartingScene from "./PlayerScenes/PlayerStartingScene";
 import Texas from "./PlayerScenes/Texas";
 import ThirtyOne from "./PlayerScenes/ThirtyOne";
