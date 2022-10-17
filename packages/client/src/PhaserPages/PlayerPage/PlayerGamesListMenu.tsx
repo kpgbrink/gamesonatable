@@ -91,7 +91,7 @@ export default function PlayerGamesListMenu() {
             position: "absolute",
             top: "0px",
             left: "0px",
-            width: "23%",
+            width: "15%",
             height: "20%",
             backgroundColor: palletColors.color3,
             color: palletColors.color1,
@@ -103,8 +103,9 @@ export default function PlayerGamesListMenu() {
         >
           <Textfit
             style={{
-              height: "100%",
+              height: "80%",
               width: "100%",
+              textAlign: "center",
             }}
           >
             Back
@@ -116,7 +117,7 @@ export default function PlayerGamesListMenu() {
               style={{
                 position: "absolute",
                 top: "0px",
-                left: "24%",
+                left: "19%",
                 width: "70%",
                 height: "20%",
                 color: palletColors.color1,
@@ -135,8 +136,8 @@ export default function PlayerGamesListMenu() {
               style={{
                 position: "absolute",
                 top: "20%",
-                left: "24%",
-                width: "70%",
+                left: "12%",
+                width: "80%",
                 height: "60%",
                 color: palletColors.color1,
               }}

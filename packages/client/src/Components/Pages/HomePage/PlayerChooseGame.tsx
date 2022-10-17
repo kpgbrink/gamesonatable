@@ -153,8 +153,8 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
               padding: "10px",
             }}
           >
-            <div>{gameSelecting.displayName}</div>
-            <div>{gameSelecting.description}</div>
+            <h1>{gameSelecting.displayName}</h1>
+            <p>{gameSelecting.description}</p>
           </div>
         );
       })()}
