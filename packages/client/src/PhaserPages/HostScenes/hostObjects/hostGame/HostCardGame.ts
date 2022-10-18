@@ -8,6 +8,7 @@ import { ValueWithDefault } from "../../../objects/ValueWithDefault";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { Shuffling } from "./states/hostCardGame/Shuffling";
+import { HostGameState } from "./states/HostGameState";
 
 export abstract class HostCardGame<
     GameDataType extends CardGameData,
@@ -42,6 +43,8 @@ export abstract class HostCardGame<
         // load player turn image
         loadIfImageNotLoaded(this.scene, "playerTurnIndicator", "assets/playerTurnIndicator.png");
     }
+
+    abstract createGameStateAfterDealing(): HostGameState<PlayerDataType, GameDataType>;
 
     abstract createHostUserAvatarsAroundTableGame(): void;
 

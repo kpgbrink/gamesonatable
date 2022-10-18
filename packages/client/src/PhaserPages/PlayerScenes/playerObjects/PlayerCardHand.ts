@@ -218,7 +218,6 @@ export abstract class PlayerCardHand
     create() {
         super.create();
         // ask for my current data
-        this.requestData();
         this.cards.create(0, 0);
         this.cards.cardContainers.forEach(card => {
             card.setTransform(this.tablePosition);

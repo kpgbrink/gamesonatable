@@ -45,14 +45,6 @@ export interface RoomData {
     game: Game;
 }
 
-export interface UserBeforeGameStartData {
-    ready: boolean;
-}
-
-export interface UserBeforeGameStartDataDictionary {
-    [userId: string]: UserBeforeGameStartData;
-}
-
 export interface CardContent {
     suit: string | null;
     rank: string | null;

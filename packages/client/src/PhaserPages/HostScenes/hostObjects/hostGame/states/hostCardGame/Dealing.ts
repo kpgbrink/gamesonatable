@@ -71,7 +71,7 @@ export class Dealing<
         if (this.hostGame.hostUserAvatars?.getUsersInGame().every(userAvatar => {
             return this.hostGame.getPlayerCards(userAvatar.user.id)?.length === this.hostGame.dealAmount;
         })) {
-            this.hostGame.changeState(this.hostGame.createGameState());
+            this.hostGame.changeState(this.hostGame.createGameStateAfterDealing());
         }
     }
 

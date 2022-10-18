@@ -38,7 +38,6 @@ export default class PlayerStartingScene extends PlayerScene {
     this.playerMenu = new PlayerMenu(this);
     this.playerMenu.create();
     socket.on('room data', (gameData: any) => {
-      console.log('gameData check style change', gameData);
       this.handleNameStyleChange();
     });
   }
@@ -102,7 +101,6 @@ export default class PlayerStartingScene extends PlayerScene {
     if (!this.nameFormElement) return;
     var inputText = this.nameFormElement.getChildByName('nameField') as HTMLInputElement;
     if (!inputText) return;
-    console.log('check if name in input is same as current name', this.checkIfNameInInputIsSameAsCurrentName());
     if (this.checkIfNameInInputIsSameAsCurrentName()) {
       // show a different style to the input box
       inputText.style.color = 'green';

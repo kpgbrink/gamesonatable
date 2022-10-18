@@ -21,8 +21,6 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
         super.create();
     }
 
-    abstract createGameState(): HostGameState<PlayerDataType, GameDataType>;
-
     // PlayerData --------------------
     getPlayerDataToSend(userId: string): Partial<PlayerDataType> | undefined {
         return this.currentState?.getPlayerDataToSend(userId);

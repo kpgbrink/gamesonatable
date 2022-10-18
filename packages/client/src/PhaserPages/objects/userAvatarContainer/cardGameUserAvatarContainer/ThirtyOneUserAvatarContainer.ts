@@ -10,7 +10,7 @@ export class ThirtyOneUserAvatarContainer extends CardGameUserAvatarContainer<Th
     removingPokerChips: GenericItemContainer[] = [];
     roundScore: number = 0;
 
-    playerCardHandState: ThirtyOnePlayerCardHandData = new ThirtyOnePlayerCardHandData();
+    playerCardHandData: ThirtyOnePlayerCardHandData = new ThirtyOnePlayerCardHandData();
 
     createPlayerCardHandData(): ThirtyOnePlayerCardHandData {
         return new ThirtyOnePlayerCardHandData();

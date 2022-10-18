@@ -10,6 +10,7 @@ export abstract class
         this.listenForGameData();
         this.listenForPlayerData();
         this.listenForData();
+        this.requestData();
     }
 
     destroy() {

@@ -1,4 +1,4 @@
-import { Game, NewRoomId, StoredBrowserIds, User, UserAvatar, UserBeforeGameStartDataDictionary } from 'api';
+import { Game, NewRoomId, StoredBrowserIds, User, UserAvatar } from 'api';
 import { GameData, PlayerData } from "api/src/data/Data";
 import config from 'config';
 import cors from 'cors';
@@ -255,13 +255,6 @@ io.on('connection', (socket) => {
     // Tell Host user is ready to start the game
     socket.on('ready', () => {
         io.to(user.room).emit('ready', user.id);
-    });
-
-    // Host tells user it is ready to start the game
-    socket.on('userBeforeGameStart data', (userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary) => {
-        const room = getRoom(user.room);
-        if (!room) return;
-        io.to(user.room).emit('userBeforeGameStart data', userBeforeGameStartDictionary);
     });
 
     socket.on('start game', (usersInGame: User[]) => {

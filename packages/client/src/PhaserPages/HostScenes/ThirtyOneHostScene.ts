@@ -15,7 +15,7 @@ export default class ThirtyOneHostScene extends HostScene {
     preload() {
         loadIfImageNotLoaded(this, 'table', 'assets/images/table.png');
         GameTable.preload(this);
-        this.thirtyOneGame?.preload();
+        this.thirtyOneGame.preload();
     }
 
     create() {

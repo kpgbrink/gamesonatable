@@ -32,7 +32,6 @@ export default class PlayerScene extends Phaser.Scene {
         window.addEventListener('resizeSpecial', (e: any) => {
             console.log('resizeSpecial event happened');
             this.scale.refresh();
-
         });
     }
 

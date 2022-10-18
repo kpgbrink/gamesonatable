@@ -26,10 +26,6 @@ export class ThirtyOneGame
         this.gameData = new ThirtyOneCardGameData();
     }
 
-    updateUserAvatar(userId: string) {
-        // TODO make the update thing happen to the thingy
-    }
-
     preload() {
         super.preload();
         loadIfImageNotLoaded(this.scene, 'bluePokerChip', 'assets/pokerChips/bluePokerChip.png');
@@ -89,7 +85,7 @@ export class ThirtyOneGame
         this.currentState?.onItemMoveToTable();
     }
 
-    createGameState(): HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> {
+    createGameStateAfterDealing(): HostGameState<ThirtyOnePlayerCardHandData, ThirtyOneCardGameData> {
         return new ThirtyOneGameStart(this);
     }
 

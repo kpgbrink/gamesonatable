@@ -1,14 +1,13 @@
-import { UserBeforeGameStartDataDictionary } from "api";
-import socket from "../../SocketConnection";
 import MenuButton from "../objects/MenuButton";
-import { persistentData } from "../objects/PersistantData";
 import { addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../objects/Tools";
 import { loadUserAvatarSprites } from "../objects/UserAvatarContainer";
+import PlayerBeforeTableGameStartDataHandler from "./playerObjects/PlayerBeforeTableGameDataHandler";
 import PlayerScene from "./playerObjects/PlayerScene";
 
 export default class PlayerBeforeTableGameStart extends PlayerScene {
     readyButton: MenuButton | null;
     waitingForPlayersText: Phaser.GameObjects.Text | null;
+    playerBeforeGameStartDataHandler: PlayerBeforeTableGameStartDataHandler | null = null;
 
     constructor() {
         super({ key: 'PlayerBeforeTableGameStart' });
@@ -27,8 +26,10 @@ export default class PlayerBeforeTableGameStart extends PlayerScene {
         loadUserAvatarSprites(this);
         makeMyUserAvatarInCenterOfPlayerScreen(this);
         this.addReadyButton();
-        this.checkIfIAmReady();
+        // this.checkIfIAmReady();
         this.addInstructions();
+        this.playerBeforeGameStartDataHandler = new PlayerBeforeTableGameStartDataHandler(this);
+        this.playerBeforeGameStartDataHandler.create();
     }
 
     addInstructions() {
@@ -41,21 +42,26 @@ export default class PlayerBeforeTableGameStart extends PlayerScene {
             });
     }
 
-    checkIfIAmReady() {
-        socket.on('userBeforeGameStart data', (userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary) => {
-            // if my user is ready
-            if (!persistentData.myUserId) return;
-            if (userBeforeGameStartDictionary[persistentData.myUserId]?.ready) {
-                this.showWaitingForPlayersText();
-            } else {
-                this.showReadyButton();
-            }
-        });
-    }
+    // checkIfIAmReady() {
+    //     socket.on('userBeforeGameStart data', (userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary) => {
+    //         // if my user is ready
+    //         if (!persistentData.myUserId) return;
+    //         if (userBeforeGameStartDictionary[persistentData.myUserId]?.ready) {
+    //             this.showWaitingForPlayersText();
+    //         } else {
+    //             this.showReadyButton();
+    //         }
+    //     });
+    // }
 
     showReadyButton() {
         this.readyButton?.setVisible(true);
         this.waitingForPlayersText?.setVisible(false);
+    }
+
+    hideReadyButton() {
+        this.readyButton?.setVisible(false);
+        this.waitingForPlayersText?.setVisible(true);
     }
 
     showWaitingForPlayersText() {
@@ -71,12 +77,16 @@ export default class PlayerBeforeTableGameStart extends PlayerScene {
         this.readyButton.setText('Ready?');
         this.readyButton.on('pointerdown', () => {
             this.showWaitingForPlayersText();
-            socket.emit('ready');
+            if (!this.playerBeforeGameStartDataHandler) return;
+            this.playerBeforeGameStartDataHandler.playerData.ready = true;
+            this.playerBeforeGameStartDataHandler.sendPlayerData();
+
         });
         this.add.existing(this.readyButton);
     }
 
-    update() {
+    update(time: number, delta: number) {
+        this.playerBeforeGameStartDataHandler?.update(time, delta);
 
     }
 }
