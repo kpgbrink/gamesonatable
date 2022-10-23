@@ -23,7 +23,6 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
     create() {
         super.create();
         this.addSelectGameButton();
-        // this.createScrollablePanel();
     }
 
     // on scene shutdown
@@ -38,6 +37,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         this.selectGameButton?.setVisible(false);
         this.selectGameButton.on('pointerdown', () => {
             this.gameData.mainMenuPosition = 1;
+            this.updateMainMenuPosition(this.gameData);
             this.selectGameButton?.setVisible(false);
             this.sendData();
         });

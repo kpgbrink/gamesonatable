@@ -16,7 +16,7 @@ export default function PlayerGamesListMenu() {
   const [timeOutVisible, setTimeOutVisible] = useState(false);
 
   // selected game state that is nullable string
-  const [selectedGameNameName, setSelectedGame] = useState<string | null>(null);
+  const [selectedGameNameName, setSelectedGame] = useState<string>("Random");
 
   // set visible to true after 1 second
   useEffect(() => {
@@ -88,6 +88,7 @@ export default function PlayerGamesListMenu() {
             socket.emit("gameDataToHost", gameData);
           }}
           style={{
+            border: "none",
             position: "absolute",
             top: "0px",
             left: "0px",
@@ -96,13 +97,13 @@ export default function PlayerGamesListMenu() {
             backgroundColor: palletColors.color3,
             color: palletColors.color1,
             borderRadius: "20px",
-            fontWeight: "bold",
             // show pointer when hovering
             cursor: "pointer",
           }}
         >
           <Textfit
             style={{
+              fontWeight: "bold",
               height: "80%",
               width: "100%",
               textAlign: "center",
@@ -159,6 +160,7 @@ export default function PlayerGamesListMenu() {
                 socket.emit("gameDataToHost", gameData);
               }}
               style={{
+                border: "none",
                 position: "absolute",
                 top: "80%",
                 left: "50%",
