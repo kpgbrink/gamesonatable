@@ -1,6 +1,6 @@
 import MenuButton from "../objects/MenuButton";
 import { addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../objects/Tools";
-import { loadUserAvatarSprites } from "../objects/UserAvatarContainer";
+import { preloadUserAvatarSprites } from "../objects/UserAvatarContainer";
 import PlayerBeforeTableGameStartDataHandler from "./playerObjects/PlayerBeforeTableGameDataHandler";
 import PlayerScene from "./playerObjects/PlayerScene";
 
@@ -18,12 +18,12 @@ export default class PlayerBeforeTableGameStart extends PlayerScene {
     preload() {
         loadIfSpriteSheetNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png', { frameWidth: 64, frameHeight: 64 });
         loadIfSpriteSheetNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
+        preloadUserAvatarSprites(this);
     }
 
     create() {
         super.create();
         addUserNameText(this);
-        loadUserAvatarSprites(this);
         makeMyUserAvatarInCenterOfPlayerScreen(this);
         this.addReadyButton();
         // this.checkIfIAmReady();
@@ -41,18 +41,6 @@ export default class PlayerBeforeTableGameStart extends PlayerScene {
                 wordWrap: { width: 800, useAdvancedWrap: true }
             });
     }
-
-    // checkIfIAmReady() {
-    //     socket.on('userBeforeGameStart data', (userBeforeGameStartDictionary: UserBeforeGameStartDataDictionary) => {
-    //         // if my user is ready
-    //         if (!persistentData.myUserId) return;
-    //         if (userBeforeGameStartDictionary[persistentData.myUserId]?.ready) {
-    //             this.showWaitingForPlayersText();
-    //         } else {
-    //             this.showReadyButton();
-    //         }
-    //     });
-    // }
 
     showReadyButton() {
         this.readyButton?.setVisible(true);

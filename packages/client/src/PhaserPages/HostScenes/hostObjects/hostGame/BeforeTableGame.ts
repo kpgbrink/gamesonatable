@@ -1,7 +1,8 @@
 import { BeforeTableGameData, PlayerBeforeTableGameData } from "api/src/data/datas/BeforeTableGameData";
 import socket from "../../../../SocketConnection";
+import GameTable from "../../../objects/GameTable";
 import { persistentData } from "../../../objects/PersistantData";
-import { playersInRoom } from "../../../objects/Tools";
+import { getScreenCenter, loadIfImageNotLoaded, playersInRoom } from "../../../objects/Tools";
 import HostBeforeTableGameScene from "../../HostBeforeTableGameScene";
 import { HostGame } from "../HostGame";
 import { HostUserAvatarsAroundTableSelectPosition } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableSelectPosition";
@@ -10,6 +11,7 @@ import { HostUserAvatarsAroundTableSelectPosition } from "../HostUserAvatars/Hos
 export class BeforeTableGame extends HostGame<PlayerBeforeTableGameData, BeforeTableGameData> {
     scene: HostBeforeTableGameScene;
     gameData: BeforeTableGameData;
+    gameTable: GameTable | null = null;
 
     hostUserAvatars: HostUserAvatarsAroundTableSelectPosition | null = null;
 
@@ -21,19 +23,22 @@ export class BeforeTableGame extends HostGame<PlayerBeforeTableGameData, BeforeT
 
     preload() {
         super.preload();
+        loadIfImageNotLoaded(this.scene, 'checkmark', 'assets/ui/checkmark.png');
+        loadIfImageNotLoaded(this.scene, 'table', 'assets/TableScaled.png');
     }
 
     create() {
         super.create();
         this.createHostUserAvatarsAroundTableGame();
+        const screenCenter = getScreenCenter(this.scene);
+        this.gameTable = new GameTable(this.scene, screenCenter.x, screenCenter.y);
+        this.gameTable.setDepth(-1);
     }
 
     createHostUserAvatarsAroundTableGame() {
         this.hostUserAvatars = new HostUserAvatarsAroundTableSelectPosition(this.scene);
         this.hostUserAvatars.createOnRoomData();
         this.hostUserAvatars.moveToEdgeOfTable();
-        console.log('this.hostUserAvatars.userAvatarContainers', this.hostUserAvatars.userAvatarContainers);
-        console.log('amount', this.hostUserAvatars.userAvatarContainers.length);
         this.hostUserAvatars.userAvatarContainers.forEach(player => {
             player.create();
             player.depth = 100;
@@ -67,7 +72,6 @@ export class BeforeTableGame extends HostGame<PlayerBeforeTableGameData, BeforeT
     override onPlayerDataReceived(userId: string, playerData: Partial<PlayerBeforeTableGameData>, gameData: Partial<BeforeTableGameData> | null): void {
         super.onPlayerDataReceived(userId, playerData, gameData);
         // update ready on the player
-        // update ready on the avatar
         console.log('playerData', playerData);
         const avatar = this.hostUserAvatars?.userAvatarContainers.find((avatar) => avatar.user.id === userId);
         console.log('avatar', avatar);
@@ -80,7 +84,6 @@ export class BeforeTableGame extends HostGame<PlayerBeforeTableGameData, BeforeT
         // get the player data from userId
         const playerData = this.hostUserAvatars?.userAvatarContainers.find((avatar) => avatar.user.id === userId)?.beforeTableGamePlayerData;
         if (!playerData) return;
-        console.log('player ready', playerData.ready);
         return {
             ready: playerData.ready,
         };

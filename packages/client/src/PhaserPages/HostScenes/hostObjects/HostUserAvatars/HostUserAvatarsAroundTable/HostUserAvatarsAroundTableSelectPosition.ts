@@ -7,7 +7,7 @@ export class HostUserAvatarsAroundTableSelectPosition extends HostUserAvatarsAro
     moveToEdgeOfTableSpeed: number = 5;
 
     override createUserAvatarContainer(x: number, y: number, user: User): BeforeTableGameUserAvatarContainer {
-        console.log('createUserAvatarContainer', x, y, user);
+        // console.log('createUserAvatarContainer', x, y, user);
         const userAvatarContainer = new BeforeTableGameUserAvatarContainer(this.scene, x, y, user);
         return userAvatarContainer;
     }

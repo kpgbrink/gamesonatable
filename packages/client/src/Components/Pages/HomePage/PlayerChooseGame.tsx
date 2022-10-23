@@ -72,7 +72,6 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
   const joinURL = `${window.location.origin}/room/${roomCreated}/player`;
 
   const userListNoHosts = userList.filter((user) => !user.isHost);
-  console.log("player choose game user list", userListNoHosts);
   // add dummy users for testing
   for (let i = 0; i < 0; i++) {
     userListNoHosts.push({

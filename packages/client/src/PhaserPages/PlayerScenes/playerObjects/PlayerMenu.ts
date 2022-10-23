@@ -76,8 +76,6 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         // update the main menu position
         if (gameData.mainMenuPosition === undefined) return;
         if (gameData.mainMenuPosition === null) return;
-        // if the main menu position is 0, show the select game button.
-        // console.log('main menu position', gameData.mainMenuPosition);
         const mainMenuPosition0 = gameData.mainMenuPosition === 0;
         this.selectGameButton?.setVisible(mainMenuPosition0);
         if (mainMenuPosition0) {

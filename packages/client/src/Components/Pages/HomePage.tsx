@@ -53,7 +53,6 @@ export default function HomePage() {
     }
   }, [mainMenuData, navigate, roomCreated]);
 
-  console.log("main menu position", mainMenuData.mainMenuPosition);
   return (
     <div id="homePageContainer">
       <div
@@ -108,11 +107,11 @@ export class HostMainMenuDataHandler extends HostDataHandler<
     playerData: Partial<PlayerMainMenuData>,
     gameData: Partial<MainMenuGameData> | null
   ): void {
-    console.log("player data received", playerData);
+    // console.log("player data received", playerData);
   }
 
   override getGameDataToSend(): Partial<MainMenuGameData> | undefined {
-    console.log("sending game data", this.mainMenuGameData);
+    // console.log("sending game data", this.mainMenuGameData);
     return this.mainMenuGameData;
   }
 
@@ -122,9 +121,9 @@ export class HostMainMenuDataHandler extends HostDataHandler<
     playerData: Partial<PlayerMainMenuData> | null,
     updateGameData: boolean
   ): void {
-    console.log("game data received", gameData);
+    // console.log("game data received", gameData);
     this.mainMenuGameData = { ...this.mainMenuGameData, ...gameData };
-    console.log("new main menu game data", this.mainMenuGameData);
+    // console.log("new main menu game data", this.mainMenuGameData);
     this.setMainMenuGameData(this.mainMenuGameData);
 
     this.sendGameData();

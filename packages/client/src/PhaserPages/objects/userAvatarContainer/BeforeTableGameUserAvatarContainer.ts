@@ -16,7 +16,6 @@ export class BeforeTableGameUserAvatarContainer extends UserAvatarContainer {
     }
 
     createReadyCheckMark() {
-        console.log('add ready check mark');
         this.readyCheckMark = this.scene.add.image(0, 0, 'checkmark');
         this.readyCheckMark.setOrigin(0.5, 0.5);
         this.readyCheckMark.setScale(0.2);
@@ -25,7 +24,6 @@ export class BeforeTableGameUserAvatarContainer extends UserAvatarContainer {
     }
 
     setReady() {
-        console.log('set ready');
         this.beforeTableGamePlayerData.ready = true;
         this.readyCheckMark?.setVisible(true);
     }

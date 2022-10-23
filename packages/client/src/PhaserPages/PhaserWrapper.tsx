@@ -55,8 +55,6 @@ export default function PhaserWrapper({
     },
   };
 
-  console.log("configWithDom", configWithDom);
-
   // create phaser game
   useEffect(() => {
     const game = new Phaser.Game(configWithDom);

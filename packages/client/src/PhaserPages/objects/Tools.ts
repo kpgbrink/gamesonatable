@@ -39,7 +39,6 @@ export const addUserNameText = (scene: Phaser.Scene) => {
 
 export const socketOffOnSceneShutdown = (phaserScene: Phaser.Scene) => {
     phaserScene.events.once('shutdown', () => {
-        console.log('shutting down sockets');
         socket.off();
     });
 };

@@ -29,8 +29,28 @@ export const generateRandomUserAvatar = (): UserAvatar => {
     return userAvatar;
 }
 
-export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
+export const preloadUserAvatarSprites = (scene: Phaser.Scene) => {
     // console.log('loadUserAvatarSprites', socket.id);
+    // use persistentData 
+    persistentData.roomData?.users.forEach((user) => {
+        const userId = user.id;
+        const userAvatar = user.userAvatar;
+        if (!userAvatar) return;
+        console.log('loading the images in preload');
+        loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-base`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`, userAvatar.base);
+        loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-cloak`, `${playerFolder}cloak/${avatarImages.cloak[userAvatar.cloak]}`, userAvatar.cloak);
+        loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-gloves`, `${playerFolder}gloves/${avatarImages.gloves[userAvatar.gloves]}`, userAvatar.gloves);
+        loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-body`, `${playerFolder}body/${avatarImages.body[userAvatar.body]}`, userAvatar.body);
+        loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-beard`, `${playerFolder}beard/${avatarImages.beard[userAvatar.beard]}`, userAvatar.beard);
+        loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-boots`, `${playerFolder}boots/${avatarImages.boots[userAvatar.boots]}`, userAvatar.boots);
+        loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-hair`, `${playerFolder}hair/${avatarImages.hair[userAvatar.hair]}`, userAvatar.hair);
+        loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-head`, `${playerFolder}head/${avatarImages.head[userAvatar.head]}`, userAvatar.head);
+        loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-legs`, `${playerFolder}legs/${avatarImages.legs[userAvatar.legs]}`, userAvatar.legs);
+    });
+}
+
+// only use this on the player for now. hopefully fix later...
+export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
     socket.on('room data', (roomData: RoomData) => {
         roomData?.users.forEach(user => {
             const userId = user.id;
@@ -155,5 +175,10 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
         if (this.onSizeChange) {
             this.onSizeChange(this);
         }
+    }
+
+    // on delete
+    public destroy() {
+        console.log('try to destroy me');
     }
 }
