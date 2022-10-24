@@ -176,9 +176,4 @@ export default class UserAvatarContainer extends Phaser.GameObjects.Container {
             this.onSizeChange(this);
         }
     }
-
-    // on delete
-    public destroy() {
-        console.log('try to destroy me');
-    }
 }

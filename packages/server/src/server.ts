@@ -216,6 +216,15 @@ io.on('connection', (socket) => {
     socket.on('update game', (game: Partial<Game>) => {
         const room = getRoom(user.room);
         if (!room) return;
+        // check if switching off of staring scene. Means the game is starting.
+        if (room.game.currentPlayerScene == 'PlayerStartingScene' && game.currentPlayerScene !== 'PlayerStartingScene') {
+            console.log('set the users in the game --------------');
+            console.log(room.game.currentPlayerScene, game.currentPlayerScene);
+            // set in game to true for all users
+            console.log('before users', room.users);
+            room.users.filter(u => !u.isHost).forEach(u => u.inGame = true);
+            console.log('after users', room.users);
+        }
         room.game = { ...room.game, ...game };
         // console.log('room game', room.game);
         io.to(user.room).emit('room data', room);
@@ -257,21 +266,11 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('ready', user.id);
     });
 
-    socket.on('start game', (usersInGame: User[]) => {
-        const room = getRoom(user.room);
-        // Set ready users to inGame
-        room?.users.forEach(u => {
-            if (usersInGame.find(uig => u.id === uig.id)) {
-                u.inGame = true;
-            }
-        });
-        io.to(user.room).emit('room data', room);
-    });
-
     // TODO use this eventually actually juse the same text
     socket.on('playerDataToHost', (playerData: Partial<PlayerData>) => {
         const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
         if (!hostUser?.socketId) return;
+        console.log('player data to host', playerData, hostUser.socketId, playerData);
         io.to(hostUser.socketId).emit('playerDataToHost', user.id, playerData);
     });
 

@@ -72,7 +72,7 @@ export class BeforeTableGame extends HostGame<PlayerBeforeTableGameData, BeforeT
     override onPlayerDataReceived(userId: string, playerData: Partial<PlayerBeforeTableGameData>, gameData: Partial<BeforeTableGameData> | null): void {
         super.onPlayerDataReceived(userId, playerData, gameData);
         // update ready on the player
-        console.log('playerData', playerData);
+        console.log('onPlayerDataReceived', userId, playerData, gameData);
         const avatar = this.hostUserAvatars?.userAvatarContainers.find((avatar) => avatar.user.id === userId);
         console.log('avatar', avatar);
         if (!avatar) return;
@@ -102,11 +102,6 @@ export class BeforeTableGame extends HostGame<PlayerBeforeTableGameData, BeforeT
         // All users in game
         const playersInGame = playersInRoom(persistentData.roomData);
         if (playersInGame.length === 0) return;
-        socket.emit('start game', playersInGame);
-        // set the players in game to be the players in the room
-        persistentData.roomData?.users.forEach(user => {
-            user.inGame = true;
-        });
         this.scene.goToNextScene();
     }
 

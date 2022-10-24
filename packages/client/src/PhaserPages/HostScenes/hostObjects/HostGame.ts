@@ -15,6 +15,12 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
     }
 
     preload() {
+        // check if there are any users. if not then go back to the home screen
+        console.log('home screen?', persistentData.roomData?.users);
+        const nonHostUsers = persistentData.roomData?.users.filter(u => u.isHost === false);
+        if (!nonHostUsers || nonHostUsers.length === 0) {
+            this.setUrlToHomeScreen();
+        }
     }
 
     create() {
