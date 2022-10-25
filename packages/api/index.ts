@@ -41,6 +41,7 @@ export interface Game {
 
 export interface RoomData {
     room: string;
+    hostUser: User | null;
     users: User[];
     game: Game;
 }
