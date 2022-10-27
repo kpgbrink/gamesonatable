@@ -32,7 +32,6 @@ export abstract class HostUserAvatars<UserAvatarContainerType extends UserAvatar
         // Create a user avatar for each user
         roomData?.users.forEach((user) => {
             if (!user.userAvatar) return;
-            if (user.isHost) return;
             // Don't recreate a user avatar if it already exists
             if (this.userAvatarContainers.find((userAvatar) => userAvatar.user.id === user.id)) return;
             console.log('this.userAvatars', this.userAvatarContainers.map(u => u.user.id), this.userAvatarContainers.length, user.id);

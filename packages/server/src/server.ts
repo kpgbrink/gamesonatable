@@ -5,7 +5,7 @@ import cors from 'cors';
 import express from 'express';
 import { Server, Socket } from "socket.io";
 import uniqid from 'uniqid';
-import { addUserToRoom, getRoom, getRoomHostSocketId, removeUser, updateUser } from './user';
+import { addHostUserToRoom, addUserToRoom, getRoom, getRoomHost, getRoomHostSocketId, removeUser, updateUser } from './user';
 
 const app = express();
 const port = 3001;
@@ -42,7 +42,6 @@ io.on('connection', (socket) => {
         socketId: socket.id,
         name: '',
         room: '',
-        isHost: false,
         userColor: null,
         userAvatar: null,
         rotation: null,
@@ -67,9 +66,8 @@ io.on('connection', (socket) => {
             console.log('remove previous host');
             removeUser(previousHost, room);
         }
-        user.isHost = true;
         user.room = room;
-        user = addUserToRoom(user);
+        user = addHostUserToRoom(user);
         socket.join(user.room);
     });
 
@@ -79,7 +77,6 @@ io.on('connection', (socket) => {
         const storedUserId = storedIds.sessionStorage.userId ?? storedIds.localStorage.userId;
         const storedSocketId = storedIds.sessionStorage.socketId ?? storedIds.localStorage.socketId;
         socketLeavePreviousRoom(socket, user);
-        user.isHost = false;
         user.room = room;
         user.socketId = socket.id;
         // make the socket join the room
@@ -97,7 +94,7 @@ io.on('connection', (socket) => {
             return;
         }
         // If there is no Host user in the room, then send the user that there is no host
-        if (!roomData.users.find(u => u.isHost)) {
+        if (!roomData.hostUser) {
             console.log('emit no host');
             socket.emit('room issue', 'No Host', 'The room you are trying to join does not have a host.');
             return;
@@ -222,7 +219,7 @@ io.on('connection', (socket) => {
             console.log(room.game.currentPlayerScene, game.currentPlayerScene);
             // set in game to true for all users
             console.log('before users', room.users);
-            room.users.filter(u => !u.isHost).forEach(u => u.inGame = true);
+            room.users.forEach(u => u.inGame = true);
             console.log('after users', room.users);
         }
         room.game = { ...room.game, ...game };
@@ -268,7 +265,7 @@ io.on('connection', (socket) => {
 
     // TODO use this eventually actually juse the same text
     socket.on('playerDataToHost', (playerData: Partial<PlayerData>) => {
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
         console.log('player data to host', playerData, hostUser.socketId, playerData);
         io.to(hostUser.socketId).emit('playerDataToHost', user.id, playerData);
@@ -281,7 +278,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('gameDataToHost', (gameData: Partial<GameData>, updateGameData: boolean) => {
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
         console.log('gameDataToHost', gameData);
         io.to(hostUser.socketId).emit('gameDataToHost', user.id, gameData, updateGameData);
@@ -299,7 +296,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('dataToHost', (gameData: Partial<GameData>, playerData: Partial<PlayerData>, updateGameData: boolean) => {
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('dataToHost', user.id, gameData, playerData, updateGameData);
     });
@@ -313,21 +310,21 @@ io.on('connection', (socket) => {
     // ------------------- Request data from Host -------------------
     // Request data from Host by user
     socket.on("getGameData", () => {
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('getGameData', user.id);
     });
 
     socket.on('getPlayerData', () => {
         // console.log('getPlayerData requested');
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('getPlayerData', user.id);
     });
 
     socket.on('getData', () => {
         // console.log('getData requested');
-        const hostUser = getRoom(user.room)?.users.find(u => u.isHost);
+        const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('getData', user.id);
     });

@@ -35,8 +35,7 @@ export default function HomePage() {
 
   // If Main menu position is 1 and there are no players, then switch back to 0
   useEffect(() => {
-    const userListNoHosts = userList.filter((user) => !user.isHost);
-    if (mainMenuData.mainMenuPosition === 1 && userListNoHosts.length === 0) {
+    if (mainMenuData.mainMenuPosition === 1 && userList.length === 0) {
       console.log("set back to 0!!");
       setMainMenuData({ ...mainMenuData, mainMenuPosition: 0 });
     }

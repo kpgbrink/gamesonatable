@@ -20,12 +20,19 @@ export interface UserAvatar {
     legs: number; // The legs image
 }
 
-export interface User {
+export interface UserBase {
     id: string;
     socketId: string | null;
-    name: string;
     room: string;
-    isHost: boolean;
+
+}
+
+export interface HostUser extends UserBase {
+
+}
+
+export interface User extends UserBase {
+    name: string;
     userColor: string | null;
     userAvatar: UserAvatar | null;
     rotation: number | null;

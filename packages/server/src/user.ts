@@ -6,7 +6,7 @@ const rooms: Map<string, RoomData> = new Map();
 
 export const addUserToRoom = (upsertingUser: User) => {
     upsertingUser.name = upsertingUser.name.trim();
-    if (upsertingUser.name === '' && !upsertingUser.isHost) {
+    if (upsertingUser.name === '') {
         upsertingUser.name = (() => {
             const allRacesList = [...allRaces.racesWithGender, ...allRaces.otherRaces];
             const gender: "male" | "female" = (() => {
@@ -24,23 +24,29 @@ export const addUserToRoom = (upsertingUser: User) => {
     };
 
     const user: User = upsertingUser;
-    // add room if it doesn't exist yet
-    if (!rooms.has(user.room)) {
-        rooms.set(user.room, {
-            game: {
-                currentPlayerScene: 'PlayerStartingScene',
-                selectedGameSceneIndex: 0,
-                selectedGameName: null,
-            },
-            room: user.room, users: []
-        });
-    }
+
     const roomData = rooms.get(user.room);
     if (roomData) {
         roomData.users = roomData.users.filter(u => u.id !== user.id);
         roomData.users.push(user);
     }
     return user;
+}
+
+export const addHostUserToRoom = (hostUser: User) => {
+    const roomData = rooms.get(hostUser.room);
+    // add room if it doesn't exist yet
+    if (!rooms.has(hostUser.room)) {
+        rooms.set(hostUser.room, {
+            game: {
+                currentPlayerScene: 'PlayerStartingScene',
+                selectedGameSceneIndex: 0,
+                selectedGameName: null,
+            },
+            room: hostUser.room, users: [], hostUser: hostUser,
+        });
+    }
+    return hostUser;
 }
 
 export const updateUser = (userUpdate: Partial<User>, user: User) => {
@@ -74,6 +80,7 @@ export const removeUser = (userSocketSocketId: string, roomId: string) => {
         && user.inGame) {
         console.log('user is in game that is not leavable so keep them in game');
         // remove the socket id from the user
+        room.users[index].socketId = null;
         room.users[index].socketId = null;
         console.log('keeping user in game');
         checkIfShouldDeleteRoom(room);
@@ -118,7 +125,7 @@ export const getRoom = (roomId: string) => {
 export const getRoomHost = (room: string) => {
     const roomData = getRoom(room);
     if (!roomData) return;
-    return roomData.users.find(u => u.isHost);
+    return roomData.hostUser;
 }
 
 export const getRoomHostSocketId = (room: string) => {

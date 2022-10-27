@@ -71,15 +71,13 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
 
   const joinURL = `${window.location.origin}/room/${roomCreated}/player`;
 
-  const userListNoHosts = userList.filter((user) => !user.isHost);
   // add dummy users for testing
   for (let i = 0; i < 0; i++) {
-    userListNoHosts.push({
+    userList.push({
       id: "dummy" + i,
       socketId: "dummy" + i,
       userColor: "red",
       name: `Player ${i}`,
-      isHost: false,
       room: "dummy",
       userAvatar: null,
       rotation: 0,
@@ -253,10 +251,10 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
             fontWeight: "bold",
           }}
         >
-          Player Count: {userListNoHosts.length}
+          Player Count: {userList.length}
         </Textfit>
 
-        {userListNoHosts.length > 0 && userListNoHosts.length < 21 && (
+        {userList.length > 0 && userList.length < 21 && (
           <List
             style={{
               display: "flex",
@@ -264,7 +262,7 @@ export default function PlayerChooseGame({ mainMenuData }: Props) {
               justifyContent: "center",
             }}
           >
-            {userListNoHosts.map((user, index) => {
+            {userList.map((user, index) => {
               return (
                 <ListItem
                   key={index}

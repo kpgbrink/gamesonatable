@@ -106,7 +106,7 @@ export const addFullScreenButton = (scene: Phaser.Scene) => {
 // Get all users that are not host
 export const playersInRoom = (roomData: RoomData | null) => {
     if (!roomData) return [];
-    return roomData.users.filter(user => user.isHost === false);
+    return roomData.users;
 }
 
 // Get all users that are in the game

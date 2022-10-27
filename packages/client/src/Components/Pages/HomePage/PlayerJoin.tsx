@@ -49,15 +49,13 @@ export default function PlayerJoin() {
 
   const joinURL = `${window.location.origin}/room/${roomCreated}/player`;
 
-  const userListNoHosts = userList.filter((user) => !user.isHost);
   // add dummy users for testing
   for (let i = 0; i < 0; i++) {
-    userListNoHosts.push({
+    userList.push({
       id: "dummy" + i,
       socketId: "dummy" + i,
       userColor: "red",
       name: `Player ${i}`,
-      isHost: false,
       room: "dummy",
       userAvatar: null,
       rotation: 0,
@@ -118,7 +116,7 @@ export default function PlayerJoin() {
           borderRadius: "10px",
         }}
       >
-        {userListNoHosts.length === 0 && (
+        {userList.length === 0 && (
           <Textfit
             style={{
               height: "80%",
@@ -128,7 +126,7 @@ export default function PlayerJoin() {
             Waiting for players to scan...
           </Textfit>
         )}
-        {userListNoHosts.length > 0 && (
+        {userList.length > 0 && (
           <List
             style={{
               maxHeight: "100%",
@@ -137,7 +135,7 @@ export default function PlayerJoin() {
               flexFlow: "column wrap",
             }}
           >
-            {userListNoHosts.map((user, index) => {
+            {userList.map((user, index) => {
               return (
                 <ListItem
                   key={index}
@@ -168,7 +166,7 @@ export default function PlayerJoin() {
           </List>
         )}
       </div>
-      {userListNoHosts.length > 0 && (
+      {userList.length > 0 && (
         <Textfit
           id="playerSelectGameText"
           style={{
