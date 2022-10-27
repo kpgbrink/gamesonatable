@@ -1,14 +1,11 @@
 import Phaser from "phaser";
-import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import socket from "../../../SocketConnection";
-import { addFullScreenButton, socketOffOnSceneShutdown } from "../../objects/Tools";
-import UserAvatarContainer from "../../objects/UserAvatarContainer";
+import { addFullScreenButton, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, socketOffOnSceneShutdown } from "../../objects/Tools";
+import UserAvatarContainer, { preloadUserAvatarSprites } from "../../objects/UserAvatarContainer";
 import { onPlayerChangeGames } from "../playerTools/OnPlayerChangeGames";
 
 
 export default class PlayerScene extends Phaser.Scene {
-    rexUI?: RexUIPlugin;
-
     userAvatarContainer: UserAvatarContainer | null;
 
     constructor(config: Phaser.Types.Scenes.SettingsConfig) {
@@ -17,7 +14,11 @@ export default class PlayerScene extends Phaser.Scene {
     }
 
     preload() {
-        console.log('load rexUI');
+        this.loadCreateMenuImages();
+        loadIfSpriteSheetNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png', { frameWidth: 64, frameHeight: 64 });
+        loadIfSpriteSheetNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
+        preloadUserAvatarSprites(this);
+        loadIfImageNotLoaded(this, 'menuButton', 'assets/ui/menuButton.png');
     }
 
     create() {
@@ -32,6 +33,29 @@ export default class PlayerScene extends Phaser.Scene {
         window.addEventListener('resizeSpecial', (e: any) => {
             console.log('resizeSpecial event happened');
             this.scale.refresh();
+        });
+        this.createMenu();
+    }
+
+    loadCreateMenuImages() {
+
+    }
+
+    createMenu() {
+        // make a button at the top left of screen that opens a dropdown menu
+        const menuButton = this.add.image(0, 0, 'menuButton').setOrigin(0, 0);
+        menuButton.setInteractive();
+
+        // create menu buttons that become visible when menu button is pressed
+        // Settings button
+        // Restart Game
+        // Quit Game
+        // make the buttons
+
+
+
+        menuButton.on('pointerdown', () => {
+
         });
     }
 

@@ -1,6 +1,5 @@
 import MenuButton from "../objects/MenuButton";
-import { addUserNameText, getScreenDimensions, loadIfSpriteSheetNotLoaded, makeMyUserAvatarInCenterOfPlayerScreen } from "../objects/Tools";
-import { preloadUserAvatarSprites } from "../objects/UserAvatarContainer";
+import { addUserNameText, getScreenDimensions, makeMyUserAvatarInCenterOfPlayerScreen } from "../objects/Tools";
 import PlayerBeforeTableGameStartDataHandler from "./playerObjects/PlayerBeforeTableGameDataHandler";
 import PlayerScene from "./playerObjects/PlayerScene";
 
@@ -16,9 +15,7 @@ export default class PlayerBeforeTableGameStart extends PlayerScene {
     }
 
     preload() {
-        loadIfSpriteSheetNotLoaded(this, 'fullscreen', 'assets/ui/fullscreen.png', { frameWidth: 64, frameHeight: 64 });
-        loadIfSpriteSheetNotLoaded(this, 'fullscreen-white', 'assets/ui/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
-        preloadUserAvatarSprites(this);
+        super.preload();
     }
 
     create() {

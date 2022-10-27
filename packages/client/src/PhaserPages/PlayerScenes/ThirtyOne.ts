@@ -12,6 +12,7 @@ export default class ThirtyOne extends PlayerScene {
     }
 
     preload() {
+        super.preload();
         Cards.preload(this);
     }
 
