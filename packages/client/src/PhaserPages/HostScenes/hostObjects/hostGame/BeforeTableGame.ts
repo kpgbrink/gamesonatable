@@ -72,9 +72,7 @@ export class BeforeTableGame extends HostGame<PlayerBeforeTableGameData, BeforeT
     override onPlayerDataReceived(userId: string, playerData: Partial<PlayerBeforeTableGameData>, gameData: Partial<BeforeTableGameData> | null): void {
         super.onPlayerDataReceived(userId, playerData, gameData);
         // update ready on the player
-        console.log('onPlayerDataReceived', userId, playerData, gameData);
         const avatar = this.hostUserAvatars?.userAvatarContainers.find((avatar) => avatar.user.id === userId);
-        console.log('avatar', avatar);
         if (!avatar) return;
         avatar.setReady();
         this.startGameIfAllReady();
@@ -92,7 +90,6 @@ export class BeforeTableGame extends HostGame<PlayerBeforeTableGameData, BeforeT
     startGameIfAllReady() {
         // If all users are ready then start the game
         const allReady = this.hostUserAvatars?.userAvatarContainers.every((avatar) => avatar.beforeTableGamePlayerData.ready);
-        console.log('allReady', allReady);
         if (allReady) {
             this.startGame();
         }

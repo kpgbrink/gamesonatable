@@ -101,9 +101,6 @@ export class ThirtyOneRoundEnd extends HostGameState<ThirtyOnePlayerCardHandData
         // if only one user has lives then they win
         const usersWithLives = this.hostGame.hostUserAvatars?.userAvatarContainers.filter(u => u.lives > 0);
         if (usersWithLives.length === 1) {
-            const winner = usersWithLives[0];
-            // TODO go to the win state or whatever
-            console.log('winner', winner);
             // set state to the winner
             this.hostGame.changeState(new ThirtyOneGameEnd(this.hostGame));
             return;

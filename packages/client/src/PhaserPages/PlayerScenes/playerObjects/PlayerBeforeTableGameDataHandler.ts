@@ -22,7 +22,6 @@ export default class PlayerBeforeTableGameStartDataHandler extends PlayerDataHan
 
     // on scene shutdown
     shutdown() {
-        console.log('scene shutdown');
     }
 
     getPlayerDataToSend(): Partial<PlayerBeforeTableGameData> | undefined {
@@ -38,7 +37,6 @@ export default class PlayerBeforeTableGameStartDataHandler extends PlayerDataHan
         if (playerData === undefined) return;
         // handle check mark changing
         const isReady = playerData.ready;
-        console.log('is ready', isReady);
         if (!isReady) {
             this.scene.showReadyButton();
         } else {
@@ -53,7 +51,6 @@ export default class PlayerBeforeTableGameStartDataHandler extends PlayerDataHan
     }
 
     override onGameDataReceived(gameData: Partial<MainMenuGameData>, playerData: Partial<PlayerBeforeTableGameData> | null): void {
-        // console.log('onGameDataReceived', gameData, playerData);
     }
 
     update(time: number, delta: number) {

@@ -25,18 +25,15 @@ export const generateRandomUserAvatar = (): UserAvatar => {
     const legs = randomNegativeOne(.03) || randomIndex(avatarImages.legs);
     const userAvatar = { base, beard, body, cloak, gloves, boots, hair, head, legs };
     socket.emit('set player avatar', userAvatar);
-    // console.log('set player avatar', userAvatar);
     return userAvatar;
 }
 
 export const preloadUserAvatarSprites = (scene: Phaser.Scene) => {
-    // console.log('loadUserAvatarSprites', socket.id);
     // use persistentData 
     persistentData.roomData?.users.forEach((user) => {
         const userId = user.id;
         const userAvatar = user.userAvatar;
         if (!userAvatar) return;
-        console.log('loading the images in preload');
         loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-base`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`, userAvatar.base);
         loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-cloak`, `${playerFolder}cloak/${avatarImages.cloak[userAvatar.cloak]}`, userAvatar.cloak);
         loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-gloves`, `${playerFolder}gloves/${avatarImages.gloves[userAvatar.gloves]}`, userAvatar.gloves);

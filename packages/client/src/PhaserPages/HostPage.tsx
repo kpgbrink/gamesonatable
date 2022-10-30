@@ -29,7 +29,6 @@ export default function HostPage() {
     window.addEventListener(
       "changeroute",
       (e: any) => {
-        console.log("change url", e.detail);
         const { detail: path } = e;
         navigate(path);
       },

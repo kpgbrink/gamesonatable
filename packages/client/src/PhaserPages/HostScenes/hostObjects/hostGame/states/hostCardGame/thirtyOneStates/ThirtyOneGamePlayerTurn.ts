@@ -110,7 +110,6 @@ export class ThirtyOneGamePlayerTurn extends HostGameState<ThirtyOnePlayerCardHa
         const hiddenCard = this.hostGame.cards.getTopFaceDownCard();
         const shownCard = this.hostGame.cards.getTopFaceUpCard();
         if (!shownCard) {
-            console.log("No shown card found");
             return;
         }
         if (!hiddenCard) {

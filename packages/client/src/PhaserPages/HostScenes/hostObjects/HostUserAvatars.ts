@@ -17,24 +17,17 @@ export abstract class HostUserAvatars<UserAvatarContainerType extends UserAvatar
 
     createOnRoomData() {
         this.createUsers(persistentData.roomData);
-        console.log('create on room data host user avatars', this.userAvatarContainers.length);
-        // this.scene.events.on('room data', (roomData: RoomData) => {
-        //     console.log('room data event-------------------------------------------');
-        //     this.createUsers(roomData);
-        // });
     }
 
     abstract createUserAvatarContainer(x: number, y: number, user: User): UserAvatarContainerType;
 
     createUsers(roomData: RoomData | null) {
         if (roomData === null) return;
-        console.log('create users', roomData);
         // Create a user avatar for each user
         roomData?.users.forEach((user) => {
             if (!user.userAvatar) return;
             // Don't recreate a user avatar if it already exists
             if (this.userAvatarContainers.find((userAvatar) => userAvatar.user.id === user.id)) return;
-            console.log('this.userAvatars', this.userAvatarContainers.map(u => u.user.id), this.userAvatarContainers.length, user.id);
             const screenCenter = getScreenCenter(this.scene);
             // const userAvatarContainer = new UserAvatarContainer(this.scene, screenCenter.x + Math.random() - .5, screenCenter.y + Math.random() - .5, user);
             const userAvatarContainer = this.createUserAvatarContainer(screenCenter.x + Math.random() - .5, screenCenter.y + Math.random() - .5, user);

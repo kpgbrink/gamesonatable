@@ -18,9 +18,7 @@ export const onPlayerChangeGames = (phaserScene: Phaser.Scene) => {
             }
 
             window.dispatchEvent(new CustomEvent('showGamesListMenu', { detail: { show: false } }));
-            console.log('starting scene ' + roomData.game.currentPlayerScene);
-            phaserScene.scene
-                .phaserScene.scene.start(roomData.game.currentPlayerScene);
+            phaserScene.scene.start(roomData.game.currentPlayerScene);
         })()
         persistentData.roomData = roomData;
     });

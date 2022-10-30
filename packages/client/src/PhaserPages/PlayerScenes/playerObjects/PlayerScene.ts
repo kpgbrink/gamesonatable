@@ -1,10 +1,11 @@
+import { RoomData } from "api";
 import Phaser from "phaser";
 import { palletColors } from "../../../Palettes";
 import socket from "../../../SocketConnection";
 import MenuButton from "../../objects/MenuButton";
+import { persistentData } from "../../objects/PersistantData";
 import { addFullScreenButton, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, socketOffOnSceneShutdown } from "../../objects/Tools";
 import UserAvatarContainer, { preloadUserAvatarSprites } from "../../objects/UserAvatarContainer";
-import { onPlayerChangeGames } from "../playerTools/OnPlayerChangeGames";
 
 export default class PlayerScene extends Phaser.Scene {
     createMenuOnScene: boolean = true;
@@ -24,13 +25,30 @@ export default class PlayerScene extends Phaser.Scene {
 
     create() {
         socket.off();
-        onPlayerChangeGames(this);
+        socket.on("room data", (roomData: RoomData) => {
+            // If room is undefined or no Host user then refresh the page
+            if (!roomData || !roomData.hostUser) {
+                window.location.reload();
+            }
+            // start scene if scene is different
+            (() => {
+                if (!roomData?.game.currentPlayerScene) {
+                    return;
+                }
+                if (this.scene.key === roomData.game.currentPlayerScene) {
+                    return;
+                }
+
+                window.dispatchEvent(new CustomEvent('showGamesListMenu', { detail: { show: false } }));
+                this.scene.start(roomData.game.currentPlayerScene);
+            })()
+            persistentData.roomData = roomData;
+        });
         socketOffOnSceneShutdown(this);
         addFullScreenButton(this);
         socket.emit('get room data');
         this.scale.refresh();
         // add scale refresh event listener
-        console.log('make player scene event');
         window.addEventListener('resizeSpecial', () => {
             this.resizeSpecial();
         });
@@ -38,7 +56,6 @@ export default class PlayerScene extends Phaser.Scene {
     }
 
     resizeSpecial() {
-        console.log('resizeSpecial called');
         this.scale.refresh();
     }
 
@@ -159,7 +176,6 @@ export default class PlayerScene extends Phaser.Scene {
 
     // remove resize event listener on shutdown
     shutdown() {
-        console.log('scene shutdown');
         window.removeEventListener('resizeSpecial', () => {
             this.resizeSpecial();
         });

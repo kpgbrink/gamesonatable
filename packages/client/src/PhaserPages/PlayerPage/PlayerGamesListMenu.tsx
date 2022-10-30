@@ -41,7 +41,6 @@ export default function PlayerGamesListMenu() {
 
   useLayoutEffect(() => {
     // emit resizeSpecialEvent
-    console.log("emit resize special");
     window.dispatchEvent(new Event("resizeSpecial"));
   }, [visible]);
 

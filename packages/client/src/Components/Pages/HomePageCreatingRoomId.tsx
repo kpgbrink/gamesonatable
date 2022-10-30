@@ -8,7 +8,6 @@ export default function HomePageCreatingRoomId() {
   const navigate = useNavigate();
   const { setRoomCreated } = useContext(AppContext);
 
-  console.log("render this home page creating room id");
   useEffect(() => {
     const abortController = new AbortController();
     const fetchData = async () => {
@@ -19,7 +18,6 @@ export default function HomePageCreatingRoomId() {
       const newRoomId = data.roomId;
       const newUrl = `/room/${newRoomId}`;
       setRoomCreated(newRoomId);
-      console.log("navigate to", newUrl);
       navigate(newUrl);
     };
     fetchData().catch(console.error);

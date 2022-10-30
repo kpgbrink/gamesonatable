@@ -59,7 +59,6 @@ export abstract class PlayerCardHand
         if (persistentData.myUserId === null) return;
         const userId = persistentData.myUserId;
         playerData.cardIds = this.cards.getPlayerCardsIds(userId)
-
         return playerData;
     }
 
@@ -199,11 +198,6 @@ export abstract class PlayerCardHand
     updateDealing(gameData: Partial<CardGameDataType>) {
         if (gameData.playerDealerId === undefined) return
         if (gameData.waitingForDeal === undefined) return
-        console.log('waiting for deal');
-        console.log('gameData', gameData);
-        console.log('gameData.playerDealerId', gameData.playerDealerId);
-        console.log('gameData.waitingForDeal', gameData.waitingForDeal);
-        console.log('persistentData.myUserId', persistentData.myUserId);
         const meDealing = gameData.playerDealerId === persistentData.myUserId && gameData.waitingForDeal;
         this.dealButton?.setVisible(meDealing);
     }
@@ -380,14 +374,11 @@ export abstract class PlayerCardHand
         if (!draggedCard.canTakeFromTable) return;
         if (draggedCard.beforeDraggedTransform === null) return;
         if (draggedCard.y < draggedCard.beforeDraggedTransform.y) return;
-        console.log('move card to hand');
         draggedCard.setFaceUp(this.showCardsInHand);
         draggedCard.userHandId = persistentData.myUserId;
         draggedCard.canTakeFromTable = false;
         draggedCard.timeGivenToUser = Date.now();
         draggedCard.timeInHand = Date.now();
-        console.log('current time', draggedCard.timeGivenToUser);
-        console.log('time in hand aaaaaaaaaaaaaaaaaaaaaa:', draggedCard.timeInHand, Date.now() - draggedCard.timeInHand);
         this.setAllowedPickUpCardAmount(this.allowedPickUpCardAmount - 1);
         this.sendData();
     }
@@ -419,7 +410,6 @@ export abstract class PlayerCardHand
         if (this.allowedDropCardAmount <= 0) return;
         // check if the card was not just put in hand
         if (card.timeInHand && Date.now() - card.timeInHand < 100) return;
-        console.log('time in hand dddddddddddddddddddddddd:', card.timeInHand, Date.now() - card.timeInHand);
 
         // tell host to move the card to the table
         this.allowedDropCardAmount -= 1;

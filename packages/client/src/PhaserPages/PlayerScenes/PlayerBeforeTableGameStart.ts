@@ -64,7 +64,6 @@ export default class PlayerBeforeTableGameStart extends PlayerScene {
             this.showWaitingForPlayersText();
             if (!this.playerBeforeGameStartDataHandler) return;
             this.playerBeforeGameStartDataHandler.playerData.ready = true;
-            console.log('set ready to true');
             this.playerBeforeGameStartDataHandler.sendPlayerData();
 
         });

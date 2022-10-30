@@ -25,11 +25,6 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
         this.addSelectGameButton();
     }
 
-    // on scene shutdown
-    shutdown() {
-        console.log('scene shutdown');
-    }
-
     addSelectGameButton() {
         const screenDimensions = getScreenDimensions(this.scene);
         this.selectGameButton = new MenuButton(screenDimensions.width / 2, screenDimensions.height - 720, this.scene);
@@ -68,7 +63,6 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
     }
 
     override onGameDataReceived(gameData: Partial<MainMenuGameData>, playerData: Partial<PlayerMainMenuData> | null): void {
-        // console.log('onGameDataReceived', gameData, playerData);
         this.updateMainMenuPosition(gameData);
     }
 

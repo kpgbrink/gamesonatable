@@ -39,7 +39,6 @@ export class ThirtyOneCardHand extends PlayerCardHand<ThirtyOnePlayerCardHandDat
             && gameData?.playerTurnId === userId
             && gameData?.gameOver === false
             && gameData?.roundOver === false;
-        console.log('gameData.roundOVer', gameData?.roundOver);
         this.knockButton?.setVisible(canKnock);
     }
 

@@ -25,7 +25,6 @@ export default function ShowRoomIssue() {
       setDialogContent(description);
       // retry to join the room after a few seconds
       setTimeout(() => {
-        console.log("retrying");
         socket.emit("join room", roomId, userId, getStoredIds());
       }, 5000);
     };

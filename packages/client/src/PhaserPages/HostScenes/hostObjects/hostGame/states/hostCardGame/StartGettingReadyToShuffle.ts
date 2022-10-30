@@ -21,7 +21,6 @@ export class StartGettingReadyToShuffle<
     }
 
     enter() {
-        console.log('START GETTING REAADY TO SHUFFLE');
         const screenCenter = getScreenCenter(this.hostGame.hostScene);
         this.hostGame.cardInHandTransform.setToDefault();
 
@@ -48,7 +47,6 @@ export class StartGettingReadyToShuffle<
         this.hostGame.cards.update(time, delta);
         // once all cards are done moving, start the next round
         if (this.hostGame.cards.cardContainers.every(cardContainer => cardContainer.moveOnDuration === null)) {
-            console.log('all cards are done START SHUFFLING');
             this.hostGame.shufflingAmount.setToDefault();
             this.hostGame.changeState(new Shuffling(this.hostGame));
         }

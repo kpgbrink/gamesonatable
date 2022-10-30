@@ -36,7 +36,6 @@ export default function HomePage() {
   // If Main menu position is 1 and there are no players, then switch back to 0
   useEffect(() => {
     if (mainMenuData.mainMenuPosition === 1 && userList.length === 0) {
-      console.log("set back to 0!!");
       setMainMenuData({ ...mainMenuData, mainMenuPosition: 0 });
     }
   }, [mainMenuData, userList]);
@@ -44,7 +43,6 @@ export default function HomePage() {
   // if Main menu game chosen go to the game
   useEffect(() => {
     if (mainMenuData.gameChosen) {
-      console.log("game chosen");
       // setMainMenuData({ ...mainMenuData, gameChosen: false });
       // if game is chosen then go to the game
       const navigateTo = `/host/${roomCreated}/${mainMenuData.gameChosen}`;
@@ -105,12 +103,9 @@ export class HostMainMenuDataHandler extends HostDataHandler<
     userId: string,
     playerData: Partial<PlayerMainMenuData>,
     gameData: Partial<MainMenuGameData> | null
-  ): void {
-    // console.log("player data received", playerData);
-  }
+  ): void {}
 
   override getGameDataToSend(): Partial<MainMenuGameData> | undefined {
-    // console.log("sending game data", this.mainMenuGameData);
     return this.mainMenuGameData;
   }
 
@@ -120,9 +115,7 @@ export class HostMainMenuDataHandler extends HostDataHandler<
     playerData: Partial<PlayerMainMenuData> | null,
     updateGameData: boolean
   ): void {
-    // console.log("game data received", gameData);
     this.mainMenuGameData = { ...this.mainMenuGameData, ...gameData };
-    // console.log("new main menu game data", this.mainMenuGameData);
     this.setMainMenuGameData(this.mainMenuGameData);
 
     this.sendGameData();

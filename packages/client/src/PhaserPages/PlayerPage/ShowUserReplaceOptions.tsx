@@ -19,7 +19,6 @@ export default function ShowUserReplaceOptions() {
 
   useEffect(() => {
     const listener = (usersToReplaceData: string[]) => {
-      console.log("users to replace", usersToReplace);
       setOpen(true);
       setUsersToReplace(usersToReplaceData);
     };

@@ -29,11 +29,9 @@ export default function PlayerPage() {
     }
     const userIdListener = (existingUserId: string) => {
       setRoomExists(true);
-      console.log("userid listener", existingUserId);
       if (existingUserId !== userId) {
         persistentData.myUserId = existingUserId;
         storeIds(socket.id, existingUserId);
-        console.log("existing user id", existingUserId);
         navigate(`/room/${roomId}/player/${existingUserId}`);
         // reload page
         window.location.reload();

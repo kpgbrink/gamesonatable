@@ -30,7 +30,6 @@ export class ThirtyOneGameEnd extends HostGameState<ThirtyOnePlayerCardHandData,
         this.hostGame.cards.update(time, delta);
         this.timerBackToGameChooseScreen.update(delta);
         if (this.timerBackToGameChooseScreen.isDone()) {
-            console.log('timer is done game is done');
             // set url back to home screen
             this.hostGame.hostScene.setUrlToHomeScreen();
         }

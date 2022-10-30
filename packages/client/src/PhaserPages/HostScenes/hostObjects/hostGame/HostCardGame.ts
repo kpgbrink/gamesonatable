@@ -63,20 +63,16 @@ export abstract class HostCardGame<
     }
 
     movePlayerTurnIndicatorToPlayer() {
-        console.log('game player turn id', this.gameData.playerTurnId);
         // check if we have a user that is their turn
         if (!this.gameData.playerTurnId) return;
         const playerTurn = this.hostUserAvatars?.getUserById(this.gameData.playerTurnId);
-        console.log('player turn', playerTurn);
         if (!playerTurn) return;
         this.movePlayerTurnIndicatorToUserAvatar(playerTurn);
     }
 
     movePlayerTurnIndicatorToUserAvatar(userAvatar: CardGameUserAvatarContainer<PlayerDataType>) {
-        console.log('this.playerTurnIndicator', this.playerTurnIndicator);
         if (!this.playerTurnIndicator) return;
         const positionRotation = { x: userAvatar.x, y: userAvatar.y, rotation: userAvatar.scale, scale: userAvatar.scale * userAvatar.imageMultiplier };
-        console.log('new position rotation', positionRotation);
         this.playerTurnIndicator.startMovingOverTimeTo(positionRotation, .4, () => {
 
         });
@@ -116,7 +112,6 @@ export abstract class HostCardGame<
         const checkIfAllowedToDropCards = allowDropCardTo !== null && allowDropCardTo <= cardsLeftInHand;
         // check if allowed to drop the cards
         if (checkIfAllowedToDropCards) {
-            console.log('allowed to drop cards');
             // put back on table
             cardsToRemove.forEach(cardId => {
                 const card = this.cards.getCard(cardId);
@@ -146,7 +141,6 @@ export abstract class HostCardGame<
         if ((cardsToAdd.length > 0 && !checkIfAllowedToPickUpCards) || (cardsToRemove.length > 0 && !checkIfAllowedToDropCards)) {
             const playerDataToSend: Partial<PlayerDataType> = {};
             playerDataToSend.cardIds = cardsInHand.map(card => card.id);
-            console.log('Player has wrong data fix it');
             this.sendPlayerData(userId, playerDataToSend);
         }
     }
@@ -175,7 +169,6 @@ export abstract class HostCardGame<
 
     randomizeDealerIfNotSet() {
         if (!this.gameData.playerDealerId) {
-            console.log('random dealer');
             // choose a random dealer
             this.gameData.playerDealerId = this.hostUserAvatars?.getRandomUserIdInGame() || null;
             return;
@@ -184,7 +177,6 @@ export abstract class HostCardGame<
 
     setNextDealer() {
         if (!this.gameData.playerDealerId) throw new Error('No dealer set');
-        console.log('playerDealerId', this.gameData.playerDealerId);
         this.gameData.playerDealerId = this.getNextPlayerId(this.gameData.playerDealerId);
     }
 
