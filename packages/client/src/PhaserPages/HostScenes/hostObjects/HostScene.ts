@@ -19,6 +19,19 @@ export default abstract class HostScene extends Phaser.Scene {
         socketOffOnSceneShutdown(this);
         loadUserAvatarSprites(this);
         this.scale.refresh();
+        socket.on('restart game', () => {
+            // set scene back to first scene in the game scene list
+            const gameName = persistentData.roomData?.game.selectedGameName;
+            if (!gameName) {
+                throw new Error('gameName is null');
+            }
+            const sceneToStart = getGameFromName(gameName).sceneOrder[0];
+            this.scene.start(sceneToStart);
+        });
+        socket.on('quit game', () => {
+            // emit window event to go back to home screen
+            this.setUrlToHomeScreen();
+        });
     }
 
     update(time: number, delta: number) {
@@ -40,5 +53,14 @@ export default abstract class HostScene extends Phaser.Scene {
         socket.emit('update room data', updateGame);
         const sceneToStart = getGameFromName(gameName).sceneOrder[selectedGameSceneIndex + 1];
         this.scene.start(sceneToStart)
+    }
+
+    // maybe this https://stackoverflow.com/a/68835401/2948122
+    setUrlToHomeScreen() {
+        // set the url to the home screen
+        // change the url using react router
+        const { CustomEvent } = window;
+        const event = new CustomEvent('changeroute', { detail: `/room/${persistentData.roomData?.room}` });
+        window.dispatchEvent(event);
     }
 }

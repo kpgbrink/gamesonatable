@@ -7,6 +7,7 @@ import PlayerMenu from "./playerObjects/PlayerMenu";
 import PlayerScene from "./playerObjects/PlayerScene";
 
 export default class PlayerStartingScene extends PlayerScene {
+  createMenuOnScene = false;
   returnKey: Phaser.Input.Keyboard.Key | undefined;
 
   playerMenu: PlayerMenu | null;

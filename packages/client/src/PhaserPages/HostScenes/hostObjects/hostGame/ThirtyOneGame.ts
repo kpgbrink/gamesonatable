@@ -2,6 +2,7 @@ import { ThirtyOneCardGameData, ThirtyOnePlayerCardHandData } from "api/src/data
 import CardContainer from "../../../objects/items/CardContainer";
 import { loadIfImageNotLoaded, Transform, transformRelativeToScreenCenter } from "../../../objects/Tools";
 import { ThirtyOneUserAvatarContainer } from "../../../objects/userAvatarContainer/cardGameUserAvatarContainer/ThirtyOneUserAvatarContainer";
+import HostScene from "../HostScene";
 import ThirtyOneHostUserAvatarsAroundTableGame from "../HostUserAvatars/HostUserAvatarsAroundTable/ThirtyOneHostUserAvatarsAroundTableGame";
 import { HostCardGame } from "./HostCardGame";
 import { ThirtyOneGameStart } from "./states/hostCardGame/thirtyOneStates/ThirtyOneGameStart";
@@ -20,20 +21,20 @@ export class ThirtyOneGame
     deckTransform: Transform = { x: 0, y: 0, rotation: 0, scale: 1 };
     cardPlaceTransform: Transform = { x: 0, y: 0, rotation: 0, scale: 1 };
 
-    constructor(scene: Phaser.Scene) {
-        super(scene);
-        this.scene = scene;
+    constructor(hostScene: HostScene) {
+        super(hostScene);
+        this.hostScene = hostScene;
         this.gameData = new ThirtyOneCardGameData();
     }
 
     preload() {
         super.preload();
-        loadIfImageNotLoaded(this.scene, 'bluePokerChip', 'assets/pokerChips/bluePokerChip.png');
+        loadIfImageNotLoaded(this.hostScene, 'bluePokerChip', 'assets/pokerChips/bluePokerChip.png');
     }
 
     // override this maybe
     override createHostUserAvatarsAroundTableGame() {
-        this.hostUserAvatars = new ThirtyOneHostUserAvatarsAroundTableGame(this.scene);
+        this.hostUserAvatars = new ThirtyOneHostUserAvatarsAroundTableGame(this.hostScene);
         this.hostUserAvatars.createOnRoomData();
         this.hostUserAvatars.moveToEdgeOfTable();
         this.hostUserAvatars.userAvatarContainers.forEach(player => {
@@ -47,11 +48,11 @@ export class ThirtyOneGame
 
         this.deckTransform = (() => {
             const transform = { x: -330, y: 0, rotation: 0, scale: 4 };
-            return transformRelativeToScreenCenter(this.scene, transform);
+            return transformRelativeToScreenCenter(this.hostScene, transform);
         })();
         this.cardPlaceTransform = (() => {
             const transform = { x: 330, y: 0, rotation: 0, scale: 4 };
-            return transformRelativeToScreenCenter(this.scene, transform);
+            return transformRelativeToScreenCenter(this.hostScene, transform);
         })();
     }
 

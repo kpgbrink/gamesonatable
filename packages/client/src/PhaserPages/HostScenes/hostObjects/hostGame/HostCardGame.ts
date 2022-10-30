@@ -6,6 +6,7 @@ import { checkTransformsAlmostEqual, getScreenCenter, loadIfImageNotLoaded, Tran
 import { CardGameUserAvatarContainer } from "../../../objects/userAvatarContainer/CardGameUserAvatarContainer";
 import { ValueWithDefault } from "../../../objects/ValueWithDefault";
 import { HostGame } from "../HostGame";
+import HostScene from "../HostScene";
 import { HostUserAvatarsAroundTableGame } from "../HostUserAvatars/HostUserAvatarsAroundTable/HostUserAvatarsAroundTableGame";
 import { Shuffling } from "./states/hostCardGame/Shuffling";
 import { HostGameState } from "./states/HostGameState";
@@ -15,7 +16,7 @@ export abstract class HostCardGame<
     PlayerDataType extends PlayerCardHandData,
     UserAvatarsType extends HostUserAvatarsAroundTableGame<UserAvatarType>,
     UserAvatarType extends CardGameUserAvatarContainer<PlayerDataType>> extends HostGame<PlayerDataType, GameDataType> {
-    scene: Phaser.Scene;
+    hostScene: HostScene;
     cards: Cards;
     hostUserAvatars: UserAvatarsType | null = null;
 
@@ -30,18 +31,18 @@ export abstract class HostCardGame<
 
     playerTurnIndicator: PlayerTurnIndicator | null = null;
 
-    constructor(scene: Phaser.Scene) {
-        super(scene);
-        this.scene = scene;
-        this.cards = new Cards(scene);
+    constructor(hostScene: HostScene) {
+        super(hostScene);
+        this.hostScene = hostScene;
+        this.cards = new Cards(hostScene);
     }
 
     preload() {
         super.preload();
-        Cards.preload(this.scene);
+        Cards.preload(this.hostScene);
 
         // load player turn image
-        loadIfImageNotLoaded(this.scene, "playerTurnIndicator", "assets/playerTurnIndicator.png");
+        loadIfImageNotLoaded(this.hostScene, "playerTurnIndicator", "assets/playerTurnIndicator.png");
     }
 
     abstract createGameStateAfterDealing(): HostGameState<PlayerDataType, GameDataType>;
@@ -51,12 +52,12 @@ export abstract class HostCardGame<
     create() {
         super.create();
         this.createHostUserAvatarsAroundTableGame();
-        const screenCenter = getScreenCenter(this.scene);
+        const screenCenter = getScreenCenter(this.hostScene);
         this.cards.create(screenCenter.x, screenCenter.y);
 
-        this.playerTurnIndicator = new PlayerTurnIndicator(this.scene, screenCenter.x, screenCenter.y, "playerTurnIndicator");
+        this.playerTurnIndicator = new PlayerTurnIndicator(this.hostScene, screenCenter.x, screenCenter.y, "playerTurnIndicator");
         this.playerTurnIndicator.scale = 0.01;
-        this.scene.add.existing(this.playerTurnIndicator);
+        this.hostScene.add.existing(this.playerTurnIndicator);
 
         this.changeState(new Shuffling(this));
     }

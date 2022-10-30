@@ -57,7 +57,7 @@ export class Dealing<
             throw new Error('no card container');
         }
         cardContainer.inHandFaceUp = false;
-        cardContainer.setUserHand(this.currentPlayerGettingCard, this.hostGame.scene.time.now);
+        cardContainer.setUserHand(this.currentPlayerGettingCard, this.hostGame.hostScene.time.now);
 
         // get the player that the card is going to
         const userContainer = this.hostGame.getUser(this.currentPlayerGettingCard);

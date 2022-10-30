@@ -1,13 +1,9 @@
 import { BeforeTableGameData, PlayerBeforeTableGameData } from "api/src/data/datas/BeforeTableGameData";
 import { MainMenuGameData } from "api/src/data/datas/MainMenuData";
-import MenuButton from "../../objects/MenuButton";
 import PlayerBeforeTableGameStart from "../PlayerBeforeTableGameStart";
 import { PlayerDataHandler } from "./PlayerDataHandler";
 
 export default class PlayerBeforeTableGameStartDataHandler extends PlayerDataHandler<PlayerBeforeTableGameData, BeforeTableGameData> {
-
-    selectGameButton: MenuButton | null = null;
-
     playerData: PlayerBeforeTableGameData;
     gameData: MainMenuGameData;
     scene: PlayerBeforeTableGameStart;
@@ -22,7 +18,6 @@ export default class PlayerBeforeTableGameStartDataHandler extends PlayerDataHan
 
     create() {
         super.create();
-        // this.createScrollablePanel();
     }
 
     // on scene shutdown

@@ -31,7 +31,7 @@ export class Shuffling<
 
     enter() {
         // set the card movement to randomness
-        const screenCenter = getScreenCenter(this.hostGame.scene);
+        const screenCenter = getScreenCenter(this.hostGame.hostScene);
 
         // shuffle the cards
         this.hostGame.cards.shuffle();

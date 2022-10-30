@@ -329,4 +329,16 @@ io.on('connection', (socket) => {
         io.to(hostUser.socketId).emit('getData', user.id);
     });
     // ------------------------------
+
+    socket.on('restart game', () => {
+        const hostUser = getRoomHost(user.room);
+        if (!hostUser?.socketId) return;
+        io.to(hostUser.socketId).emit('restart game');
+    });
+
+    socket.on('quit game', () => {
+        const hostUser = getRoomHost(user.room);
+        if (!hostUser?.socketId) return;
+        io.to(hostUser.socketId).emit('quit game');
+    });
 });

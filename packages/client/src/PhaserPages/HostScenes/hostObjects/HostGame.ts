@@ -2,16 +2,17 @@ import { GameData, PlayerData } from "api/src/data/Data";
 import { persistentData } from "../../objects/PersistantData";
 import { HostDataHandler } from "./HostDataHandler";
 import { HostGameState } from "./hostGame/states/HostGameState";
+import HostScene from "./HostScene";
 
 export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType extends GameData>
     extends HostDataHandler<PlayerDataType, GameDataType> {
-    scene: Phaser.Scene;
+    hostScene: HostScene;
     currentState: HostGameState<PlayerDataType, GameDataType> | null = null;
     abstract gameData: GameDataType;
 
-    constructor(scene: Phaser.Scene) {
+    constructor(hostScene: HostScene) {
         super();
-        this.scene = scene;
+        this.hostScene = hostScene;
     }
 
     preload() {
@@ -19,7 +20,7 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
         console.log('home screen?', persistentData.roomData?.users);
         const users = persistentData.roomData?.users;
         if (!users || users.length === 0) {
-            this.setUrlToHomeScreen();
+            this.hostScene.setUrlToHomeScreen();
         }
     }
 
@@ -58,12 +59,5 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
         this.currentState.enter();
     }
 
-    // maybe this https://stackoverflow.com/a/68835401/2948122
-    setUrlToHomeScreen() {
-        // set the url to the home screen
-        // change the url using react router
-        const { CustomEvent } = window;
-        const event = new CustomEvent('changeroute', { detail: `/room/${persistentData.roomData?.room}` });
-        window.dispatchEvent(event);
-    }
+
 }
