@@ -4,7 +4,7 @@ import { ThirtyOneGame } from "./hostObjects/hostGame/ThirtyOneGame";
 import HostScene from "./hostObjects/HostScene";
 
 export default class ThirtyOneHostScene extends HostScene {
-    playerSceneKey: string = "ThirtyOne";
+    playerSceneKey: string = "PlayerThirtyOneScene";
     gameTable: GameTable | null = null;
     thirtyOneGame: ThirtyOneGame = new ThirtyOneGame(this);
 

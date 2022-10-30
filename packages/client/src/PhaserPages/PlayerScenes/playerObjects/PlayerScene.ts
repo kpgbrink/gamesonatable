@@ -6,7 +6,6 @@ import { addFullScreenButton, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, 
 import UserAvatarContainer, { preloadUserAvatarSprites } from "../../objects/UserAvatarContainer";
 import { onPlayerChangeGames } from "../playerTools/OnPlayerChangeGames";
 
-
 export default class PlayerScene extends Phaser.Scene {
     createMenuOnScene: boolean = true;
     userAvatarContainer: UserAvatarContainer | null;
@@ -32,11 +31,15 @@ export default class PlayerScene extends Phaser.Scene {
         this.scale.refresh();
         // add scale refresh event listener
         console.log('make player scene event');
-        window.addEventListener('resizeSpecial', (e: any) => {
-            console.log('resizeSpecial event happened');
-            this.scale.refresh();
+        window.addEventListener('resizeSpecial', () => {
+            this.resizeSpecial();
         });
         this.createMenu();
+    }
+
+    resizeSpecial() {
+        console.log('resizeSpecial called');
+        this.scale.refresh();
     }
 
     openMenuButton: Phaser.GameObjects.Image | null = null;
@@ -157,6 +160,8 @@ export default class PlayerScene extends Phaser.Scene {
     // remove resize event listener on shutdown
     shutdown() {
         console.log('scene shutdown');
-        // window.removeEventListener('resizeSpecial', () => { });
+        window.removeEventListener('resizeSpecial', () => {
+            this.resizeSpecial();
+        });
     }
 }

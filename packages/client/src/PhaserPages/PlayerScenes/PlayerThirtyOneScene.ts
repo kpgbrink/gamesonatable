@@ -3,11 +3,12 @@ import { ThirtyOneCardHand } from "./playerObjects/playerCardHands/ThirtyOneCard
 import PlayerScene from "./playerObjects/PlayerScene";
 
 
-export default class ThirtyOne extends PlayerScene {
+export default class PlayerThirtyOneScene extends PlayerScene {
     playerCardHand: ThirtyOneCardHand | null;
+    counter = 0;
 
     constructor() {
-        super({ key: 'ThirtyOne' });
+        super({ key: 'PlayerThirtyOneScene' });
         this.playerCardHand = null;
     }
 
@@ -20,10 +21,19 @@ export default class ThirtyOne extends PlayerScene {
         super.create();
         console.log('thirty one create ran');
         this.playerCardHand = new ThirtyOneCardHand(this);
+        this.counter = 0;
         this.playerCardHand.create();
     }
 
     update(time: number, delta: number) {
+        console.log('thirty one update ran', this.counter++)
         this.playerCardHand?.update(time, delta);
+    }
+
+    // on scene end
+    shutdown() {
+        super.shutdown();
+        console.log('thirtyOnescene shutdown');
+        this.playerCardHand = null;
     }
 }

@@ -2,9 +2,9 @@ import Phaser from "phaser";
 import PlayerScene from "./playerObjects/PlayerScene";
 
 
-export default class Omaha extends PlayerScene {
+export default class PlayerOmahaScene extends PlayerScene {
   constructor() {
-    super({ key: 'Omaha' });
+    super({ key: 'PlayerOmahaScene' });
   }
 
   create() {

@@ -9,11 +9,11 @@ import PlayerGamesListMenu from "./PlayerPage/PlayerGamesListMenu";
 import ShowRoomIssue from "./PlayerPage/ShowRoomIssue";
 import ShowUserReplaceOptions from "./PlayerPage/ShowUserReplaceOptions";
 import { getStoredIds, storeIds } from "./PlayerPage/StoredBrowserIds";
-import Omaha from "./PlayerScenes/Omaha";
 import PlayerBeforeGameStart from "./PlayerScenes/PlayerBeforeTableGameStart";
+import PlayerOmahaScene from "./PlayerScenes/PlayerOmahaScene";
 import PlayerStartingScene from "./PlayerScenes/PlayerStartingScene";
-import Texas from "./PlayerScenes/Texas";
-import ThirtyOne from "./PlayerScenes/ThirtyOne";
+import PlayerTexasScene from "./PlayerScenes/PlayerTexasScene";
+import PlayerThirtyOneScene from "./PlayerScenes/PlayerThirtyOneScene";
 
 export default function PlayerPage() {
   const { socket } = useContext(AppContext);
@@ -69,9 +69,9 @@ export default function PlayerPage() {
             scene: [
               PlayerStartingScene,
               PlayerBeforeGameStart,
-              Omaha,
-              Texas,
-              ThirtyOne,
+              PlayerOmahaScene,
+              PlayerTexasScene,
+              PlayerThirtyOneScene,
             ],
             scale: {
               width: 1080,
