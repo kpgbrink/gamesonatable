@@ -158,6 +158,20 @@ export default class PlayerScene extends Phaser.Scene {
         this.menuPanel.visible = true;
         this.restartMenuButton.visible = true;
         this.quitGameMenuButton.visible = true;
+        // check if pointer is clicked within the menu panel
+        this.input.on('pointerdown', this.outsideMenuPointerDown, this);
+    }
+
+    outsideMenuPointerDown(pointer: Phaser.Input.Pointer) {
+        console.log('pointerdown');
+        if (!this.menuPanel) return;
+        if (pointer.x > this.menuPanel.x && pointer.x < this.menuPanel.x + this.menuPanel.width) {
+            if (pointer.y > this.menuPanel.y && pointer.y < this.menuPanel.y + this.menuPanel.height) {
+                return;
+            }
+        }
+        console.log('pointer clicked outside of menu panel');
+        this.closeMenu();
     }
 
     closeMenu() {
@@ -172,6 +186,8 @@ export default class PlayerScene extends Phaser.Scene {
         this.menuPanel.visible = false;
         this.restartMenuButton.visible = false;
         this.quitGameMenuButton.visible = false;
+        // remove pointerdown event listener
+        this.input.off('pointerdown', this.outsideMenuPointerDown, this);
     }
 
     // remove resize event listener on shutdown
