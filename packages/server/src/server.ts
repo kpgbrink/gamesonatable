@@ -15,7 +15,7 @@ const httpServer = app.listen(port, () => {
 });
 const io = new Server(httpServer, {
     cors: config.get('cors.origin'),
-    pingInterval: 5000,
+    pingInterval: 2000,
 });
 
 app.use(cors({ origin: config.get('cors.origin'), credentials: config.get('cors.credentials') }));
@@ -202,6 +202,7 @@ io.on('connection', (socket) => {
 
     // On disconnect
     socket.on('disconnect', () => {
+        console.log('user disconnected');
         // TODO make users in game not dissapear but they can be replaced by a reconnect instead
         removeUser(socket.id, user.room);
         io.to(user.room).emit('room data', getRoom(user.room));

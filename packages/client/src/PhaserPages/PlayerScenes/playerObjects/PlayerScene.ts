@@ -25,6 +25,13 @@ export default class PlayerScene extends Phaser.Scene {
 
     create() {
         socket.off();
+        // if socket disconnects then go to home screen
+        socket.on('disconnect', () => {
+            // socket disconnected
+            console.log('socket disconnected');
+            // refresh page
+            window.location.reload();
+        });
         socket.on("room data", (roomData: RoomData) => {
             // If room is undefined or no Host user then refresh the page
             if (!roomData || !roomData.hostUser) {
@@ -41,7 +48,22 @@ export default class PlayerScene extends Phaser.Scene {
 
                 window.dispatchEvent(new CustomEvent('showGamesListMenu', { detail: { show: false } }));
                 this.scene.start(roomData.game.currentPlayerScene);
-            })()
+            })();
+            // check if I am in the game 
+            (() => {
+                if (!roomData) {
+                    return;
+                }
+                // find my user
+                const myUser = roomData.users.find(user => user.id === persistentData.myUserId);
+                if (!myUser) {
+                    return;
+                }
+                // check if I am in the game
+                if (!myUser.inGame && roomData.game.currentPlayerScene !== 'PlayerStartingScene') {
+                    socket.emit('quit game');
+                }
+            })();
             persistentData.roomData = roomData;
         });
         socketOffOnSceneShutdown(this);
@@ -58,7 +80,6 @@ export default class PlayerScene extends Phaser.Scene {
         });
         this.createMenu();
     }
-
 
     resizeSpecial() {
         console.log('current scene', this.scene.key);
