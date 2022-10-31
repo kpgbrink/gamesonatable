@@ -32,6 +32,7 @@ export default function PlayerGamesListMenu() {
   useEffect(() => {
     const showGamesListMenu = (e: any) => {
       setVisible(e.detail.show);
+      // scroll to selected game
     };
     window.addEventListener("showGamesListMenu", showGamesListMenu);
     return () => {

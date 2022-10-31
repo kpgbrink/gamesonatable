@@ -69,6 +69,7 @@ io.on('connection', (socket) => {
         user.room = room;
         user = addHostUserToRoom(user);
         socket.join(user.room);
+        console.log('hello');
     });
 
     socket.on('join room', (room: string, userId: string | undefined, storedIds: StoredBrowserIds) => {

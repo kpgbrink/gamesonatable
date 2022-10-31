@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../AppContext";
 import { palletColors } from "../../Palettes";
 import { HostDataHandler } from "../../PhaserPages/HostScenes/hostObjects/HostDataHandler";
+import socket from "../../SocketConnection";
 import PlayerChooseGame from "./HomePage/PlayerChooseGame";
 import PlayerJoin from "./HomePage/PlayerJoin";
 
@@ -49,6 +50,22 @@ export default function HomePage() {
       navigate(navigateTo);
     }
   }, [mainMenuData, navigate, roomCreated]);
+
+  // check every 5 seconds if socket is connected if not then refresh the page
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("socket connected", socket.connected);
+      if (!socket.connected) {
+        // add popup to say the connection has been lost
+        window.alert("Connection lost, please refresh the page");
+        // in 5 seconds refresh the page
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div id="homePageContainer">

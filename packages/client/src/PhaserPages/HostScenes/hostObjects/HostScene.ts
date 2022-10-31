@@ -20,6 +20,14 @@ export default abstract class HostScene extends Phaser.Scene {
             console.log('socket disconnected');
             this.setUrlToHomeScreen();
         });
+        // every 5 seconds check if socket is connected
+        const checkConnectionInterval = setInterval(() => {
+            if (!socket.connected) {
+                // socket disconnected
+                console.log('socket disconnected');
+                this.setUrlToHomeScreen();
+            }
+        }, 5000);
 
         socket.on("room data", (roomData: RoomData) => {
             // if no player users then go to home screen
@@ -45,6 +53,11 @@ export default abstract class HostScene extends Phaser.Scene {
         socket.on('quit game', () => {
             // emit window event to go back to home screen
             this.setUrlToHomeScreen();
+        });
+
+        // on scene shutdown
+        this.events.on('shutdown', () => {
+            clearInterval(checkConnectionInterval);
         });
     }
 
