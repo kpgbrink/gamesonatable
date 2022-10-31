@@ -24,7 +24,6 @@ export interface UserBase {
     id: string;
     socketId: string | null;
     room: string;
-
 }
 
 export interface HostUser extends UserBase {
@@ -51,12 +50,6 @@ export interface RoomData {
     hostUser: User | null;
     users: User[];
     game: Game;
-}
-
-export interface CardContent {
-    suit: string | null;
-    rank: string | null;
-    joker: boolean | null;
 }
 
 export interface StoredBrowserIds {

@@ -1,7 +1,13 @@
-import { CardContent } from "api";
 import { Transform } from "../Tools";
 import { ValueWithDefault } from "../ValueWithDefault";
 import ItemContainer from "./ItemContainer";
+
+
+interface CardContent {
+    suit: string | null;
+    rank: string | null;
+    joker: boolean | null;
+}
 
 export default class CardContainer extends ItemContainer {
     cardContent: CardContent;
