@@ -1,11 +1,10 @@
-import { Game } from "api";
+import { Game, RoomData } from "api";
 import { getGameFromName } from "api/src/gamesList";
 import Phaser from "phaser";
 import socket from "../../../SocketConnection";
 import { persistentData } from "../../objects/PersistantData";
 import { socketOffOnSceneShutdown } from "../../objects/Tools";
 import { loadUserAvatarSprites } from "../../objects/UserAvatarContainer";
-import { onHostChangeGames } from "../hostTools/OnHostChangeGames";
 
 
 export default abstract class HostScene extends Phaser.Scene {
@@ -15,7 +14,22 @@ export default abstract class HostScene extends Phaser.Scene {
         socket.off();
         // change the game playerSceneKey
         socket.emit('update game', { currentPlayerScene: this.playerSceneKey });
-        onHostChangeGames(this);
+        // if socket disconnects then go to home screen
+        socket.on('disconnect', () => {
+            // socket disconnected
+            console.log('socket disconnected');
+            this.setUrlToHomeScreen();
+        });
+
+        socket.on("room data", (roomData: RoomData) => {
+            // if no player users then go to home screen
+            if (roomData.users.length === 0) {
+                console.log('no users in room');
+                this.setUrlToHomeScreen();
+            }
+            // start scene if scene is different
+            persistentData.roomData = roomData;
+        });
         socketOffOnSceneShutdown(this);
         loadUserAvatarSprites(this);
         this.scale.refresh();

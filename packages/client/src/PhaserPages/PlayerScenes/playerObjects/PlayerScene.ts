@@ -48,14 +48,20 @@ export default class PlayerScene extends Phaser.Scene {
         addFullScreenButton(this);
         socket.emit('get room data');
         this.scale.refresh();
-        // add scale refresh event listener
-        window.addEventListener('resizeSpecial', () => {
-            this.resizeSpecial();
+        // add scale refresh event listenerw
+        // remove resize event listener
+        const abortController = new AbortController();
+        this.resizeSpecial();
+        window.addEventListener('resizeSpecial', () => { this.resizeSpecial() }, { signal: abortController.signal });
+        this.events.on('shutdown', () => {
+            abortController.abort();
         });
         this.createMenu();
     }
 
+
     resizeSpecial() {
+        console.log('current scene', this.scene.key);
         this.scale.refresh();
     }
 
@@ -110,6 +116,7 @@ export default class PlayerScene extends Phaser.Scene {
         restartGameMenuButton.setOrigin(0);
         restartGameMenuButton.on('pointerdown', () => {
             socket.emit('restart game');
+            this.closeMenu();
         });
         this.restartMenuButton = restartGameMenuButton;
         this.add.existing(restartGameMenuButton);
@@ -120,6 +127,7 @@ export default class PlayerScene extends Phaser.Scene {
         quitGameMenuButton.setOrigin(0);
         quitGameMenuButton.on('pointerdown', () => {
             socket.emit('quit game');
+            this.closeMenu();
         });
         this.quitGameMenuButton = quitGameMenuButton;
         this.add.existing(quitGameMenuButton);
@@ -188,12 +196,5 @@ export default class PlayerScene extends Phaser.Scene {
         this.quitGameMenuButton.visible = false;
         // remove pointerdown event listener
         this.input.off('pointerdown', this.outsideMenuPointerDown, this);
-    }
-
-    // remove resize event listener on shutdown
-    shutdown() {
-        window.removeEventListener('resizeSpecial', () => {
-            this.resizeSpecial();
-        });
     }
 }

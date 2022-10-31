@@ -35,6 +35,9 @@ export const addUserToRoom = (upsertingUser: User) => {
 
 export const addHostUserToRoom = (hostUser: User) => {
     const roomData = rooms.get(hostUser.room);
+    if (roomData) {
+        roomData.hostUser = hostUser;
+    }
     // add room if it doesn't exist yet
     if (!rooms.has(hostUser.room)) {
         rooms.set(hostUser.room, {

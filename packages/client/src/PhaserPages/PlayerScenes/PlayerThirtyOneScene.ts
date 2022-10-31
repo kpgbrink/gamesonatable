@@ -28,9 +28,4 @@ export default class PlayerThirtyOneScene extends PlayerScene {
         super.update(time, delta);
         this.playerCardHand?.update(time, delta);
     }
-
-    // on scene end
-    shutdown() {
-        super.shutdown();
-    }
 }
