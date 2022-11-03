@@ -1,4 +1,4 @@
-import { RoomData, User } from 'api';
+import { HostUser, RoomData, User } from 'api';
 import { getGameFromName } from 'api/src/gamesList';
 import { allRaces, nameByRace } from 'fantasy-name-generator';
 
@@ -35,6 +35,7 @@ export const addUserToRoom = (upsertingUser: User) => {
 
 export const addHostUserToRoom = (hostUser: User) => {
     const roomData = rooms.get(hostUser.room);
+    // if room exists just add it to hostUser
     if (roomData) {
         roomData.hostUser = hostUser;
     }
@@ -69,31 +70,53 @@ export const updateUser = (userUpdate: Partial<User>, user: User) => {
 
 export const removeUser = (userSocketSocketId: string, roomId: string) => {
     const room = getRoom(roomId);
-    if (!room) return;
-    const index = room.users.findIndex((user) => {
-        return user.socketId === userSocketSocketId
-    });
-    if (index == -1) {
+    if (!room) {
+        console.log('room does not exist');
         return;
     }
+    const playerUser = room.users.find((user) => {
+        return user.socketId === userSocketSocketId
+    });
+    const hostUser = (() => {
+        if (room.hostUser?.socketId === userSocketSocketId) {
+            return room.hostUser;
+        }
+        return null;
+    })();
+
+    if (playerUser) {
+        deletePlayerUserFromRoom(playerUser, room);
+    }
+    if (hostUser) {
+        deleteHostUserFromRoom(hostUser, room);
+    }
+}
+
+const deleteHostUserFromRoom = (hostUser: HostUser, room: RoomData) => {
+    // remove host user
+    room.hostUser = null;
+    console.log('deleting host user');
+    checkIfShouldDeleteRoom(room);
+}
+
+const deletePlayerUserFromRoom = (playerUser: User, room: RoomData) => {
     // If the user is in game and the game is not leavable, keep the user in the game
-    const user = room.users[index];
     if (room.game.selectedGameName
         && getGameFromName(room.game.selectedGameName).leavable === false
-        && user.inGame) {
+        && playerUser.inGame) {
         console.log('user is in game that is not leavable so keep them in game');
         // remove the socket id from the user
-        room.users[index].socketId = null;
-        room.users[index].socketId = null;
+        playerUser.socketId = null;
+        playerUser.socketId = null;
         console.log('keeping user in game');
         checkIfShouldDeleteRoom(room);
         return;
     }
-    console.log('deleting user');
+    console.log('deleting player user');
     // remove user from room map
     if (room) {
         room.users = room.users.filter((user) => {
-            return user.socketId !== userSocketSocketId;
+            return user.socketId !== playerUser.socketId;
         });
     }
     checkIfShouldDeleteRoom(room);
@@ -101,8 +124,10 @@ export const removeUser = (userSocketSocketId: string, roomId: string) => {
 
 // delete room if no users or all users have no socket id
 const checkIfShouldDeleteRoom = (room: RoomData) => {
-    // delete room if no users or all users have no socket id
-    if (room && room.users.length === 0 || room.users.every((user) => { return user.socketId === null })) {
+    // delete room if no users or all users have no socket id, and no host user
+    if (room.hostUser === null &&
+        (room.users.length === 0 || room.users.every((user) => user.socketId === null))
+    ) {
         rooms.delete(room.room);
         console.log('all existing rooms count ', rooms.size);
         console.log('all existing rooms', rooms);

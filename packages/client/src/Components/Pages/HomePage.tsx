@@ -3,17 +3,18 @@ import {
   PlayerMainMenuData,
 } from "api/src/data/datas/MainMenuData";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../../AppContext";
 import { palletColors } from "../../Palettes";
 import { HostDataHandler } from "../../PhaserPages/HostScenes/hostObjects/HostDataHandler";
-import socket from "../../SocketConnection";
 import PlayerChooseGame from "./HomePage/PlayerChooseGame";
 import PlayerJoin from "./HomePage/PlayerJoin";
 
 export default function HomePage() {
+  const { roomId } = useParams();
+  const { setRoomCreated, roomCreated, userList, socket } =
+    useContext(AppContext);
   document.documentElement.style.cursor = "auto";
-  const { userList, roomCreated } = useContext(AppContext);
   const navigate = useNavigate();
 
   // add game data to state
@@ -56,16 +57,22 @@ export default function HomePage() {
     const interval = setInterval(() => {
       console.log("socket connected", socket.connected);
       if (!socket.connected) {
-        // add popup to say the connection has been lost
-        window.alert("Connection lost, please refresh the page");
-        // in 5 seconds refresh the page
         setTimeout(() => {
+          console.log("refresh");
           window.location.reload();
-        }, 1000);
+        }, 500);
       }
     }, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  // Start hosting room
+  useEffect(() => {
+    if (!roomId && !roomCreated) return;
+    const hostRoomId = roomId || roomCreated;
+    socket.emit("host room", hostRoomId);
+    setRoomCreated(hostRoomId);
+  }, [setRoomCreated, roomCreated, roomId, socket]);
 
   return (
     <div id="homePageContainer">

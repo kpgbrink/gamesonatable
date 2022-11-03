@@ -12,8 +12,7 @@ import { persistentData } from "../../../PhaserPages/objects/PersistantData";
 
 export default function PlayerJoin() {
   const { roomId } = useParams();
-  const { setRoomCreated, roomCreated, userList, setUserList, socket } =
-    useContext(AppContext);
+  const { roomCreated, userList, setUserList, socket } = useContext(AppContext);
 
   // Get room data
   useEffect(() => {
@@ -29,14 +28,6 @@ export default function PlayerJoin() {
       socket.off("room data", roomDataListener);
     };
   }, [setUserList, roomId, socket]);
-
-  // Start hosting room
-  useEffect(() => {
-    if (!roomId && !roomCreated) return;
-    const hostRoomId = roomId || roomCreated;
-    socket.emit("host room", hostRoomId);
-    setRoomCreated(hostRoomId);
-  }, [setRoomCreated, roomCreated, roomId, socket]);
 
   useEffect(() => {
     const updateGame: Game = {

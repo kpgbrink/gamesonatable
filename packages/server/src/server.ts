@@ -5,7 +5,7 @@ import cors from 'cors';
 import express from 'express';
 import { Server, Socket } from "socket.io";
 import uniqid from 'uniqid';
-import { addHostUserToRoom, addUserToRoom, getRoom, getRoomHost, getRoomHostSocketId, removeUser, updateUser } from './user';
+import { addHostUserToRoom, addUserToRoom, getRoom, getRoomHost, removeUser, updateUser } from './user';
 
 const app = express();
 const port = 3001;
@@ -16,6 +16,7 @@ const httpServer = app.listen(port, () => {
 const io = new Server(httpServer, {
     cors: config.get('cors.origin'),
     pingInterval: 2000,
+    pingTimeout: 1500,
 });
 
 app.use(cors({ origin: config.get('cors.origin'), credentials: config.get('cors.credentials') }));
@@ -33,7 +34,14 @@ const randomPin = () => {
 
 const socketLeavePreviousRoom = (socket: Socket, user: User | undefined) => {
     if (!user) return;
-    socket.leave(user.room);
+    const rooms = socket.rooms.values();
+    // leave all rooms
+    for (const room of rooms) {
+        if (room !== socket.id) {
+            console.log('leaving room', room);
+            socket.leave(room);
+        }
+    }
 }
 
 io.on('connection', (socket) => {
@@ -58,18 +66,20 @@ io.on('connection', (socket) => {
     // The current room I am in
     socket.on('host room', (room: string) => {
         console.log('start hosting room', room);
-        socketLeavePreviousRoom(socket, user);
-        // ensure there is only one host
-        const previousHost = getRoomHostSocketId(room);
-        // check if previous host is same as current host
-        if (previousHost) {
-            console.log('remove previous host');
-            removeUser(previousHost, room);
+        // if user is already hosting this room, do nothing
+        const roomData = getRoom(room);
+        const socketRoom = socket.rooms.has(room);
+        const onlyOneSocketRoom = socket.rooms.size === 1;
+        if (roomData?.hostUser?.socketId === socket.id && socketRoom && onlyOneSocketRoom) {
+            console.log('already hosting this room');
+            return;
         }
+        socketLeavePreviousRoom(socket, user);
+
         user.room = room;
         user = addHostUserToRoom(user);
         socket.join(user.room);
-        console.log('hello');
+        console.log('now hosting room', user.room);
     });
 
     socket.on('join room', (room: string, userId: string | undefined, storedIds: StoredBrowserIds) => {
