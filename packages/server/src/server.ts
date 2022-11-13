@@ -342,6 +342,9 @@ io.on('connection', (socket) => {
     });
     // ------------------------------
 
+    // -- Player Input To Host --
+
+
     socket.on('restart game', () => {
         const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
