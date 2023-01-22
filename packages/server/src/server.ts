@@ -96,7 +96,7 @@ io.on('connection', (socket) => {
         const roomData = getRoom(room);
         // console.log('roomData', roomData);
         if (!roomData) {
-            console.log('emit room does not exist');
+            console.log('emit room does not exist', userId, room);
             socket.emit(
                 'room issue',
                 'Room does not exist',
@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
             return;
         }
         // If there is no Host user in the room, then send the user that there is no host
-        if (!roomData.hostUser) {
+        if (!roomData.hostUser?.socketId) {
             console.log('emit no host');
             socket.emit('room issue', 'No Host', 'The room you are trying to join does not have a host.');
             return;
@@ -344,7 +344,6 @@ io.on('connection', (socket) => {
 
     // -- Player Input To Host --
 
-
     socket.on('restart game', () => {
         const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
@@ -355,5 +354,25 @@ io.on('connection', (socket) => {
         const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('quit game');
+    });
+
+    // signaling data from the client sending to the host to start a connection
+    socket.on('signaling-data-to-host', (data: any) => {
+        console.log('got the signal heading to host');
+        const hostUser = getRoomHost(user.room);
+        if (!hostUser?.socketId) return;
+        io.to(hostUser.socketId).emit('signaling-data-to-host', data, user.id);
+    });
+
+    // signaling data from the host sending to the client to start a connection
+    socket.on('signaling-data-to-client', (data: any, userId: string) => {
+        console.log('got the signal sending to client------------- ya');
+        const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
+        const room = getRoom(user.room);
+        const users = room?.users;
+        console.log('users', users, userId);
+        if (!userTo?.socketId) return;
+        console.log('got the signal sending to client', userTo.socketId);
+        io.to(userTo.socketId).emit('signaling-data-to-client', data);
     });
 });

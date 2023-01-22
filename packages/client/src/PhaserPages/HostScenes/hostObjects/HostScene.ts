@@ -2,6 +2,7 @@ import { Game, RoomData } from "api";
 import { getGameFromName } from "api/src/gamesList";
 import Phaser from "phaser";
 import socket from "../../../SocketConnection";
+import { startListeningForHostConnections } from "../../../WebRTC/HostConnections";
 import { persistentData } from "../../objects/PersistantData";
 import { socketOffOnSceneShutdown } from "../../objects/Tools";
 import { loadUserAvatarSprites } from "../../objects/UserAvatarContainer";
@@ -11,6 +12,7 @@ export default abstract class HostScene extends Phaser.Scene {
     abstract playerSceneKey: string;
 
     create() {
+        startListeningForHostConnections();
         socket.off();
         // change the game playerSceneKey
         socket.emit('update game', { currentPlayerScene: this.playerSceneKey });

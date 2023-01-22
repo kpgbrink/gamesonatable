@@ -9,10 +9,20 @@ import { AppContext } from "../../../AppContext";
 import { palletColors } from "../../../Palettes";
 import { avatarImages } from "../../../PhaserPages/objects/avatarImages.generated";
 import { persistentData } from "../../../PhaserPages/objects/PersistantData";
+import { useHostConnections } from "../../../WebRTC/HostConnections";
 
-export default function PlayerJoin() {
+export default function HostPlayerJoin() {
   const { roomId } = useParams();
   const { roomCreated, userList, setUserList, socket } = useContext(AppContext);
+
+  // useEffect(() => {
+  //   startListeningForConnections();
+  //   return () => {
+  //     closeListeningForConnections();
+  //   }
+  // });
+
+  useHostConnections();
 
   // Get room data
   useEffect(() => {
@@ -68,8 +78,7 @@ export default function PlayerJoin() {
           height: "15%",
           textAlign: "center",
           color: "black",
-        }}
-      >
+        }}>
         Phone Party
       </Textfit>
 
@@ -80,8 +89,7 @@ export default function PlayerJoin() {
             top: "20%",
             left: "2%",
             height: "65%",
-          }}
-        >
+          }}>
           <QRCode
             // size={256}
             style={{
@@ -105,15 +113,13 @@ export default function PlayerJoin() {
           backgroundColor: palletColors.color1,
           padding: ".2%",
           borderRadius: "10px",
-        }}
-      >
+        }}>
         {userList.length === 0 && (
           <Textfit
             style={{
               height: "80%",
               width: "100%",
-            }}
-          >
+            }}>
             Waiting for players to scan...
           </Textfit>
         )}
@@ -124,8 +130,7 @@ export default function PlayerJoin() {
               display: "flex",
               flexDirection: "column",
               flexFlow: "column wrap",
-            }}
-          >
+            }}>
             {userList.map((user, index) => {
               return (
                 <ListItem
@@ -136,8 +141,7 @@ export default function PlayerJoin() {
                     borderRadius: "5px",
                     width: "47%",
                     height: "4vh",
-                  }}
-                >
+                  }}>
                   {/* Add user avatar image here */}
                   {user.userAvatar && (
                     <UserAvatarImages userAvatar={user.userAvatar} />
@@ -147,8 +151,7 @@ export default function PlayerJoin() {
                       paddingLeft: "15%",
                       width: "100%",
                       height: "90%",
-                    }}
-                  >
+                    }}>
                     {user.name}
                   </Textfit>
                 </ListItem>
@@ -168,8 +171,7 @@ export default function PlayerJoin() {
             textAlign: "center",
             color: palletColors.color4,
             fontWeight: "bold",
-          }}
-        >
+          }}>
           Press Select Game to start!
         </Textfit>
       )}

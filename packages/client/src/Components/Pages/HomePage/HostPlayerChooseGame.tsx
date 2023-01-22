@@ -10,17 +10,28 @@ import { AppContext } from "../../../AppContext";
 import { palletColors } from "../../../Palettes";
 import { avatarImages } from "../../../PhaserPages/objects/avatarImages.generated";
 import { persistentData } from "../../../PhaserPages/objects/PersistantData";
+import HostConnections, { closeListeningForClientConnections, startListeningForHostConnections, useHostConnections } from "../../../WebRTC/HostConnections";
 
 type Props = {
   mainMenuData: MainMenuGameData;
 };
 
 // add setMainMenuData to props
-export default function PlayerChooseGame({ mainMenuData }: Props) {
+export default function HostPlayerChooseGame({ mainMenuData }: Props) {
   const { roomId } = useParams();
   const { setRoomCreated, roomCreated, userList, setUserList, socket } =
     useContext(AppContext);
 
+  // refactor this to custom hook
+  // useEffect(() => {
+  //   startListeningForConnections();
+  //   return () => {
+  //     closeListeningForConnections();
+  //   }
+  // });
+
+  useHostConnections();
+  
   const scrollToRef = useRef<null | HTMLLIElement>(null);
 
   const executeToScroll = () => {

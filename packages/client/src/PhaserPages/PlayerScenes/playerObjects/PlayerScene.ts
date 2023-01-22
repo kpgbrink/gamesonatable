@@ -2,6 +2,7 @@ import { RoomData } from "api";
 import Phaser from "phaser";
 import { palletColors } from "../../../Palettes";
 import socket from "../../../SocketConnection";
+import { startListeningForClientConnections } from "../../../WebRTC/ClientConnection";
 import MenuButton from "../../objects/MenuButton";
 import { persistentData } from "../../objects/PersistantData";
 import { addFullScreenButton, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, socketOffOnSceneShutdown } from "../../objects/Tools";
@@ -25,6 +26,8 @@ export default class PlayerScene extends Phaser.Scene {
 
     create() {
         socket.off();
+        startListeningForClientConnections();
+        console.log('listen for client connections');
         // if socket disconnects then go to home screen
         socket.on('disconnect', () => {
             // socket disconnected

@@ -26,7 +26,7 @@ export default function ShowRoomIssue() {
       // retry to join the room after a few seconds
       setTimeout(() => {
         socket.emit("join room", roomId, userId, getStoredIds());
-      }, 5000);
+      }, 2000);
     };
     socket.on("room issue", listener);
     return () => {

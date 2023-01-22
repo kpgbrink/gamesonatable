@@ -3,6 +3,8 @@ import { LinearProgress } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../AppContext";
+import clientConnection from "../WebRTC/ClientConnection";
+import { ClientPeerConnection } from "../WebRTC/PeerConnection";
 import { persistentData } from "./objects/PersistantData";
 import PhaserWrapper from "./PhaserWrapper";
 import PlayerGamesListMenu from "./PlayerPage/PlayerGamesListMenu";
@@ -28,6 +30,9 @@ export default function PlayerPage() {
       throw new Error("userId is not defined");
     }
     const userIdListener = (existingUserId: string) => {
+      // make clientConnection.hostCOnnection if it does not exist
+      clientConnection.hostConnection =
+        clientConnection.hostConnection || new ClientPeerConnection();
       setRoomExists(true);
       if (existingUserId !== userId) {
         persistentData.myUserId = existingUserId;
@@ -39,6 +44,7 @@ export default function PlayerPage() {
     };
     socket.on("user id", userIdListener);
     persistentData.myUserId = userId;
+    console.log("join room", roomId);
     socket.emit("join room", roomId, userId, getStoredIds());
     return () => {
       socket.off("user id", userIdListener);

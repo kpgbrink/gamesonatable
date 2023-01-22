@@ -7,8 +7,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../../AppContext";
 import { palletColors } from "../../Palettes";
 import { HostDataHandler } from "../../PhaserPages/HostScenes/hostObjects/HostDataHandler";
-import PlayerChooseGame from "./HomePage/PlayerChooseGame";
-import PlayerJoin from "./HomePage/PlayerJoin";
+import HostPlayerChooseGame from "./HomePage/HostPlayerChooseGame";
+import PlayerJoin from "./HomePage/HostPlayerJoin";
 
 export default function HomePage() {
   const { roomId } = useParams();
@@ -53,18 +53,18 @@ export default function HomePage() {
   }, [mainMenuData, navigate, roomCreated]);
 
   // check every 5 seconds if socket is connected if not then refresh the page
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log("socket connected", socket.connected);
-      if (!socket.connected) {
-        setTimeout(() => {
-          console.log("refresh");
-          window.location.reload();
-        }, 500);
-      }
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     console.log("socket connected", socket.connected);
+  //     if (!socket.connected) {
+  //       setTimeout(() => {
+  //         console.log("refresh");
+  //         window.location.reload();
+  //       }, 500);
+  //     }
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   // Start hosting room
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function HomePage() {
       >
         {mainMenuData.mainMenuPosition === 0 && <PlayerJoin />}
         {mainMenuData.mainMenuPosition === 1 && (
-          <PlayerChooseGame mainMenuData={mainMenuData} />
+          <HostPlayerChooseGame mainMenuData={mainMenuData} />
         )}
       </div>
     </div>
