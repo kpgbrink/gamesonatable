@@ -59,6 +59,7 @@ export default function PhaserWrapper({
   useEffect(() => {
     const game = new Phaser.Game(configWithDom);
     return () => {
+      console.log("destroying game");
       game.destroy(true);
     };
   });

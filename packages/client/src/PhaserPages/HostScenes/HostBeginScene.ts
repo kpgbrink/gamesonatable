@@ -15,15 +15,32 @@ export default class HostBeginScene extends HostScene {
         super.create();
         // immediatly move to the selected game starting scene
         // on room data update
-        socket.on('room data', (roomData: RoomData) => {
+        const roomDataName = (roomData: RoomData) => {
             if (!roomData.game.selectedGameName) return;
             const game = getGameFromName(roomData.game.selectedGameName);
             if (game) {
                 this.scene.start(game.sceneOrder[0]);
             }
-        });
+        };
+
+        socket.on('room data', roomDataName);
 
         socket.emit('get room data');
+
+        const cleanup = () => {
+            console.log('host begin scene shutdown');
+            socket.off('room data', roomDataName);
+        };
+
+        // on scene shutdown
+        this.events.on('shutdown', () => {
+            cleanup();
+        });
+
+        // on scene destroy
+        this.events.on('destroy', () => {
+            cleanup();
+        });
     }
 
     startGame() {

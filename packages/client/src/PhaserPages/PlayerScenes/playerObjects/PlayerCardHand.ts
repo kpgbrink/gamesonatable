@@ -30,7 +30,7 @@ export abstract class PlayerCardHand
     cardBasePositions: Transform[] = [];
 
     constructor(scene: PlayerScene) {
-        super();
+        super(scene);
         this.scene = scene;
         this.cards = new Cards(scene);
         const screenCenter = getScreenCenter(scene);
@@ -196,6 +196,7 @@ export abstract class PlayerCardHand
     }
 
     updateDealing(gameData: Partial<CardGameDataType>) {
+        if (!gameData) return;
         if (gameData.playerDealerId === undefined) return
         if (gameData.waitingForDeal === undefined) return
         const meDealing = gameData.playerDealerId === persistentData.myUserId && gameData.waitingForDeal;

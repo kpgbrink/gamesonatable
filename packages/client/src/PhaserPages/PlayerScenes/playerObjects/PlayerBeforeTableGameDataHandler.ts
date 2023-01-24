@@ -10,7 +10,7 @@ export default class PlayerBeforeTableGameStartDataHandler extends PlayerDataHan
 
 
     constructor(scene: PlayerBeforeTableGameStart) {
-        super();
+        super(scene);
         this.scene = scene;
         this.playerData = new PlayerBeforeTableGameData();
         this.gameData = new MainMenuGameData();
@@ -18,10 +18,6 @@ export default class PlayerBeforeTableGameStartDataHandler extends PlayerDataHan
 
     create() {
         super.create();
-    }
-
-    // on scene shutdown
-    shutdown() {
     }
 
     getPlayerDataToSend(): Partial<PlayerBeforeTableGameData> | undefined {

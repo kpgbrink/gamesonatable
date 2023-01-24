@@ -5,7 +5,7 @@ import socket from "../../../SocketConnection";
 import { startListeningForClientConnections } from "../../../WebRTC/ClientConnection";
 import MenuButton from "../../objects/MenuButton";
 import { persistentData } from "../../objects/PersistantData";
-import { addFullScreenButton, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded, socketOffOnSceneShutdown } from "../../objects/Tools";
+import { addFullScreenButton, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded } from "../../objects/Tools";
 import UserAvatarContainer, { preloadUserAvatarSprites } from "../../objects/UserAvatarContainer";
 
 export default class PlayerScene extends Phaser.Scene {
@@ -25,17 +25,14 @@ export default class PlayerScene extends Phaser.Scene {
     }
 
     create() {
-        socket.off();
         startListeningForClientConnections();
         console.log('listen for client connections');
         // if socket disconnects then go to home screen
-        socket.on('disconnect', () => {
-            // socket disconnected
-            console.log('socket disconnected');
-            // refresh page
+        const onDisconnect = () => {
             window.location.reload();
-        });
-        socket.on("room data", (roomData: RoomData) => {
+        };
+        socket.on('disconnect', onDisconnect);
+        const onRoomData = (roomData: RoomData) => {
             // If room is undefined or no Host user then refresh the page
             if (!roomData || !roomData.hostUser) {
                 window.location.reload();
@@ -68,8 +65,9 @@ export default class PlayerScene extends Phaser.Scene {
                 }
             })();
             persistentData.roomData = roomData;
-        });
-        socketOffOnSceneShutdown(this);
+        };
+
+        socket.on("room data", onRoomData);
         addFullScreenButton(this);
         socket.emit('get room data');
         this.scale.refresh();
@@ -82,6 +80,20 @@ export default class PlayerScene extends Phaser.Scene {
             abortController.abort();
         });
         this.createMenu();
+
+        const cleanup = () => {
+            socket.off('room data', onRoomData);
+            socket.off('disconnect', onDisconnect);
+            window.removeEventListener('resizeSpecial', () => { this.resizeSpecial() });
+        }
+
+        // on scene shutdown remove event listener
+        this.events.on('shutdown', () => {
+            cleanup();
+        });
+        this.events.on('destroy', () => {
+            cleanup();
+        });
     }
 
     resizeSpecial() {

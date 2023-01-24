@@ -48,11 +48,17 @@ export const preloadUserAvatarSprites = (scene: Phaser.Scene) => {
 
 // only use this on the player for now. hopefully fix later...
 export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
-    socket.on('room data', (roomData: RoomData) => {
-        roomData?.users.forEach(user => {
+    console.log("loadUserAvatarSprites-------------------------------");
+    const onRoomData = (roomData: RoomData) => {
+        console.log('room data', roomData?.users);
+        console.log('heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+        if (!roomData) return;
+        if (!roomData.users) return;
+        roomData.users.forEach(user => {
             const userId = user.id;
             const userAvatar = user.userAvatar;
             if (!userAvatar) return;
+            console.log('scene', userId, avatarImages.base[userAvatar.base], userAvatar);
             loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-base`, `${playerFolder}base/${avatarImages.base[userAvatar.base]}`, userAvatar.base);
             loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-cloak`, `${playerFolder}cloak/${avatarImages.cloak[userAvatar.cloak]}`, userAvatar.cloak);
             loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-gloves`, `${playerFolder}gloves/${avatarImages.gloves[userAvatar.gloves]}`, userAvatar.gloves);
@@ -64,6 +70,20 @@ export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
             loadIfImageNotLoadedAndUserAvatarHasIt(scene, `${userId}-legs`, `${playerFolder}legs/${avatarImages.legs[userAvatar.legs]}`, userAvatar.legs);
             scene.load.start();
         });
+    };
+
+    socket.on('room data', onRoomData);
+
+    const cleanup = () => {
+        socket.off('room data', onRoomData);
+    }
+    // on scene shutdown remove the listener
+    scene.events.on('shutdown', () => {
+        cleanup();
+    });
+
+    scene.events.on('destroy', () => {
+        cleanup();
     });
 }
 

@@ -35,7 +35,6 @@ export default function HostPage() {
       true
     );
     return () => {
-      socket.off();
       // remove event listener
       window.removeEventListener("changeroute", () => {});
     };

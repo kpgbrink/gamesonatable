@@ -10,7 +10,7 @@ import { AppContext } from "../../../AppContext";
 import { palletColors } from "../../../Palettes";
 import { avatarImages } from "../../../PhaserPages/objects/avatarImages.generated";
 import { persistentData } from "../../../PhaserPages/objects/PersistantData";
-import HostConnections, { closeListeningForClientConnections, startListeningForHostConnections, useHostConnections } from "../../../WebRTC/HostConnections";
+import { useHostConnections } from "../../../WebRTC/HostConnections";
 
 type Props = {
   mainMenuData: MainMenuGameData;
@@ -22,16 +22,8 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
   const { setRoomCreated, roomCreated, userList, setUserList, socket } =
     useContext(AppContext);
 
-  // refactor this to custom hook
-  // useEffect(() => {
-  //   startListeningForConnections();
-  //   return () => {
-  //     closeListeningForConnections();
-  //   }
-  // });
-
   useHostConnections();
-  
+
   const scrollToRef = useRef<null | HTMLLIElement>(null);
 
   const executeToScroll = () => {
@@ -110,8 +102,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
           height: "10%",
           textAlign: "center",
           color: "black",
-        }}
-      >
+        }}>
         Phone Party
       </Textfit>
       <a href={joinURL} target="_blank" rel="noreferrer">
@@ -121,8 +112,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
             top: "2%",
             left: "1%",
             height: "24%",
-          }}
-        >
+          }}>
           <QRCode
             // size={256}
             style={{
@@ -150,8 +140,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
               backgroundColor: palletColors.color3,
               borderRadius: "10px",
               padding: "10px",
-            }}
-          >
+            }}>
             <h1>{gameSelecting.displayName}</h1>
             <p>{gameSelecting.description}</p>
           </div>
@@ -172,8 +161,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
           justifyContent: "around",
           backgroundColor: palletColors.color4,
           borderRadius: "10px",
-        }}
-      >
+        }}>
         {gamesList.map((game, i) => {
           // if index is the same as the game index, then it is selected
           if (game.name === mainMenuData.gameSelectingName) {
@@ -188,8 +176,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
                   backgroundColor: palletColors.color3,
                   borderRadius: "10px",
                   margin: "1%",
-                }}
-              >
+                }}>
                 <Textfit
                   style={{
                     width: "100%",
@@ -199,8 +186,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
                     color: "black",
                     fontWeight: "bold",
                     // add text outline
-                  }}
-                >
+                  }}>
                   {game.displayName}
                 </Textfit>
               </ListItem>
@@ -219,8 +205,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
                 // hide scroll bar
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
-              }}
-            >
+              }}>
               <Textfit
                 style={{
                   width: "100%",
@@ -230,8 +215,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
                   color: palletColors.color1,
                   // add outline to text
                   textShadow: `0 0 0.2px ${palletColors.color4}`,
-                }}
-              >
+                }}>
                 {game.displayName}
               </Textfit>
             </ListItem>
@@ -249,8 +233,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
           maxWidth: "90%",
           padding: ".2%",
           borderRadius: "10px",
-        }}
-      >
+        }}>
         <Textfit
           style={{
             position: "absolute",
@@ -260,8 +243,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
             textAlign: "center",
             // add outline to text
             fontWeight: "bold",
-          }}
-        >
+          }}>
           Player Count: {userList.length}
         </Textfit>
 
@@ -271,8 +253,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
-            }}
-          >
+            }}>
             {userList.map((user, index) => {
               return (
                 <ListItem
@@ -284,8 +265,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
                     height: "5%",
                     maxHeight: "5%",
                     minWidth: 0,
-                  }}
-                >
+                  }}>
                   {/* Add user avatar image here */}
 
                   <Textfit
@@ -293,8 +273,7 @@ export default function HostPlayerChooseGame({ mainMenuData }: Props) {
                       width: "100%",
                       textAlign: "center",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     {
                       // remove whitespace from name
                       user.name.replace(/\s/g, "")

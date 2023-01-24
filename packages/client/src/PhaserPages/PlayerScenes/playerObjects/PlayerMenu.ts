@@ -14,7 +14,7 @@ export default class PlayerMenu extends PlayerDataHandler<PlayerMainMenuData, Ma
 
 
     constructor(scene: PlayerStartingScene) {
-        super();
+        super(scene);
         this.scene = scene;
         this.playerData = new PlayerMainMenuData();
         this.gameData = new MainMenuGameData();

@@ -2,9 +2,7 @@ import { Game, RoomData } from "api";
 import { getGameFromName } from "api/src/gamesList";
 import Phaser from "phaser";
 import socket from "../../../SocketConnection";
-import { startListeningForHostConnections } from "../../../WebRTC/HostConnections";
 import { persistentData } from "../../objects/PersistantData";
-import { socketOffOnSceneShutdown } from "../../objects/Tools";
 import { loadUserAvatarSprites } from "../../objects/UserAvatarContainer";
 
 
@@ -12,16 +10,14 @@ export default abstract class HostScene extends Phaser.Scene {
     abstract playerSceneKey: string;
 
     create() {
-        startListeningForHostConnections();
-        socket.off();
+
         // change the game playerSceneKey
         socket.emit('update game', { currentPlayerScene: this.playerSceneKey });
-        // if socket disconnects then go to home screen
-        socket.on('disconnect', () => {
-            // socket disconnected
-            console.log('socket disconnected');
+        const onDisconnect = () => {
             this.setUrlToHomeScreen();
-        });
+        };
+        // if socket disconnects then go to home screen
+        socket.on('disconnect', onDisconnect);
         // every 5 seconds check if socket is connected
         const checkConnectionInterval = setInterval(() => {
             if (!socket.connected) {
@@ -31,7 +27,8 @@ export default abstract class HostScene extends Phaser.Scene {
             }
         }, 5000);
 
-        socket.on("room data", (roomData: RoomData) => {
+        // on room data update
+        const onRoomData = (roomData: RoomData) => {
             // if no player users then go to home screen
             if (roomData.users.length === 0) {
                 console.log('no users in room');
@@ -39,11 +36,12 @@ export default abstract class HostScene extends Phaser.Scene {
             }
             // start scene if scene is different
             persistentData.roomData = roomData;
-        });
-        socketOffOnSceneShutdown(this);
+        };
+        socket.on("room data", onRoomData);
+
         loadUserAvatarSprites(this);
         this.scale.refresh();
-        socket.on('restart game', () => {
+        const restartGame = () => {
             // set scene back to first scene in the game scene list
             const gameName = persistentData.roomData?.game.selectedGameName;
             if (!gameName) {
@@ -51,15 +49,30 @@ export default abstract class HostScene extends Phaser.Scene {
             }
             const sceneToStart = getGameFromName(gameName).sceneOrder[0];
             this.scene.start(sceneToStart);
-        });
-        socket.on('quit game', () => {
+        };
+        socket.on('restart game', restartGame);
+        const quitGame = () => {
             // emit window event to go back to home screen
             this.setUrlToHomeScreen();
-        });
+        }
+        socket.on('quit game', quitGame);
+
+        const cleanup = () => {
+            console.log('Host scene shutdown FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
+            socket.off('disconnect', onDisconnect);
+            socket.off('room data', onRoomData);
+            socket.off('restart game', restartGame);
+            socket.off('quit game', quitGame);
+            clearInterval(checkConnectionInterval);
+        };
 
         // on scene shutdown
         this.events.on('shutdown', () => {
-            clearInterval(checkConnectionInterval);
+            cleanup();
+        });
+        this.events.on('destroy', () => {
+            console.log('destroy aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaah');
+            cleanup();
         });
     }
 
@@ -92,4 +105,6 @@ export default abstract class HostScene extends Phaser.Scene {
         const event = new CustomEvent('changeroute', { detail: `/room/${persistentData.roomData?.room}` });
         window.dispatchEvent(event);
     }
+
+
 }

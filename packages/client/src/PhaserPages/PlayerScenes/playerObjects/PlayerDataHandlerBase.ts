@@ -6,17 +6,32 @@ export abstract class
     <PlayerDataType extends PlayerData,
         GameDataType extends GameData>
 {
+    scene: Phaser.Scene;
+
+    constructor(scene: Phaser.Scene) {
+        this.scene = scene;
+    }
+
     create() {
         this.listenForGameData();
         this.listenForPlayerData();
         this.listenForData();
         this.requestData();
+
+        // on scene destroy
+        this.scene.events.on("shutdown", () => {
+            this.destroy();
+        });
+        this.scene.events.on('destroy', () => {
+            this.destroy();
+        });
     }
 
     destroy() {
-        socket.off("playerDataToUser");
-        socket.off("gameDataToUser");
-        socket.off("dataToUser");
+        console.log('destorying player data handler');
+        socket.removeListener("playerDataToUser");
+        socket.removeListener("gameDataToUser");
+        socket.removeListener("dataToUser");
     }
 
     // PlayerData --------------------
@@ -66,6 +81,7 @@ export abstract class
             this.onGameDataReceived(gameData, playerData);
             this.onPlayerDataReceived(playerData, gameData);
         });
+
     }
 
     sendData(updateGameData: boolean = false) {

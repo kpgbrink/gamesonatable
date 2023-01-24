@@ -13,12 +13,12 @@ export abstract class HostDataHandlerBase<PlayerDataType extends PlayerData, Gam
     }
 
     destroy() {
-        socket.off("playerDataToHost");
-        socket.off("gameDataToHost");
-        socket.off("dataToHost");
-        socket.off("getPlayerData");
-        socket.off("getGameData");
-        socket.off("getData");
+        socket.removeListener("playerDataToHost");
+        socket.removeListener("gameDataToHost");
+        socket.removeListener("dataToHost");
+        socket.removeListener("getPlayerData");
+        socket.removeListener("getGameData");
+        socket.removeListener("getData");
     }
 
     // PlayerData --------------------

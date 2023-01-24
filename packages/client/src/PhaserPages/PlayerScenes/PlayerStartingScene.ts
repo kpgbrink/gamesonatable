@@ -30,6 +30,7 @@ export default class PlayerStartingScene extends PlayerScene {
   }
 
   create() {
+    console.log('create starting scene');
     super.create();
     // this always has to run first
     generateRandomUserAvatar();
@@ -38,9 +39,21 @@ export default class PlayerStartingScene extends PlayerScene {
     this.setUpNameDisplayAndInput();
     this.playerMenu = new PlayerMenu(this);
     this.playerMenu.create();
-    socket.on('room data', (gameData: any) => {
+    const onRoomData = (gameData: RoomData) => {
       this.handleNameStyleChange();
+    };
+    socket.on('room data', onRoomData);
+
+    const cleanup = () => {
+      socket.off('room data', onRoomData);
+    }
+    // on scene shutdown
+    this.events.on('shutdown', () => {
+      cleanup();
     });
+    this.events.on('destroy', () => {
+      cleanup();
+    })
   }
 
   setUpNameDisplayAndInput() {

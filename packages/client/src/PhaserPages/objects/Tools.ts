@@ -22,6 +22,7 @@ export const loadIfImageNotLoadedAndUserAvatarHasIt = (scene: Phaser.Scene, name
 
 export const loadIfImageNotLoaded = (scene: Phaser.Scene, name: string, url: string) => {
     if (!scene.textures || !scene.textures.exists(name)) {
+        console.log('scene.load', scene.load);
         scene.load.image(name, url);
     }
 }
@@ -36,12 +37,6 @@ export const addUserNameText = (scene: Phaser.Scene) => {
     const text = `${findMyUser(persistentData.roomData)?.name}`;
     return scene.add.text(screenCenter.x, 20, `${text}`, { color: 'white', fontSize: '50px ' }).setOrigin(0.5);
 }
-
-export const socketOffOnSceneShutdown = (phaserScene: Phaser.Scene) => {
-    phaserScene.events.once('shutdown', () => {
-        socket.off();
-    });
-};
 
 export const getScreenDimensions = (scene: Phaser.Scene) => {
     return {
@@ -61,10 +56,23 @@ export const makeMyUserAvatarInCenterOfPlayerScreen = (playerScene: PlayerScene)
     var screenCenter = getScreenCenter(playerScene);
     playerScene.userAvatarContainer = null;
     playerScene.userAvatarContainer = makeMyUserAvatar(playerScene, screenCenter.x, screenCenter.y, playerScene.userAvatarContainer) || playerScene.userAvatarContainer;
-    socket.on('room data', (roomData) => {
+    const onRoomData = (roomData: RoomData) => {
         persistentData.roomData = roomData;
         if (playerScene.userAvatarContainer) return;
         playerScene.userAvatarContainer = makeMyUserAvatar(playerScene, screenCenter.x, screenCenter.y, playerScene.userAvatarContainer) || playerScene.userAvatarContainer;
+    };
+
+    socket.on('room data', onRoomData);
+
+    const cleanup = () => {
+        socket.off('room data', onRoomData);
+    }
+    playerScene.events.on('shutdown', () => {
+        cleanup();
+    });
+
+    playerScene.events.on('destroy', () => {
+        cleanup();
     });
 }
 

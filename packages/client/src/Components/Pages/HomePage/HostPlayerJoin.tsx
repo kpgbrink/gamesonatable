@@ -15,13 +15,6 @@ export default function HostPlayerJoin() {
   const { roomId } = useParams();
   const { roomCreated, userList, setUserList, socket } = useContext(AppContext);
 
-  // useEffect(() => {
-  //   startListeningForConnections();
-  //   return () => {
-  //     closeListeningForConnections();
-  //   }
-  // });
-
   useHostConnections();
 
   // Get room data

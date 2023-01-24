@@ -25,6 +25,13 @@ export abstract class HostGame<PlayerDataType extends PlayerData, GameDataType e
 
     create() {
         super.create();
+        // destroy on scene shutdown
+        this.hostScene.events.on('destroy', () => {
+            this.destroy();
+        });
+        this.hostScene.events.on("shutdown", () => {
+            this.destroy();
+        });
     }
 
     // PlayerData --------------------
