@@ -7,6 +7,8 @@ import HostScene from "./hostObjects/HostScene";
 export default class HostBeginScene extends HostScene {
     playerSceneKey: string = "PlayerStartingScene";
 
+    currentSceneChangingTo: string | null = null;
+
     constructor() {
         super({ key: 'HostBeginScene' });
     }
@@ -19,7 +21,13 @@ export default class HostBeginScene extends HostScene {
             if (!roomData.game.selectedGameName) return;
             const game = getGameFromName(roomData.game.selectedGameName);
             if (game) {
+                // only start the scene if it is not the current scene
+                // this doesn't work because the scene is not active yet
+                // fix
+                if (this.scene.isActive(game.sceneOrder[0])) return;
+                if (this.currentSceneChangingTo === game.sceneOrder[0]) return;
                 this.scene.start(game.sceneOrder[0]);
+                this.currentSceneChangingTo = game.sceneOrder[0];
             }
         };
 

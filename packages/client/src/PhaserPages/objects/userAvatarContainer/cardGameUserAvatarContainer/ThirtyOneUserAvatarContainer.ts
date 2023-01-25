@@ -24,7 +24,10 @@ export class ThirtyOneUserAvatarContainer extends CardGameUserAvatarContainer<Th
         const screenCenter = getScreenCenter(this.scene);
         // put as many poker chips as lives in front of the user avatar
         for (let i = 0; i < this.lives; i++) {
-            const pokerChip = new GenericItemContainer(this.scene, screenCenter.x, screenCenter.y, 'bluePokerChip');
+            // add random position and rotation to the poker chip
+            var randomX = Math.random() * 100 - 50;
+            var randomY = Math.random() * 100 - 50;
+            const pokerChip = new GenericItemContainer(this.scene, screenCenter.x + randomX, screenCenter.y + randomY, 'bluePokerChip');
             this.scene.add.existing(pokerChip);
             const x = i * this.pokerChipsDistance - this.pokerChipsDistance * (this.lives - 1) / 2;
 
