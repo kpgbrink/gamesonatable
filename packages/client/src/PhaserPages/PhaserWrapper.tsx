@@ -20,14 +20,6 @@ export default function PhaserWrapper({
 }: PhaserWrapperProps) {
   const domId = `game`;
 
-  // trigger resize event after window is loaded
-  // useEffect(() => {
-  //   // after one second triggerr
-  //   setTimeout(() => {
-  //     window.dispatchEvent(new Event("resize"));
-  //   }, 1000);
-  // }, []);
-
   const configWithDom = {
     parent: domId,
     loader: {

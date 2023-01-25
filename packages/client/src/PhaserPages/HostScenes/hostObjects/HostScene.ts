@@ -10,7 +10,6 @@ export default abstract class HostScene extends Phaser.Scene {
     abstract playerSceneKey: string;
 
     create() {
-
         // change the game playerSceneKey
         socket.emit('update game', { currentPlayerScene: this.playerSceneKey });
         const onDisconnect = () => {
