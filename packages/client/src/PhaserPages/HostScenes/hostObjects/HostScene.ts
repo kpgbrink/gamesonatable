@@ -1,15 +1,16 @@
 import { Game, RoomData } from "api";
 import { getGameFromName } from "api/src/gamesList";
-import Phaser from "phaser";
 import socket from "../../../SocketConnection";
+import BaseScene from "../../objects/BaseScene";
 import { persistentData } from "../../objects/PersistantData";
 import { loadUserAvatarSprites } from "../../objects/UserAvatarContainer";
 
 
-export default abstract class HostScene extends Phaser.Scene {
+export default abstract class HostScene extends BaseScene {
     abstract playerSceneKey: string;
 
     create() {
+        super.create();
         // change the game playerSceneKey
         socket.emit('update game', { currentPlayerScene: this.playerSceneKey });
         const onDisconnect = () => {
@@ -47,7 +48,7 @@ export default abstract class HostScene extends Phaser.Scene {
                 throw new Error('gameName is null');
             }
             const sceneToStart = getGameFromName(gameName).sceneOrder[0];
-            this.scene.start(sceneToStart);
+            this.startScene(sceneToStart);
         };
         socket.on('restart game', restartGame);
         const quitGame = () => {
@@ -93,7 +94,7 @@ export default abstract class HostScene extends Phaser.Scene {
         };
         socket.emit('update room data', updateGame);
         const sceneToStart = getGameFromName(gameName).sceneOrder[selectedGameSceneIndex + 1];
-        this.scene.start(sceneToStart)
+        this.startScene(sceneToStart)
     }
 
     // maybe this https://stackoverflow.com/a/68835401/2948122

@@ -8,13 +8,12 @@ export default class ThirtyOneHostScene extends HostScene {
     gameTable: GameTable | null = null;
     thirtyOneGame: ThirtyOneGame = new ThirtyOneGame(this);
 
-    count = 0;
-
     constructor() {
         super({ key: 'ThirtyOneHostScene' });
     }
 
     preload() {
+        this.thirtyOneGame = new ThirtyOneGame(this);
         loadIfImageNotLoaded(this, 'table', 'assets/images/table.png');
         GameTable.preload(this);
         this.thirtyOneGame?.preload();
@@ -22,7 +21,6 @@ export default class ThirtyOneHostScene extends HostScene {
 
     create() {
         super.create();
-        console.log('create thirty one game', this.count++);
         const screenCenter = getScreenCenter(this);
         this.gameTable = new GameTable(this, screenCenter.x, screenCenter.y);
         this.gameTable.setDepth(-1);

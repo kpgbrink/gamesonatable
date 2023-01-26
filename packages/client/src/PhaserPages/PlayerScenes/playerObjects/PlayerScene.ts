@@ -3,12 +3,13 @@ import Phaser from "phaser";
 import { palletColors } from "../../../Palettes";
 import socket from "../../../SocketConnection";
 import { startListeningForClientConnections } from "../../../WebRTC/ClientConnection";
+import BaseScene from "../../objects/BaseScene";
 import MenuButton from "../../objects/MenuButton";
 import { persistentData } from "../../objects/PersistantData";
 import { addFullScreenButton, loadIfImageNotLoaded, loadIfSpriteSheetNotLoaded } from "../../objects/Tools";
 import UserAvatarContainer, { preloadUserAvatarSprites } from "../../objects/UserAvatarContainer";
 
-export default class PlayerScene extends Phaser.Scene {
+export default class PlayerScene extends BaseScene {
     createMenuOnScene: boolean = true;
     userAvatarContainer: UserAvatarContainer | null;
 
@@ -25,6 +26,7 @@ export default class PlayerScene extends Phaser.Scene {
     }
 
     create() {
+        super.create();
         startListeningForClientConnections();
         console.log('listen for client connections');
         // if socket disconnects then go to home screen
@@ -47,7 +49,7 @@ export default class PlayerScene extends Phaser.Scene {
                 }
 
                 window.dispatchEvent(new CustomEvent('showGamesListMenu', { detail: { show: false } }));
-                this.scene.start(roomData.game.currentPlayerScene);
+                this.startScene(roomData.game.currentPlayerScene);
             })();
             // check if I am in the game 
             (() => {
