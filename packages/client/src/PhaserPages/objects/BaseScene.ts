@@ -12,7 +12,6 @@ export default abstract class BaseScene extends Phaser.Scene {
     startScene(sceneKey: string) {
         // if scene is already changing to the scene then don't change scene
         if (this.changingSceneTo === sceneKey) {
-            console.log('scene already started', sceneKey);
             return;
         }
         this.scene.start(sceneKey);

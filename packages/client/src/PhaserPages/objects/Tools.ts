@@ -22,7 +22,6 @@ export const loadIfImageNotLoadedAndUserAvatarHasIt = (scene: Phaser.Scene, name
 
 export const loadIfImageNotLoaded = (scene: Phaser.Scene, name: string, url: string) => {
     if (!scene.textures || !scene.textures.exists(name)) {
-        console.log('scene.load', scene.load);
         scene.load.image(name, url);
     }
 }

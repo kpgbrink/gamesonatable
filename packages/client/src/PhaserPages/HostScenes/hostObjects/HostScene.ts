@@ -58,7 +58,6 @@ export default abstract class HostScene extends BaseScene {
         socket.on('quit game', quitGame);
 
         const cleanup = () => {
-            console.log('Host scene shutdown FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
             socket.off('disconnect', onDisconnect);
             socket.off('room data', onRoomData);
             socket.off('restart game', restartGame);
@@ -71,7 +70,6 @@ export default abstract class HostScene extends BaseScene {
             cleanup();
         });
         this.events.on('destroy', () => {
-            console.log('destroy aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaah');
             cleanup();
         });
     }

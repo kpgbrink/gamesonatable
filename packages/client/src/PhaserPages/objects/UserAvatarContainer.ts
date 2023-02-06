@@ -48,10 +48,7 @@ export const preloadUserAvatarSprites = (scene: Phaser.Scene) => {
 
 // only use this on the player for now. hopefully fix later...
 export const loadUserAvatarSprites = (scene: Phaser.Scene) => {
-    console.log("loadUserAvatarSprites-------------------------------");
     const onRoomData = (roomData: RoomData) => {
-        console.log('room data', roomData?.users);
-        console.log('heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
         if (!roomData) return;
         if (!roomData.users) return;
         roomData.users.forEach(user => {

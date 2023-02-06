@@ -30,7 +30,6 @@ export default class PlayerStartingScene extends PlayerScene {
   }
 
   create() {
-    console.log('create starting scene');
     super.create();
     // this always has to run first
     generateRandomUserAvatar();
