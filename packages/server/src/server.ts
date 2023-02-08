@@ -38,7 +38,6 @@ const socketLeavePreviousRoom = (socket: Socket, user: User | undefined) => {
     // leave all rooms
     for (const room of rooms) {
         if (room !== socket.id) {
-            console.log('leaving room', room);
             socket.leave(room);
         }
     }
@@ -266,7 +265,6 @@ io.on('connection', (socket) => {
 
     socket.on('get room data', () => {
         if (!user.socketId) return;
-        console.log('get room data');
         io.to(user.socketId).emit('room data', getRoom(user.room));
     });
 
@@ -279,7 +277,6 @@ io.on('connection', (socket) => {
     socket.on('playerDataToHost', (playerData: Partial<PlayerData>) => {
         const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
-        console.log('player data to host', playerData, hostUser.socketId, playerData);
         io.to(hostUser.socketId).emit('playerDataToHost', user.id, playerData);
     });
 
@@ -292,7 +289,6 @@ io.on('connection', (socket) => {
     socket.on('gameDataToHost', (gameData: Partial<GameData>, updateGameData: boolean) => {
         const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
-        console.log('gameDataToHost', gameData);
         io.to(hostUser.socketId).emit('gameDataToHost', user.id, gameData, updateGameData);
     });
 
@@ -328,14 +324,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('getPlayerData', () => {
-        // console.log('getPlayerData requested');
         const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('getPlayerData', user.id);
     });
 
     socket.on('getData', () => {
-        // console.log('getData requested');
         const hostUser = getRoomHost(user.room);
         if (!hostUser?.socketId) return;
         io.to(hostUser.socketId).emit('getData', user.id);
@@ -370,7 +364,7 @@ io.on('connection', (socket) => {
         const userTo = getRoom(user.room)?.users.find(u => u.id === userId);
         const room = getRoom(user.room);
         const users = room?.users;
-        console.log('users', users, userId);
+        // console.log('users', users, userId);
         if (!userTo?.socketId) return;
         console.log('got the signal sending to client', userTo.socketId);
         io.to(userTo.socketId).emit('signaling-data-to-client', data);
