@@ -14,35 +14,37 @@ export default clientConnection;
 let number = 0;
 let intervalId: string | number | NodeJS.Timeout | null | undefined = null;
 
+const onConnect = () => {
+    console.log('connected to host');
+}
+
+const onData = (data: any) => {
+    console.log('data from host', number++, data.toString());
+}
+
+const onClose = () => {
+    console.log('connection closed');
+    clientConnection.hostConnection = null;
+    console.log('clientConnection to host is now', clientConnection);
+};
+
 export const onSignalingData = (data: any) => {
     console.log('client data', data);
     console.log('clientConnection to host is now', clientConnection)
     if (!clientConnection.hostConnection) {
         clientConnection.hostConnection = new ClientPeerConnection();
     }
-    if (!clientConnection.hostConnection.peerConnection) {
-        throw new Error('peer connection is null');
-    }
     clientConnection.hostConnection.peerConnection.signal(data);
     console.log('clientConnection to host is now', clientConnection);
 
-    const onConnect = () => {
-        console.log('connected to host');
-    }
     clientConnection.hostConnection.peerConnection.removeListener('connect', onConnect);
     clientConnection.hostConnection.peerConnection.on('connect', onConnect);
 
-    const onData = (data: any) => {
-        console.log('data from host', number++, data.toString());
-    }
     clientConnection.hostConnection.peerConnection.removeListener('data', onData);
     clientConnection.hostConnection.peerConnection.on('data', onData);
 
-    const onClose = () => {
-        console.log('connection closed');
-        clientConnection.hostConnection = null;
-        console.log('clientConnection to host is now', clientConnection);
-    };
+    console.log('client stuff', clientConnection.hostConnection.peerConnection);
+
     clientConnection.hostConnection.peerConnection.removeListener('close', onClose);
     clientConnection.hostConnection.peerConnection.on('close', onClose);
 
@@ -50,6 +52,7 @@ export const onSignalingData = (data: any) => {
     // remove this interval if recreating it
 
     if (intervalId) {
+        console.log('clearing interval', intervalId, '...')
         clearInterval(intervalId);
     }
     // every 2 seconds send test data
@@ -58,7 +61,8 @@ export const onSignalingData = (data: any) => {
         if (clientConnection.hostConnection && clientConnection.hostConnection.peerConnection) {
             clientConnection.hostConnection.peerConnection.send('hello from client: ' + count++);
         }
-    }, 2000);
+    }, 5000);
+    console.log("intervalId", intervalId);
     // send tes data to host
     // clientConnection.hostConnection.peerConnection.send('hello from client');
 }

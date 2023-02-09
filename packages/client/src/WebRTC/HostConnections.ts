@@ -15,6 +15,17 @@ export default hostConnections;
 let number = 0;
 let hostIntervalId: string | number | NodeJS.Timeout | null | undefined = null;
 
+
+const onConnect = () => {
+    console.log('connected to client');
+}
+
+const onData = (data: any) => {
+    console.log('data from client', number++, data.toString());
+}
+
+
+
 const onSignalingData = (data: any, clientId: string) => {
     console.log('client data', data);
     const existingConnection = hostConnections.playerConnections.find((connection) => connection.clientId === clientId);
@@ -24,34 +35,29 @@ const onSignalingData = (data: any, clientId: string) => {
     const newConnection = new HostPeerConnection(clientId);
     hostConnections.playerConnections.push(newConnection);
 
-
     newConnection.peerConnection.signal(data);
 
     console.log('hostConnections', hostConnections);
 
-
-    const onConnect = () => {
-        console.log('connected to client');
-    }
     newConnection.peerConnection.removeListener('connect', onConnect);
     newConnection.peerConnection.on('connect', onConnect);
 
-    const onData = (data: any) => {
-        console.log('data from client', number++, data.toString());
-    }
     newConnection.peerConnection.removeListener('data', onData);
     newConnection.peerConnection.on('data', onData);
 
-    const onClose = () => {
+    const onClose = (clientId: string) => {
         console.log('connection closed');
         hostConnections.playerConnections = hostConnections.playerConnections.filter((connection) => connection.clientId !== clientId);
         console.log('hostConnections', hostConnections);
     };
+
     newConnection.peerConnection.removeListener('close', onClose);
     newConnection.peerConnection.on('close', onClose);
 
+    console.log('host interval', hostIntervalId)
     // every 5 seconds send test data to all clients
     if (hostIntervalId) {
+        console.log('clearing interval', hostIntervalId, '...')
         clearInterval(hostIntervalId);
     }
     hostIntervalId = setInterval(() => {
@@ -63,6 +69,7 @@ const onSignalingData = (data: any, clientId: string) => {
             }
         });
     }, 5000);
+    console.log('hostIntervalId', hostIntervalId);
 
     return newConnection;
 }
