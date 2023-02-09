@@ -11,6 +11,9 @@ const clientConnection = new ClientConnection();
 
 export default clientConnection;
 
+let number = 0;
+let intervalId: string | number | NodeJS.Timeout | null | undefined = null;
+
 export const onSignalingData = (data: any) => {
     console.log('client data', data);
     console.log('clientConnection to host is now', clientConnection)
@@ -23,25 +26,37 @@ export const onSignalingData = (data: any) => {
     clientConnection.hostConnection.peerConnection.signal(data);
     console.log('clientConnection to host is now', clientConnection);
 
-    clientConnection.hostConnection.peerConnection.on('connect', () => {
+    const onConnect = () => {
         console.log('connected to host');
-    });
+    }
+    clientConnection.hostConnection.peerConnection.removeListener('connect', onConnect);
+    clientConnection.hostConnection.peerConnection.on('connect', onConnect);
 
-    clientConnection.hostConnection.peerConnection.on('data', data => {
-        console.log('data from host', data.toString());
-    });
+    const onData = (data: any) => {
+        console.log('data from host', number++, data.toString());
+    }
+    clientConnection.hostConnection.peerConnection.removeListener('data', onData);
+    clientConnection.hostConnection.peerConnection.on('data', onData);
 
-    clientConnection.hostConnection.peerConnection.on('close', () => {
+    const onClose = () => {
         console.log('connection closed');
         clientConnection.hostConnection = null;
         console.log('clientConnection to host is now', clientConnection);
-    });
+    };
+    clientConnection.hostConnection.peerConnection.removeListener('close', onClose);
+    clientConnection.hostConnection.peerConnection.on('close', onClose);
 
+    let count = 0;
+    // remove this interval if recreating it
+
+    if (intervalId) {
+        clearInterval(intervalId);
+    }
     // every 2 seconds send test data
-    setInterval(() => {
+    intervalId = setInterval(() => {
         console.log('trying to send test data');
         if (clientConnection.hostConnection && clientConnection.hostConnection.peerConnection) {
-            clientConnection.hostConnection.peerConnection.send('hello from client');
+            clientConnection.hostConnection.peerConnection.send('hello from client: ' + count++);
         }
     }, 2000);
     // send tes data to host
