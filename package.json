@@ -18,6 +18,6 @@
         "typescript": "^4.8.4"
     },
     "devDependencies": {
-        "lerna": "^6.3.0"
+        "lerna": "^7.1.4"
     }
 }
