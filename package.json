@@ -10,8 +10,8 @@
         ]
     },
     "scripts": {
-        "start": "lerna run --parallel start",
-        "start:dev": "lerna run --parallel start:dev",
+        "start": "lerna run --parallel --stream start",
+        "start:dev": "lerna run --parallel --stream start:dev",
         "kill-ports": "kill-port --port 3000,3001"
     },
     "dependencies": {
