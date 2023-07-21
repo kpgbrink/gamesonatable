@@ -12,13 +12,13 @@
     "scripts": {
         "start": "lerna run --parallel --stream start",
         "start:dev": "lerna run --parallel --stream start:dev",
-        "kill-ports": "kill-port --port 3000,3001"
+        "kill-ports": "kill-port --port 3000,3001",
+        "build": "lerna run --parallel --stream build"
     },
     "dependencies": {
+        "lerna": "^7.1.4",
         "npm-install-global": "^1.0.0",
-        "typescript": "^4.8.4",
-        "lerna": "^7.1.4"
+        "typescript": "^4.8.4"
     },
-    "devDependencies": {
-    }
+    "devDependencies": {}
 }
