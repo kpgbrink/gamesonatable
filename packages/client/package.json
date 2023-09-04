@@ -24,7 +24,7 @@
     "scripts": {
         "start": "craco start",
         "start:dev": "craco start",
-        "build": "craco build",
+        "build": "pushd \"../api\" && npm run build && popd && craco build",
         "test": "craco test",
         "eject": "craco eject"
     },
