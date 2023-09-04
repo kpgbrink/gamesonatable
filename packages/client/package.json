@@ -24,7 +24,7 @@
     "scripts": {
         "start": "craco start",
         "start:dev": "craco start",
-        "build": "node build-api.js && craco build",
+        "build": "craco build",
         "test": "craco test",
         "eject": "craco eject"
     },
