@@ -3,7 +3,7 @@ import { MainMenuGameData } from "api/src/data/datas/MainMenuData";
 import { gamesList } from "api/src/gamesList";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Textfit } from "react-textfit";
+import { Textfit } from "../../Textfit";
 import { palletColors } from "../../Palettes";
 import socket from "../../SocketConnection";
 
@@ -144,7 +144,6 @@ export default function PlayerGamesListMenu() {
               }}
             >
               <Textfit
-                mode="multi"
                 style={{
                   height: "100%",
                   width: "100%",

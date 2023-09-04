@@ -16,9 +16,11 @@
         "build": "lerna run --parallel --stream build"
     },
     "dependencies": {
-        "lerna": "^7.1.4",
         "npm-install-global": "^1.0.0",
         "typescript": "^4.8.4"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "lerna": "^7.2.0",
+        "yarn": "^1.22.19"
+    }
 }

@@ -4,7 +4,7 @@ import { Game, RoomData, UserAvatar } from "api";
 import { useContext, useEffect } from "react";
 import QRCode from "react-qr-code";
 import { useParams } from "react-router-dom";
-import { Textfit } from "react-textfit";
+import { Textfit } from "../../../Textfit";
 import { AppContext } from "../../../AppContext";
 import { palletColors } from "../../../Palettes";
 import { avatarImages } from "../../../PhaserPages/objects/avatarImages.generated";

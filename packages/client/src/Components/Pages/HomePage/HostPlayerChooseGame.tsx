@@ -5,7 +5,7 @@ import { gamesList } from "api/src/gamesList";
 import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import QRCode from "react-qr-code";
 import { useParams } from "react-router-dom";
-import { Textfit } from "react-textfit";
+import { Textfit } from "../../../Textfit";
 import { AppContext } from "../../../AppContext";
 import { palletColors } from "../../../Palettes";
 import { avatarImages } from "../../../PhaserPages/objects/avatarImages.generated";
