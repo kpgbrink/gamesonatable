@@ -1,3 +1,4 @@
+import path from 'path';
 import { Game, NewRoomId, StoredBrowserIds, User, UserAvatar } from 'api';
 import { GameData, PlayerData } from "api/src/data/Data";
 import config from 'config';
@@ -8,7 +9,8 @@ import uniqid from 'uniqid';
 import { addHostUserToRoom, addUserToRoom, getRoom, getRoomHost, removeUser, updateUser } from './user';
 
 const app = express();
-const port = 3001;
+// Heroku specifies the port to listen on via the environment.
+const port = (Number.parseInt(process.env.PORT || '', 10)) || 3001;
 
 const httpServer = app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
@@ -25,6 +27,12 @@ app.get('/getNewRoomId', (req, res) => {
     console.log('getNewRoomId----------------');
     const newRoomId: NewRoomId = { roomId: uniqid() + randomPin() };
     res.send(newRoomId);
+});
+
+// Serve website in production.
+app.use(express.static(path.resolve(__dirname, '../../client/build')));
+app.get('/*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../../client/build/index.html'));
 });
 
 // Generate random 6 digit number

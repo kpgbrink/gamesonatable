@@ -1,4 +1,4 @@
-import { CardGameData, PlayerCardHandData } from "../CardData";
+import { CardGameData, PlayerCardHandData } from "../CardData.js";
 
 export class ThirtyOnePlayerCardHandData extends PlayerCardHandData {
 }

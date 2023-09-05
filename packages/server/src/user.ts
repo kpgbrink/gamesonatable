@@ -1,5 +1,5 @@
 import { HostUser, RoomData, User } from 'api';
-import { getGameFromName } from 'api/src/gamesList';
+import { getGameFromName } from 'api/src/gamesList.js';
 import { allRaces, nameByRace } from 'fantasy-name-generator';
 
 const rooms: Map<string, RoomData> = new Map();

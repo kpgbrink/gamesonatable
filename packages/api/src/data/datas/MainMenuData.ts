@@ -1,4 +1,4 @@
-import { GameData, PlayerData } from "../Data";
+import { GameData, PlayerData } from "../Data.js";
 
 export class PlayerMainMenuData extends PlayerData {
     suggestedGameSelected: string | null = null;

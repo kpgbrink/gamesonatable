@@ -1,4 +1,4 @@
-import { GameData, PlayerData } from "../Data";
+import { GameData, PlayerData } from "../Data.js";
 
 export class PlayerCardHandData extends PlayerData {
     pickUpTo: number | null = null;

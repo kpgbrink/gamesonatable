@@ -13,7 +13,7 @@
         "start": "lerna run --parallel --stream start",
         "start:dev": "lerna run --parallel --stream start:dev",
         "kill-ports": "kill-port --port 3000,3001",
-        "build": "lerna run --parallel --stream build"
+        "build": "lerna run --concurrency 1 --stream build"
     },
     "dependencies": {
         "lerna": "^7.2.0",

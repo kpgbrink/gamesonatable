@@ -15,9 +15,10 @@
     ],
     "scripts": {
         "test": "echo \"Error: run tests from root\" && exit 1",
-        "build": "npx ts-node ./src/GenerateUserAvatarLists.ts"
+        "build": "tsc && node ./src/GenerateUserAvatarLists.js && tsc"
     },
     "devDependencies": {
-        "typescript": "^4.5.5"
-    }
+        "typescript": "^5.2.0"
+    },
+    "type": "module"
 }
